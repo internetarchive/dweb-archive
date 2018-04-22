@@ -216,7 +216,7 @@ export default class React  {
                     // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
                     // TODO clean this nasty kludge up,
                     // Find a HTTP transport if connected, then ask it for the URL (as will probably be contenthash) note it leaves non contenthash urls untouched
-                    const url = await Transports.p_httpfetchurls(urls);
+                    const url = await Transports.p_httpfetchurl(urls);
                     if (url) {
                         el.src = url;
                     } else {
