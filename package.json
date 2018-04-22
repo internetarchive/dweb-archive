@@ -1,0 +1,48 @@
+{
+  "author": {
+    "name": "Mitra Ardron",
+    "email": "mitra@mitra.biz",
+    "url": "http://www.mitra.biz"
+  },
+  "bugs": {
+    "url": "https://github.com/internetarchive/dweb-archive/issues"
+  },
+  "description": "Archive UI to run in Browser",
+  "dependencies": {
+    "dweb-objects": "git+https://git@github.com/internetarchive/dweb-objects.git",
+    "dweb-transports": "git+https://git@github.com/internetarchive/dweb-transports.git",
+    "es2015": "latest",
+    "from2": "^2.3.0",
+    "prettier-bytes": "^1.0.4",
+    "render-media": "^3.0.0",
+    "throttleit": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-core": "latest",
+    "babel-loader": "latest",
+    "babel-preset-env": "latest",
+    "babel-preset-es2015": "latest",
+    "babel-preset-react": "latest",
+    "babelify": "latest",
+    "chai": "latest",
+    "copy-webpack-plugin": "^4.5.1",
+    "react": "latest",
+    "webpack": "latest",
+    "webpack-cli": "^2.0.15",
+    "webpack-dev-server": "latest"
+  },
+  "homepage": "https://github.com/internetarchive/dweb-archive#readme",
+  "keywords": [],
+  "license": "AGPL-3.0",
+  "main": "Details.js",
+  "name": "archive_browser",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/internetarchive/dweb-archive.git"
+  },
+  "scripts": {
+    "webpack": "webpack --mode development -w",
+    "server": "webpack-dev-server"
+  },
+  "version": "0.1.0"
+}
