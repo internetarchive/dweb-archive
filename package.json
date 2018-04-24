@@ -41,7 +41,7 @@
     "url": "git://github.com/internetarchive/dweb-archive.git"
   },
   "scripts": {
-    "webpack": "webpack --mode development -w",
+    "build": "webpack --mode development",
     "server": "webpack-dev-server"
   },
   "version": "0.1.0"
