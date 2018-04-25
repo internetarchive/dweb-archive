@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Decentralized Web Boot loader</title>
     <base href="https://dweb.me/examples/bootloader.html"><!-- Allow relative URLs here (in this header), this could also be http://ipfs.io/ipfs/Q11...-->
-    <script src="./dweb_bundled.js" type="text/javascript"></script>
+    <script src="./dweb-transports-bundle.js" type="text/javascript"></script>
+    <script src="./dweb-objects-bundle.js" type="text/javascript"></script>
     <style type="text/css">
         /* These are required for Dweb statuses */
         #statuselement { margin: 0 0 3px 10px; display: inline-block; }  /* "floatright" Grouped in top right corner */
@@ -17,6 +18,14 @@
     </style>
 </head>
 <body>
+<!-- Summary of logic below all based on the url the user requested
+*
+* dweb.xxxx.yyy:aaa/bbb?searchstring -> name= arc/xxxx.yyy/aaa/bbb
+* /archive.org/aaa/bbb?searchstring -> name= arc/archive.org/aaa/bbb
+* Name lookup -> [ urls ], path
+* Redirect url?path=remainder&searchstring
+
+-->
 <p>The decentralized web is everywhere, but we have to find it.</p>
 <p>Loading ....</p>
 <script>
