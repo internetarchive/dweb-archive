@@ -38,8 +38,6 @@ module.exports = {
                 { from: 'archive.html', to: './' },
                 { from: 'bootloader.html', to: './'},
                 { from: 'example_styles.css', to: './'},
-                { from: 'htmlutils.js', to: './'},
-                { from: 'loginutils.js', to: './'},
                 { from: 'favicon.ico', to: './'},
                 { from: 'fonts/', to: 'fonts/'},
                 { from: 'images/', to: 'images/'},
