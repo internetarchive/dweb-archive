@@ -37,7 +37,7 @@ module.exports = {
             [
                 { from: 'archive.html', to: './' },
                 { from: 'bootloader.html', to: './'},
-                { from: 'example_styles.css', to: './'},
+                { from: 'dweb-archive-styles.css', to: './'},
                 { from: 'favicon.ico', to: './'},
                 { from: 'fonts/', to: 'fonts/'},
                 { from: 'images/', to: 'images/'},

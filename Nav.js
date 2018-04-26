@@ -140,7 +140,7 @@ export default class Nav {
         if (wanthistory) {
             let historystate = {query: q}; //TODO-HISTORY may want  to store verbose, transports etc here
             let cnp = await DwebTransports.p_connectedNamesParm();
-            // See notes on async_factory about history.pushState //TODO-SW copy history.pushState from factory below
+            // See notes on async_factory about history.pushState
             let historyloc;
             if (window.location.origin === "file://") {
                 historyloc = `${window.location.origin}${window.location.pathname}?query=${q}&${verbose ? "verbose=true&" : ""}${cnp}`

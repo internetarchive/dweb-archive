@@ -71,7 +71,7 @@
                         }
                     }
                 } else {
-                    //TODO-BOOTSTRAP Not clear if parms make sense to a blob, if so can copy from above
+                    // Its not clear if parms make sense to a blob, if they are needed then can copy from above code
                     // Not setting timeoutMS as could be a slow load of a big file TODO-TIMEOUT make dependent on size
                     DwebObjects.utils.display_blob(await DwebTransports.p_rawfetch(resolution.urls, {verbose}), {type: resolution.mimetype, target: opentarget});
                 }

@@ -22,7 +22,7 @@ function deletechildren(el, keeptemplate) { //Note same function in htmlutils
     if (typeof keeptemplate === "undefined") keeptemplate=true;
     el = (typeof(el) === "string") ? document.getElementById(el) : el;
     // Carefull - this deletes from the end, because template if it exists will be firstChild
-    while (el.lastChild && !(keeptemplate && el.lastChild.classList && el.lastChild.classList.contains("template"))) {
+    while (el.lastChild) { // This clause needed if use deletechildren with templates && !(keeptemplate && el.lastChild.classList && el.lastChild.classList.contains("template"))) {
         // Note that deletechildren is also used on Span's to remove the children before replacing with text.
         el.removeChild(el.lastChild);
     }

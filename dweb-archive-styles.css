@@ -1,0 +1,18 @@
+/* Styles used for both bootloader & archive */
+#statuselement { margin: 0 0 3px 10px; float: right; clear: right; text-align: right; position: relative; }  /* "floatright" Grouped in top right corner */
+#statuselement li {display: table-row; padding-top: 3px; padding-right: 0; margin: 0 0 3px 3px;}
+
+/* Styles used for bootloader */
+
+/* Styles used for archive.html */
+.floatright {margin: 0 0 3px 10px; float: right; clear: right; text-align: right;
+    position: fixed; z-index: 999999; top: 100px; right: 10px; font-size: 50% }
+.floatright li {padding-top: 1px; margin: 0 0 3px 3px;} /* Wide enough for two indicators */
+.floatright ul {margin: 0 0 3px 10px; width: 150px;
+    display: grid;  grid-template-columns: repeat(auto-fit, minmax(7em, 1fr));  grid-auto-flow: dense;}  /* Wide enogh for two indicators */
+
+.transportstatus0 {color: lawngreen}
+.transportstatus1 {color: red}
+.transportstatus2 {color: yellow}
+.transportstatus3 {color: black}
+.transportstatus4 {color: purple}
