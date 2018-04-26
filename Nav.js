@@ -15,7 +15,7 @@ import Image from './Image'
 import Audio from './Audio'
 import Video from './Video'
 import DetailsError from './DetailsError'
-const Transports = require('./Transports');  //Use this version to go through proxy to ServiceWorker
+//const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
 
 export default class Nav {
@@ -139,7 +139,7 @@ export default class Nav {
         console.log("Navigating to Search");
         if (wanthistory) {
             let historystate = {query: q}; //TODO-HISTORY may want  to store verbose, transports etc here
-            let cnp = await Transports.p_connectedNamesParm();
+            let cnp = await DwebTransports.p_connectedNamesParm();
             // See notes on async_factory about history.pushState //TODO-SW copy history.pushState from factory below
             let historyloc;
             if (window.location.origin === "file://") {
@@ -164,7 +164,7 @@ static async factory(itemid, res, wanthistory=true) {
         console.group("Nav.factory",itemid);
         if (wanthistory) {
             let historystate = {itemid}; //TODO-HISTORY may want  to store verbose, transports etc here
-            let cnp = await Transports.p_connectedNamesParm();
+            let cnp = await DwebTransports.p_connectedNamesParm();
             // History is tricky .... take care of: SW (with Base set) \ !SW; file | http; cases
             // when loaded from file, non SW window.location.origin = document.location.origin = "file://" and document.baseURI is unset
             let historyloc;

@@ -12,7 +12,7 @@ import from2 from "from2";
 import prettierBytes from "prettier-bytes";
 const Url = require('url');
 import ArchiveFile from "./ArchiveFile";
-const Transports = require('./Transports');  //Use this version to go through proxy to ServiceWorker
+//const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
 function deletechildren(el, keeptemplate) { //Note same function in htmlutils
     /*
@@ -96,19 +96,19 @@ export default class React  {
         */
         if (verbose) console.log(`Loading Image ${urls}`);
         urls = await this.p_resolveUrls(urls, rel); // Handles a range of urls include ArchiveFile
-        urls = await Transports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
+        urls = await DwebTransports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
         // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
         let fileurl = urls.find(u => u.startsWith("file"))
         let magneturl = urls.find(u => u.includes('magnet:'));
         const streamUrls = await DwebTransports.p_urlsValidFor(urls, "createReadStream");
         if (fileurl) {
             this._loadImgSrc(el, fileurl, cb);
-        } else if ((Transports.type === "ServiceWorker") && magneturl) {
+        } else if ((DwebTransports.type === "ServiceWorker") && magneturl) {
             this._loadImgSrc(el, magneturl.replace('magnet:',`${window.origin}/magnet/`), cb);
         } else if (streamUrls.length) {
             const file = {
                 name: name,
-                createReadStream: await Transports.p_f_createReadStream(streamUrls, {verbose})
+                createReadStream: await DwebTransports.p_f_createReadStream(streamUrls, {verbose})
                 // Initiate a stream, & return a f({start, end}) => readstream
                 // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
             };
@@ -116,7 +116,7 @@ export default class React  {
         } else {
             // Otherwise fetch the file, and pass via rendermedia and from2
             //TODO-MULTI-GATEwAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
-            const buff = await  Transports.p_rawfetch(urls, {verbose, timeoutMS: 5000, relay: false});  //Typically will be a Uint8Array TODO-TIMEOUT make timeoutMS depend on size of file
+            const buff = await  DwebTransports.p_rawfetch(urls, {verbose, timeoutMS: 5000, relay: false});  //Typically will be a Uint8Array TODO-TIMEOUT make timeoutMS depend on size of file
             if (verbose) console.log("Retrieved image size",buff.length);
             const file = {
                 name: name,
@@ -142,7 +142,7 @@ export default class React  {
     static async _p_loadStreamRenderMedia(el, name, urls, cb, rel) {
         const file = {
             name: name,
-            createReadStream: await Transports.p_f_createReadStream(urls, {verbose})
+            createReadStream: await DwebTransports.p_f_createReadStream(urls, {verbose})
             // Return a function that returns a readable stream that provides the bytes between offsets "start" and "end" inclusive.
             // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
             // f_createReadStream can initiate the stream before returning the function.
@@ -180,7 +180,7 @@ export default class React  {
     static async _p_loadStreamFetchAndBuffer(el, name, urls, cb, rel) {
 
         // Worst choice - fetch the file, and pass via rendermedia and from2
-        const buff = await  Transports.p_rawfetch(urls, {verbose});  //Typically will be a Uint8Array, TODO-TIMEOUT make timeoutMS dependent on file size
+        const buff = await DwebTransports.p_rawfetch(urls, {verbose});  //Typically will be a Uint8Array, TODO-TIMEOUT make timeoutMS dependent on file size
         const file = {
             name: name,
             createReadStream: function (opts) {
@@ -199,14 +199,14 @@ export default class React  {
         try {
             //urls = [ 'ipfs:/ipfs/QmRfcgjWEWdzKBnnSYwmV7Kt5wVVuWZvLm96o4dj7myWuy']  - TODO delete this line once Kyle fixes files.cat for urlstored files - this replaces all with a test video
             urls = await this.p_resolveUrls(urls, rel); // Allow relative urls
-            urls = await Transports.p_resolveNames(urls); // Allow names among urls
+            urls = await DwebTransports.p_resolveNames(urls); // Allow names among urls
             // Strategy here ...
             // If serviceworker && webtorrent => video src=
             // If can createReadStream (IPFS when fixed; webtorrent) => rendermedia
             // If http => video src
             // Default fetch as bytes and
             let magneturl = urls.find(u => u.includes('magnet:'));
-            if ((Transports.type === "ServiceWorker")  && magneturl) {
+            if ((DwebTransports.type === "ServiceWorker")  && magneturl) {
                 el.src = magneturl.replace('magnet:',`${window.origin}/magnet/`);
             } else {
                 const streamUrls = (await DwebTransports.p_urlsValidFor(urls, "createReadStream"));
@@ -216,7 +216,7 @@ export default class React  {
                     // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
                     // TODO clean this nasty kludge up,
                     // Find a HTTP transport if connected, then ask it for the URL (as will probably be contenthash) note it leaves non contenthash urls untouched
-                    const url = await Transports.p_httpfetchurl(urls);
+                    const url = await DwebTransports.p_httpfetchurl(urls);
                     if (url) {
                         el.src = url;
                     } else {

@@ -21,8 +21,11 @@
     <style>
         #jw6, #jw6__list { backgroundColor:black; }
     </style>
+    <!-- Order of these bundle inclusions is important, objects should be loaded after transports as it adds Name lookup to DwebTransports-->
+    <script type="text/javascript" src="dweb-transports-bundle.js"></script></head>
+    <script type="text/javascript" src="dweb-objects-bundle.js"></script></head>
+    <script type="text/javascript" src="dweb-archive-bundle.js"></script></head>
     <!-- TODO-DETAILS missing scripts, properties and links that appear before body tag on archive/details/commute etc -->
-    <script type="text/javascript" src="archive_bundle.js"></script></head>
 
 <body class="examplesarchive navia ia-module navbar-no-margin-bottom tiles responsive">
 <a href="#maincontent" class="hidden-for-screen-readers">Skip to main content</a>

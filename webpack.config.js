@@ -27,7 +27,7 @@ module.exports = {
         console: false
     },
     output: {
-        filename: 'archive_bundle.js',
+        filename: 'dweb-archive-bundle.js',
         path: __dirname + '/dist'
     },
     //plugins: [HTMLWebpackPluginConfig]

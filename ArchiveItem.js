@@ -3,7 +3,7 @@ import Util from "./Util";
 
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 //const Transports = require('dweb-transports');
-const Transports = require('./Transports');  //Use this version to go through proxy to ServiceWorker
+//const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 //TODO-NAMING url could be a name
 
 export default class ArchiveItem {
@@ -56,13 +56,13 @@ export default class ArchiveItem {
         if (this.itemid && !this.item) {
             if (verbose) console.group('getting metadata for ' + this.itemid);
             //this.item = await Util.fetch_json(`https://archive.org/metadata/${this.itemid}`);
-            const transports = await Transports.p_connectedNamesParm(); // Pass transports, as metadata (currently) much quicker if not using IPFS
+            const transports = await DwebTransports.p_connectedNamesParm(); // Pass transports, as metadata (currently) much quicker if not using IPFS
             /* OLD WAY VIA HTTP
                 this.item = await Util.fetch_json(`https://gateway.dweb.me/metadata/archiveid/${this.itemid}?${transports}`);
             */
             // Fetch via Domain record - the dweb:/arc/archive.org/metadata resolves into a table that is dynamic on gateway.dweb.me
             const name = `dweb:/arc/archive.org/metadata/${this.itemid}`;
-            let m = await Transports.p_rawfetch([name], {verbose, timeoutMS: 5000}); // Using Transports as its multiurl and might not be HTTP urls
+            let m = await DwebTransports.p_rawfetch([name], {verbose, timeoutMS: 5000}); // Using Transports as its multiurl and might not be HTTP urls
             m = (typeof m === "string" || m instanceof Buffer) ? JSON.parse(m) : m;
             console.assert(m.metadata.identifier === this.itemid);
             this.item = m;

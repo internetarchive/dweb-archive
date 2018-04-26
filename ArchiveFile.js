@@ -5,7 +5,7 @@ import Util from './Util';
 import throttle from "throttleit";
 import prettierBytes from "prettier-bytes";
 //const Transports = require('dweb-transports');
-const Transports = require('./Transports');  //Use this version to go through proxy to ServiceWorker
+//const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
 export default class ArchiveFile {
     /*
@@ -30,7 +30,7 @@ export default class ArchiveFile {
         /*
         Return an array of URLs that might be a good place to get this item
          */
-        if (!this.metadata.ipfs && (await Transports.p_connectedNames()).includes("IPFS")) {   // Connected to IPFS but dont have IPFS URL yet (not included by default because IPFS caching is slow)
+        if (!this.metadata.ipfs && (await DwebTransports.p_connectedNames()).includes("IPFS")) {   // Connected to IPFS but dont have IPFS URL yet (not included by default because IPFS caching is slow)
             this.metadata = await Util.fetch_json(`${Util.gateway.url_metadata}${this.itemid}/${this.metadata.name}`);
         }
         // Includes both ipfs and ipfs via gateway link as the latter can prime the IPFS DHT so the former works for the next user
@@ -43,7 +43,7 @@ export default class ArchiveFile {
        return Util.archiveMimeTypeFromFormat[this.metadata.format];
     }
     async data() {
-        return await Transports.p_rawfetch(await this.p_urls(), {verbose}); //TODO-TIMEOUT add timeoutMS depending on size of file
+        return await DwebTransports.p_rawfetch(await this.p_urls(), {verbose}); //TODO-TIMEOUT add timeoutMS depending on size of file
     }
     async blob() {
         return new Blob([await this.data()], {type: this.mimetype()} );
