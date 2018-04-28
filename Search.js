@@ -192,7 +192,8 @@ export default class Search extends ArchiveBase {
 
     banner() { // On Search "banner" is a search form
         let query=this.query;
-        let searchURL=`https://archive.org/advancedsearch.php?q={query}`; //TODO-LINK TODO-DETAILS-ONLINE check how used
+        // We are using advancedsearch so this link isn't needed
+        // let searchURL=`https://archive.org/advancedsearch.php?q={query}`;
         let addBookmarkURL=`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=search&amp;identifier={query}&amp;title={query}`;  //TODO figure out decentralized bookmark submission
         return (
         <div class="container container-ia width-max"
@@ -211,7 +212,7 @@ export default class Search extends ArchiveBase {
                                   role="search"
                                   action="https://archive.org/searchresults.php"
                                   data-event-form-tracking="Search|SearchForm"
-                                  data-wayback-machine-search-url="https://web.archive.org/web/*/"> {/* TODO-WAYBACK*/}
+                                  data-wayback-machine-search-url="https://web.archive.org/web/*/"> {/* TODO-WAYBACK TODO-LINKS*/}
                                 <div class="form-group" style="position:relative">
                                     <div style="position:relative">
                                         <span aria-hidden="true">
@@ -239,7 +240,8 @@ export default class Search extends ArchiveBase {
                                             <label><input type="radio" name="sin" value="TV"/>Search TV captions</label>
                                             <label><input type="radio" name="sin" value="WEB"/>Search archived web sites</label>
                                         </fieldset>
-                                        <a href={searchURL} class="search-options__advanced-search-link">Advanced Search</a>
+                                        {/* We are using advanced search, so no point in this link
+                                        <a href={searchURL} class="search-options__advanced-search-link">Advanced Search</a> */}
                                     </div>
 
                                     <button class="btn btn-gray label-primary input-sm"
