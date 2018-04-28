@@ -39,8 +39,43 @@ export default class Collection extends Search {
                         <div className="col-xs-1 col-sm-2 welcome-right">
                         </div>
                     </div>
-                </div>
-            </div>
+                    {/* Tabbys are under construction - href links wont work and onclick probably doesnt*/}
+                    {/*TODO pushstate inside AJS.tabby will eb wrong - prob full URL */}
+                    <div class="tabbys">
+                        <div class="tabby">
+                            <div>
+                                <a id="tabby-about-finder"
+                                   class="stealth"
+                                   href="/details/prelinger&tab=about"
+                                   onclick="return AJS.tabby(this,'tabby-about')">
+                                    <span class="tabby-text">ABOUT</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="tabby in">
+                            <div>
+                                <a id="tabby-collection-finder"
+                                   class="stealth tabby-default-finder"
+                                   href="/details/prelinger&tab=collection"
+                                   onclick="return AJS.tabby(this,'tabby-collection')">
+                                    <span class="tabby-text">COLLECTION</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="tabby">
+                            <div>
+                                <a id="tabby-forum-finder"
+                                   class="stealth"
+                                   href="/details/prelinger&tab=forum"
+                                   onclick="return AJS.tabby(this,'tabby-forum')">
+                                    <span class="tabby-text">FORUM</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                {/*container*/}</div>
+            {/*welcome*/}</div>
         );
     }
     browserBefore() {

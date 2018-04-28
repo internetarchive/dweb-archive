@@ -164,7 +164,7 @@ export default class Search extends ArchiveBase {
 
 
                     </div>{/*--/.row--*/}
-                </div>
+                </div>{/*.container*/}
 
                 {/*--TODO-ANALYTiCS is missing --*/}
             {/*--wrap--*/}</div>
@@ -186,11 +186,11 @@ export default class Search extends ArchiveBase {
             $(window).scroll(AJS.scrolled);
         });
     }
-    browserBefore() {
+    browserBefore() {   // OVERRIDDEN in Collection.js subclass
         $('body').addClass('bgEEE');
     }
 
-    banner() { // On Search "banner" is a search form
+    banner() { // On Search "banner" is a search form  OVERRIDDEN in Collection.js subclass
         let query=this.query;
         // We are using advancedsearch so this link isn't needed
         // let searchURL=`https://archive.org/advancedsearch.php?q={query}`;
