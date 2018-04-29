@@ -12,6 +12,39 @@ export default class Collection extends Search {
         });
     }
 
+    wrap() {
+        /* Wrap the content up: wrap ( TODO-aside; navwrap; #maincontent; welcome; TODO-cher-modal; container-tabby-collection-row (TODO-columns-facets; columns-items) (tabby-about; tabby-form)
+        returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
+         */
+        return (
+            <div id="wrap">
+                {/*TODO needs "aside" */}
+                { new Nav().navwrap() }
+                {/*--Begin page content --*/}
+                <div class="container container-ia">
+                    <a name="maincontent" id="maincontent"></a>
+                </div>{/*--//.container-ia--*/}
+                {this.banner()}
+                {/*TODO-cher-modal*/}
+                <div class="container container-ia nopad">
+                    {/*TODO needs to spot tab=xxx parameter and open FOrum or About tab */}
+                    <div id="tabby-collection" class="tabby-data in">
+                        {this.rowColumnsItems()}
+                    </div>{/*tabby-collection*/}
+                </div>{/*.container*/}
+                {/*TODO take a closer look at scripts on originals/prelinger lines 7360-7399*/}
+                <div class="container container-ia nopad">
+                    <div id="tabby-about" class="tabby-data hidden row">{/*TODO-TABBY about*/}About not yet supported on Dweb</div>
+                    <div id="tabby-forum" class="tabby-data hidden row">{/*TODO-TABBY forum*/}Forum not yet supported on Dweb</div>
+                </div>{/*container*/}
+                {/*--TODO-ANALYTiCS is missing --*/}
+
+            {/*--wrap--*/}</div>
+        );
+    }
+
+
+
     banner() {
         const item = this.item;
         //TODO-DETAILS probably move this to the Search class and trigger based on presence of "item" (which is missing for Searches.)
@@ -40,7 +73,7 @@ export default class Collection extends Search {
                         </div>
                     </div>
                     {/* Tabbys are under construction - href links wont work and onclick probably doesnt*/}
-                    {/*TODO pushstate inside AJS.tabby will eb wrong - prob full URL */}
+                    {/*TODO pushstate inside AJS.tabby will eb wrong - prob full URL - but need to recognize &tab=about in URL before can fix */}
                     <div class="tabbys">
                         <div class="tabby">
                             <div>
