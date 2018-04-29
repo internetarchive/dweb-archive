@@ -26,14 +26,14 @@ export default class Details extends ArchiveBase {
         this._listLoad();
     }
 
-    navwrapped() {
-        /* Wrap the content up checked on mbid (Red Shift) image:  wrap( TODO-TODO-DONATEBANNER | nav-wrap1 | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | TODO-ALSOFOUND  | TODO-ANALYTICS )
+    wrap() {
+        /* Wrap the content up checked on mbid (Red Shift) image:  wrap( TODO-DONATEBANNER | nav-wrap1 | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | TODO-ALSOFOUND  | TODO-ANALYTICS )
         returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
          */
         return (
             <div id="wrap" itemscope itemtype={this.itemtype}>
                 {/* Missing donate-banner and scripts & css before it */}
-                { new Nav().navwrapJSX() }
+                { new Nav().navwrap() }
                 {/*--Begin page content --*/}
                 <div class="container container-ia">
                     <a name="maincontent" id="maincontent"></a>

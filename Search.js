@@ -43,7 +43,7 @@ export default class Search extends ArchiveBase {
         this.page = page;
     }
 
-    navwrapped() {
+    wrap() {
         /* Wrap the content up: wrap ( TODO-DONATE | navwrap |
         TODO-DETAILS need stuff before nav-wrap1 and after detailsabout and need to check this against Search and Collection examples
         returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
@@ -51,16 +51,24 @@ export default class Search extends ArchiveBase {
         //TODO-DETAILS is putting the description (in 'htm' in as raw html which would be a nasty security hole since that comes from user !
         return (
             <div id="wrap">
-                { new Nav().navwrapJSX() }
+                { new Nav().navwrap() }
                 {/*TODO - follow structure used by Details and check matches archive.html/details examples */}
                 {/*--Begin page content --*/}
                 <div class="container container-ia">
                     <a name="maincontent" id="maincontent"></a>
                 </div>{/*--//.container-ia--*/}
-                {/*--TODO-DETAILS check below here matches originals/search.html this is coming from temp_all.html--*/}
                 {this.banner()}
                 <div class="container container-ia nopad">
+                    {this.rowColumnsItems()}
+                </div>{/*.container*/}
+                {/*--TODO-ANALYTiCS is missing --*/}
+            {/*--wrap--*/}</div>
+        );
+    }
 
+    rowColumnsItems() {
+        /* Output the columns-items, wrapped in a row - this will then be wrapped differently for Collections (tabbed) and Search (not) */
+        return (
                     <div class="row">{/*--DONT NEED TILL HAVE FACETS --*/}
                         {/*TODO-DETAILS Facets not available over advancedsearch*/}
                         {/*--<div class="columns-facets"></div> TODO-DETAILS-FACETS column goes here--*/}
@@ -158,17 +166,9 @@ export default class Search extends ArchiveBase {
                                     </center>
                                 </div>
                             </div>
-
                         </div>{/*--.columns-items--*/}
-
-
-
-                    </div>{/*--/.row--*/}
-                </div>{/*.container*/}
-
-                {/*--TODO-ANALYTiCS is missing --*/}
-            {/*--wrap--*/}</div>
-        );
+                    {/*--/.row--*/}</div>
+                );
     }
 
     archive_setup_push() {

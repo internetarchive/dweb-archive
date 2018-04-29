@@ -24,8 +24,8 @@ export default class Nav {
     this.mts = ['web', 'texts', 'movies', 'audio', 'software', 'image'];
   }
 
-  navwrapJSX() {
-      /* The navigation stuff.   Order is navwrapJSX : maincontent : itemDetailsAbout */
+  navwrap() {  // Embedded in wrap()
+      /* The navigation stuff.   Order is navwrap : maincontent : itemDetailsAbout */
       {/*--TODO-DETAILS update navwrap to match actual code in both search.html and commute.html--*/}
       return (
         <div id="navwrap1">
@@ -120,7 +120,7 @@ export default class Nav {
     static clear(destn) {
         // Clear the screen to give confidence that action under way
         // Leaves Nav, clears rest
-        React.domrender(new DetailsError(undefined, undefined, < span >Loading - note this can take a while if no-one else has accessed this item yet< /span>).navwrapped(false), destn)
+        React.domrender(new DetailsError(undefined, undefined, < span >Loading - note this can take a while if no-one else has accessed this item yet< /span>).wrap(), destn)
     }
     static async nav_home(wanthistory=true) {
         console.log("Navigating to Home");
