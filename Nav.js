@@ -165,12 +165,17 @@ static async factory(itemid, res, wanthistory=true) {
         if (wanthistory) {
             let historystate = {itemid}; //TODO-HISTORY may want  to store verbose, transports etc here
             let cnp = await DwebTransports.p_connectedNamesParm();
+            // Add any other searchparams back in, especially "tab"
+            for (let sp of searchparams) {
+                if (!["item", "transport"].includes(sp[0]))
+                    cnp = cnp + `&${sp[0]}=${sp[1]}`;
+            }
             // History is tricky .... take care of: SW (with Base set) \ !SW; file | http; cases
             // when loaded from file, non SW window.location.origin = document.location.origin = "file://" and document.baseURI is unset
             let historyloc;
             if (window.location.origin === "file://") {
                 historyloc = `${window.location.origin}${window.location.pathname}?${itemid ? "item=" + itemid + "&" : ""}${verbose ? "verbose=true&" : ""}${cnp}`
-            } else { //Might not work on http, this is intended for SW
+            } else { //Might not work on http, this is intended for SW TODO-BADURL
                 historyloc = `${window.location.origin}/arc/archive.org/details${itemid ? "/"+itemid :""}?${verbose ? "verbose=true&" : ""}${cnp}`
             }
             history.pushState(historystate, `Internet Archive item ${itemid ? itemid : ""}`, historyloc);

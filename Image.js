@@ -18,7 +18,7 @@ export default class Image extends Details {
             AJS.theatresize();
             AJS.carouselsize('#ia-carousel', true);
         });
-        super.archive_setup_push(); // On eample images the theatre & carosel came before the parts common to AV, Image and Text
+        super.archive_setup_push(); // On example images the theatre & carosel came before the parts common to AV, Image and Text
     }
 
     theatreIaWrap() {

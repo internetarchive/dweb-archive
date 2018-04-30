@@ -111,22 +111,25 @@ export default class Collection extends Search {
             {/*welcome*/}</div>
         );
     }
-    browserBefore() {
-        $('body').addClass('bgEEE');
+    archive_setup_push() {
         // Note the archive_setup.push stuff is subtly different from that for 'search'
-        archive_setup.push(function(){
+        archive_setup.push(function() {
+            AJS.date_switcher(`&nbsp;<a href="/search.php?query=${query}&amp;sort=-publicdate"><div class="date_switcher in">Date Archived</div></a> <a href="/search.php?query=${query}&amp;sort=-date"><div class="date_switcher">Date Published</div></a> <a href="/search.php?query=${query}&amp;sort=-reviewdate"><div class="date_switcher">Date Reviewed</div></a> `);
             AJS.lists_v_tiles_setup('collection');
             $('div.ikind').css({visibility:'visible'});
             AJS.popState('');
-            AJS.tiler();
+            AJS.tiler();      // Note Traceys code had AJS.tiler('#ikind-search') but Search and Collections examples have it with no args
             $(window).on('resize  orientationchange', function(evt){
-                clearTimeout(AJS.tiles_wrap_throttler)
-                AJS.tiles_wrap_throttler = setTimeout(AJS.tiler, 250)
+                clearTimeout(AJS.tiles_wrap_throttler);
+                AJS.tiles_wrap_throttler = setTimeout(AJS.tiler, 250);
             });
             // register for scroll updates (for infinite search results)
             $(window).scroll(AJS.scrolled);
         });
+    }
 
+    browserBefore() {
+        $('body').addClass('bgEEE');
     }
 
 }
