@@ -124,6 +124,38 @@ export default class Util {
         }   // Note - if copy this for binary files, make sure to look at TransportHTTP which uses response.arrayBuffer
 
     }
+    static metaFromUpdater({uploader=undefined, email=undefined}={}) {
+        // Need to be able to convert email to uploader
+        u = uploader ||email; // TODO need to be able to convert back and forth with uploader and email
+        id = `@${u}`; // TODO This needs some character stripping/conversion from update to id - @IA figure out what this is
+        return {
+            updater: u,
+            name: u,
+            id: id,
+            detailslink: `/details/@${id}`,
+            title: "Member", // TODO can sometimes be Archivist etc figure out how to look this up
+
+        }
+    }
+    static listperson(uu) {
+        // Note - might need to tighten up layout to avoid extra spaces/breaks
+        return (
+            <div class="items_list person">
+                <div class="items_list_img">
+                    <a
+                        href={uu.detailslink}
+                        style="background-image: url('/images/person2.png');"
+                        aria-hidden="true"
+                        data-event-click-tracking="DetailsPage|CollectionLink"></a>
+                </div>
+                <div>
+                    <a class="stealth boxy-label" data-event-click-tracking="DetailsPage|CollectionLink" href={uu.detailslink}>{uu.name}</a><br/>
+                    <small>{uu.title}</small>
+                </div>
+            </div>
+        );
+    }
+
 }
 
 /* === Configuration info ==== */

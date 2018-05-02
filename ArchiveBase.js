@@ -57,7 +57,8 @@ export default class ArchiveBase extends ArchiveItem {
 
         return  !description ? description
                 : (Array.isArray(description) ? description.join('<br/>') : description)
-                    .replace(/src=(['"])\//gi, 'src=$1'+React._config.root+'/');
+                .replace('\n','<br/>')
+                .replace(/src=(['"])\//gi, 'src=$1'+React._config.root+'/');
     }
 }
 

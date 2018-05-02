@@ -16,6 +16,12 @@ export default class Collection extends Search {
         /* Wrap the content up: wrap ( TODO-aside; navwrap; #maincontent; welcome; TODO-cher-modal; container-tabby-collection-row (TODO-columns-facets; columns-items) (tabby-about; tabby-form)
         returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
          */
+        //Note both description & rights need dangerousHTML and \n -> <br/>
+        reviewlink = `/details/${this.itemid}&sort=-reviewdate`; // TODO-LINKS maybe better link\
+        metadata = this.item.metadata;
+        const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
+        const rights = this.preprocessDescription(metadata.rights); // Contains HTML (supposedly safe) inserted via innerHTML thing
+
         return (
             <div id="wrap">
                 {/*TODO needs "aside" */}
@@ -34,7 +40,87 @@ export default class Collection extends Search {
                 </div>{/*.container*/}
                 {/*TODO take a closer look at scripts on originals/prelinger lines 7360-7399*/}
                 <div class="container container-ia nopad">
-                    <div id="tabby-about" class="tabby-data hidden row">{/*TODO-TABBY about*/}About not yet supported on Dweb</div>
+                    <div id="tabby-about" class="tabby-data hidden row">
+                        <div class="row">
+                            <div class="col-sm-7" style="margin-bottom:50px;">
+                                <div class="about-box">
+                                    <div class="micro-label">DESCRIPTION</div>
+                                    <div  dangerouslySetInnerHTML={{__html: description}}></div>
+                                    <br class="clearfix" clear="all"/>
+                                </div>
+
+                                <div class="about-box">
+                                    <div class="micro-label">RIGHTS</div>
+                                    <div  dangerouslySetInnerHTML={{__html: rights}}></div>
+                                </div>
+
+                                <div class="about-box">
+                                    <div class="micro-label">ACTIVITY</div>
+                                    <div class="activity-box">
+                                        <h2 style="font-weight:100">
+                                            <a class="stealth" href={reviewlink}><span class="iconochive-comment"  aria-hidden="true"></span><span class="sr-only">comment</span> <span
+                                                    id="activity-reviewsN"></span></a>
+                                        </h2>
+                                    </div>
+                                    <div class="activity-box">
+                                        <h2 style="font-weight:100">
+                                            <a class="stealth" href="#forum" onclick="$('#tabby-forum-finder').click()"><span class="iconochive-comments"  aria-hidden="true"></span><span class="sr-only">comments</span> <span
+                                                    id="activity-forumN"></span></a>
+                                        </h2>
+                                    </div>
+                                    <br class="clearfix" clear="all"/>
+                                </div>
+                            </div>{/* /.col-sm-7 */}
+                            <div class="col-sm-5" style="margin-bottom:50px;">
+                                {/* TODO-UPLOADER not supported - need way to turn email into userid - see Missing-API doc I think its there
+                                <div class="about-box" style="background-color:rgb(251,242,221); margin-bottom:0;">
+                                    <div class="topinblock"
+                                         style="text-align:center; border-right:1px solid #ccc; padding:0 25px;margin-right:25px;">
+                                        <div class="micro-label" style="margin-bottom:2px">Created on</div>
+                                        <div style="font-size:18px;line-height:1.0;">
+                                            June 4<br> 2005            </div>
+                                    </div><div class="topinblock">
+                                    {_listperson(metaFromUpdater({email: metadata.uploader}))}
+                                    </div>
+                                </div>
+                                */}
+                                {/* TODO-UPLOADER not supported - need way to turn email into userid - see Missing-API doc I think its there
+                                    if (metadata.updater.length) {
+                                        <div class="about-box" style="margin-top:0">
+                                            <div class="micro-label">ADDITIONAL CONTRIBUTORS</div>
+                                            {metadata.updater.map((uu) => [ ( <div class="hr"></div> ), _listperson({uploader: metaFromUpdater(u)}) ])}
+                                        </div>
+                                    }
+                                */}
+                                {/*TODO-GRAFS: not supported yet
+                                <div class="grafs about-box"><div class="micro-label">VIEWS</div><h1>172,141,775</h1><div id="grafs1" class="grafs-content" data-id="prelinger"></div></div>
+                                {/*TODO-GRAFS:  <div class="grafs about-box"><div class="micro-label">ITEMS</div><h1>6,911</h1><div id="grafs2" class="grafs-content" data-id="prelinger"></div></div>
+                                <section
+                                        class="grafs about-box js-top-regions-table"
+                                        data-caption="Top Regions (Last 30 Days) – Beta"
+                                        data-caption-class="micro-label"
+                                        data-identifier="prelinger"
+                                        data-days="30"
+                                        data-limit="10"
+                                >
+                                    <h3 class="micro-label">TOP REGIONS (LAST 30 DAYS) – BETA</h3>
+                                    <p class="grafs-content js-top-regions-message">(data not available)</p>
+                                </section> */}
+
+                                {/*TODO-RELATED-COLLECTIONS not supported yet
+                                <div class="about-box">
+                                    <div class="micro-label">RELATED COLLECTIONS</div>
+                                    <div style="margin-top:10px;">
+                                        <div class="topinblock">
+                                            <span class="iconochive-collection"  aria-hidden="true"></span><span class="sr-only">collection</span>            </div><div class="topinblock">
+                                        <b><a class="stealth" href="/details/ephemera">Ephemeral Films</a></b><br/>
+                                        9,435 items
+                                    </div>
+                                    </div> This div repeats
+                                </div> */}
+                            </div>{/*!--/.col-sm-5-->*/}
+                        </div>{/*<!--/.row-->*/}
+                    </div>{/*<!--/#.tabby-about-->*/}
                     <div id="tabby-forum" class="tabby-data hidden row">{/*TODO-TABBY forum*/}Forum not yet supported on Dweb</div>
                 </div>{/*container*/}
                 {/*--TODO-ANALYTiCS is missing --*/}
