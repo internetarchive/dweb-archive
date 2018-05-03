@@ -2,8 +2,6 @@
 
 Welcome to the Internet Archive's Decentralized Wed (Dweb) libraries. 
 
-VERBOSE
-
 ## Running the examples
 The examples can run either from the [dweb.me/examples](https://dweb.me/examples) server, 
 or once the source is checked out, locally from your file system.

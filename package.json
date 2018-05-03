@@ -18,7 +18,7 @@
     "throttleit": "^1.0.0"
   },
   "devDependencies": {
-    "babel-core": "latest",
+    "babel-core": "^6.26.3",
     "babel-loader": "latest",
     "babel-preset-env": "latest",
     "babel-preset-es2015": "latest",
@@ -28,8 +28,8 @@
     "copy-webpack-plugin": "^4.5.1",
     "react": "latest",
     "webpack": "latest",
-    "webpack-cli": "^2.0.15",
-    "webpack-dev-server": "latest"
+    "webpack-cli": "^2.1.2",
+    "webpack-dev-server": "^3.1.4"
   },
   "homepage": "https://github.com/internetarchive/dweb-archive#readme",
   "keywords": [],
