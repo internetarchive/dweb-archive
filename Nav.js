@@ -138,6 +138,7 @@ export default class Nav {
     static async nav_search(q, wanthistory=true) {
         console.log("Navigating to Search");
         if (wanthistory) {
+            console.warn("XXX Nav.js/nab_search TODO Update to match history writing in factory() below")
             let historystate = {query: q}; //TODO-HISTORY may want  to store verbose, transports etc here
             let cnp = await DwebTransports.p_connectedNamesParm();
             // See notes on async_factory about history.pushState
@@ -163,11 +164,12 @@ export default class Nav {
 static async factory(itemid, res, wanthistory=true) {
         console.group("Nav.factory",itemid);
         if (wanthistory) {
+            console.warn("XXX Nav.js/factory  TODO Update nav_search above to match history writing ihere")
             let historystate = {itemid}; //TODO-HISTORY may want  to store verbose, transports etc here
             let cnp = await DwebTransports.p_connectedNamesParm();
             // Add any other searchparams back in, especially "tab"
             for (let sp of searchparams) {
-                if (!["item", "transport"].includes(sp[0]))
+                if (!["item", "transport", "verbose"].includes(sp[0]))
                     cnp = cnp + `&${sp[0]}=${sp[1]}`;
             }
             // History is tricky .... take care of: SW (with Base set) \ !SW; file | http; cases
@@ -178,6 +180,7 @@ static async factory(itemid, res, wanthistory=true) {
             } else { //Might not work on http, this is intended for SW TODO-BADURL
                 historyloc = `${window.location.origin}/arc/archive.org/details${itemid ? "/"+itemid :""}?${verbose ? "verbose=true&" : ""}${cnp}`
             }
+            console.log("Writing history:", history.loc);
             history.pushState(historystate, `Internet Archive item ${itemid ? itemid : ""}`, historyloc);
         }
         if (!itemid) {
