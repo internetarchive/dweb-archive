@@ -17,6 +17,7 @@ import Video from './Video'
 import DetailsError from './DetailsError'
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
+const TRANSPORT_STATUS_PAUSED = 4;  // Cheat to avoid having to import Transport here, which would make service worker much more complex
 
 export default class Nav {
   constructor() {
@@ -135,12 +136,24 @@ export default class Nav {
         return false; // Dont follow anchor link - unfortunately React ignores this
     }
 
+    static async pausedParm()
+    {
+        let statuses = await DwebTransports.p_statuses()
+        .filter(t => (t.status === TRANSPORT_STATUS_PAUSED))
+        .map(t => "paused="+t.name)
+        .join('&')
+    }
+
     static async nav_search(q, wanthistory=true) {
         console.log("Navigating to Search");
         if (wanthistory) {
-            console.warn("XXX Nav.js/nab_search TODO Update to match history writing in factory() below")
             let historystate = {query: q}; //TODO-HISTORY may want  to store verbose, transports etc here
-            let cnp = await DwebTransports.p_connectedNamesParm();
+            let cnp = await this.pausedParm(); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
+            // Add any other searchparams back in, especially "tab"
+            for (let sp of searchparams) {
+                if (!["transport", "verbose", "query"].includes(sp[0]))
+                    cnp = cnp + `&${sp[0]}=${sp[1]}`;
+            }
             // See notes on async_factory about history.pushState
             let historyloc;
             if (window.location.origin === "file://") {
@@ -161,12 +174,11 @@ export default class Nav {
     }
 
 
-static async factory(itemid, res, wanthistory=true) {
+    static async factory(itemid, res, wanthistory=true) {
         console.group("Nav.factory",itemid);
         if (wanthistory) {
-            console.warn("XXX Nav.js/factory  TODO Update nav_search above to match history writing ihere")
             let historystate = {itemid}; //TODO-HISTORY may want  to store verbose, transports etc here
-            let cnp = await DwebTransports.p_connectedNamesParm();
+            let cnp = await this.pausedParm(); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
             // Add any other searchparams back in, especially "tab"
             for (let sp of searchparams) {
                 if (!["item", "transport", "verbose"].includes(sp[0]))
@@ -177,7 +189,7 @@ static async factory(itemid, res, wanthistory=true) {
             let historyloc;
             if (window.location.origin === "file://") {
                 historyloc = `${window.location.origin}${window.location.pathname}?${itemid ? "item=" + itemid + "&" : ""}${verbose ? "verbose=true&" : ""}${cnp}`
-            } else { //Might not work on http, this is intended for SW TODO-BADURL
+            } else {
                 historyloc = `${window.location.origin}/arc/archive.org/details${itemid ? "/"+itemid :""}?${verbose ? "verbose=true&" : ""}${cnp}`
             }
             console.log("Writing history:", history.loc);
