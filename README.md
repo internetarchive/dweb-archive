@@ -1,129 +1,101 @@
-# dweb-transport
+# dweb-archive
+User Interface to access the archive from the browser.
+Builds on dweb-transports and dweb-objects, and typically (currently) loaded from dweb-transport
 
-Welcome to the Internet Archive's Decentralized Wed (Dweb) libraries. 
+## Background
+This library is part of a general project at the Internet Archive (archive.org)
+to support the decentralized web.
 
-## Running the examples
-The examples can run either from the [dweb.me/examples](https://dweb.me/examples) server, 
-or once the source is checked out, locally from your file system.
+### Goals
+* to allow unmodified browsers to access the Internet Archive's
+* to support as many of the IA's features as possible, adding them iteratively
+* to use decentralized platforms for as many features as possible, without sacrificing functionality
+* to avoid single points of failure where possible
 
-By default each of these examples runs both IPFS and HTTP transports, and is smart if it cannot connect to one or the other.
-Links below allow selecting to use ONLY IPFS, or the Archive's contenthash server.
+### Node Installation to work on this repo
+Note that the only reason to do this would be to work on the code,
+in general dweb-transport should be installed if trying to offer the HTML on a service (as done on dweb.me)
 
-- Simple text creation and retrieval: example_block.html: [Default](https://dweb.me/examples/example_block.html) [IPFS](https://dweb.me/examples/example_block.html&transport=IPFS)
-    or [HTTP](https://dweb.me/examples/example_block.html?transport=HTTP)
-- Simple dict creation and retrieval: example_smartdict.html: [Default](https://dweb.me/examples/example_smartdict.html) [IPFS](https://dweb.me/examples/example_smartdict.html&transport=IPFS)
-    or [HTTP](https://dweb.me/examples/example_smartdict.html?transport=HTTP); 
-- List creation and retrieval: example_list.html: [Default](https://dweb.me/examples/example_list.html) [IPFS](https://dweb.me/examples/example_list.html&transport=IPFS)
-    or [HTTP](https://dweb.me/examples/example_list.html?transport=HTTP)
-- UI for Academic docs - centralised search; decentralized retrieval: example_academic.html: [Default](https://dweb.me/examples/example_academic.html) [IPFS](https://dweb.me/examples/example_academic.html&transport=IPFS)
-    or [HTTP](https://dweb.me/examples/example_academic.html?transport=HTTP)
-- Authentication: Managing locks and keys example_keys.html: [Default](https://dweb.me/examples/example_keys.html) [IPFS](https://dweb.me/examples/example_keys.html&transport=IPFS)
-    or [HTTP](https://dweb.me/examples/example_keys.html?transport=HTTP); 
-- Versions of a single document: example_versions.html: [Default](https://dweb.me/examples/example_versions.html) [IPFS](https://dweb.me/examples/example_versions.html&transport=IPFS)
-    or [HTTP](https://dweb.me/examples/example_versions.html?transport=HTTP); 
-- [objbrowser.html](https://dweb.me/examples/objbrowser.html);  ((Not currently working))
+TODO - test these instructions on cleaner machine
+* `git clone git+https://git@github.com/internetarchive/dweb-archive.git`
+* `npm install`  will install the dependencies including IPFS & WebTorrent and dweb-transports and dweb-objects
+* `npm run build` will build (webpack) the bundles and copy needed files to dist/
 
-**Browser Support**: This should work on Chrome and Firefox (Safari doesn't support many newer features), 
-see below for IPFS bugs, 
+* TODO writeup how to require only some of the transports.
+* Then see usage API below
 
-**Transport choice**: As you can see from the URLs above ylj ca  select between IPFS (default) and HTTP as the transport
+* See dweb-transport/README.md for installing and opening locally in the browser
 
-**Verbosity**: You can get debugging output by appending verbose=true to the URLs, 
-this shows up in your console and also (for HTTP) in our server logs.
+##See related:
 
-### BLOCK example
-- In your browser, open examples/example_block.html: 
-[Default](https://dweb.me/examples/example_block.html) [IPFS](https://dweb.me/examples/example_block.html&transport=IPFS)
-or [HTTP](https://dweb.me/examples/example_block.html?transport=HTTP)
-- Type some text into the editor and hit Save  
-- A hash should appear below.  
-- If it doesn't then run with the verbose argument 
-[IPFS](https://dweb.me/examples/example_block.html?verbose=true) 
-or [HTTP](https://dweb.me/examples/example_block.html?transport=HTTP&verbose=true) 
-and open the browser console (e.g. Firefox/tools/Web Developer/Web Console)  
-- Click "FetchIt" and the data should be returned.
+* [Archive.org](http://dweb.archive.org/details) bootstrap into the Archive's page
+* [Examples](http://dweb.me/examples) examples
 
-### SMART DICT example
-- In your browser, open example_smartdict.html
-[Default](https://dweb.me/examples/example_smartdict.html) [IPFS](https://dweb.me/examples/example_smartdict.html&transport=IPFS)
-or [HTTP](https://dweb.me/examples/example_smartdict.html?transport=HTTP);
-- Type some text into the name, and a HTML color nmae into the color (e.g. "red") and hit Save  
-- A hash should appear below.  
-- Click "FetchIt" and the data should be returned and displayed.  
-- Hover over "Object Browser" to see the structure of the object.
+###Repos:
+* *dweb-transports:* Common API to underlying transports (http, webtorrent, ipfs, yjs)
+* *dweb-objects:* Object model for Dweb inc Lists, Authentication, Key/Value, Naming
+* *dweb-serviceworker:* Run Transports in ServiceWorker (experimental)
+* *dweb-archive:* Decentralized Archive webpage and bootstrapping
+* *dweb-transport:* Original Repo, still includes examples but being split into smaller repos
 
-### COMMON LIST example
-- In your browser, open the file:  example_list.html:
-[Default](https://dweb.me/examples/example_list.html) [IPFS](https://dweb.me/examples/example_list.html&transport=IPFS)
-or [HTTP](https://dweb.me/examples/example_list.html?transport=HTTP)
-- Click New and enter a name for your list  
-- A blank list should appear along with the name and hashes (retrieved from Dweb)  
-- Enter something in the text field and hit Send  
-- The item should be announced to the list and appear in the text field above.
-- The link icons next to the private hash can be opened on another machine and gives 
-the user ability to also write to the list.
-- The link icon next to the public hash will only give them the ability to display the list.
-- Hover over "Object Browser" to see the structure of the object.
+## Directory structure here
+* dist - where files needed by dweb-transport are located
+* fonts, images, includes/* include files that are located so that existing Archive HTML and JS can find them where expected
+* images - holds images used by dweb html files
+* originals - saved copies of some example Archive pages and metadata to allow comparisom with HTML generated
+* archive.html - main file for displaying archive (detail or search) pages
+* archive.js - top level for creating archive-bundle.js
+* bootloader.html - entry point to the dweb, loads decentralized transport, and resolves a URL as a name
+* dweb-archive-styles.css - CSS styles for dweb, note that it uses standard archive styles for most
+* LICENSE - standard GNU Affero licence
+* webpack.config.js - defines bundling, and in particular which files are needed for the distribution
 
-### ACADEMIC DOCS example
+## Class hierarchy
+* ArchiveFile - represents a single file
+* ArchiveItem - represents data structures for an item (a directory of files)
+    * ArchiveBase - superclass for each item type, has the structure of displaying pages
+        * Details - display a details page like archive.org/details/foo
+            * AV - base page for Audio/Video items
+                * Audio - display an Audio item (TODO doesnt work that well yet)
+                * Video - display a Video item
+            * Image - display an image item
+            * Texts - display a Text item (TODO doesnt work that well yet)
+        * Search - display a search page like archive.org/search.php?query=foo
+            * Collection - display a Collection item
+            * Home - archive home page, acts like a search
+        * DetailsError - display a line of text as an error
+* Nav - common class for navigation structures (mostly at the top of the page) also maps item types to classes
+* ReactFake - an expansion of dweb-objects/utils/createElement to fake react-like "createElement" allowing JSX to be used in JS
+* Tile - used to represent each tile displayed in a search
+* Util - a collection of tools, short functions, and dictionaries of use in multiple places
 
-This is a work in progress, dependent on the incompleteness of both the Academic Document virtual collection at Archive.org and 
-the bugs/issues in IPFS.
+## API of key subclassed function
 
-- In your browser, open the file:  example_academic.html:
-[Default](https://dweb.me/examples/example_academic.html) [IPFS](https://dweb.me/examples/example_academic.html&transport=IPFS)
-or [HTTP](https://dweb.me/examples/example_academic.html?transport=HTTP)
-- Enter a search term 
-- A list of papers should be returned, along with their DOI.
-- Choose one that hs a check-mark next to it, we don't have the others at the Archive.
-- Clicking on the DOI will find metadata on it. 
-- As you search for these DOI's the paper is pushed into our contenthash server, and IPFS.
-- You should see metadata on that paper, and a list of ways to receive it.
-- The first three fetch from: the Archive's contenthash server; and from two IPFS http gateways.
-- The last link fetches directly in the browser without coming to the Archive or any other single point of failure.
+The general route to load a single Details item (TODO - writeup for Search) is ...
 
-### AUTHENTICATION example
-- In your browser, open the file:  examples/example_keys.html:
-[Default](https://dweb.me/examples/example_keys.html) [IPFS](https://dweb.me/examples/example_keys.html&transport=IPFS)
-or [HTTP](https://dweb.me/examples/example_keys.html?transport=HTTP)
-- follow the instructions on the page.
 
-### VERSIONS exampe
-- In your browser, open the file examples/example_versions.html
-[Default](https://dweb.me/examples/example_versions.html) [IPFS](https://dweb.me/examples/example_versions.html&transport=IPFS)
-or [HTTP](https://dweb.me/examples/example_versions.html?transport=HTTP);
-- follow the instructions on the page.
+* Nav.nav_details(itemid)   - load and display a details page
+    * Nav.factory
+        * new Details(itemid) - to get metadata
+        * determine class of item e.g. Texts, video
+        * new Video(itemid).render => ArchiveBase.render
+            * Details.wrap - build the elements
+                * Nav.navwrap - the global navigation elements, menus etc
+                * theatreIaWrap - wrap the main content in controls (e.g. play etc)
+                    * Displays main content - highly variable between types (Texts, Image, Video etc)
+                    * cherModal - display sharing info
+                * itemDetailsAboutJSX - content about the main object
+            * browserbefore - anything to do before putting the elements onto the page
+                * archive_setup_push - put functions into a data structure (used by Archive's AJS) this is subclassed by each type
+                * AJS_on_dom_loaded - run the functions saved with archive_setup_push (TODO or some other funciton - define)
+            * domrender - display on the page
+            * browserafter - anything after displaying on the page
 
-Further examples will demonstrate using the lock.
-
-## Installing a compilable version
-- Checkout the repository
-- If you haven't already, then install [npm](https://nodejs.org/en/download) and upgrade node to Node 7 or later (for support of async/wait).
-- And on a Mac you'll need Xcode from the App store. 
-- No idea what you need on Windows (Please update this if you know)
-- Then install the dependencies: ```> npm install --dev```
-- Note that this gets a forked version of libsodium-wrappers from [Mitra's repository][https://github.com/mitra42/libsodium.js], 
-as the current libsodium-wrappers release doesn't have urlsafebase54.
-- Often the first run of ```> npm install --dev``` generates a lot of warnings and a second, 
-virtually clean run gives more confidence that the install worked.
-- Now compile the javascript library for the browser: ```> npm run bundle_transport_ipfs```
-- If this worked without errors, try the node specific test. ```> npm run test```
-- This should start a IPFS instance, and generate some messages ending in "delaying 10 secs" and "Completed test".
-- It will leave the IPFS instance running and usually will need a Ctrl-C to exit.
-
-## Major Browser Issues
-
-Please not there is an issue with IPFS on some Firefox versions (seen on 54.0.1, not on 49.0.2 for example)
-that is currently leaking Threads and slowing the machine down drastically. This is being explored!  
-Use it on Chrome for now, and expect it to crash every 5 minutes.
-The HTTP versions don't have this problem, but also don't support live notification of changes.
-This is reported on IPFS at [JSIPFS issue#950](https://github.com/ipfs/js-ipfs/issues/950), dweb-transport issue@ and supposedly being fixed 
-
-## See also:
-
-The documentation for the Internet Archive's Dweb project is currently on Google (yes, we appreciate the irony). 
-
-[API docs](https://docs.google.com/document/d/1_MttdWglsIOIajqtiSW5AWuf6YObZP8AA2LF9OV4xOM/edit#)  
-[Top level doc on project and links](https://docs.google.com/document/d/1-lI352gV_ma5ObAO02XwwyQHhqbC8GnAaysuxgR2dQo/edit#)
+For a *Search/Colletion/Home* the structure is slightly different
+* Search.wrap
+    * Nav.navwrap - navigation as for Details
+    * banner - appear above tiles
+    * rowColumnsItems - loops over results displaying Tiles
+    * About & Forum tabs (for Collection only)
 
 
