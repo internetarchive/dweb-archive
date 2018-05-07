@@ -138,7 +138,7 @@ export default class Nav {
 
     static async pausedParm()
     {
-        let statuses = await DwebTransports.p_statuses()
+        return (await DwebTransports.p_statuses())
         .filter(t => (t.status === TRANSPORT_STATUS_PAUSED))
         .map(t => "paused="+t.name)
         .join('&')
@@ -148,19 +148,24 @@ export default class Nav {
         console.log("Navigating to Search");
         if (wanthistory) {
             let historystate = {query: q}; //TODO-HISTORY may want  to store verbose, transports etc here
-            let cnp = await this.pausedParm(); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
+            let cnp = []
+            cnp.push(await this.pausedParm()); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
             // Add any other searchparams back in, especially "tab"
             for (let sp of searchparams) {
                 if (!["transport", "verbose", "query"].includes(sp[0]))
-                    cnp = cnp + `&${sp[0]}=${sp[1]}`;
+                    cnp.push(`${sp[0]}=${sp[1]}`);
             }
             // See notes on async_factory about history.pushState
             let historyloc;
+            cnp.push(verbose ? "verbose=true": "");
+            cnp.push(`query=${q}`);
+            cnp = cnp.filter(p => !!p).join('&')
             if (window.location.origin === "file://") {
-                historyloc = `${window.location.origin}${window.location.pathname}?query=${q}&${verbose ? "verbose=true&" : ""}${cnp}`
+                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`
             } else { //Might not work on http, this is intended for SW
-                historyloc = `${window.location.origin}/arc/archive.org/details?query=${q}&${verbose ? "verbose=true&" : ""}${cnp}`
+                historyloc = `${window.location.origin}/arc/archive.org/details?${cnp}`
             }
+            console.log("Writing history:", historyloc);
             history.pushState(historystate, `Internet Archive search ${q}`, historyloc);
         }
         let destn = document.getElementById('main'); // Blank window (except Nav) as loading
@@ -178,21 +183,26 @@ export default class Nav {
         console.group("Nav.factory",itemid);
         if (wanthistory) {
             let historystate = {itemid}; //TODO-HISTORY may want  to store verbose, transports etc here
-            let cnp = await this.pausedParm(); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
+            let cnp = []
+            cnp.push(await this.pausedParm()); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
             // Add any other searchparams back in, especially "tab"
             for (let sp of searchparams) {
-                if (!["item", "transport", "verbose"].includes(sp[0]))
-                    cnp = cnp + `&${sp[0]}=${sp[1]}`;
+                if (!["transport", "verbose", "item"].includes(sp[0]))
+                    cnp.push(`${sp[0]}=${sp[1]}`);
             }
+            // See notes on async_factory about history.pushState
+            let historyloc;
+            cnp.push(verbose ? "verbose=true": "");
+            if ((window.location.origin === "file://") && itemid) cnp.push(`item=${itemid}`);   // Need item id parameter on local files
+            cnp = cnp.filter(p => !!p).join('&')
             // History is tricky .... take care of: SW (with Base set) \ !SW; file | http; cases
             // when loaded from file, non SW window.location.origin = document.location.origin = "file://" and document.baseURI is unset
-            let historyloc;
             if (window.location.origin === "file://") {
-                historyloc = `${window.location.origin}${window.location.pathname}?${itemid ? "item=" + itemid + "&" : ""}${verbose ? "verbose=true&" : ""}${cnp}`
+                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`
             } else {
-                historyloc = `${window.location.origin}/arc/archive.org/details${itemid ? "/"+itemid :""}?${verbose ? "verbose=true&" : ""}${cnp}`
+                historyloc = `${window.location.origin}/arc/archive.org/details${itemid ? "/"+itemid :""}?${cnp}`
             }
-            console.log("Writing history:", history.loc);
+            console.log("Writing history:", historyloc);
             history.pushState(historystate, `Internet Archive item ${itemid ? itemid : ""}`, historyloc);
         }
         if (!itemid) {
