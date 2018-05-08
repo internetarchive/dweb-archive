@@ -99,13 +99,6 @@ export default class Nav {
                 </li>
 
                 <li className="dropdown dropdown-ia pull-right">
-                  <a id="glyphme" href="https://archive.org/donate" _target="top"
-                     data-toggle="tooltip" data-placement="bottom" title="Donate">
-                    <img src="./images/gift.png"/>
-                  </a>
-                </li>
-
-                <li className="dropdown dropdown-ia pull-right">
                   <a href="https://archive.org/create" _target="top" data-toggle="tooltip" data-placement="bottom" title="Upload">
                     <span className="iconochive-upload"  aria-hidden="true"></span>
                     <span className="sr-only">upload</span>

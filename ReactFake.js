@@ -63,6 +63,7 @@ export default class React  {
             if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
             return [React._config.root + url];  // e.g. /foo => [https://bar.com/foo]
         } else if (url.startsWith("./")) {
+            console.warn("Relative URLs arent a great idea as what to be relative to is often unclear",url,rel); //could genericise to use rel instead of config but might not catch cases e.g. of /images
             return rel.map(r => this.relativeurl(r, url)).filter(u => !!u);
         } else {
             return url; // Not relative, just pass it back
