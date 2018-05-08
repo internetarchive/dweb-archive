@@ -36,6 +36,7 @@ module.exports = {
         new CopyWebpackPlugin(
             [
                 { from: 'archive.html', to: './' },
+                { from: 'archivesw.html', to: './' },
                 { from: 'bootloader.html', to: './'},
                 { from: 'dweb-archive-styles.css', to: './'},
                 { from: 'favicon.ico', to: './'},
