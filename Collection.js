@@ -33,7 +33,6 @@ export default class Collection extends Search {
                 {this.banner()}
                 {/*TODO-cher-modal*/}
                 <div class="container container-ia nopad">
-                    {/*TODO needs to spot tab=xxx parameter and open FOrum or About tab */}
                     <div id="tabby-collection" class="tabby-data in">
                         {this.rowColumnsItems()}
                     </div>{/*tabby-collection*/}

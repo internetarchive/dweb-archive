@@ -45,6 +45,29 @@ export default class React  {
         }
         return undefined
     }
+    static resolveUrls(url, rel) {
+        /* Synchronous part of p_resolveUrls, handle subset of cases that don't require network access (asyncronicity)
+        url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
+        resolves:   Array of URLs suitable for passing to Transports
+         */
+        if (Array.isArray(url)) {
+            let urls = url.map(u => this.resolveUrls(u, rel));    // Recurse urls is now array of arrays (most of which will probably be single value
+            return [].concat(...urls);  // Flatten, for now accept there might be dupes
+        }
+        // Its now a singular URL
+        if (url instanceof ArchiveFile) {
+            console.error("resolveUrls called with ArchiveFile - use p_resolveUrls for this case");
+            return url;  // Will be very lucky if this works - its going to try and embed a url in an href for example
+        } else if (url.startsWith("/")) {
+            console.warn("Probably not a good idea to use root-relative URL",url); //could genericise to use rel instead of config but might not catch cases e.g. of /images
+            if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
+            return [React._config.root + url];  // e.g. /foo => [https://bar.com/foo]
+        } else if (url.startsWith("./")) {
+            return rel.map(r => this.relativeurl(r, url)).filter(u => !!u);
+        } else {
+            return url; // Not relative, just pass it back
+        }
+    }
     static async p_resolveUrls(url, rel) {
         /*
         url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
@@ -57,14 +80,8 @@ export default class React  {
         // Its now a singular URL
         if (url instanceof ArchiveFile) {
             return await url.p_urls();  // This could be slow, may have to get the gateway to cache the file in IPFS
-        } else if (url.startsWith("/")) {
-            console.warn("Probably not a good idea to use root-relative URL",url); //could genericise to use rel instead of config but might not catch cases e.g. of /images
-            if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
-            return [React._config.root + url];  // e.g. /foo => [https://bar.com/foo]
-        } else if (url.startsWith("./")) {
-            return rel.map(r => this.relativeurl(r, url)).filter(u => !!u);
         } else {
-            return url; // Not relative, just pass it back
+            return this.resolveUrls(url, rel);  // Synchronous code will work
         }
     }
 
@@ -241,7 +258,7 @@ export default class React  {
 
     static config(options) {
         /*
-            Configure ReachFake
+            Configure ReactFake
 
             root: protocol and host to insert before URLs (currently in img tags only) e.g. "https://archive.org"
          */
@@ -295,16 +312,15 @@ export default class React  {
                 delete attrs.dangerouslySetInnerHTML;
             }
             // Turn root-relative URLS in IMG and A into absolute urls - ideally these are also caught by special cases (note don't appear to be any of these in most code)
-            if (["a.href"].includes(tag + "." + name) && (typeof attrs[name] === "string") && attrs[name].startsWith('/')) {
-                if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
-                console.warn(`Using a root relative url to ${attrs[name]}`);
-                attrs[name] = React._config.root + attrs[name];  // e.g. /foo => https://bar.com/foo
-            }
-            // Turn root-relative URLS in IMG and A into absolute urls - ideally these are also caught by special cases (note don't appear to be any of these in most code)
-            if (["a.href"].includes(tag + "." + name) && (typeof attrs[name] === "string") && attrs[name].startsWith('./')) {
-                    console.warn(`Using a relative url to ${attrs[name]} may want to intercept`);
-                if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
-                attrs[name] = React._config.root + attrs[name];  // e.g. /foo => https://bar.com/foo
+            if (["a.href"].includes(tag + "." + name) &&
+                (typeof attrs[name] === "string") && (attrs[name].startsWith('./') || attrs[name].startsWith('/'))
+            ) {
+                if (attrs.id && attrs.id.startsWith('tabby-')) {  // There is some weird javascript in AJS.tabby which assumes this is root-relative, so dont change it
+                    attrs[name] = React._config.tabbyrootinsert + attrs[name];
+                } else {
+                    attrs[name] = this.resolveUrls(attrs[name], rel);
+
+                }
             }
             // Load ArchiveFile inside a div if specify in src
             if (["video.src", "audio.src"].includes(tag + "." + name) && attrs[name] instanceof ArchiveFile) {
@@ -358,5 +374,7 @@ export default class React  {
 
 //Default configuration
 React._config = {
-    root: "https://archive.org",
+//    root: "https://archive.org",
+    root: "https://dweb.archive.org",
+    tabbyrootinsert: "/arc/archive.org", // Insert before tabby links to gets to https://dweb.me/arc/archive.org/details/foo?bar in origin dweb.me with url /details/foo?bar
 };
