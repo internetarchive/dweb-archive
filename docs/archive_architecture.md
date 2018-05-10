@@ -1,5 +1,5 @@
 # Internet Archive / IPFS architecture
-This document covers the data architecture of the the Internet Archive Dweb project, as it relates to IPFS.
+This document covers the data architecture of the the Internet Archive Dweb project, as it relates to IPFS. Last updated
 
 # Use cases we are interested in
 * Exploring the Archive on an unmodified browser in a manner as close as possible to the existing archive.org/details/prelinger
@@ -26,10 +26,10 @@ The current setup consists of ...
     * Local storage by “contenthash”.
 * IA production servers, currently unmodified, serving files and metadata
 
-###Notes about the above:
+### Notes about the above:
 * archive.html is static, unlike the rest of archive.org there is no server side PHP build and both this file and the JS bundles could be served from dweb (e.g. IPFS).
 
-##Data architecture.
+## Data architecture.
 
 Clients navigate to resources by three methods (Browse, Search or by external URLS including ItemIDs)
 
@@ -37,14 +37,14 @@ All queries are JSON based and all access to the IA production servers goes thro
 
 These queries will gradually be migrated to decentralized services where possible, and remaining functionality on gateway.dweb.me will be gradually integrated into production servers.
 
-###Data architecture consists of:
+### Data architecture consists of:
 
-####First terminology ….
+#### First terminology ….
 * An Archive `item` is our unit of management, logically it is a directory of related “files" e.g. a video, its thumbnails etc.
 * `Metadata` is a package of JSON information, it is held at both the Item and File level.
 * A `collection` is a user or automatically generated group of Items, an Item can be in multiple collections.
 
-###Metadata
+### Metadata
 * Metadata stored on IA servers for an Item
     * e.g. [https://archive.org/metadata/commute]
     * includes name, description,
@@ -54,14 +54,15 @@ These queries will gradually be migrated to decentralized services where possibl
     * https://ipfs.io/ipfs/QmQr2AUBVMTJNj9AVfuKqS5oCxmTQjWiSxZLWA96WqETub to fetch
     * consists of above with additional fields added by gateway for item: magnetlink, thumbnaillinks
     * And for each file: contenthash (sha1 as multihash), magnetlink:
-    * The metadata is retrieved from the IA metadata call and stored in local contenthash store and IPFS on the first access (to https://gateway.dweb.me/metadata/*) by a user.
+    * <EDIT>The metadata is retrieved from the IA metadata call and stored in local contenthash
+    store and IPFS on the first access (to https://gateway.dweb.me/metadata/*) by a user.
     * A Leaf record is created on first access.  <TO BE IMPLEMENTED>
     * See content thumbnail links (below) for an anomaly in handling thumbnails.
     * See below .. the IPFS link is not added to every file in the item at each step because of current IPFS scaling issues.
 * Metadata for each file.
     * e.g. https://gateway.dweb.me/metadata/archiveid/commute/commute.avi
     * This is the same as the File component of above, except that when the metadata is requested by a user, the file is urlstored to IPFS and an ipfs link is added to the metadata.
-###Search
+### Search
 * AdvancedSearch API on IA servers
     * https://gateway.dweb.me/metadata/advancedsearch?output=json&q=prelinger&rows=75&sort[]=&and[]=
     * Allows arbitrary searches, return a subset of the metadata for each item found.
@@ -75,7 +76,7 @@ These queries will gradually be migrated to decentralized services where possibl
         * collection0thumbnaillinks - thumbnails for that collection (on IPFS, contenthash, direct etc)
     * Will also create a Leaf record for each item <TO BE IMPLEMENTED> so client doesn’t need to return to Archive for metadata
 
-###Content
+### Content
 * Downloadable content on archive
     * e.g. https://archive.org/download/commute/commute.avi
     * Also available with slightly different semantics as  stream/commute/commute.avi
@@ -85,7 +86,7 @@ These queries will gradually be migrated to decentralized services where possibl
         * however that push is not available due to the issues with URLstore (files not available to WSS clients; WSS clients not able to connect to peer; and CIDv1 not supported)
     * When/if IPFS issues are solved and scaling capabilities are confirmed we could start pushing all files to IPFS at progressively earlier and earlier stages, and adding IPFS links to metadata on all archive.org queries.
 
-###Thumbnails
+### Thumbnails
 Thumbnaillinks are slightly odd due to an IA anomaly.
 
 *     From archive.org
@@ -96,7 +97,7 @@ Thumbnaillinks are slightly odd due to an IA anomaly.
 * From Dweb
     * They are accessible via the IPFS links (since we use files.add instead of urlstore)
 
-###Names
+### Names
 * Leaf records (one per archive item)
     * e.g. https://gateway.dweb.me/leaf/archiveid/commute
     * Map a name (relative to enclosing domains - especially archive.org) to …
@@ -124,13 +125,13 @@ In the future an Archive item (except for its metadata.xml) could be added as a 
 
 Since this is a major coding task, for limited value, its on hold till at least after the Dweb Summit
 
-##IPFS scale
+## IPFS scale
 We aren’t looking at adding content at scale until the issues with individual items are solved, but items that may cause issues include.
 * URLstore has to be working well, since files.add is not possible due to duplication.
 * There has been concern expressed by Kyle about the numbers of files flooding the DHT
 * Currently it appears that we have to re-notify to the DHT every 12 hours, currently this takes 16 seconds per item, so requires multiple threads running continuously even with current low volumes. There are obvious scaling issues here.
 
-##IPFS single point issues
+## IPFS single point issues
 Single point is important to us for the use cases of:
 * accessing archive resources in situations where direct access to archive.org is not available (blocked or down)
 * Avoiding tracking in situations where that is important to the viewer
@@ -139,7 +140,7 @@ Currently there are single point issues.
 * Until we can push larger volumes to IPFS a lot of queries still have to run through archive.org
 * WSS is single-point especially since clients can only see files added to the node they are connected to.
 
-##USE Case - Mirroring collections
+## USE Case - Mirroring collections
 
 We will copy a collection to a directory on the Mirror. Each item will be mapped as a directory, with the name being the Archive “item-id” (a human readable string).
 
