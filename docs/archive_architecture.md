@@ -1,7 +1,7 @@
 # Internet Archive / IPFS architecture
 This document covers the data architecture of the the Internet Archive Dweb project, as it relates to IPFS.
 
-Last updated to match reality 10 May 2018 (still in progress)
+Last updated to match reality 10 May 2018 (everything here has been reviewed, still need to add WebTorrent & Contenthash)
 
 # Use cases we are interested in
 * Exploring the Archive on an unmodified browser in a manner as close as possible to the existing archive.org/details/prelinger
