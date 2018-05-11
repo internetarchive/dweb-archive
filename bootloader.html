@@ -32,6 +32,7 @@
 <p>Loading ....</p>
 <script>
     async function boot_leaf(resolution, remainder, search_supplied, verbose) {
+        const opentarget="_self";
         if (["text/html"].includes(resolution.mimetype)) {
             //Its an HTML file, open it
             if (resolution.metadata.htmlusesrelativeurls) {
@@ -46,8 +47,8 @@
                         window.open(url.href, opentarget); //if opentarget is blank then I think should end this script.
                         break; // Only try and open one
                     } catch(err) {
-                        console.error("Unable to load ",url.href)
-                        document.write("Unable to load ",url.href)
+                        console.error("Unable to load ",url.href, err.message);
+                        document.write("Unable to load ",url.href, err.message);
                     }
                 }
             } else {
@@ -82,7 +83,6 @@
         document.write("Connecting to decentralized transports","<BR>");
         document.write('<div id="statuselement"></div>');
         await DwebTransports.p_connect({statuselement: document.getElementById("statuselement"), transports: searchparams.getAll("transport")});
-        const opentarget="_self";
         try {
             let res = await DwebObjects.Domain.p_rootResolve(name, {verbose});
             let resolution = res[0];
