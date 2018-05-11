@@ -63,14 +63,14 @@
     }
     async function main(url) {
         let name;
-        if (url.pathname === "/") // Default by browser
+        let pathname = (url.pathname === "/") ? "" : url.pathname; // Remove extraneous / if added by browser
             url.pathname = "";  // Leave empty as intended, will resolve to Domain or Leaf of the domain name
         if (url.hostname === "dweb.me") { // Already canonicalish               // e.g. https://dweb.me/arc/archive.org/foo
-            name = url.pathname.substring(1);                                   // should be arc/ or ipfs/ or something like that
+            name = pathname.substring(1);                                   // should be arc/ or ipfs/ or something like that
         } else if (url.hostname.startsWith("dweb.")) {                          // e.g. https://dweb.archive.org/details/commute
-            name = ["arc/", url.hostname.substring(5), url.pathname].join("");  // arc/archive.org/details/commute
-        } else if ( url.pathname.startsWith("/archive.org")) {                  // e.g. https://localhost:4244/archive.org/detais/commu
-            name = ["arc",url.pathname].join("");                               // arc/archive.org/details/commute
+            name = ["arc/", url.hostname.substring(5), pathname].join("");  // arc/archive.org/details/commute
+        } else if ( pathname.startsWith("/archive.org")) {                  // e.g. https://localhost:4244/archive.org/detais/commu
+            name = ["arc", pathname].join("");                               // arc/archive.org/details/commute
         } else {
             console.error("Unable to bootstrap",url.href, "unrecognized pattern");
             document.write("Unable to bootstrap ",url.href, " unrecognized pattern");
@@ -84,19 +84,19 @@
         await DwebTransports.p_connect({statuselement: document.getElementById("statuselement"), transports: searchparams.getAll("transport")});
         const opentarget="_self";
         try {
-            const res = await DwebObjects.Domain.p_rootResolve(name, {verbose});
-            const resolution = res[0];
-            const remainder = res[1];
+            let res = await DwebObjects.Domain.p_rootResolve(name, {verbose});
+            let resolution = res[0];
+            let remainder = res[1];
             if (resolution instanceof DwebObjects.Leaf) {
                 await boot_leaf(resolution, remainder, search_supplied, verbose)
-            } else if ( (resolution instanceof DwebObjects.Domain) && (remainder == "")  {
-                res = await resolution.p_resolve("/", {verbose});
-                const resolution = res[0];
-                const remainder = res[1];
+            } else if ( (resolution instanceof DwebObjects.Domain) && (!remainder))  {
+                res = await resolution.p_resolve(".", {verbose});
+                resolution = res[0];
+                remainder = res[1];
                 if (resolution instanceof DwebObjects.Leaf) {
                     await boot_leaf(resolution, remainder, search_supplied, verbose)
                 } else {
-                    err = "Path resolves to a Domain even after adding a /"
+                    err = "Path resolves to a Domain even after looking at '.'";
                     console.error(err);
                     document.write(err);
                 }
