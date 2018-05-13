@@ -34,14 +34,16 @@ export default class React  {
     static relativeurl(r, url) {
         /* Convert a relative url into a real one based on a possible base URL
             r       Url to try and go relative to
-            url     Relative URL of form ./xyz
+            url     Relative URL of form ./xyz or "/xyz"
             returns a url relative to r, or undefined if dont have one
         */
         let l = Url.parse(r); // Parse url into a Url structure
+        if url.startsWith('.') { url = url.substr(1); }
         if (["https:","http:","file:"].includes(l.protocol)
-            || (l.path.startsWith('/ipfs/')  && (l.lastIndexOf('/') > l.indexOf("/ipfs/")+5))
+            || (l.path.startsWith('/ipfs/')  && (l.path.lastIndexOf('/') > l.path.indexOf("/ipfs/")+5))
+            || (l.path.startsWith('/arc/')  && (l.path.lastIndexOf('/') > l.path.indexOf("/ipfs/")+4))
             ) {
-            return  r.substr(0, r.lastIndexOf('/'))+url.substr(1);
+            return  r.substr(0, r.lastIndexOf('/'))+url;
         }
         return undefined
     }
@@ -61,10 +63,10 @@ export default class React  {
         } else if (url.startsWith("/")) {
             console.warn("Probably not a good idea to use root-relative URL",url); //could genericise to use rel instead of config but might not catch cases e.g. of /images
             if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
-            return [React._config.root + url];  // e.g. /foo => [https://bar.com/foo]
+            return [this.relativeurl(React._config.rootname, url)].filter(u => !!u);;  // e.g. /foo => [https://bar.com/foo]
         } else if (url.startsWith("./")) {
             console.warn("Relative URLs arent a great idea as what to be relative to is often unclear",url,rel); //could genericise to use rel instead of config but might not catch cases e.g. of /images
-            return rel.map(r => this.relativeurl(r, url)).filter(u => !!u);
+            return [this.relativeurl(React._config.relname, url)].filter(u => !!u);
         } else {
             return url; // Not relative, just pass it back
         }
@@ -274,8 +276,8 @@ export default class React  {
         /* First we handle cases where we dont actually build the tag requested */
 
         const kids = Array.prototype.slice.call(arguments).slice(2);
-        const rel = [ document.baseURI ]; // use baseURI as will be location.href if not explicitly set; [ window.location.href ];
-        
+        //const rel = [ document.baseURI ]; // use baseURI as will be location.href if not explicitly set; [ window.location.href ];
+        const rel = [ React._config.rootname ];
         function cb(err, element) {
             if (err) {
                 console.log("Caught error in createElement callback in loadImg or loadStream",err.message);
@@ -305,7 +307,14 @@ export default class React  {
         /* Build out a created element adding Attributes and Children
         tag:    Lower case string of element e.g. "img"
         attrs:  Object {attr: value}
-        /* This is called back by loadImg after creating the tag. */
+
+        Note: This is called back by loadImg after creating the tag.
+        Special cases coded here:
+            <a href='./aaa' | href='/aaa' id='tabby-bbb'> => <a href="/arc/archive.org/tabby-bbb" id='tabby-bbb'>
+            <audio|video src=ArchiveFile> => loadStream(ArchiveFile)
+            <a source=ArchiveFile  => source=ArchiveFile (stored correctly)
+            Dont try and catch img.src here, its too late - catch it in loadImg (called from createElement)
+        */
         for (let name in attrs) {
             const attrname = (name.toLowerCase() === "classname" ? "class" : name);
             if (name === "dangerouslySetInnerHTML") {
@@ -377,5 +386,7 @@ export default class React  {
 React._config = {
 //    root: "https://archive.org",
     root: "https://dweb.archive.org",
+    relname: "dweb:/arc/archive.org/",   // Used for img.src=./
+    rootname: "dweb:/arc/archive.org/", // Used for img.rc=/serve etc (see example in commute.description
     tabbyrootinsert: "/arc/archive.org", // Insert before tabby links to gets to https://dweb.me/arc/archive.org/details/foo?bar in origin dweb.me with url /details/foo?bar
 };
