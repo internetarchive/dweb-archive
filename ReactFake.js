@@ -38,7 +38,7 @@ export default class React  {
             returns a url relative to r, or undefined if dont have one
         */
         let l = Url.parse(r); // Parse url into a Url structure
-        if url.startsWith('.') { url = url.substr(1); }
+        if (url.startsWith('.')) { url = url.substr(1); }
         if (["https:","http:","file:"].includes(l.protocol)
             || (l.path.startsWith('/ipfs/')  && (l.path.lastIndexOf('/') > l.path.indexOf("/ipfs/")+5))
             || (l.path.startsWith('/arc/')  && (l.path.lastIndexOf('/') > l.path.indexOf("/ipfs/")+4))
