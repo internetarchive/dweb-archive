@@ -28,8 +28,8 @@ TODO - test these instructions on cleaner machine
 
 ##See related:
 
-* [Archive.org](http://dweb.archive.org/details) bootstrap into the Archive's page
-* [Examples](http://dweb.me/examples) examples
+* [Archive.org](https://dweb.archive.org/details) bootstrap into the Archive's page
+* [Examples](https://dweb.me/examples) examples
 
 ###Repos:
 * *dweb-transports:* Common API to underlying transports (http, webtorrent, ipfs, yjs)
