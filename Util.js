@@ -174,10 +174,10 @@ Util.downloadableFormats = {
     "PNG": "PNG"
 }
 Util.gateway = {
-        "url_download": "https://gateway.dweb.me/download/archiveid/",
-        "url_servicesimg": "https://gateway.dweb.me/thumbnail/archiveid/",
-        "url_torrent": "https://gateway.dweb.me/torrent/archiveid/",
-        "url_metadata": "https://gateway.dweb.me/metadata/archiveid/"
+        "url_download": "https://gateway.dweb.me/arc/archive.org/download/",
+        "url_servicesimg": "https://gateway.dweb.me/thumbnail/archiveid/",  //TODO-ARC
+        "url_torrent": "https://gateway.dweb.me/torrent/archiveid/", //TODO-ARC
+        "url_metadata": "https://gateway.dweb.me/arc/archive.org/metadata/"
 }
 // minified FROM http://sourcefrog.net/projects/natsort/natcompare.js
 function isWhitespaceChar(B){var A;A=B.charCodeAt(0);if(A<=32){return true;}else{return false;}}function isDigitChar(B){var A;A=B.charCodeAt(0);if(A>=48&&A<=57){return true;}else{return false;}}function compareRight(E,B){var G=0;var F=0;var D=0;var C;var A;for(;;F++,D++){C=E.charAt(F);A=B.charAt(D);if(!isDigitChar(C)&&!isDigitChar(A)){return G;}else{if(!isDigitChar(C)){return -1;}else{if(!isDigitChar(A)){return +1;}else{if(C<A){if(G==0){G=-1;}}else{if(C>A){if(G==0){G=+1;}}else{if(C==0&&A==0){return G;}}}}}}}}function natcompare(I,H){var C=0,A=0;var D=0,B=0;var F,E;var G;while(true){D=B=0;F=I.charAt(C);E=H.charAt(A);while(isWhitespaceChar(F)||F=="0"){if(F=="0"){D++;}else{D=0;}F=I.charAt(++C);}while(isWhitespaceChar(E)||E=="0"){if(E=="0"){B++;}else{B=0;}E=H.charAt(++A);}if(isDigitChar(F)&&isDigitChar(E)){if((G=compareRight(I.substring(C),H.substring(A)))!=0){return G;}}if(F==0&&E==0){return D-B;}if(F<E){return -1;}else{if(F>E){return +1;}}++C;++A;}};

@@ -53,11 +53,11 @@ These queries will gradually be migrated to decentralized services where possibl
     * Is stored on those servers in a .xml  e.g. [commute/commute_meta.xml](https://archive.org/metadata/commute]) file but is served as JSON at the above URL.
     * Includes list of files, including, for each file except the metadata.xml file, a sha1
 * Metadata for each item,
-    * Retrievable by  https://gateway.dweb.me/metadata/archiveid/commute to rebuild
+    * Retrievable by  https://gateway.dweb.me/arc/archive.org/metadata/commute to rebuild
     * https://ipfs.io/ipfs/QmQr2AUBVMTJNj9AVfuKqS5oCxmTQjWiSxZLWA96WqETub to fetch
     * consists of above with additional fields added by gateway for item: magnetlink, thumbnaillinks
     * And for each file: contenthash (sha1 as multihash), magnetlink:
-* On first access to https://gateway.dweb.me/metadata/*) by a user.
+* On first access to https://gateway.dweb.me/arc/archive.org/metadata/*) by a user.
     * The metadata is retrieved from the IA metadata call (archive.org/metadata/commute)
     * it is and stored in local contenthash accessible store
     * its stored on IPFS (http API add)
@@ -65,7 +65,7 @@ These queries will gradually be migrated to decentralized services where possibl
     * Thumbnails are generated and links added (See content thumbnail links (below) for an anomaly in handling thumbnails.)
     * See below .. the IPFS link is not added to every file in the item at each step because of current IPFS scaling issues.
 * Metadata for each file.
-    * e.g. https://gateway.dweb.me/metadata/archiveid/commute/commute.avi
+    * e.g. https://gateway.dweb.me/arc/archive.org/metadata/commute/commute.avi
     * This is the same as the File component of above, except that when the metadata is requested by a user,
     the file is urlstored to IPFS and an ipfs link is added to the metadata.
 
@@ -75,7 +75,7 @@ These queries will gradually be migrated to decentralized services where possibl
     * Allows arbitrary searches, return a subset of the metadata for each item found.
     * Collections are a specific, much used case: e.g. [https://archive.org/metadata/advancedsearch?output=json&q=collection:prelinger&rows=75&sort\[\]=-downloads]
 * Advanced search on Gateway
-    * e.g. [https://gateway.dweb.me/metadata/advancedsearch?output=json&q=prelinger&rows=75&sort\[\]=item_size&and\[\]=mediatype=movie]
+    * e.g. [https://gateway.dweb.me/arc/archive.org/advancedsearch?output=json&q=prelinger&rows=75&sort\[\]=item_size&and\[\]=mediatype=movie]
     * Follows the same syntax as the above direct IA search, which it calls
     * Returns the same data with additional fields for each result
         * thumbnaillinks - thumbnails for the item (see metadata notes)
@@ -89,7 +89,7 @@ These queries will gradually be migrated to decentralized services where possibl
     * Also available with slightly different semantics as
     [stream/commute/commute.avi](https://archive.org/stream/commute/commute.avi)
 * Downloadable content in Dweb
-    * Same content as above is available via gateway on https://gateway.dweb.me/content/archiveid/commute/commute.avi
+    * Same content as above is available via gateway on https://gateway.dweb.me/arc/archive.org/download/commute/commute.avi
     * On first request by a user for the metadata for that file.
         * It is pushed to IPFS
         * however that push is not available due to the IPFS issues with URLstore (files not available to WSS clients; WSS clients not able to connect to peer; and CIDv1 not supported)
@@ -110,7 +110,7 @@ Thumbnail links are slightly odd due to an IA anomaly.
 
 ### Names
 * Leaf records (one per archive item)
-    * e.g. https://gateway.dweb.me/leaf/archiveid/commute
+    * e.g. https://gateway.dweb.me/arc/archive.org/leaf/commute
     * Map a name (relative to enclosing domains - especially archive.org)
         * a set of locations to fetch the metadata for the item including some or all of: ipfs, contenthash and direct URL
     * Signed by Archive <TO BE IMPLEMENTED

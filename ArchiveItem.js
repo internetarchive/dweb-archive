@@ -59,6 +59,8 @@ export default class ArchiveItem {
             const transports = await DwebTransports.p_connectedNamesParm(); // Pass transports, as metadata (currently) much quicker if not using IPFS
             /* OLD WAY VIA HTTP
                 this.item = await Util.fetch_json(`https://gateway.dweb.me/metadata/archiveid/${this.itemid}?${transports}`);
+                which with new URIs would be
+                this.item = await Util.fetch_json(`https://gateway.dweb.me/arc/archive.org/metadata/${this.itemid}?${transports}`);
             */
             // Fetch via Domain record - the dweb:/arc/archive.org/metadata resolves into a table that is dynamic on gateway.dweb.me
             const name = `dweb:/arc/archive.org/metadata/${this.itemid}`;
@@ -77,7 +79,7 @@ export default class ArchiveItem {
             const sort = (this.item && this.item.collection_sort_order) || this.sort
             const url =
                 //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
-                `https://gateway.dweb.me/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}&and[]=${this.and}`;
+                `https://gateway.dweb.me/arc/archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}&and[]=${this.and}`;
                 //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
             console.log(url);
             const j = await Util.fetch_json(url);
