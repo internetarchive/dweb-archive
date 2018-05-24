@@ -181,7 +181,7 @@ export default class React  {
                         const els = (
                             <span>
                                 <b>Peers:</b> {torrent.numPeers}{' '}
-                                <b>Progress:</b> {(100 * torrentFile.progress).toFixed(1)}%{' '}
+                                <b>Progress:</b> {Math.max(100 * torrentFile.progress, 100).toFixed(1)}%{' '}
                                 <b>Download speed:</b> {prettierBytes(torrent.downloadSpeed)}/s{' '}
                                 <b>Upload speed:</b> {prettierBytes(torrent.uploadSpeed)}/s
                             </span>
