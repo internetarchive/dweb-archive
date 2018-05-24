@@ -175,8 +175,8 @@ Util.downloadableFormats = {
 }
 Util.gateway = {
         "url_download": "https://gateway.dweb.me/arc/archive.org/download/",
-        "url_servicesimg": "https://gateway.dweb.me/thumbnail/archiveid/",  //TODO-ARC
-        "url_torrent": "https://gateway.dweb.me/torrent/archiveid/", //TODO-ARC
+        "url_servicesimg": "https://gateway.dweb.me/arc/archive.org/thumbnail/",
+        "url_torrent": "https://gateway.dweb.me/arc/archive.org/torrent/",
         "url_metadata": "https://gateway.dweb.me/arc/archive.org/metadata/"
 }
 // minified FROM http://sourcefrog.net/projects/natsort/natcompare.js
