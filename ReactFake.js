@@ -170,17 +170,18 @@ export default class React  {
 
         RenderMedia.render(file, el, cb);  // Render into supplied element, will set window.WEBTORRENT_TORRENT if uses WebTorrent
 
-        if (window.WEBTORRENT_TORRENT) {    //TODO-SW need to get status back from WebTorrent
+        if (window.WEBTORRENT_FILE) {    //TODO-SW need to get status back from WebTorrent
             const torrent = window.WEBTORRENT_TORRENT;
+            const torrentFile = window.WEBTORRENT_FILE;
 
             const updateSpeed = () => {
-                if (window.WEBTORRENT_TORRENT === torrent) {    // Check still displaying ours
+                if (window.WEBTORRENT_FILE === torrentFile) {    // Check still displaying ours
                     const webtorrentStats = document.querySelector('#webtorrentStats'); // Not moved into updateSpeed as not in document when this is run first time
                     if (webtorrentStats) {
                         const els = (
                             <span>
                                 <b>Peers:</b> {torrent.numPeers}{' '}
-                                <b>Progress:</b> {(100 * torrent.progress).toFixed(1)}%{' '}
+                                <b>Progress:</b> {(100 * torrentFile.progress).toFixed(1)}%{' '}
                                 <b>Download speed:</b> {prettierBytes(torrent.downloadSpeed)}/s{' '}
                                 <b>Upload speed:</b> {prettierBytes(torrent.uploadSpeed)}/s
                             </span>
