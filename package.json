@@ -9,7 +9,6 @@
   },
   "description": "Archive UI to run in Browser",
   "dependencies": {
-    "big": "^0.5.2",
     "dweb-objects": "git+https://git@github.com/internetarchive/dweb-objects.git",
     "dweb-transports": "git+https://git@github.com/internetarchive/dweb-transports.git",
     "es2015": "latest",
@@ -28,7 +27,7 @@
     "chai": "latest",
     "copy-webpack-plugin": "^4.5.1",
     "react": "^16.4.0",
-    "webpack": "^4.8.3",
+    "webpack": "^4.9.1",
     "webpack-cli": "^2.1.4",
     "webpack-dev-server": "^3.1.4"
   },
