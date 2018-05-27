@@ -13,7 +13,7 @@ export default class Collection extends Search {
     }
 
     wrap() {
-        /* Wrap the content up: wrap ( TODO-aside; navwrap; #maincontent; welcome; TODO-cher-modal; container-tabby-collection-row (TODO-columns-facets; columns-items) (tabby-about; tabby-form)
+        /* Wrap the content up: wrap ( TODO-aside; navwrap; #maincontent; welcome; cher-modal; container-tabby-collection-row (TODO-columns-facets; columns-items) (tabby-about; tabby-form)
         returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
          */
         //Note both description & rights need dangerousHTML and \n -> <br/>
@@ -31,7 +31,7 @@ export default class Collection extends Search {
                     <a name="maincontent" id="maincontent"></a>
                 </div>{/*--//.container-ia--*/}
                 {this.banner()}
-                {/*TODO-cher-modal*/}
+                {this.cherModal("collection")}
                 <div class="container container-ia nopad">
                     <div id="tabby-collection" class="tabby-data in">
                         {this.rowColumnsItems()}
@@ -155,10 +155,21 @@ export default class Collection extends Search {
                             </div>
                         </div>
                         <div className="col-xs-1 col-sm-2 welcome-right">
+                            <a class="stealth" href="#" onclick="return AJS.modal_go(this,{ignore_lnk:1,shown:AJS.embed_codes_adjust})"
+                               data-target="#cher-modal"><span class="iconochive-share"  aria-hidden="true"></span><span class="sr-only">share</span><span class="hidden-xs-span"> Share</span></a><br/>
+                            {/*TODO-LINKS TODO-LOGIN /bookmarks isnt going to work, also not logged in https://github.com/internetarchive/dweb-archive/issues/new
+                            <a class="stealth" href="/bookmarks.php?add_bookmark=1&amp;mediatype=collection&amp;identifier=prelinger&amp;title=Prelinger+Archives" onclick="return AJS.modal_go(this,{favorite:1})"
+                               data-target="#confirm-modal"><span class="iconochive-favorite"  aria-hidden="true"></span><span class="sr-only">favorite</span><span class="hidden-xs-span"> Favorite</span></a><br/>
+                            */}
+                            {/* TODO-LINKS TODO-LOGIN /editxml isn't going to wrk - we aren't logged in. and its an absolute URL
+                            <div id="editlink" style="display:none">
+                              <a id="edlink" class="stealth" href="/editxml/prelinger"><span class="iconochive-edit"  aria-hidden="true"></span><span class="sr-only">edit</span><span
+                                class="hidden-xs-span"> Edit</span></a><br/>
+                                        <a class="stealth" href="//catalogd.archive.org/history/prelinger"><span class="iconochive-time"  aria-hidden="true"></span><span class="sr-only">time</span><span
+                                class="hidden-xs-span"> History</span></a><br/>
+                            </div> */}
                         </div>
                     </div>
-                    {/* Tabbys are under construction - href links wont work and onclick probably doesnt*/}
-                    {/*TODO pushstate inside AJS.tabby will eb wrong - prob full URL - but need to recognize &tab=about in URL before can fix */}
                     <div class="tabbys">
                         <div class="tabby">
                             <div>

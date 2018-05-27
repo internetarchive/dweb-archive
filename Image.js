@@ -87,7 +87,7 @@ export default class Image extends Details {
                 ) }
                             {/* Script tags moved into the JS*/}
                             <div id="webtorrentStats" style="color: white; text-align: center;"></div>
-                            {this.cherModal("audio")}
+                            {this.cherModal("image")}
                         </div>{/*--/.xs-col-12*/}
                     </div>{/*--/.row*/}
 
