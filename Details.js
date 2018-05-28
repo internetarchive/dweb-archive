@@ -27,7 +27,7 @@ export default class Details extends ArchiveBase {
     }
 
     wrap() {
-        /* Wrap the content up checked on mbid (Red Shift) image:  wrap( TODO-DONATEBANNER | nav-wrap1 | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | TODO-ALSOFOUND  | TODO-ANALYTICS )
+        /* Wrap the content up checked on mbid (Red Shift) image:  wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | TODO-ALSOFOUND  | TODO-ANALYTICS )
         returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
          */
         return (
@@ -144,7 +144,7 @@ export default class Details extends ArchiveBase {
         let originalFilesCount = item.files.filter((f)=>f.source === "original").length+1; // Adds in Archive Bittorrent
         let downloadURL = `https://archive.org/download/${itemid}`; //TODO-LINKS check direct link
         let compressURL = `https://archive.org/compress/${itemid}`; // leave as direct link, else need to zip and store each item in IPFS
-        let compressAllURL = `https://archive.org/compress/${itemid}/formats=JSON,METADATA,JPEG,ARCHIVE BITTORRENT,MUSICBRAINZ METADATA`;  //TODO-LINKS check direct link
+        let compressAllURL = `https://archive.org/compress/${itemid}/formats=JSON,METADATA,JPEG,ARCHIVE BITTORRENT,MUSICBRAINZ METADATA`; // As above leave as direct
         let collections = Array.isArray(metadata.collection) ? metadata.collection : [ metadata.collection ];
         let collectionTitles = item.collection_titles;   // Dictionary mapping collection itemid to title
         let mediatype = metadata.mediatype;
@@ -354,7 +354,7 @@ export default class Details extends ArchiveBase {
                                                                                                 aria-hidden="true"></span><span
                                             class="sr-only">download</span> {originalFilesCount} Original</a><br/>
                                 </div>
-                                <a class="boxy-ttl" href={downloadURL}>SHOW ALL</a>
+                                <a class="boxy-ttl" href={downloadURL}>SHOW ALL</a>{/*TODO-LINK this is an absolute link*/}
                                 <br clear="all" class="clearfix"/>
                             </div>
                         </div>

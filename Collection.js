@@ -17,7 +17,7 @@ export default class Collection extends Search {
         returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
          */
         //Note both description & rights need dangerousHTML and \n -> <br/>
-        const reviewlink = `/details/${this.itemid}&sort=-reviewdate`; // TODO-LINKS maybe better link\
+        const reviewlink = `/details/${this.itemid}&sort=-reviewdate`; // TODO-LINKS - its not clear how this is used. \
         const metadata = this.item.metadata;
         const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const rights = this.preprocessDescription(metadata.rights); // Contains HTML (supposedly safe) inserted via innerHTML thing

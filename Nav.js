@@ -27,6 +27,7 @@ export default class Nav {
 
   navwrap() {  // Embedded in wrap()
       /* The navigation stuff.   Order is navwrap : maincontent : itemDetailsAbout */
+      /* navwrap1( navwrap2 (navhat; navbar( nav-tophat-helper; navbar-main; nav-about))) */
       {/*--TODO-DETAILS update navwrap to match actual code in both search.html and commute.html--*/}
       return (
         <div id="navwrap1">
