@@ -5,18 +5,21 @@
     <title>Decentralized Web Boot loader</title>
     <!-- Allow relative URLs here (in this header), otherwise will be relative to URL supplied, not relative to this file which has been substituted by nginx. -->
     <!-- this could also be https://ipfs.io/ipfs/Q11...-->
-    <base href="https://dweb.me/examples/bootloader.html">
+    <!--<base href="https://dweb.me/examples/bootloader.html">-->
     <script src="./dweb-transports-bundle.js" type="text/javascript"></script>
     <script src="./dweb-objects-bundle.js" type="text/javascript"></script>
     <style type="text/css">
         /* These are required for Dweb statuses */
-        #statuselement { margin: 0 0 3px 10px; display: inline-block; }  /* "floatright" Grouped in top right corner */
+        #statuselement { margin: 0 0 3px 10px; display: block; }  /* "floatright" Grouped in top right corner */
         #statuselement li {display: table-row; padding-top: 3px; padding-right: 0; margin: 0 0 3px 3px;}
+        .formbox {display:table-cell; background-color:#dddddd;border: 1px dotted grey; padding-left: 0.3em; padding-right: 0.3em;}
+        .button { border: 1px black solid; background-color:#dddddd;  padding-bottom:0.1em;  display:inline;} /* Buttons */
         .transportstatus0 {color: lawngreen} /*STATUS_CONNECTED*/
         .transportstatus1 {color: red} /*STATUS_FAILED*/
         .transportstatus2 {color: yellow} /*STATUS_STARTING*/
         .transportstatus3 {color: black} /*STATUS_LOADED*/
         .transportstatus4 {color: purple} /*STATUS_PAUSED*/
+        #statusdiv span {display: block; }
     </style>
 </head>
 <body>
@@ -29,89 +32,71 @@
 
 -->
 <p>The decentralized web is everywhere, but we have to find it.</p>
-<p>Loading ....</p>
+<div id="statuselement"></div>
+<form style="display:block" onsubmit="p_bootfromfield('urlorname'); return false;">
+Name:&nbsp;<input type="text" class="formbox" id="urlorname" placeholder="/arc/archive.org/details/foo" size="70"/>
+<input type="submit" class="button" style="display:none;" value="Fetch"/>
+</form>
+<p> </p>
+<div id="statusdiv"></div>
+
 <script>
-    async function boot_leaf(resolution, remainder, search_supplied, verbose) {
-        const opentarget="_self";
-        if (["text/html"].includes(resolution.mimetype)) {
-            //Its an HTML file, open it
-            if (resolution.metadata.htmlusesrelativeurls) {
-                let tempurls = resolution.urls;
-                const pathatt = resolution.metadata.htmlpath || "path";
-                while (tempurls.length) {
-                    let url = new URL(tempurls.shift());
-                    try {
-                        if (remainder) url.search = url.search + (url.search ? '&' : "") + `${pathatt}=${remainder}`;
-                        if (search_supplied) url.search = url.search + (url.search ? '&' : "") + search_supplied;
-                        if (verbose) console.log("Bootstrap loading url:", url.href);
-                        window.open(url.href, opentarget); //if opentarget is blank then I think should end this script.
-                        break; // Only try and open one
-                    } catch(err) {
-                        console.error("Unable to load ",url.href, err.message);
-                        document.write("Unable to load ",url.href, err.message);
-                    }
-                }
-            } else {
-                // Its not clear if parms make sense to a blob, if they are needed then can copy from above code
-                // Not setting timeoutMS as could be a slow load of a big file TODO-TIMEOUT make dependent on size
-                DwebObjects.utils.display_blob(await DwebTransports.p_rawfetch(resolution.urls, {verbose}), {type: resolution.mimetype, target: opentarget});
-            }
-        } else {
-            err = "Bootloader fail, dont know how to display mimetype" + resolution.mimetype;
-            console.log(err);
-            document.write(err);
-        }
+    function statusupdate(args) {
+        console.log(...arguments);
+        statusdiv = document.getElementById("statusdiv");
+        statusdiv.appendChild(DwebObjects.utils.createElement("span", {}, ...arguments));
     }
-    async function main(url) {
-        let name;
-        let pathname = (url.pathname === "/") ? "" : url.pathname; // Remove extraneous / if added by browser
+    async function main() {
+        await DwebTransports.p_connect({
+            statuselement: document.getElementById("statuselement"),
+            transports: searchparams.getAll("transport")
+        });
+        let orighref = searchparams.get("url") || window.location.href;
+        if (!orighref.startsWith("file:///")) {
+            statusupdate("Loading URL: ", orighref);
+            let url = new URL(orighref);
+            let name;
+            let pathname = (url.pathname === "/") ? "" : url.pathname; // Remove extraneous / if added by browser
             url.pathname = "";  // Leave empty as intended, will resolve to Domain or Leaf of the domain name
-        if (url.hostname === "dweb.me") { // Already canonicalish               // e.g. https://dweb.me/arc/archive.org/foo
-            name = pathname.substring(1);                                   // should be arc/ or ipfs/ or something like that
-        } else if (url.hostname.startsWith("dweb.")) {                          // e.g. https://dweb.archive.org/details/commute
-            name = ["arc/", url.hostname.substring(5), pathname].join("");  // arc/archive.org/details/commute
-        } else if ( pathname.startsWith("/archive.org")) {                  // e.g. https://localhost:4244/archive.org/detais/commu
-            name = ["arc", pathname].join("");                               // arc/archive.org/details/commute
-        } else {
-            console.error("Unable to bootstrap",url.href, "unrecognized pattern");
-            document.write("Unable to bootstrap ",url.href, " unrecognized pattern");
-            return;
-        }
-        const search_supplied = url.search.slice(1); // Skip initial ?
-        console.log("Name to lookup=",name);
-        document.write("Resolving name: ",name,"<BR>");   // Appears after loading
-        document.write("Connecting to decentralized transports","<BR>");
-        document.write('<div id="statuselement"></div>');
-        await DwebTransports.p_connect({statuselement: document.getElementById("statuselement"), transports: searchparams.getAll("transport")});
-        try {
-            let res = await DwebObjects.Domain.p_rootResolve(name, {verbose});
-            let resolution = res[0];
-            let remainder = res[1];
-            if (resolution instanceof DwebObjects.Leaf) {
-                await boot_leaf(resolution, remainder, search_supplied, verbose)
-            } else if ( (resolution instanceof DwebObjects.Domain) && (!remainder))  {
-                res = await resolution.p_resolve(".", {verbose});
-                resolution = res[0];
-                remainder = res[1];
-                if (resolution instanceof DwebObjects.Leaf) {
-                    await boot_leaf(resolution, remainder, search_supplied, verbose)
-                } else {
-                    err = "Path resolves to a Domain even after looking at '.'";
-                    console.error(err);
-                    document.write(err);
-                }
+            if (url.hostname === "dweb.me") {                                   // e.g. https://dweb.me/arc/archive.org/foo
+                name = pathname.substring(1);                                   // should be arc/ or ipfs/ or something like that
+            } else if (url.hostname.startsWith("dweb.")) {                      // e.g. https://dweb.archive.org/details/commute
+                name = ["arc/", url.hostname.substring(5), pathname].join("");  // arc/archive.org/details/commute
+            } else if (pathname.startsWith("/archive.org")) {                  // e.g. https://localhost:4244/archive.org/detais/commu
+                name = ["arc", pathname].join("");                              // arc/archive.org/details/commute
+            } else {
+                statusupdate("Unable to bootstrap ", orighref, " unrecognized pattern");
+                return;
             }
-        } catch(err) {
-            console.error("Got error",err);
-            document.write(err);
+            const search_supplied = url.search.slice(1); // Skip initial ?
+            await p_bootname(name, {search_supplied});
         }
     }
+    async function p_bootname(name, {search_supplied=undefined}={}) {
+        document.getElementById("urlorname").value = name;
+        statusupdate("Resolving name: ",name,);   // Appears after loading
+        try {
+            await DwebObjects.Domain.p_resolveAndBoot(name, {search_supplied, verbose})
+        } catch(err) {  // If cant resolve to leaf, or boot fails
+            console.error("Got error",err);
+            statusupdate(err.message);
+        }
+    }
+
+    async function p_bootfromfield(field) {
+        let nameandsearch = document.getElementById(field).value.split('?')
+        name = nameandsearch[0];
+        search_supplied = nameandsearch.length > 1 ? nameandsearch[1] : undefined;
+        return await p_bootname(name, {search_supplied});
+    }
+
     // Next few lines need explaining!  If passed an extra parameter url= then it will use that as the URL instead of ...bootloader.html
     // This is only useful until we have the server returning this file for anything under dweb.archive.org
     var searchparams = new URL(window.location.href).searchParams;  // Original parameters, which includes url if faking
     var verbose = searchparams.get("verbose");
-    url = new URL(searchparams.get("url") || window.location.href);
-    main(url);
+    main()
 </script>
+<!--TODO add a form here -->
+
 </body>
 </html>
