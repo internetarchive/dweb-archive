@@ -66,7 +66,7 @@ export default class Nav {
 
             <div className="navbar navbar-inverse navbar-static-top" role="navigation">
               <div id="nav-tophat-helper" className="hidden-xs"></div>
-              <ul className="nav navbar-nav">
+              <ul className="nav navbar-nav navbar-main">
 
                 {this.mts.map((mt, n) => (
                      <li key={'mikey'+n} className="dropdown dropdown-ia pull-left">
@@ -105,9 +105,29 @@ export default class Nav {
                     <span className="sr-only">upload</span>
                   </a>
                 </li>
+              </ul> {/*--navbar-main--*/}
+              <ul id="nav-abouts" class="">
+                <li><a target="_top" data-event-click-tracking="TopNav|AboutLink" href="https://archive.org/about/">ABOUT</a>
+                </li>
+                <li><a target="_top" data-event-click-tracking="TopNav|ContactLink"
+                       href="https://archive.org/about/contact.php">CONTACT</a></li>
+                <li><a target="_top" data-event-click-tracking="TopNav|BlogLink" href="//blog.archive.org">BLOG</a>
+                </li>
+                <li><a target="_top" data-event-click-tracking="TopNav|ProjectsLink"
+                       href="https://archive.org/projects">PROJECTS</a></li>
+                <li><a target="_top" data-event-click-tracking="TopNav|HelpLink"
+                       href="https://archive.org/about/faqs.php">HELP</a></li>
+                <li><a target="_top" data-event-click-tracking="TopNav|DonateLink"
+                       href="https://archive.org/donate">DONATE</a></li>
+                <li><a target="_top" data-event-click-tracking="TopNav|JobsLink"
+                       href="https://archive.org/about/jobs.php">JOBS</a></li>
+                <li><a target="_top" data-event-click-tracking="TopNav|VolunteerLink"
+                       href="https://archive.org/about/volunteerpositions.php">VOLUNTEER</a></li>
+                <li><a target="_top" data-event-click-tracking="TopNav|PeopleLink"
+                       href="https://archive.org/about/bios.php">PEOPLE</a></li>
               </ul>
-            </div>
-          </div> {/*--nav-wrap2--*/}
+            {/*--navbar--*/} </div>
+          {/*--nav-wrap2--*/} </div>
         {/*--nav-wrap1--*/} </div>
       );
   }
