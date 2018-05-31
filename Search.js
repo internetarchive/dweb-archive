@@ -119,7 +119,7 @@ export default class Search extends ArchiveBase {
                                                 <div class="iconochive-dot ikind-sep"></div>
                                                 <a class="ikind stealth" data-id="views" onClick={`Nav.nav_search({query:query, "sort": "-downloads"})`}>VIEWS</a>
                                                 <div class="iconochive-dot ikind-sep"></div>
-                                                <a class="ikind stealth" data-id="title" onClick={`Nav.nav_earch({query:query. "sort": "titleSorter"})`}>TITLE</a>
+                                                <a class="ikind stealth" data-id="title" onClick={`Nav.nav_search({query:query. "sort": "titleSorter"})`}>TITLE</a>
                                                 <div class="iconochive-dot ikind-sep"></div>
                                                 <a class="ikind stealth" id="date_switcher" data-id="date-archived"
                                                    onClick={`Nav.nav_search({query:query, sort="-publicdate" })`}>DATE ARCHIVED</a>

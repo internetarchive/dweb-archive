@@ -71,6 +71,11 @@ export default class ArchiveFile {
         return Object.keys(Util.downloadableFormats).includes(this.metadata.format)
     }
     sizePretty() {
-        return prettierBytes(parseInt(this.metadata.size));
+        try {
+            return prettierBytes(parseInt(this.metadata.size));
+        } catch(err) {
+            console.error("Couldnt get prettierBytes for",this);
+            return "???";
+        }
     }
 }

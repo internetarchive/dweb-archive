@@ -15,6 +15,7 @@ import Image from './Image'
 import Audio from './Audio'
 import Video from './Video'
 import DetailsError from './DetailsError'
+import DownloadDirectory from './DownloadDirectory'
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
 const TRANSPORT_STATUS_PAUSED = 4;  // Cheat to avoid having to import Transport here, which would make service worker much more complex
@@ -147,7 +148,7 @@ export default class Nav {
         console.log("Navigating to Details", id);
         let destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
-        await Nav.factory(id, destn, wanthistory); // Not sure what returning ....
+        await Nav.factory(id, destn, {wanthistory}); // Not sure what returning ....
         return false; // Dont follow anchor link - unfortunately React ignores this
     }
 
@@ -193,8 +194,15 @@ export default class Nav {
         await source.p_download(el);
     }
 
+    static async nav_downloaddirectory(itemid) {
+        console.log("Navigating to Download directory for", itemid);
+        let destn = document.getElementById('main'); // Blank window (except Nav) as loading
+        Nav.clear(destn);
+        await Nav.factory(itemid, destn, {wanthistory: true, downloaddirectory: true}); // Not sure what returning ....
+        return false; // Dont follow anchor link - unfortunately React ignores this
+    }
 
-    static async factory(itemid, res, wanthistory=true) {
+    static async factory(itemid, res, {wanthistory=true, downloaddirectory=false}={}) {
         console.group("Nav.factory",itemid);
         if (wanthistory) {
             let historystate = {itemid}; //TODO-HISTORY may want  to store verbose, transports etc here
@@ -228,39 +236,43 @@ export default class Nav {
             if (!item.metadata) {
                 new DetailsError(itemid, item, `item ${itemid} cannot be found or does not have metadata`).render(res);
             } else {
-                if (verbose) console.log("Found mediatype", item.metadata.mediatype);
-                let switchmediatype = item.metadata.mediatype;
-                if (item.metadata.mediatype === "education") {
-                    // Typically miscategorized, have a guess !
-                    if (item.files.find(f => Util.preferredVideoFormats.includes(f.format)))
-                        switchmediatype = "movies";
-                    else if (item.files.find(f => Util.textFormats.includes(f.format)))
-                        switchmediatype = "texts";
-                    else if (item.files.find(f => Util.imageFormats.includes(f.format)))
-                        switchmediatype = "image";
-                }
+                if (downloaddirectory) {
+                    new DownloadDirectory(itemid, item).render(res);
+                } else {
+                    if (verbose) console.log("Found mediatype", item.metadata.mediatype);
+                    let switchmediatype = item.metadata.mediatype;
+                    if (item.metadata.mediatype === "education") {
+                        // Typically miscategorized, have a guess !
+                        if (item.files.find(f => Util.preferredVideoFormats.includes(f.format)))
+                            switchmediatype = "movies";
+                        else if (item.files.find(f => Util.textFormats.includes(f.format)))
+                            switchmediatype = "texts";
+                        else if (item.files.find(f => Util.imageFormats.includes(f.format)))
+                            switchmediatype = "image";
+                    }
 
-                switch (switchmediatype) {
-                    case "collection":
-                        return (await new Collection(itemid, item).fetch()).render(res);   //fetch will do search
-                        break;
-                    case "texts":
-                        new Texts(itemid, item).render(res);
-                        break;
-                    case "image":
-                        new Image(itemid, item).render(res);
-                        break;
-                    case "audio": // Intentionally drop thru to movies
-                    case "etree": // Concerts uploaded
-                        new Audio(itemid, item).render(res);
-                        break;
-                    case "movies":
-                        new Video(itemid, item).render(res);
-                        break;
-                    default:
-                        //TODO Not yet supporting software, zotero (0 items); data; web
-                        new DetailsError(itemid, item, `Unsupported mediatype: ${item.metadata.mediatype}`).render(res);
-                    //    return new Nav(")
+                    switch (switchmediatype) {
+                        case "collection":
+                            return (await new Collection(itemid, item).fetch()).render(res);   //fetch will do search
+                            break;
+                        case "texts":
+                            new Texts(itemid, item).render(res);
+                            break;
+                        case "image":
+                            new Image(itemid, item).render(res);
+                            break;
+                        case "audio": // Intentionally drop thru to movies
+                        case "etree": // Concerts uploaded
+                            new Audio(itemid, item).render(res);
+                            break;
+                        case "movies":
+                            new Video(itemid, item).render(res);
+                            break;
+                        default:
+                            //TODO Not yet supporting software, zotero (0 items); data; web
+                            new DetailsError(itemid, item, `Unsupported mediatype: ${item.metadata.mediatype}`).render(res);
+                        //    return new Nav(")
+                    }
                 }
             }
         }

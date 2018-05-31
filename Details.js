@@ -40,8 +40,8 @@ export default class Details extends ArchiveBase {
                 </div>{/*--//.container-ia--*/}
                 {this.theatreIaWrap()} {/*This is the main-content*/}
                 {this.itemDetailsAboutJSX()}
-                {/* should have: alsoFound here (look at end of commute.html) */}
-                {/* should have: analytics here (look at end of commute.html) */}
+                {/* should have: alsoFound here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?) */}
+                {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
             {/*--wrap--*/}</div>
         );
     }
@@ -354,7 +354,7 @@ export default class Details extends ArchiveBase {
                                                                                                 aria-hidden="true"></span><span
                                             class="sr-only">download</span> {originalFilesCount} Original</a><br/>
                                 </div>
-                                <a class="boxy-ttl" href={downloadURL}>SHOW ALL</a>{/*TODO-LINK this is an absolute link*/}
+                                <a class="boxy-ttl" href={downloadURL} onClick={`Nav.nav_downloaddirectory("${itemid}"); return false;`}>SHOW ALL</a>{/*TODO-LINK this is an absolute link*/}
                                 <br clear="all" class="clearfix"/>
                             </div>
                         </div>
