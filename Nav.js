@@ -223,7 +223,7 @@ export default class Nav {
             (await new Home(itemid, undefined).fetch()).render(res);
         } else {
             let obj = await new Details(itemid).fetch();
-            item = obj.item;
+            let item = obj.item;
             if (!item.metadata) {
                 new DetailsError(itemid, item, `item ${itemid} cannot be found or does not have metadata`).render(res);
             } else {
