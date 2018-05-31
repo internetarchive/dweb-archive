@@ -85,9 +85,7 @@ Name:&nbsp;<input type="text" class="formbox" id="urlorname" placeholder="/arc/a
 
     async function p_bootfromfield(field) {
         let nameandsearch = document.getElementById(field).value.split('?')
-        name = nameandsearch[0];
-        search_supplied = nameandsearch.length > 1 ? nameandsearch[1] : undefined;
-        return await p_bootname(name, {search_supplied});
+        return await p_bootname(nameandsearch, {});
     }
 
     // Next few lines need explaining!  If passed an extra parameter url= then it will use that as the URL instead of ...bootloader.html
