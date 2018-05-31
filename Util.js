@@ -31,27 +31,28 @@ export default class Util {
     // pass in a <mediatype> value
     static mediatype_icon(mediatype) {
         const ICONS = {
+            "account": "person",
             "audio": "audio",
             "collection": "collection",
             "etree": "etree",
             "image": "image",
             "data": "data",
             "movies": "movies",
-            "movingimage": "movies",
-            "other": "question",
             "software": "software",
+            "texts": "texts",
+            "video": "movies",
+            "web": "web",
+            // The remainder have no items found with search?query=metadata:xyz
+            "search": "search",
+            "forum": "comments",
+            "unknown": "question",
+            "other": "question",
+            "tv": "tv",
+            "movingimage": "movies",
             "sound": "audio",
             "stillimages": "image",
             "text": "texts",
-            "texts": "texts",
-            "tv": "tv",
-            "unknown": "question",
-            "video": "movies",
-            "search": "search",
-            "forum": "comments",
-            "web": "web",
             "article": "article",
-            "account": "person",
             "quote": "quote",
             "ad": "tv-commercial"
         };
@@ -164,14 +165,26 @@ Util.archiveMimeTypeFromFormat = {
         PNG: "image/png",
         "h.264": "video/mp4"
     };   //TODO expand to other formats - see mimetypes list from petabox
-Util.imageFormats = ['JPEG', 'PNG'];     //TODO expand to other formats - see mimetypes list from petabox
+Util.imageFormats = ['JPEG', 'PNG', 'Animated GIF'];     //TODO expand to other formats - see mimetypes list from petabox
+Util.videoFormats = ['h.264','512Kb MPEG4', '256Kb MPEG4', '64Kb MPEG4', 'MPEG4', 'MPEG2', "MPEG1"];
+Util.preferredVideoFormats = ['h.264','512Kb MPEG4', '256Kb MPEG4', 'MPEG4'];
+Util.textFormats = ['PDF'];
 Util.downloadableFormats = {
     'JPEG Thumb': 'JPEG THUMB',
     'JPEG 250px Thumb': 'JPEG 250PX THUMB',
     "JPEG 500px Thumb": 'JPEG 500PX THUMB',
     'Archive BitTorrent': 'TORRENT',
     "JPEG": "JPEG",
-    "PNG": "PNG"
+    "PNG": "PNG",
+    'Animated GIF': 'Animated GIF',
+    "h.264": "H.264",
+    "512Kb MPEG4": "512KB MPEG",
+    "256Kb MPEG4": "256KB MPEG",
+    "64Kb MPEG4": "64KB MPEG4",
+    "MPEG4": "MPEG4",
+    "MPEG2": "MPEG2",
+    "MPEG1": "MPEG1"
+
 }
 Util.gateway = {
         "url_download": "https://gateway.dweb.me/arc/archive.org/download/",

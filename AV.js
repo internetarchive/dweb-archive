@@ -9,7 +9,7 @@ export default class AV extends Details {
         super(itemid, item);
     }
 
-    setupPlaylist(preferredTypes) {
+    setupPlaylist(preferredTypes) { //TODO could order the preferredTypes and pick by preference
         this.playlist=[];
         this.avs = this._list.filter(fi => (preferredTypes.includes(fi.metadata.format)));
         if (this.avs.length) {

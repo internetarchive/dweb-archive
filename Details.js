@@ -148,7 +148,7 @@ export default class Details extends ArchiveBase {
         let collections = Array.isArray(metadata.collection) ? metadata.collection : [ metadata.collection ];
         let collectionTitles = item.collection_titles;   // Dictionary mapping collection itemid to title
         let mediatype = metadata.mediatype;
-        let iconochiveIcon="iconochive-"+mediatype;
+        let iconochiveIcon="iconochive-"+mediatype; //obscure mediatypes are supported
         let contributor = metadata.contributor;
         let reviews = item.reviews;
         let writeReviewsURL = `https://archive.org/write-review.php?identifier=${itemid}`;  //TODO need an indirect way to submit a review

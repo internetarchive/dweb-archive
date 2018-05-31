@@ -228,7 +228,18 @@ export default class Nav {
                 new DetailsError(itemid, item, `item ${itemid} cannot be found or does not have metadata`).render(res);
             } else {
                 if (verbose) console.log("Found mediatype", item.metadata.mediatype);
-                switch (item.metadata.mediatype) {
+                let switchmediatype = item.metadata.mediatype;
+                if (item.metadata.mediatype === "education") {
+                    // Typically miscategorized, have a guess !
+                    if (item.files.find(f => Util.preferredVideoFormats.includes(f.format)))
+                        switchmediatype = "movies";
+                    else if (item.files.find(f => Util.textFormats.includes(f.format)))
+                        switchmediatype = "texts";
+                    else if (item.files.find(f => Util.imageFormats.includes(f.format)))
+                        switchmediatype = "image";
+                }
+
+                switch (switchmediatype) {
                     case "collection":
                         return (await new Collection(itemid, item).fetch()).render(res);   //fetch will do search
                         break;
@@ -239,12 +250,14 @@ export default class Nav {
                         new Image(itemid, item).render(res);
                         break;
                     case "audio": // Intentionally drop thru to movies
+                    case "etree": // Concerts uploaded
                         new Audio(itemid, item).render(res);
                         break;
                     case "movies":
                         new Video(itemid, item).render(res);
                         break;
                     default:
+                        //TODO Not yet supporting software, zotero (0 items); data; web
                         new DetailsError(itemid, item, `Unsupported mediatype: ${item.metadata.mediatype}`).render(res);
                     //    return new Nav(")
                 }
