@@ -60,6 +60,8 @@ export default class React  {
         if (url instanceof ArchiveFile) {
             console.error("resolveUrls called with ArchiveFile - use p_resolveUrls for this case");
             return url;  // Will be very lucky if this works - its going to try and embed a url in an href for example
+        } else if (url.startsWith("//")) {
+            return "https:"+url;    // Ick - a reference to href="//foo.bar" rather than href="https://foo.bar"
         } else if (url.startsWith("/")) {
             console.warn("Probably not a good idea to use root-relative URL",url); //could genericise to use rel instead of config but might not catch cases e.g. of /images
             if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
@@ -329,8 +331,19 @@ export default class React  {
                 if (attrs.id && attrs.id.startsWith('tabby-')) {  // There is some weird javascript in AJS.tabby which assumes this is root-relative, so dont change it
                     attrs[name] = React._config.tabbyrootinsert + attrs[name];
                 } else {
-                    attrs[name] = this.resolveUrls(attrs[name], rel);
-
+                    let hrefs = this.resolveUrls(attrs[name], rel); // Array of urls, but should be just one since href name will be singular as will rel
+                    if (hrefs.length > 1) {
+                        console.error("Decide what mean by multiple hrefs in an anchor handle onclick for it below hrefs=",hrefs)
+                    }
+                    let href = hrefs[0]
+                    attrs[name] = href;
+                    if (href.startsWith("dweb:") && (name === "href")) {
+                        if (attrs["onclick"] || ("onclick" in attrs)) {
+                            console.error("Setting href to dweb wont work if onclick already set");
+                        } else {
+                            element.setAttribute("onclick",'DwebObjects.Domain.p_resolveAndBoot(this.href, {verbose})'); // Note this will handle search like href=xx?aa=bb
+                        }
+                    } // no need for else, setting href is sufficient
                 }
             }
             // Load ArchiveFile inside a div if specify in src
