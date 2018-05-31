@@ -26,12 +26,12 @@ TODO - test these instructions on cleaner machine
 
 * See dweb-transport/README.md for installing and opening locally in the browser
 
-##See related:
+## See related:
 
 * [Archive.org](https://dweb.archive.org/details) bootstrap into the Archive's page
 * [Examples](https://dweb.me/examples) examples
 
-###Repos:
+### Repos:
 * *dweb-transports:* Common API to underlying transports (http, webtorrent, ipfs, yjs)
 * *dweb-objects:* Object model for Dweb inc Lists, Authentication, Key/Value, Naming
 * *dweb-serviceworker:* Run Transports in ServiceWorker (experimental)

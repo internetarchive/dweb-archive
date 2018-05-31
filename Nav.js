@@ -107,11 +107,12 @@ export default class Nav {
                 </li>
               </ul> {/*--navbar-main--*/}
               <ul id="nav-abouts" class="">
+                {/*--TODO-BOOTSTRAP ongoing, was trying to make these eg. /about and use name lookup, but fails because not CORS and havent built gateway, and there is no "headless" version of these pages--*/}
                 <li><a target="_top" data-event-click-tracking="TopNav|AboutLink" href="https://archive.org/about/">ABOUT</a>
                 </li>
                 <li><a target="_top" data-event-click-tracking="TopNav|ContactLink"
                        href="https://archive.org/about/contact.php">CONTACT</a></li>
-                <li><a target="_top" data-event-click-tracking="TopNav|BlogLink" href="//blog.archive.org">BLOG</a>
+                <li><a target="_top" data-event-click-tracking="TopNav|BlogLink" href="https://blog.archive.org">BLOG</a>{/*--TODO-BOOTSTRAP this was //blog, no good reason why not forcing https --*/}
                 </li>
                 <li><a target="_top" data-event-click-tracking="TopNav|ProjectsLink"
                        href="https://archive.org/projects">PROJECTS</a></li>
