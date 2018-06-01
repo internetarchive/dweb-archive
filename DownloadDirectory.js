@@ -4,6 +4,11 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 import React from './ReactFake';
 import Details from './Details'
 
+/*
+Support directories of files,
+See https://github.com/internetarchive/dweb-archive/issues/10 for discussion - this is NOT complete yet, but works enough to use.
+ */
+
 export default class DownloadDirectory extends Details {
     theatreIaWrap() {
         const itemid = this.itemid;

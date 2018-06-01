@@ -79,7 +79,7 @@ export default class ArchiveItem {
             const sort = (this.item && this.item.collection_sort_order) || this.sort
             const url =
                 //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
-                `https://gateway.dweb.me/arc/archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}&and[]=${this.and}`;
+                `${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&sort[]=${sort}&and[]=${this.and}`;
                 //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
             console.log(url);
             const j = await Util.fetch_json(url);

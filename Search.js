@@ -36,7 +36,11 @@ export default class Search extends ArchiveBase {
      */
     constructor({query='*:*', sort='', and='', limit=75, banner='', page=1, item=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
         super(itemid, {item: item});
-        this.query = query;
+        if (typeof(query) === "object") { // form { creator: "Foo bar" ... }
+            // This next line uses JSON.stringify instead of toString() because we want  '"abc"' and '1' i.e. quotes if its a string
+            query = Object.keys(query).map(k => `${k}:${JSON.stringify(query[k])}`).join(' AND ');
+        }
+        this.query = query; // Note this should be an UNENCODED query  or an object
         this.limit= limit;
         this.sort = sort;
         this.and = and;
@@ -68,6 +72,7 @@ export default class Search extends ArchiveBase {
 
     rowColumnsItems() {
         /* Output the columns-items, wrapped in a row - this will then be wrapped differently for Collections (tabbed) and Search (not) */
+        let encodedQuery = encodeURIComponent(this.query);
         return (
                     <div class="row">{/*--DONT NEED TILL HAVE FACETS --*/}
                         {/*TODO-DETAILS Facets not available over advancedsearch*/}
@@ -113,25 +118,27 @@ export default class Search extends ArchiveBase {
                                             <div class="sort-by">
                                                 SORT BY
                                             </div>
-                                            {/*--TODO-DETAILS this dropdown doesnt reorder, test other UI elements in vicinity as well--*/}
+                                            {/*--TODO-DETAILS this dropdown doesnt reorder, test other UI elements in vicinity as well see https://github.com/internetarchive/dweb-archive/issues/15--*/}
                                             <span class="big-label blue-pop">
-                                                <a class="ikind stealth in" data-id="relevance" onClick={`Nav.nav_search({query:query)`}>RELEVANCE</a>
+                                                <a class="ikind stealth in" data-id="relevance" href={`/search.php?query=${encodedQuery}`} onclick={`Nav.onclick_search({query:this.query})`}>RELEVANCE</a>
                                                 <div class="iconochive-dot ikind-sep"></div>
-                                                <a class="ikind stealth" data-id="views" onClick={`Nav.nav_search({query:query, "sort": "-downloads"})`}>VIEWS</a>
+                                                <a class="ikind stealth" data-id="views" href={`/search.php?query=${encodedQuery}&amp;sort=-downloads`}
+                                                    onclick={`Nav.onclick_search({query:this.query, sort: "-downloads"})`}>VIEWS</a>
                                                 <div class="iconochive-dot ikind-sep"></div>
-                                                <a class="ikind stealth" data-id="title" onClick={`Nav.nav_search({query:query. "sort": "titleSorter"})`}>TITLE</a>
+                                                <a class="ikind stealth" data-id="title" href={`/search.php?query=${encodedQuery}&amp;sort=titleSorter`}
+                                                    onclick={`Nav.onclick_search({query:this.query, sort: "titleSorter"})`}>TITLE</a>
                                                 <div class="iconochive-dot ikind-sep"></div>
-                                                <a class="ikind stealth" id="date_switcher" data-id="date-archived"
-                                                   onClick={`Nav.nav_search({query:query, sort="-publicdate" })`}>DATE ARCHIVED</a>
+                                                <a class="ikind stealth" id="date_switcher" data-id="date-archived" href={`/search.php?query=${encodedQuery}&amp;sort=-publicdate`}
+                                                    onclick={`Nav.onclick_search({query:this.query, sort: "-publicdate" })`}>DATE ARCHIVED</a>
                                                 <div class="iconochive-dot ikind-sep hidden"></div>
-                                                <a class="ikind stealth hidden" data-id="date-published"
-                                                   onClick={`Nav.nav_search{query:query, "sort": "-date"})`}>DATE PUBLISHED</a>
+                                                <a class="ikind stealth hidden" data-id="date-published" href={`/search.php?query=${encodedQuery}&amp;sort=-date`}
+                                                    onclick={`Nav.onclick_search({query:this.query, sort: "-date"})`}>DATE PUBLISHED</a>
                                                 <div class="iconochive-dot ikind-sep hidden"></div>
-                                                <a class="ikind stealth hidden" data-id="date-reviewed"
-                                                   onClick={`Nav.nav_search({query:query, "sort": "-reviewdate"})`}>DATE REVIEWED</a>
+                                                <a class="ikind stealth hidden" data-id="date-reviewed" href={`/search.php?query=${encodedQuery}&amp;sort=-reviewdate`}
+                                                    onclick={`Nav.onclick_search({query:this.query, sort: "-reviewdate"})`}>DATE REVIEWED</a>
                                                 <div class="iconochive-dot ikind-sep"></div>
-                                                <a class="ikind stealth" data-id="creator"
-                                                   onClick={`Nav.nav_search(${query+"&amp;sort=creatorSorter"})`}>CREATOR</a>
+                                                <a class="ikind stealth" data-id="creator" href={`/search.php?query=${encodedQuery}&amp;sort=creatorSorter`}
+                                                    onclick={`Nav.onclick_search({query:this.query, sort: "creatorSorter"})`}>CREATOR</a>
                                             </span>
                                         </div>
                                     </div>
@@ -160,7 +167,7 @@ export default class Search extends ArchiveBase {
                                     <center class="more_search">
                                     {/*--TODO-DETAILS check what is happening in AJS.more_search with this URL and can use page: this.page+1--*/}
                                     <a class="btn btn-info btn-sm" style="visibility:hidden"
-                                       onclick="return AJS.more_search(this,{`/search.php?query=${query}&page=`},1)" href="#">MORE
+                                       onclick="return AJS.more_search(this,{`/search.php?query=${encodeURIComponent(encodedQuery)}&page=`},1)" href="#">MORE
                                         RESULTS</a><br/>
                                     <span class="more-search-fetching">Fetching more results <img src="./images/loading.gif"/></span>
                                     </center>
@@ -172,8 +179,9 @@ export default class Search extends ArchiveBase {
     }
 
     archive_setup_push() { // run in browserAfter
+        let self = this;
         archive_setup.push(function() {
-            AJS.date_switcher(`&nbsp;<a href="/search.php?query=${query}&amp;sort=-publicdate"><div class="date_switcher in">Date Archived</div></a> <a href="/search.php?query=${query}&amp;sort=-date"><div class="date_switcher">Date Published</div></a> <a href="/search.php?query=${query}&amp;sort=-reviewdate"><div class="date_switcher">Date Reviewed</div></a> `);
+            AJS.date_switcher(`&nbsp;<a href="/search.php?query=${encodeURIComponent(self.query)}&amp;sort=-publicdate"><div class="date_switcher in">Date Archived</div></a> <a href="/search.php?query=${encodeURIComponent(self.query)}&amp;sort=-date"><div class="date_switcher">Date Published</div></a> <a href="/search.php?query=${encodeURIComponent(self.query)}&amp;sort=-reviewdate"><div class="date_switcher">Date Reviewed</div></a> `);
             AJS.lists_v_tiles_setup('search');
             AJS.popState('search');
             $('div.ikind').css({visibility:'visible'});
@@ -194,7 +202,7 @@ export default class Search extends ArchiveBase {
         let query=this.query;
         // We are using advancedsearch so this link isn't needed
         // let searchURL=`https://archive.org/advancedsearch.php?q={query}`;
-        let addBookmarkURL=`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=search&amp;identifier={query}&amp;title={query}`;  //TODO figure out decentralized bookmark submission
+        let addBookmarkURL=`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=search&amp;identifier={encodeURIComponent(query)}&amp;title={encodeURIComponent(query)}`;  //TODO figure out decentralized bookmark submission
         return (
         <div class="container container-ia width-max"
              style="background-color:#d8d8d8; padding-top:60px; border:1px solid #979797; padding-bottom:25px;">

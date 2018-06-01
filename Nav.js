@@ -152,8 +152,7 @@ export default class Nav {
         return false; // Dont follow anchor link - unfortunately React ignores this
     }
 
-    static async pausedParm()
-    {
+    static async pausedParm() {
         return (await DwebTransports.p_statuses())
         .filter(t => (t.status === TRANSPORT_STATUS_PAUSED))
         .map(t => "paused="+t.name)
@@ -162,13 +161,17 @@ export default class Nav {
 
     static async nav_search(q, wanthistory=true) {
         console.log("Navigating to Search");
+        let destn = document.getElementById('main'); // Blank window (except Nav) as loading
+        Nav.clear(destn);
+        let s = await new Search((typeof(q) === "object") ? q : (typeof(q) === "string") ? {query: q} : undefined).fetch();
+        q = s.query;    // Flattened from object to string
         if (wanthistory) {
             let historystate = {query: q}; //TODO-HISTORY may want  to store verbose, transports etc here
             let cnp = []
             cnp.push(await this.pausedParm()); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
             // Add any other searchparams back in, especially "tab"
             for (let sp of searchparams) {
-                if (!["transport", "verbose", "query"].includes(sp[0]))
+                if (!["transport", "verbose", "query", "item"].includes(sp[0]))
                     cnp.push(`${sp[0]}=${sp[1]}`);
             }
             // See notes on async_factory about history.pushState
@@ -184,11 +187,13 @@ export default class Nav {
             console.log("Writing history:", historyloc);
             history.pushState(historystate, `Internet Archive search ${q}`, historyloc);
         }
-        let destn = document.getElementById('main'); // Blank window (except Nav) as loading
-        Nav.clear(destn);
-        let s = await new Search((typeof(q) === "object") ? q : (typeof(q) === "string") ? {query: encodeURIComponent(q)} : undefined).fetch();
         s.render(destn);
     }
+    static onclick_search(q) {
+        // Build the onclick part of a search, q can be a string or an object e.g. {creator: "Foo bar"}
+        return `Nav.nav_search(${JSON.stringify(q)}); return false;`;
+    }
+
     static async nav_download(el) {
         let source = el.source; // Should be an ArchiveFile. - see example in Details.js
         await source.p_download(el);

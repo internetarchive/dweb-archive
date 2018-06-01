@@ -221,13 +221,13 @@ export default class Details extends ArchiveBase {
                         <div class="key-val-big">
                             <div>
                                 <span class="key">by</span>{' '}
-                                <span class="value"><span><a onClick={`Nav.nav_search('creator=\"${creator}\"')`}>{creator}</a></span></span>
+                                <span class="value"><span><a href={`/search.php?query=creator%3A%22${creator}%22`} onclick={Nav.onclick_search({query: {creator: creator}})}>{creator}</a></span></span>
                             </div>
                         </div>
 
                         <br/>
                         <div class="key-val-big">
-                            Publication date <a onClick="Nav.nav_search('date:{datePublished}')">{' '}
+                            Publication date <a href={`/search.php?query=date%3A{datePublished}`} onclick={Nav.onclick_search({query: {date: datePublished}})}>{' '}
                             <span itemprop="datePublished">{datePublished}</span></a>
                         </div>
 
@@ -243,7 +243,7 @@ export default class Details extends ArchiveBase {
                         <div class="key-val-big">
                             Topics <span itemprop="keywords">
                           {keywords.map((keyword)=> (
-                                <a onClick={`Nav.nav_search('subject=\"${keyword}\"')`}>{keyword}</a> ))}
+                                <a href={`/search.php?query=subject%3A%22${keyword}%22`} onclick={Nav.onclick_search({query: {subject: keyword}})}>{keyword}</a> ))}
                       </span> {/*TODO should really have , between each but join() not easy in JSX*/}
                         </div>
                         ) : ( undefined ) }
@@ -252,7 +252,7 @@ export default class Details extends ArchiveBase {
 
                             <span
                                     class="value"
-                            ><a onClick={`Nav.nav_search('publisher=\"${publisher}\"')`}><span
+                            ><a href={`/search.php?query=publisher%3A%22${publisher}%22`} onclick={Nav.onclick_search({query: {publisher: publisher}})}><span
                                     itemprop="publisher">{publisher}</span></a></span>
                         </div>
                         ) : ( undefined ) }
@@ -265,7 +265,8 @@ export default class Details extends ArchiveBase {
                                 <div>
                                     <span class="key">Language</span>{' '}
 
-                                    <span class="value"><span><a onClick={`Nav.nav_search('language=(\"${languageAbbrev}\"+OR+language=\"${languageLong}\")')`}>{languageLong}</a></span></span>
+                                    <span class="value"><span><a href={`/search.php?query=%28language%3A{languageAbbrev}+OR+language%3A%22${languageLong}%22%29`}
+                                        onclick={Nav.onclick_search({query: `(language:${languageAbbrev} OR language:"{languageLong}")`})}>{languageLong}</a></span></span>
                                 </div>
                             </div>
                         ) : ( undefined ) }

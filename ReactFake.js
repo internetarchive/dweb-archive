@@ -329,7 +329,7 @@ export default class React  {
                 (typeof attrs[name] === "string") && (attrs[name].startsWith('./') || attrs[name].startsWith('/'))
             ) {
                 if (attrs.id && attrs.id.startsWith('tabby-')) {  // There is some weird javascript in AJS.tabby which assumes this is root-relative, so dont change it
-                    attrs[name] = React._config.tabbyrootinsert + attrs[name];
+                    attrs[name] = React._config.tabbyrootinsert + attrs[name]; // Rewrite value to store
                 } else {
                     let hrefs = this.resolveUrls(attrs[name], rel); // Array of urls, but should be just one since href name will be singular as will rel
                     if (hrefs.length > 1) {
@@ -337,11 +337,21 @@ export default class React  {
                     }
                     let href = hrefs[0]
                     attrs[name] = href;
-                    if (href.startsWith("dweb:") && (name === "href")) {
+                    let possibleOnclick;
+                    if (href.includes("archive.org/search.php?query=")) { //Note this doesnt handle other parameters in the URL (esp verbose) but unlikely to find in legacy urls like search.php
+                        if (! "onclick" in attrs) {
+                            console.error("archive.org/search.php should always be accompanied with an onclick handler");
+                        }
+                        // Don't set possibleOnClock, we want it explicitly
+                    }
+                    else if (href.startsWith("dweb:") && (name === "href")) {
+                        possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href, {verbose}); return false;';
+                    }
+                    if (possibleOnclick) {
                         if (attrs["onclick"] || ("onclick" in attrs)) {
                             console.error("Setting href to dweb wont work if onclick already set");
                         } else {
-                            element.setAttribute("onclick",'DwebObjects.Domain.p_resolveAndBoot(this.href, {verbose})'); // Note this will handle search like href=xx?aa=bb
+                            element.setAttribute("onclick", possibleOnclick); // Note this will handle search like href=xx?aa=bb
                         }
                     } // no need for else, setting href is sufficient
                 }
