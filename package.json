@@ -35,7 +35,7 @@
   "keywords": [],
   "license": "AGPL-3.0",
   "main": "Details.js",
-  "name": "archive_browser",
+  "name": "dweb-archive",
   "repository": {
     "type": "git",
     "url": "git://github.com/internetarchive/dweb-archive.git"
