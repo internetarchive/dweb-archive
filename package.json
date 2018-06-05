@@ -21,11 +21,11 @@
     "babel-core": "^6.26.3",
     "babel-loader": "latest",
     "babel-preset-env": "^1.7.0",
-    "babel-preset-es2015": "latest",
     "babel-preset-react": "latest",
     "babelify": "latest",
     "chai": "latest",
     "copy-webpack-plugin": "^4.5.1",
+    "http-server": "latest",
     "react": "^16.4.0",
     "webpack": "^4.10.2",
     "webpack-cli": "^2.1.4",
@@ -42,7 +42,8 @@
   },
   "scripts": {
     "build": "webpack --mode development",
-    "server": "webpack-dev-server"
+    "server": "http-server",
+    "setuphttp": "ln -s ../node_modules/dweb-transports/dist/dweb-transports-bundle.js dist; ln -s ../node_modules/dweb-objects/dist/dweb-objects-bundle.js dist;"
   },
   "version": "0.1.0"
 }

@@ -6,25 +6,60 @@ Builds on dweb-transports and dweb-objects, and typically (currently) loaded fro
 This library is part of a general project at the Internet Archive (archive.org)
 to support the decentralized web.
 
-### Goals
+## Goals
 * to allow unmodified browsers to access the Internet Archive's
 * to support as many of the IA's features as possible, adding them iteratively
 * to use decentralized platforms for as many features as possible, without sacrificing functionality
 * to avoid single points of failure where possible
 
+## Installation
+### All cases
+```
+git clone git+https://git@github.com/internetarchive/dweb-archive.git
+cd dweb-transport
+
+# install the dependencies including IPFS & WebTorrent and dweb-transports and dweb-objects
+npm install  
+```
+### Installation for testing in a browser
+
+Do the "All Case install above"
+
+Install a simple http-server, this may require sudo depending on permissions
+```
+npm run setuphttp
+npm install -g http-server` 
+cd dist
+http-server
+```
+Now open a browser page.
+
+Note: Firefox works better than Chrome for local usage as Chrome limits cross-origin 
+http to 6 streams and we need to implement a limited http pool to fix this. 
+
+`open "http://localhost:8080/archive.html"`
+
+OR Generally while debugging run with verbose=true
+
+`open "http://localhost:8080/archive.html&verbose=true"`
+
+OR load via the bootloader, 
+passing the url parameter will simulate what happens at https://dweb.archive.org/
+
+`open "http://localhost:8080/bootloader.html?url=http://dweb.archive.org&verbose=true`
+
+To test with limited transports, for example HTTP only, add the transport parameter.
+
+`open "http://localhost:8080/archive.html?verbose=true&transport=HTTP"`
+
+
 ### Node Installation to work on this repo
 Note that the only reason to do this would be to work on the code,
-in general dweb-transport should be installed if trying to offer the HTML on a service (as done on dweb.me)
 
-TODO - test these instructions on cleaner machine
-* `git clone git+https://git@github.com/internetarchive/dweb-archive.git`
-* `npm install`  will install the dependencies including IPFS & WebTorrent and dweb-transports and dweb-objects
-* `npm run build` will build (webpack) the bundles and copy needed files to dist/
+Do the "All Case install above"
 
-* TODO writeup how to require only some of the transports.
-* Then see usage API below
-
-* See dweb-transport/README.md for installing and opening locally in the browser
+Build (webpack) the bundles and copy needed files to dist/
+`npm run build`
 
 ## See related:
 
