@@ -1,10 +1,10 @@
-require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
-import Util from './Util';
-import prettierBytes from "prettier-bytes";
+//require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
+const Util = require( './Util');
+const prettierBytes = require( "prettier-bytes");
 //const Transports = require('dweb-transports');
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
-export default class ArchiveFile {
+class ArchiveFile {
     /*
     Represents a single file, currently one that is in the item, but might create sub/super classes to handle other types
     of file e.g. images used in the UI
@@ -76,3 +76,4 @@ export default class ArchiveFile {
         }
     }
 }
+exports = module.exports = ArchiveFile;

@@ -1,10 +1,9 @@
-require('babel-core/register')({presets: ['env', 'react']}); // ES6 JS below!
+//require('babel-core/register')({presets: ['env', 'react']}); // ES6 JS below!
 
-//import React from 'react';
-import React from './ReactFake';    // Note React is used by the JSX compiler that handles the HTML below this fakes the React.createElement
+//import React from './ReactFake';    // Note React is used by the JSX compiler that handles the HTML below this fakes the React.createElement
 
 
-export default class Util {
+class Util {
     static number_format(nStr)//this is just addCommas now
     {
         //http://www.mredkj.com/javascript/numberFormat.html
@@ -19,6 +18,7 @@ export default class Util {
         return x1 + x2;
     }
 
+    /*
     static glyph({name = 'question', classes = ''} = {}) {
         return (
             <span className={classes}>
@@ -27,6 +27,7 @@ export default class Util {
             </span>
         );
     }
+    */
 
     // pass in a <mediatype> value
     static mediatype_icon(mediatype) {
@@ -138,6 +139,7 @@ export default class Util {
 
         }
     }
+    /*
     static listperson(uu) {
         // Note - might need to tighten up layout to avoid extra spaces/breaks
         return (
@@ -156,6 +158,7 @@ export default class Util {
             </div>
         );
     }
+    */
 
 }
 
@@ -540,3 +543,4 @@ Util.languageMapping = {
     'zun': 'Zuni',
     'zxx': 'No linguistic content'
 }
+exports = module.exports = Util;
