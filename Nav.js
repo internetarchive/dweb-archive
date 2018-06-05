@@ -282,9 +282,7 @@ export default class Nav {
             }
         }
         console.groupEnd("Nav.factory",itemid);
-
-}
-
+    }
 }
 window.onpopstate = function(event) {
     if (verbose) console.log("Popping state",document.location,"state=",event.state);

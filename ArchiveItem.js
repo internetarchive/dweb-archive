@@ -79,11 +79,13 @@ export default class ArchiveItem {
             const sort = (this.item && this.item.collection_sort_order) || this.sort
             const url =
                 //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
-                `${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&sort[]=${sort}&and[]=${this.and}`;
+                `${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}`;
                 //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
             console.log(url);
             const j = await Util.fetch_json(url);
             this.items = j.response.docs;
+            this.start = j.response.start;
+            this.numFound = j.response.numFound;
         }
         return this; // For chaining, but note will need to do an "await fetch"
     }

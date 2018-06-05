@@ -1,8 +1,5 @@
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
-import RenderMedia from 'render-media';
-import React from './ReactFake';
 import Util from './Util';
-import throttle from "throttleit";
 import prettierBytes from "prettier-bytes";
 //const Transports = require('dweb-transports');
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
