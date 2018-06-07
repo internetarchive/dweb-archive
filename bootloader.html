@@ -5,6 +5,9 @@
     <title>Decentralized Web Boot loader</title>
     <!-- Allow relative URLs here (in this header), otherwise will be relative to URL supplied, not relative to this file which has been substituted by nginx. -->
     <!-- this could also be https://ipfs.io/ipfs/Q11...-->
+    <!-- Getting the relative/absolute links for the libraries is hard, this is loaded as a blob, so relative links could go to anywhere,
+    <!-- if you set a "base" then it forces load from that resource (i.e. not directly from dweb)
+    <!-- so relative is probably best and make sure the nginx etc server handles appropriately -->
     <!--<base href="https://dweb.me/examples/bootloader.html">-->
     <script src="./dweb-transports-bundle.js" type="text/javascript"></script>
     <script src="./dweb-objects-bundle.js" type="text/javascript"></script>
