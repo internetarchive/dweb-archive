@@ -290,10 +290,7 @@ export default class Nav {
 
     static audioPlay(elAnchor) {
         // Used by Audio to play a track - since "Nav" is a global it can access
-        let track = elAnchor.source;
-        let af = track.sources[0].urls;
-        let elAudio = document.getElementById("streamContainer");
-        React.loadStream(elAudio, af.metadata.name, af, undefined, undefined);
+        Audio.play(elAnchor);
         return false;
     }
 }

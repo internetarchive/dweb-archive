@@ -138,16 +138,20 @@ export default class React  {
         } else {
             // Otherwise fetch the file, and pass via rendermedia and from2
             //TODO-MULTI-GATEwAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
-            const buff = await  DwebTransports.p_rawfetch(urls, {verbose, timeoutMS: 5000, relay: false});  //Typically will be a Uint8Array TODO-TIMEOUT make timeoutMS depend on size of file
-            if (verbose) console.log("Retrieved image size",buff.length);
-            const file = {
-                name: name,
-                createReadStream: function (opts) {
-                    if (!opts) opts = {};
-                    return from2([buff.slice(opts.start || 0, opts.end || (buff.length - 1))])
-                }
-            };
-            RenderMedia.append(file, el, cb);  // Render into supplied element - have to use append, as render doesnt work, the cb will set attributes and/or add children.
+            try {
+                const buff = await  DwebTransports.p_rawfetch(urls, {verbose, timeoutMS: 5000, relay: false});  //Typically will be a Uint8Array TODO-TIMEOUT make timeoutMS depend on size of file
+                if (verbose) console.log("Retrieved image size", buff.length);
+                const file = {
+                    name: name,
+                    createReadStream: function (opts) {
+                        if (!opts) opts = {};
+                        return from2([buff.slice(opts.start || 0, opts.end || (buff.length - 1))])
+                    }
+                };
+                RenderMedia.append(file, el, cb);  // Render into supplied element - have to use append, as render doesnt work, the cb will set attributes and/or add children.
+            } catch (err) {
+                console.error("Unable to p_loadImg",name,urls,err.message);
+            }
         }
     }
 
