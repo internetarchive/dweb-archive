@@ -59,7 +59,7 @@ export default class React  {
         // Its now a singular URL
         if (url instanceof ArchiveFile) {
             console.error("resolveUrls called with ArchiveFile - use p_resolveUrls for this case");
-            return url;  // Will be very lucky if this works - its going to try and embed a url in an href for example
+            return [url];  // Will be very lucky if this works - its going to try and embed a url in an href for example
         } else if (url.startsWith("//")) {
             return "https:"+url;    // Ick - a reference to href="//foo.bar" rather than href="https://foo.bar"
         } else if (url.startsWith("/")) {
@@ -70,7 +70,7 @@ export default class React  {
             console.warn("Relative URLs arent a great idea as what to be relative to is often unclear",url,rel); //could genericise to use rel instead of config but might not catch cases e.g. of /images
             return [this.relativeurl(React._config.relname, url)].filter(u => !!u);
         } else {
-            return url; // Not relative, just pass it back
+            return [url]; // Not relative, just pass it back
         }
     }
     static async p_resolveUrls(url, rel) {
@@ -364,8 +364,8 @@ export default class React  {
                 //const mimetype = Util.archiveMimeTypeFromFormat[af.metadata.format]; // Might be undefined for many formats still
                 //if (!mimetype) console.warning("Unknown mimetype for ",af.metadata.format, "on",af.metadata.name);
                 this.loadStream(element, videoname, af, undefined, rel);  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
-            } else if (["a.source"].includes(tag + "." + name) && attrs[name] instanceof ArchiveFile) {
-                element[name] = attrs[name];      // Store the ArchiveFile in the DOM, function e.g. onClick will access it.
+            } else if (["a.source"].includes(tag + "." + name) && attrs[name] instanceof Object) {
+                element[name] = attrs[name];      // Store the ArchiveFile or Track in the DOM, function e.g. onClick will access it.
             } else if (name && attrs.hasOwnProperty(name)) {
                 let value = attrs[name];
                 if (value === true) {
@@ -387,7 +387,7 @@ export default class React  {
         /* This is called back by loadImg after creating the tag. */
         for (let i = 0; i < kids.length; i++) {
             const child = kids[i];
-            if (!child) {
+            if (typeof child === "undefined") { // This was !child, but that skips the integer 0.
             } else if (Array.isArray(child)) {
                 child.map((c) => element.appendChild(c.nodeType == null ?
                     document.createTextNode(c.toString()) : c))

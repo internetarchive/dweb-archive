@@ -1,3 +1,4 @@
 node_modules
 dist/dweb-transports-bundle.js
 dist/dweb-objects-bundle.js
+*.swp

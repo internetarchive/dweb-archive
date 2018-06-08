@@ -138,7 +138,19 @@ export default class Details extends ArchiveBase {
         let metadataListPossible = { color: "Color", coverage: "Location", director: "Director", identifier: "Identifier",
             "identifier-ark": "Identifier-ark", ocr: "Ocr", runtime: "Run time", ppi: "Ppi", sound: "Sound", year: "Year" }; /*TODO expand to longer list*/
         let metadataListFound = Object.keys(metadataListPossible).filter((k) => metadata[k]);    // List of keys in the metadata
-        let downloadableFiles = this._list.filter(f => f.downloadable()); // Note on image it EXCLUDED JPEG Thumb, but included JPEG*Thumb
+
+        let downloadableFilesDict = this._list.reduce( (res, af) => {
+                let metadata = af.metadata;
+                if (af.downloadable()) {  // Note on image it EXCLUDED JPEG Thumb, but included JPEG*Thumb
+                    let format = metadata.format;
+                    if (!res[format]) { res[format] = []; }
+                    res[format].push(af);
+                }
+                return res;
+            }, {}
+        );
+
+
             //TODO  Replace "a" with onclicks to download function on f
         let filesCount = item.files_count;
         let originalFilesCount = item.files.filter((f)=>f.source === "original").length+1; // Adds in Archive Bittorrent
@@ -156,6 +168,7 @@ export default class Details extends ArchiveBase {
         let bookmarksAddURL = `https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=image&amp;identifier=${itemid}&amp;title=${title}`; //TODO find way to submit distributed
         let credits = metadata.credits;
         //TODO-DETAILS much of below doesn't work (yet)
+        //TODO-DETAILS note the structure of this has changed - see the difference in originals between multitrackaudio and mbid for example
         return (
             <div class="container container-ia item-details-about">
                 <div class="relative-row row">
@@ -327,24 +340,24 @@ export default class Details extends ArchiveBase {
                         {/*TODO need section class=boxy item-stats-summary- not obvious where data from, its not in metadata */}
                         <div class="boxy quick-down">
                             <div class="download-button">DOWNLOAD OPTIONS</div>
-                            {downloadableFiles.map((f) => (
+                            {Object.keys(downloadableFilesDict).map(k => (
                                 <div class="format-group">
                                     <div class="summary-rite">
-                                        <a class="stealth" source={f} onclick="Nav.nav_download(this)"
-                                           title={f.sizePretty()}>
-                                            <span class="hover-badge-stealth"><span class="iconochive-download" aria-hidden="true"></span><span class="sr-only">download</span>1 file</span>
+                                        <a class="stealth" source={downloadableFilesDict[k]} onclick="Nav.nav_download(this)"
+                                           title={k}>
+                                            <span class="hover-badge-stealth"><span class="iconochive-download" aria-hidden="true"></span><span class="sr-only">download</span>{downloadableFilesDict[k].length} files</span>
                                         </a>
                                     </div>
                                     <a class="format-summary download-pill"
-                                        source={f}
+                                        source={downloadableFilesDict[k]}
                                         onclick="Nav.nav_download(this)"
-                                        title={f.sizePretty()}
+                                        title={k}
                                         data-toggle="tooltip" data-placement="auto left" data-container="body" target="_blank">{/*--new window to persist dweb--*/}
-                                        {Util.downloadableFormats[f.metadata.format]} <span class="iconochive-download" aria-hidden="true"></span><span class="sr-only">download</span>
+                                        {Util.downloadableFormats[k]} <span class="iconochive-download" aria-hidden="true"></span><span class="sr-only">download</span>
                                     </a>
                                 </div>
+
                             ))}
-            
             
                             <div class="show-all">
                                 <div class="pull-right">

@@ -72,18 +72,6 @@ export default class Video extends AV {
                                          style="display:none" title="sound is off.  click for sound."></div>
                                 </a>
                             </div>{/*--/#theatre-controls--*/}
-                            <noscript>
-                                <div class="alert alert-danger alert-dismissable" data-dismiss="alert">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"><span
-                                            class="iconochive-remove-circle" aria-hidden="true"></span><span class="sr-only">remove-circle</span>
-                                    </button>
-                                    Internet Archive&apos;s in-browser
-                                    video player requires JavaScript to be enabled.
-                                    It appears your browser does not have it turned on.
-                                    Please see your browser settings for this feature.
-                                </div>
-                            </noscript>
-
                             <div id="videoContainerX" style="text-align: center;">
                                 {/* This videothumbnailurl is http since if getting decentralized there is little value compared to loading video itself */}
                                 <video id="streamContainer" src={this.avs[0]} poster={videothumbnailurl} controls></video>

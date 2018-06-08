@@ -196,7 +196,11 @@ export default class Nav {
 
     static async nav_download(el) {
         let source = el.source; // Should be an ArchiveFile. - see example in Details.js
-        await source.p_download(el);
+        if (Array.isArray(source)) {
+            for (let s in source) await source[s].p_download(el);
+        } else {
+            await source.p_download(el);
+        }
     }
 
     static async nav_downloaddirectory(itemid) {
@@ -283,7 +287,18 @@ export default class Nav {
         }
         console.groupEnd("Nav.factory",itemid);
     }
+
+    static audioPlay(elAnchor) {
+        // Used by Audio to play a track - since "Nav" is a global it can access
+        let track = elAnchor.source;
+        let af = track.sources[0].urls;
+        let elAudio = document.getElementById("streamContainer");
+        React.loadStream(elAudio, af.metadata.name, af, undefined, undefined);
+        return false;
+    }
 }
+
+
 window.onpopstate = function(event) {
     if (verbose) console.log("Popping state",document.location,"state=",event.state);
     if (event.state && event.state.query) {

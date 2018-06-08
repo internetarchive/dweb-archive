@@ -167,10 +167,11 @@ Util.archiveMimeTypeFromFormat = {
     };   //TODO expand to other formats - see mimetypes list from petabox
 Util.imageFormats = ['JPEG', 'PNG', 'Animated GIF'];     //TODO expand to other formats - see mimetypes list from petabox
 Util.videoFormats = ['h.264','512Kb MPEG4', '256Kb MPEG4', '64Kb MPEG4', 'MPEG4', 'MPEG2', "MPEG1"];
+Util.preferredAudioFormats = ['VBR MP4',"Ogg Vorbis"];
 Util.preferredVideoFormats = ['h.264','512Kb MPEG4', '256Kb MPEG4', 'MPEG4'];
 Util.textFormats = ['PDF'];
 Util.downloadableFormats = {
-    'JPEG Thumb': 'JPEG THUMB',
+    //'JPEG Thumb': 'JPEG THUMB',
     'JPEG 250px Thumb': 'JPEG 250PX THUMB',
     "JPEG 500px Thumb": 'JPEG 500PX THUMB',
     'Archive BitTorrent': 'TORRENT',
@@ -183,8 +184,9 @@ Util.downloadableFormats = {
     "64Kb MPEG4": "64KB MPEG4",
     "MPEG4": "MPEG4",
     "MPEG2": "MPEG2",
-    "MPEG1": "MPEG1"
-
+    "MPEG1": "MPEG1",
+    "VBR MP3": "VBR MP3",
+    "Ogg Vorbis": "OGG VORBIS"
 }
 Util.gateway = {
         "url_download": "https://gateway.dweb.me/arc/archive.org/download/",
