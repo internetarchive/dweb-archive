@@ -91,10 +91,11 @@ Build (webpack) the bundles and copy needed files to dist/
     * ArchiveBase - superclass for each item type, has the structure of displaying pages
         * Details - display a details page like archive.org/details/foo
             * AV - base page for Audio/Video items
-                * Audio - display an Audio item (TODO doesnt work that well yet)
+                * Audio - display an Audio item
                 * Video - display a Video item
+            * DownloadsDirectory - for displaying the list of files in an item
             * Image - display an image item
-            * Texts - display a Text item (TODO doesnt work that well yet)
+            * Texts - display a Text item (TODO works - but not decentralized)
         * Search - display a search page like archive.org/search.php?query=foo
             * Collection - display a Collection item
             * Home - archive home page, acts like a search

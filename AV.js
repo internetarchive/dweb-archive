@@ -31,7 +31,7 @@ export default class AV extends Details {
                             title: metadata.title, //TODO-AUDIO pretty duration
                             prettyduration: `${parseInt(metadata.length/60)}:${secs < 10 ? "0"+secs : secs}`,
                             original: original,
-                            duration: metadata.length,
+                            duration: metadata.length,  // In seconds
                             sources: []
                         };
                     } else if (metadata.source === "derivative") { // souce="derivative"
@@ -39,6 +39,7 @@ export default class AV extends Details {
                     }
                     if (Util.preferredAudioFormats.includes(metadata.format)) {
                         res[original].sources.push({
+                            name: metadata.name,
                             file: `http://dweb.archive.org/downloads/${this.itemid}/${metadata.name}`,
                             urls: af,
                             type: metadata.name.split('.').pop(),

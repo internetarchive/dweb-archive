@@ -9,7 +9,7 @@ import Util from './Util'
 
     TODO Audio html contains a lot of extra info in the "head" which we can't change on the fly, in particular the player is loaded there
     TODO Body tag on audio has different classes, in particular has <body navia ia-module tiles responsive jwaudio > and jwaudio might be important
-    TODO Ask Even why item-details-about is now closed immediately
+    TODO Ask Evan why item-details-about is now closed immediately
  */
 
 export default class Audio extends AV {
@@ -19,7 +19,7 @@ export default class Audio extends AV {
     }
 
     setupPlaylist() {
-        super.setupPlaylist(Util.preferredAudioFormats);   //TODO-AUDIO this is only going to play first track
+        super.setupPlaylist(Util.preferredAudioFormats);
     }
     static play(elAnchor) {
         // Note - this is redirected from Nav which is a global
@@ -52,16 +52,19 @@ export default class Audio extends AV {
             <div id="theatre-ia-wrap" class="container container-ia width-max ">
                 <link itemprop="url" href={detailsurl}/>{/*Link to archive.org directly*/}
                 <link itemprop="image" href={imgurl}/>{/*Its unclear how/if this is used*/}
-
-                {/*-- This loops over the playable tracks, but is just for search engines etc --*/}
-                { this.avs.map(track => (
-                    <div itemprop="hasPart" itemscope itemtype="http://schema.org/AudioObject">
-                        <meta itemprop="name" content="{track.title}"/>
-                        <meta itemprop="duration" content={`PT0M${parseInt(track.length)}S`}/>
-                        {/*-- TODO-AUDIO There are some items with two or more links e.g. ogg and mp3, need to find example --*/}
-                        <link itemprop="associatedMedia" href={`https://archive.org/download/${itemid}/${track.name}`}/>{/*--OK to be archive.or absolute--*/}
-                    </div>
-                ))}
+                {
+                    this.playlist.map(track => ( // OK to be absolute or dweb link
+                        <div itemprop="hasPart" itemscope itemtype="http://schema.org/AudioObject">
+                            <meta itemprop="name" content={track.title}/>
+                            <meta itemprop="duration" content={`PT0M${parseInt(track.duration)}S`}/>
+                            {   // Loop over the sources which can be multiple files for the same track.  Note this is limited to playable sources, could add unplayable to playlist if want as seperate field e.g. unplayablesources
+                                track.sources.map((f) => (
+                                    <link itemprop="associatedMedia" href={`https://archive.org/download/${itemid}/${f.name}`}/>
+                                ))
+                            }
+                        </div>
+                    ))
+                }
                 <h1 class="sr-only">{title}</h1>
                 <h2 class="sr-only">Audio Preview</h2>
 
