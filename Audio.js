@@ -7,9 +7,9 @@ import Util from './Util'
 /* Notes on Audio
     - see also https://github.com/internetarchive/dweb-archive/issues/18
 
-    TODO Audio html contains a lot of extra info in the "head" which we can't change on the fly, in particular the player is loaded there
-    TODO Body tag on audio has different classes, in particular has <body navia ia-module tiles responsive jwaudio > and jwaudio might be important
-    TODO Ask Evan why item-details-about is now closed immediately
+    TODO-AUDIO Audio html contains a lot of extra info in the "head" which we can't change on the fly, in particular the player is loaded there
+    TODO-AUDIO Body tag on audio has different classes, in particular has <body navia ia-module tiles responsive jwaudio > and jwaudio might be important
+    TODO-IA Ask Evan why item-details-about is now closed immediately
  */
 
 export default class Audio extends AV {
@@ -90,7 +90,7 @@ export default class Audio extends AV {
                                 <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4 audio-image-carousel-wrapper">
                                     <center>{/*--TODO-AUDIO replace image - see https://github.com/internetarchive/dweb-archive/issues/23--*/}
                                         <img src={item.metadata.thumbnaillinks}
-                                            class="img-responsive"/>{/* TODO-AUDIO was "https://ia600503.us.archive.org/25/items/Gramophone.Music.From.Ceylon/AlbumArtSmall.jpg?cnt=0" */}
+                                            class="img-responsive"/>
                                     </center>
                                 </div>
                                 <div class="col-xs-12 col-sm-6 col-md-7 col-lg-8">

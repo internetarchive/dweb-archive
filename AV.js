@@ -27,8 +27,8 @@ export default class AV extends Details {
                     let original = metadata.name;
                     if (metadata.source === "original") {
                         let secs = parseInt(metadata.length % 60)
-                        res[original] = {   //TODO-AUDIO - set image;
-                            title: metadata.title, //TODO-AUDIO pretty duration
+                        res[original] = {
+                            title: metadata.title,
                             prettyduration: `${parseInt(metadata.length/60)}:${secs < 10 ? "0"+secs : secs}`,
                             original: original,
                             duration: metadata.length,  // In seconds
