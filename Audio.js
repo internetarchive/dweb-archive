@@ -19,7 +19,7 @@ export default class Audio extends AV {
     }
 
     setupPlaylist() {
-        super.setupPlaylist(Util.preferredAudioFormats);
+        super.setupPlaylist("audio");
     }
     static play(elAnchor) {
         // Note - this is redirected from Nav which is a global
@@ -46,6 +46,7 @@ export default class Audio extends AV {
         let title = item.metadata.title
         let imgurl = `https://archive.org/services/img/${itemid}`; //OK as absolute URL as only used as itemprop
         this.setupPlaylist();
+        let af0 = this.playlist[0] && this.playlist[0].sources[0] && this.playlist[0].sources[0].urls;
         let initialPlay = 1;
         let trackCount = 1;
         return (
@@ -95,7 +96,7 @@ export default class Audio extends AV {
                                 </div>
                                 <div class="col-xs-12 col-sm-6 col-md-7 col-lg-8">
                                     <div id="audioContainer" style="text-align: center;">
-                                        <audio id="streamContainer" src={this.playlist[0].sources[0].urls} controls></audio>
+                                        <audio id="streamContainer" src={af0} controls></audio>
                                     </div>
                                     <div id="webtorrentStats" style="color: white; text-align: center;"></div>
                                     <div id="jw6__list" class="jwlistV2"

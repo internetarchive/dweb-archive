@@ -24,7 +24,7 @@ export default class Image extends Details {
     theatreIaWrap() {
         let item = this.item;
         let itemid = item.metadata.identifier; // Shortcut as used a lot
-        let mainArchiveFile = this._list.find((fi) => Util.imageFormats.includes(fi.metadata.format)); // Can be undefined if none included
+        let mainArchiveFile = this._list.find(fi => fi.playable("image")); // Can be undefined if none included
         let detailsURL = `https://archive.org/details/${itemid}`; //This is probably correct to remain pointed at archive.org since used as an itemprop
         let embedurl = `https://archive.org/embed/${itemid}`; //This is probably correct to remain pointed at archive.org since passed to social media
         return (

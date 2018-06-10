@@ -109,7 +109,7 @@ export default class React  {
         /*
         //This method makes use of the full Dweb library, can get any kind of link, BUT doesnt work in Firefox, the image doesn't get rendered.
         let data = await  Transports.p_rawfetch(urls, {verbose});  //Typically will be a Uint8Array
-        let blob = new Blob([data], {type: Util.archiveMimeTypeFromFormat[this.metadata.format]}) // Works for data={Uint8Array|Blob}
+        let blob = new Blob([data], {type: Util.formats[this.metadata.format].mimetype}) // Works for data={Uint8Array|Blob}
         // This next code is bizarre combination needed to open a blob from within an HTML window.
         let objectURL = URL.createObjectURL(blob);
         if (verbose) console.log("Blob URL=",objectURL);
@@ -365,7 +365,7 @@ export default class React  {
                 const af = attrs[name];
                 const videoname = af.metadata.name;
                 //Dont need mimetype currently
-                //const mimetype = Util.archiveMimeTypeFromFormat[af.metadata.format]; // Might be undefined for many formats still
+                //const mimetype = Util.formats[af.metadata.format].mimetype; // Might be undefined for many formats still
                 //if (!mimetype) console.warning("Unknown mimetype for ",af.metadata.format, "on",af.metadata.name);
                 this.loadStream(element, videoname, af, undefined, rel);  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
             } else if (["a.source"].includes(tag + "." + name) && attrs[name] instanceof Object) {

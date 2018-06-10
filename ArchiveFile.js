@@ -37,7 +37,7 @@ export default class ArchiveFile {
         return `${Util.gateway.url_download}${this.itemid}/${this.metadata.name}`;
     }
     async mimetype() {
-       return Util.archiveMimeTypeFromFormat[this.metadata.format];
+       return Util.formats[this.metadata.format].mimetype;
     }
     async data() {
         return await DwebTransports.p_rawfetch(await this.p_urls(), {verbose}); //TODO-TIMEOUT add timeoutMS depending on size of file
@@ -63,10 +63,6 @@ export default class ArchiveFile {
 
 
     }
-
-    downloadable() {
-        return Object.keys(Util.downloadableFormats).includes(this.metadata.format)
-    }
     sizePretty() {
         try {
             return prettierBytes(parseInt(this.metadata.size));
@@ -74,5 +70,17 @@ export default class ArchiveFile {
             console.error("Couldnt get prettierBytes for",this);
             return "???";
         }
+    }
+    istype(type) {
+        // True if specify a type and it matches, or don't specify a type BUT fails if type unrecognized
+        let format = Util.formats[this.metadata.format]
+        if (!format) console.warn("Format", this.metadata.format, "unrecognized")
+        return format && (!type || (format.type === type));
+    }
+    playable(type) {
+        return this.istype(type) && Util.formats[this.metadata.format].playable;
+    }
+    downloadable(type) {
+        return this.istype(type) && !!Util.formats[this.metadata.format].downloadable;
     }
 }

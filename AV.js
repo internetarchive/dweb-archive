@@ -9,8 +9,8 @@ export default class AV extends Details {
         super(itemid, item);
     }
 
-    setupPlaylist(preferredTypes) { //TODO could order the preferredTypes and pick by preference
-        this.avs = this._list.filter(fi => (preferredTypes.includes(fi.metadata.format)));
+    setupPlaylist(type) { //TODO could order the playability and pick by preference
+        this.avs = this._list.filter(af => af.playable(type));  //TODO-VIDEO - refactor to use playlist instead of avs
         if (this.avs.length) {
             this.avs.sort((a, b) => Util.natcompare(a.metadata.name, b.metadata.name));   //Unsure why sorting names, presumably tracks are named alphabetically ?
             /* This was old playlist mapping name to URL but its not clear it ever gets used.
@@ -37,21 +37,21 @@ export default class AV extends Details {
                     } else if (metadata.source === "derivative") { // souce="derivative"
                         original = metadata.original;
                     }
-                    if (Util.preferredAudioFormats.includes(metadata.format)) {
+                    if (af.playable("audio")) {
                         res[original].sources.push({
                             name: metadata.name,
                             file: `http://dweb.archive.org/downloads/${this.itemid}/${metadata.name}`,
                             urls: af,
                             type: metadata.name.split('.').pop(),
                         });
-                    } else if (Util.imageFormats.includes(metadata.format)) {
-                        if (!res[original].image) res[original].image = af;
+                    } else if (af.playable("image")) {
+                        if (!res[original].image) res[original].image = af; // Currently loads with first playable one, Tracey is prepping an exposed service to get a prefered one in metadata
                     }
                 }
                 return res;
             }, {}
         );
-        this.playlist = Object.values(pl);
+        this.playlist = Object.values(pl).filter(p => p.sources.length);
     }
 
 }

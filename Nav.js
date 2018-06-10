@@ -252,11 +252,11 @@ export default class Nav {
                     let switchmediatype = item.metadata.mediatype;
                     if (item.metadata.mediatype === "education") {
                         // Typically miscategorized, have a guess !
-                        if (item.files.find(f => Util.preferredVideoFormats.includes(f.format)))
+                        if (item._list.find(af => af.playable("video")))
                             switchmediatype = "movies";
-                        else if (item.files.find(f => Util.textFormats.includes(f.format)))
+                        else if (item._list.find(af => af.playable("text")))
                             switchmediatype = "texts";
-                        else if (item.files.find(f => Util.imageFormats.includes(f.format)))
+                        else if (item._list.find(af => af.playable("image")))
                             switchmediatype = "image";
                     }
 
