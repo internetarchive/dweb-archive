@@ -74,7 +74,8 @@ export default class ArchiveItem {
         }
     }
 
-    async fetch_query() {
+    async fetch_query({append=false}={}) {
+        // Action a query, return the array of docs found.
         if (this.query) {   // This is for Search, Collection and Home.
             const sort = (this.item && this.item.collection_sort_order) || this.sort
             const url =
@@ -83,11 +84,13 @@ export default class ArchiveItem {
                 //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
             console.log(url);
             const j = await Util.fetch_json(url);
-            this.items = j.response.docs;
+            this.items = append ? this.items.concat(j.response.docs) : j.response.docs;
             this.start = j.response.start;
             this.numFound = j.response.numFound;
+            return j.response.docs
+        } else {
+            return undefined;
         }
-        return this; // For chaining, but note will need to do an "await fetch"
     }
 
 

@@ -293,6 +293,10 @@ export default class Nav {
         Audio.play(elAnchor);
         return false;
     }
+    static searchMore(elAnchor) {
+        Search.searchMore(elAnchor); // Ignore promise returned
+        return false;
+    }
 }
 
 
