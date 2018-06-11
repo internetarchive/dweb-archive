@@ -317,7 +317,7 @@ export default class React  {
 
         Note: This is called back by loadImg after creating the tag.
         Special cases coded here:
-            <a href='./aaa' | href='/aaa' id='tabby-bbb'> => <a href="/arc/archive.org/tabby-bbb" id='tabby-bbb'>
+            <a href='./aaa' | href='/aaa' id='tabby-bbb'> => <a href="/arc/archive.org/aaa" id='tabby-bbb'>
             <audio|video src=ArchiveFile> => loadStream(ArchiveFile)
             <a source=ArchiveFile  => source=ArchiveFile (stored correctly)
             Dont try and catch img.src here, its too late - catch it in loadImg (called from createElement)

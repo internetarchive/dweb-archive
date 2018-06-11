@@ -12,12 +12,20 @@ export default class Account extends Search {
     constructor({itemid=undefined, item=undefined}={}) {
         super({
             query:  'uploader:'+itemid, //TODO-ACCOUNT what should this query be?
-            sort:   '-downloads',   // This will be overridden based on collection_sort_order
+            sort:   '-date',   // This will be overridden based on collection_sort_order
             itemid: itemid,
             item:   item,
         });
     }
 
+    name() {
+        return this.itemid.replace(/_/g,' ').replace('@',''); // Canonical name from id, may have better ways to get this - see @tracey_pooh for case needing this one.
+    }
+    async fetch_query({append=false}={}) {
+        // Subclass ArchiveItem.fetch_query
+        this.query = `uploader:${this.item.metadata.uploader}`;
+        await super.fetch_query({append});
+    }
     wrap() {
         /*
         Wraps all page content
@@ -45,12 +53,12 @@ export default class Account extends Search {
     }
 
     tabbyPosts() {
+        let name = this.name();
         return (
             <div class="container container-ia nopad">
                 <div id="tabby-posts" class="tabby-data hidden row">
                     <div class="box">
-                        <h1>Posts by tracey pooh</h1>
-
+                        <h1>Posts by {name}</h1>
                         {/*-- NOTE: extra div required by IE bec. table width=100% is set --*/}
                         <div>
                             <table class="forumTable  table table-striped table-condensed table-hover">
@@ -61,7 +69,9 @@ export default class Account extends Search {
                                     <td>Replies</td>
                                     <td>Date</td>
                                 </tr>
-                                {/*-- TODO-ACCOUNT this is a loop --*/}
+                                {/*-- TODO-ACCOUNT this is a loop  need query for forum posts--*/}
+                                <tr><td>Still being implemented</td></tr>
+        {/*
                                 <tr valign="top" class="eve forumRow">
                                     <td>
                                         <a href="/post/1089612">Re: Why can't we adjust the volume anymore?</a>
@@ -108,9 +118,12 @@ export default class Account extends Search {
                                         <span class="hidden-md hidden-lg smalldate">Apr 14, 2018 12:29pm</span>
                                     </td>
                                 </tr>
+                                */}
                                 {/* -- End of forum loop */}
                             </table>
+                            {/* TODO-ACCOUNT rethink when have query above
                             <br/><b><a href="/iathreads/forum-display.php?poster=tracey%20pooh&limit=100">View more forum posts</a></b>
+                            */}
                         </div>
                     </div>
                 </div>{/*--/#.tabby-posts--*/}
@@ -119,6 +132,11 @@ export default class Account extends Search {
     }
 
     welcome() {
+        let itemid = this.itemid;
+        let item = this.item
+        let title = item.metadata.title; // Example from @tracey_pooh
+        let imageurls = item.metadata.thumbnaillinks;  // TODO-ACCOUNT Tracey is adding a service to get a better image (larger scale
+        let name = this.name();
         return (
             <div class="welcome container container-ia width-max account-uniform">
                 <div class="container">
@@ -126,21 +144,22 @@ export default class Account extends Search {
                                 <div class="col-xs-11 col-sm-2 welcome-left" style="text-align:center;">
                                     <div id="file-dropper-wrap">
                                         <div id="file-dropper"></div>
-                                        <img id="file-dropper-img" src="/serve/@tracey_pooh/kitteh.png" style="max-width:300px"/>
+                                        <img id="file-dropper-img" src={imageurls} style="max-width:300px"/>
                                     </div>
                                 </div>{/*--/.col-xs-11--*/}
                                 <div class="col-xs-1 col-sm-2 col-sm-push-8 welcome-right">
+                                    {/* probably ok as absolute link since requires ID anyway */}
+                                    {/* Removed onclick="return AJS.modal_go(this,{favorite:1})"  - not compatible with /bookmarks rewrite */}
                                     <a class="stealth"
-                                       href="/bookmarks.php?add_bookmark=1&amp;title=people&amp;mediatype=account&amp;identifier=@tracey_pooh"
-                                       onclick="return AJS.modal_go(this,{favorite:1})"
+                                       href={`/bookmarks.php?add_bookmark=1&amp;title=people&amp;mediatype=account&amp;identifier=${itemid}`}
                                        data-target="#confirm-modal"><span class="iconochive-favorite"
                                                                           aria-hidden="true"></span><span
                                             class="sr-only">favorite</span><span class="hidden-xs-span"> Favorite</span></a><br/>
                                 </div>{/*--/.col-xs-1--*/}
                                 <div class="clearfix visible-xs-block hidden-sm hidden-md hidden-lg"></div>
                                 <div class="col-xs-12 col-sm-8 col-sm-pull-2">
-                                    <h1>tracey pooh</h1>
-                                    <h5 class="account-description">i like code and pretty</h5>
+                                    <h1>{name}</h1>
+                                    <h5 class="account-description">{title}</h5>
                                 </div>{/*--/.col-xs-12--*/}
                     </div>{/*--/.row--*/}
                     {this.tabbys()}
@@ -149,13 +168,14 @@ export default class Account extends Search {
         );
     }
     tabbys() {
+        let itemid = this.itemid;
         return(
             <div class="tabbys tabbys-dynamic">
                 <div class="tabby in">
                     <div>
                         <a id="tabby-uploads-finder"
                            class="stealth tabby-default-finder"
-                           href="/details/@tracey_pooh&tab=uploads"
+                           href={`/details/${itemid}&tab=uploads`}
                            onclick="return AJS.tabby(this,'tabby-uploads')">
                             <span class="tabby-text">UPLOADS</span>
                         </a>
@@ -165,7 +185,7 @@ export default class Account extends Search {
                     <div>
                         <a id="tabby-posts-finder"
                            class="stealth"
-                           href="/details/@tracey_pooh&tab=posts"
+                           href={`/details/${itemid}&tab=posts`}
                            onclick="return AJS.tabby(this,'tabby-posts')">
                             <span class="tabby-text">POSTS</span>
                         </a>
@@ -175,7 +195,7 @@ export default class Account extends Search {
                     <div>
                         <a id="tabby-reviews-finder"
                            class="stealth"
-                           href="/details/@tracey_pooh&tab=reviews"
+                           href={`/details/${itemid}&tab=reviews`}
                            onclick="return AJS.tabby(this,'tabby-reviews')">
                             <span class="tabby-text">REVIEWS</span>
                         </a>
@@ -185,7 +205,7 @@ export default class Account extends Search {
                     <div>
                         <a id="tabby-collections-finder"
                            class="stealth"
-                           href="/details/@tracey_pooh&tab=collections"
+                           href={`/details/${itemid}&tab=collections`}
                            onclick="return AJS.tabby(this,'tabby-collections')">
                             <span class="tabby-text">COLLECTIONS</span>
                         </a>
@@ -195,7 +215,7 @@ export default class Account extends Search {
                     <div>
                         <a id="tabby-loans-finder"
                            class="stealth"
-                           href="/details/@tracey_pooh&tab=loans"
+                           href={`/details/${itemid}&tab=loans`}
                            onclick="return AJS.tabby(this,'tabby-loans')">
                             <span class="tabby-text">LOANS</span>
                         </a>
@@ -205,7 +225,7 @@ export default class Account extends Search {
                     <div>
                         <a id="tabby-web-archives-finder"
                            class="stealth"
-                           href="/details/@tracey_pooh/web-archive"
+                           href={`/details/${itemid}/web-archive`}
                            onclick="return AJS.tabby(this,'tabby-web archives')">
                             <span class="tabby-text hidden-xs-span">WEB ARCHIVES</span>
                             <span class="tabby-text visible-xs-span">WEB</span>

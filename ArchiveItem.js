@@ -75,7 +75,9 @@ export default class ArchiveItem {
     }
 
     async fetch_query({append=false}={}) {
-        // Action a query, return the array of docs found.
+        /*  Action a query, return the array of docs found.
+            Subclassed in Account.js since dont know the query till the metadata is fetched
+            */
         if (this.query) {   // This is for Search, Collection and Home.
             const sort = (this.item && this.item.collection_sort_order) || this.sort
             const url =
