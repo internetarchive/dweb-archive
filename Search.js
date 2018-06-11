@@ -48,7 +48,7 @@ export default class Search extends ArchiveBase {
     }
 
     static searchMore(elAnchor) {
-        elAnchor.source.more();
+        elAnchor.source.more(); // Note this will correctly hit subclasses such as Home
     }
 
     async more() {
