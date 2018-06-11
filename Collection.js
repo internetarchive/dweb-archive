@@ -14,7 +14,7 @@ export default class Collection extends Search {
 
     wrap() {
         /* Wrap the content up: wrap ( TODO-aside; navwrap; #maincontent; welcome; cher-modal; container-tabby-collection-row (TODO-columns-facets; columns-items) (tabby-about; tabby-form)
-        returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
+        returns:      elements tree suitable for adding into another render
          */
         //Note both description & rights need dangerousHTML and \n -> <br/>
         const reviewlink = `/details/${this.itemid}&sort=-reviewdate`; // TODO-LINKS - its not clear how this is used. \

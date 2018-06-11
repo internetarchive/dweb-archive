@@ -238,7 +238,7 @@ export default class Nav {
             history.pushState(historystate, `Internet Archive item ${itemid ? itemid : ""}`, historyloc);
         }
         if (!itemid) {
-            (await new Home(itemid, undefined).fetch()).render(res);
+            (await new Home().fetch()).render(res);
         } else {
             let obj = await new Details(itemid).fetch();
             let item = obj.item;
