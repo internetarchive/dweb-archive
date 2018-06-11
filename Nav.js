@@ -252,11 +252,11 @@ export default class Nav {
                     let switchmediatype = item.metadata.mediatype;
                     if (item.metadata.mediatype === "education") {
                         // Typically miscategorized, have a guess !
-                        if (item.files.find(f => Util.preferredVideoFormats.includes(f.format)))
+                        if (item._list.find(af => af.playable("video")))
                             switchmediatype = "movies";
-                        else if (item.files.find(f => Util.textFormats.includes(f.format)))
+                        else if (item._list.find(af => af.playable("text")))
                             switchmediatype = "texts";
-                        else if (item.files.find(f => Util.imageFormats.includes(f.format)))
+                        else if (item._list.find(af => af.playable("image")))
                             switchmediatype = "image";
                     }
 
@@ -290,10 +290,11 @@ export default class Nav {
 
     static audioPlay(elAnchor) {
         // Used by Audio to play a track - since "Nav" is a global it can access
-        let track = elAnchor.source;
-        let af = track.sources[0].urls;
-        let elAudio = document.getElementById("streamContainer");
-        React.loadStream(elAudio, af.metadata.name, af, undefined, undefined);
+        Audio.play(elAnchor);
+        return false;
+    }
+    static searchMore(elAnchor) {
+        Search.searchMore(elAnchor); // Ignore promise returned
         return false;
     }
 }

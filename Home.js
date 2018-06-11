@@ -27,4 +27,9 @@ export default class Home extends Search {
             <center style={{margin: "35px"}}><span style={{fontSize: "125px"}} className="iconochive-logo"></span></center>
     );
     }
+
+    async more() {
+        console.log("MORE Disabled on Home page because of bug in advancedsearch page=2");
+    }
+
 }

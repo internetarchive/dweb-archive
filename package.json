@@ -27,7 +27,7 @@
     "copy-webpack-plugin": "^4.5.1",
     "http-server": "latest",
     "react": "^16.4.0",
-    "webpack": "^4.10.2",
+    "webpack": "^4.12.0",
     "webpack-cli": "^2.1.4",
     "webpack-dev-server": "^3.1.4"
   },

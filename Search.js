@@ -47,6 +47,20 @@ export default class Search extends ArchiveBase {
         this.page = page;
     }
 
+    static searchMore(elAnchor) {
+        elAnchor.source.more(); // Note this will correctly hit subclasses such as Home
+    }
+
+    async more() {
+        AJS.more_searching = true;
+        this.page++;
+        let items = await this.fetch_query({append: true});   // Appends to this.items
+        let el = document.getElementById("appendTiles");
+        items.forEach(item => el.appendChild(new Tile().render(item)));
+        AJS.tiler();
+        AJS.more_searching = false;
+    }
+
     wrap() {
         /* Wrap the content up: wrap ( TODO-DONATE | navwrap |
         TODO-DETAILS need stuff before nav-wrap1 and after detailsabout and need to check this against Search and Collection examples
@@ -150,7 +164,7 @@ export default class Search extends ArchiveBase {
                             <div style="position:relative">
                                 <div id="ikind-search" class="ikind in">
 
-                                    <div class="results">
+                                    <div class="results" id="appendTiles">
                                         <div class="item-ia mobile-header hidden-tiles" data-id="__mobile_header__">
                                             <div class="views C C1"> <span class="iconochive-eye" aria-hidden="true"></span><span class="sr-only">eye</span> </div>
                                             <div class="C234">
@@ -166,9 +180,7 @@ export default class Search extends ArchiveBase {
                                     </div>{/*--/.results--*/}
                                     <center class="more_search">
                                     {/*--TODO-DETAILS check what is happening in AJS.more_search with this URL and can use page: this.page+1--*/}
-                                    <a class="btn btn-info btn-sm" style="visibility:hidden"
-                                       onclick="return AJS.more_search(this,{`/search.php?query=${encodeURIComponent(encodedQuery)}&page=`},1)" href="#">MORE
-                                        RESULTS</a><br/>
+                                    <a class="btn btn-info btn-sm" style="visibility:hidden" source={this} onclick="return Nav.searchMore(this)" href="#">MORE RESULTS</a><br/>
                                     <span class="more-search-fetching">Fetching more results <img src="./images/loading.gif"/></span>
                                     </center>
                                 </div>

@@ -209,6 +209,7 @@ export default class Collection extends Search {
     }
     archive_setup_push() {
         // Note the archive_setup.push stuff is subtly different from that for 'search'
+        let query = this.query;
         archive_setup.push(function() {
             AJS.date_switcher(`&nbsp;<a href="/search.php?query=${query}&amp;sort=-publicdate"><div class="date_switcher in">Date Archived</div></a> <a href="/search.php?query=${query}&amp;sort=-date"><div class="date_switcher">Date Published</div></a> <a href="/search.php?query=${query}&amp;sort=-reviewdate"><div class="date_switcher">Date Reviewed</div></a> `);
             AJS.lists_v_tiles_setup('collection');

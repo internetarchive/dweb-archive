@@ -11,7 +11,7 @@ export default class Video extends AV {
         this.itemtype = "http://schema.org/VideoObject";
     }
     setupPlaylist() {
-        super.setupPlaylist(Util.preferredVideoFormats);  // Setup this.avs
+        super.setupPlaylist("video");  // Setup this.avs
     }
 
     theatreIaWrap() {

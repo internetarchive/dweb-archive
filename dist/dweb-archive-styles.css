@@ -16,3 +16,13 @@
 .transportstatus2 {color: yellow}
 .transportstatus3 {color: black}
 .transportstatus4 {color: purple}
+
+/* These edits are made to archive-min.js as they are bugs in the CSS rather than changes.
+   because that file is minimized its hard to see
+   if update archive-min.js will need to reapply, or can apply here*/
+//-body.ia-module.tiles .row>.tilebars .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px
+//+body.ia-module.tiles .row>.tilebars .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px;width:45px;width:45px}
+//-body.ia-module.tiles .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px}
+//+body.ia-module.tiles .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px;width:45px;width:45px}
+//-body.ia-module.tiles .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px}
+//+body.ia-module.tiles .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px;width:45px;width:45px}

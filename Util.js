@@ -163,34 +163,31 @@ class Util {
 }
 
 /* === Configuration info ==== */
-Util.archiveMimeTypeFromFormat = {
-        JPEG: "image/jpeg",
-        PNG: "image/png",
-        "h.264": "video/mp4"
-    };   //TODO expand to other formats - see mimetypes list from petabox
-Util.imageFormats = ['JPEG', 'PNG', 'Animated GIF'];     //TODO expand to other formats - see mimetypes list from petabox
-Util.videoFormats = ['h.264','512Kb MPEG4', '256Kb MPEG4', '64Kb MPEG4', 'MPEG4', 'MPEG2', "MPEG1"];
-Util.preferredAudioFormats = ['VBR MP4',"Ogg Vorbis"];
-Util.preferredVideoFormats = ['h.264','512Kb MPEG4', '256Kb MPEG4', 'MPEG4'];
-Util.textFormats = ['PDF'];
-Util.downloadableFormats = {
-    //'JPEG Thumb': 'JPEG THUMB',
-    'JPEG 250px Thumb': 'JPEG 250PX THUMB',
-    "JPEG 500px Thumb": 'JPEG 500PX THUMB',
-    'Archive BitTorrent': 'TORRENT',
-    "JPEG": "JPEG",
-    "PNG": "PNG",
-    'Animated GIF': 'Animated GIF',
-    "h.264": "H.264",
-    "512Kb MPEG4": "512KB MPEG",
-    "256Kb MPEG4": "256KB MPEG",
-    "64Kb MPEG4": "64KB MPEG4",
-    "MPEG4": "MPEG4",
-    "MPEG2": "MPEG2",
-    "MPEG1": "MPEG1",
-    "VBR MP3": "VBR MP3",
-    "Ogg Vorbis": "OGG VORBIS"
+
+//TODO expand to other formats - see mimetypes list from petabox
+Util.formats = {
+    'VBR MP3':            { type: "audio",    mimetype: "audio/mpeg3",     playable: true,  downloadable: "VBR MP3"},
+    'Ogg Vorbis':         { type: "audio",    mimetype: "audio/TODO",      playable: true,  downloadable: "OGG VORBIS"},
+    'JPEG':               { type: "image",    mimetype: "image/jpeg",      playable: true,  downloadable: "JPEG" },
+    'PNG':                { type: "image",    mimetype: "image/png",       playable: true,  downloadable: "PNG"},
+    "Animated GIF":       { type: "image",    mimetype: "image/gif",       playable: true,  downloadable: "Animated GIF" },
+    'JPEG Thumb':         { type: "image",    mimetype: "image/jpeg",      playable: false, downloadable: 'JPEG THUMB' },
+    'JPEG 250px Thumb':   { type: "image",    mimetype: "image/jpeg",      playable: false, downloadable: 'JPEG 250PX THUMB' },
+    "JPEG 500px Thumb":   { type: "image",    mimetype: "image/jpeg",      playable: false, downloadable: 'JPEG 500PX THUMB' },
+    'PDF':                { type: "text",     mimetype: "application/pdf", playable: true,  downloadable: "PDF" },
+    'HTML':               { type: "text",     mimetype: "text/html",       playable: false, downloadable: "HTML" },
+    "h.264":              { type: "video",    mimetype: "video/mp4",       playable: true,  downloadable: "H.264" },
+    '512Kb MPEG4':        { type: "video",    mimetype: "video/mp4",       playable: true,  downloadable: "512KB MPEG" },
+    '256Kb MPEG4':        { type: "video",    mimetype: "video/mp4",       playable: true,  downloadable: "256KB MPEG" },
+    'MPEG4':              { type: "video",    mimetype: "video/mp4",       playable: true,  downloadable: "MPEG4" },
+    '64Kb MPEG4':         { type: "video",    mimetype: "video/mp4",       playable: false, downloadable: "64KB MPEG" },
+    'MPEG2':              { type: "video",    mimetype: "video/mpeg",      playable: false, downloadable: "MPEG2" },
+    'MPEG1':              { type: "video",    mimetype: "video/mpeg",      playable: false, downloadable: "MPEG1" },
+    'Archive BitTorrent': { type: "other", mimetype: "application/x-bittorrent", playable: false, downloadable: 'TORRENT' },
+    'Unknown':            { type: "unknown",  mimetype: "unknown",         playable: false, downloadable:  undefined },
+    'Metadata':           { type: "other",    mimetype: "TODO",            playable: false, downloadable:  undefined }
 }
+
 Util.gateway = {
         "url_download": "https://gateway.dweb.me/arc/archive.org/download/",
         "url_servicesimg": "https://gateway.dweb.me/arc/archive.org/thumbnail/",
