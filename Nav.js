@@ -14,6 +14,7 @@ import Texts from './Texts'
 import Image from './Image'
 import Audio from './Audio'
 import Video from './Video'
+import Account from './Account'
 import DetailsError from './DetailsError'
 import DownloadDirectory from './DownloadDirectory'
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
@@ -277,6 +278,8 @@ export default class Nav {
                         case "movies":
                             new Video(itemid, item).render(res);
                             break;
+                        case "account":
+                            return (await new Account({itemid, item}).fetch()).render(res);
                         default:
                             //TODO Not yet supporting software, zotero (0 items); data; web
                             new DetailsError(itemid, item, `Unsupported mediatype: ${item.metadata.mediatype}`).render(res);

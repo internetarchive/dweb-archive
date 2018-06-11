@@ -34,7 +34,7 @@ export default class Search extends ArchiveBase {
     Inherited from ArchiveBase: item
     items   List of items found
      */
-    constructor({query='*:*', sort='', and='', limit=75, banner='', page=1, item=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
+    constructor({query='*:*', sort='', and='', limit=75, page=1, item=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
         super(itemid, {item: item});
         if (typeof(query) === "object") { // form { creator: "Foo bar" ... }
             // This next line uses JSON.stringify instead of toString() because we want  '"abc"' and '1' i.e. quotes if its a string
@@ -64,7 +64,7 @@ export default class Search extends ArchiveBase {
     wrap() {
         /* Wrap the content up: wrap ( TODO-DONATE | navwrap |
         TODO-DETAILS need stuff before nav-wrap1 and after detailsabout and need to check this against Search and Collection examples
-        returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
+        returns:      JSX elements tree suitable for adding into another render
          */
         //TODO-DETAILS is putting the description (in 'htm' in as raw html which would be a nasty security hole since that comes from user !
         return (
@@ -194,7 +194,7 @@ export default class Search extends ArchiveBase {
         let self = this;
         archive_setup.push(function() {
             AJS.date_switcher(`&nbsp;<a href="/search.php?query=${encodeURIComponent(self.query)}&amp;sort=-publicdate"><div class="date_switcher in">Date Archived</div></a> <a href="/search.php?query=${encodeURIComponent(self.query)}&amp;sort=-date"><div class="date_switcher">Date Published</div></a> <a href="/search.php?query=${encodeURIComponent(self.query)}&amp;sort=-reviewdate"><div class="date_switcher">Date Reviewed</div></a> `);
-            AJS.lists_v_tiles_setup('search');
+            AJS.lists_v_tiles_setup('search');  //TODO-DETAILS this line should for example be 'account' for Account
             AJS.popState('search');
             $('div.ikind').css({visibility:'visible'});
             AJS.tiler();      // Note Traceys code had AJS.tiler('#ikind-search') but Search and Collections examples have it with no args

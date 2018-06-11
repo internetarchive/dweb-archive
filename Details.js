@@ -27,8 +27,10 @@ export default class Details extends ArchiveBase {
     }
 
     wrap() {
-        /* Wrap the content up checked on mbid (Red Shift) image:  wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | TODO-ALSOFOUND  | TODO-ANALYTICS )
-        returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
+        /* Wrap the content up checked on mbid (Red Shift)
+        context: body wrap(
+        content: (on image)  wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | TODO-ALSOFOUND  | TODO-ANALYTICS )
+        returns: elements tree suitable for adding into another render
          */
         return (
             <div id="wrap" itemscope itemtype={this.itemtype}>
