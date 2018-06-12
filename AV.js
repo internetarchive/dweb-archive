@@ -24,18 +24,16 @@ export default class AV extends Details {
         let pl = this._list.reduce( (res, af) => {
                 let metadata = af.metadata;
                 if (["original","derivative"].includes(metadata.source)) {
-                    let original = metadata.name;
+                    let original = ((metadata.source === "derivative") ? metadata.original : metadata.name );
+                    if (!res[original]) {
+                        res[original] = { title: "UNKNOWN", original: original, sources: [] }; // Create place to push this file whether its original or derivative
+                    }
+                    let orig = res[original];
                     if (metadata.source === "original") {
-                        let secs = parseInt(metadata.length % 60)
-                        res[original] = {
-                            title: metadata.title,
-                            prettyduration: `${parseInt(metadata.length/60)}:${secs < 10 ? "0"+secs : secs}`,
-                            original: original,
-                            duration: metadata.length,  // In seconds
-                            sources: []
-                        };
-                    } else if (metadata.source === "derivative") { // souce="derivative"
-                        original = metadata.original;
+                        orig.title = metadata.title;
+                        let secs = parseInt(metadata.length % 60);
+                        orig.prettyduration = `${parseInt(metadata.length / 60)}:${secs < 10 ? "0" + secs : secs}`;
+                        orig.duration = metadata.length;  // In seconds
                     }
                     if (af.playable("audio")) {
                         res[original].sources.push({
