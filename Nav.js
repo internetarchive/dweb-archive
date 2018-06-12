@@ -214,6 +214,7 @@ export default class Nav {
 
     static async factory(itemid, res, {wanthistory=true, downloaddirectory=false}={}) {
         console.group("Nav.factory",itemid);
+        window.loopguard = itemid;  // Tested in dweb-transport/httptools, will cancel any old loops - this is a kludge to get around a Chrome bug/feature
         if (wanthistory) {
             let historystate = {itemid}; //TODO-HISTORY may want  to store verbose, transports etc here
             let cnp = []
