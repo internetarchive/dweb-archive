@@ -175,6 +175,7 @@ Util.formats = {
     "JPEG 500px Thumb":   { type: "image",    mimetype: "image/jpeg",           playable: false, downloadable: 'JPEG 500PX THUMB' },
     'Spectrogram':        { type: "image",    mimetype: "image/png",            playable: false, downloadable: "SPECTROGRAM" },
     'Item Image':         { type: "image",    mimetype: "image/jpeg",           playable: true,  downloadable: "JPEG" }, // Note we might be lying about the type - at least some are JPG
+    'Thumbnail':          { type: "image",    mimetype: "image/jpeg",           playable: true,  downloadable: "JPEG" }, // Note we might be lying about the type - at least some are JPG
     'PDF':                { type: "text",     mimetype: "application/pdf",      playable: true,  downloadable: "PDF" },
     'HTML':               { type: "text",     mimetype: "text/html",            playable: false, downloadable: "HTML" },
     'DjVuTXT':            { type: "text",     mimetype: "text/plain",           playable: false, downloadable: "FULL TEXT" },
