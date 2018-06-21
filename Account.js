@@ -12,7 +12,7 @@ export default class Account extends Search {
     constructor({itemid=undefined, item=undefined}={}) {
         super({
             query:  'uploader:'+itemid, //TODO-ACCOUNT what should this query be?
-            sort:   '-date',   // This will be overridden based on collection_sort_order
+            sort:   '-publicdate',   // This will be overridden based on collection_sort_order
             itemid: itemid,
             item:   item,
         });
@@ -23,7 +23,8 @@ export default class Account extends Search {
     }
     async fetch_query({append=false}={}) {
         // Subclass ArchiveItem.fetch_query
-        this.query = `uploader:${this.item.metadata.uploader}`;
+        this.query = `uploader:"${this.item.metadata.uploader}"`;
+        this.sort = '-publicdate';
         await super.fetch_query({append});
     }
     wrap() {
