@@ -34,12 +34,16 @@
 <script>
     $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
 
-    async function main({query=undefined, item=undefined}={}) {
+    async function main({query=undefined, item=undefined, download=false}={}) {
         await DwebTransports.p_connect({statuselement: document.getElementById("statuselement"), transports: searchparams.getAll("transport"), paused: searchparams.getAll("paused")});
         if (query) {
             Nav.nav_search(query)
         } else if (item) {
-            Nav.nav_details(item);
+            if (download) { // Note only works for downloading items, not files - can add later if reqd
+                Nav.nav_downloaddirectory(item);
+            } else {
+                Nav.nav_details(item);
+            }
         } else {
             Nav.nav_home();
         }
@@ -57,11 +61,12 @@
     //Nav.nav_home();
     //Nav.nav_details("mbid-b105f712-d75e-4d0a-a9c5-bf1948461e2b") // Image (Red Shift)
     var searchparams = new URL(window.location.href).searchParams;
-    i = location.pathname.indexOf("/details/");
+    i = location.pathname.indexOf("/details/") || location.pathname.indexOf("/download/");
     var verbose = searchparams.get("verbose") || false;  // Anything specified for verbose is true (could truthify buy no need)
     main({
         item: (i > -1) ? location.pathname.slice(i + 9) : searchparams.get("item"),
-        query: searchparams.get("query")
+        query: searchparams.get("query"),
+        download: (location.pathname.indexOf("/download/") > -1) || searchparams.get("download") || false
     });
 </script>
 

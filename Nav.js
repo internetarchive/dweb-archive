@@ -168,7 +168,7 @@ export default class Nav {
         q = s.query;    // Flattened from object to string
         if (wanthistory) {
             let historystate = {query: q}; //TODO-HISTORY may want  to store verbose, transports etc here
-            let cnp = []
+            let cnp = [];
             cnp.push(await this.pausedParm()); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
             // Add any other searchparams back in, especially "tab"
             for (let sp of searchparams) {
@@ -179,7 +179,7 @@ export default class Nav {
             let historyloc;
             cnp.push(verbose ? "verbose=true": "");
             cnp.push(`query=${q}`);
-            cnp = cnp.filter(p => !!p).join('&')
+            cnp = cnp.filter(p => !!p).join('&');
             if (window.location.origin === "file://") {
                 historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`
             } else { //Might not work on http, this is intended for SW
@@ -217,7 +217,7 @@ export default class Nav {
         window.loopguard = itemid;  // Tested in dweb-transport/httptools, will cancel any old loops - this is a kludge to get around a Chrome bug/feature
         if (wanthistory) {
             let historystate = {itemid}; //TODO-HISTORY may want  to store verbose, transports etc here
-            let cnp = []
+            let cnp = [];
             cnp.push(await this.pausedParm()); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
             // Add any other searchparams back in, especially "tab"
             for (let sp of searchparams) {
@@ -227,14 +227,17 @@ export default class Nav {
             // See notes on async_factory about history.pushState
             let historyloc;
             cnp.push(verbose ? "verbose=true": "");
-            if ((window.location.origin === "file://") && itemid) cnp.push(`item=${itemid}`);   // Need item id parameter on local files
-            cnp = cnp.filter(p => !!p).join('&')
+            if (window.location.origin === "file://") {
+                if (itemid) cnp.push(`item=${itemid}`);   // Need item id parameter on local files
+                if (downloaddirectory) cnp.push('download=1');   // Need item id parameter on local files
+            }
+            cnp = cnp.filter(p => !!p).join('&');
             // History is tricky .... take care of: SW (with Base set) \ !SW; file | http; cases
             // when loaded from file, non SW window.location.origin = document.location.origin = "file://" and document.baseURI is unset
             if (window.location.origin === "file://") {
-                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`
+                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`;
             } else {
-                historyloc = `${window.location.origin}/arc/archive.org/details${itemid ? "/"+itemid :""}?${cnp}`
+                historyloc = `${window.location.origin}/arc/archive.org/${downloaddirectory ? "download" : "details"}${itemid ? "/"+itemid :""}?${cnp}`;
             }
             console.log("Writing history:", historyloc);
             history.pushState(historystate, `Internet Archive item ${itemid ? itemid : ""}`, historyloc);
