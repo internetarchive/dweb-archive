@@ -187,6 +187,7 @@ Util.formats = {
     '64Kb MPEG4':         { type: "video",    mimetype: "video/mp4",            playable: false, downloadable: "64KB MPEG" },
     'MPEG2':              { type: "video",    mimetype: "video/mpeg",           playable: false, downloadable: "MPEG2" },
     'MPEG1':              { type: "video",    mimetype: "video/mpeg",           playable: false, downloadable: "MPEG1" },
+    'Ogg Video':          { type: "video",    mimetype: "video/ogg",            playable: true,  downloadable: "OGG VIDEO" },
     'Archive BitTorrent': { type: "other",    mimetype: "application/x-bittorrent", playable: false, downloadable: 'TORRENT' },
     'Unknown':            { type: "unknown",  mimetype: "unknown",              playable: false, downloadable:  undefined },
     'Metadata':           { type: "other",    mimetype: "TODO",                 playable: false, downloadable:  undefined },
