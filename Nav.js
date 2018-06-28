@@ -92,10 +92,12 @@ export default class Nav {
                     <span className="iconochive-search" aria-hidden="true"></span>
                     <span className="sr-only">search</span>
                   </a>
-                  <div>
-                    <form role="search" onSubmit="Nav.nav_search(this.elements[0].value); return 0;">
+                  <div class="searchbar">
+                    <form  class="search-form js-search-form" role="search" onSubmit="Nav.nav_search(this.elements[0].value); return 0;"
+                        data-event-form-tracking="TopNav|SearchForm" data-wayback-machine-search-url="https://web.archive.org/web/*/">
                       <label htmlFor="search-bar-2" className="sr-only">Search the Archive</label>
-                      <input id="search-bar-2" placeholder="Search" type="text" name="query" value=""/>
+                      <input id="search-bar-2" class="js-search-bar" placeholder="Search" type="text" name="search" value=""
+                        aria-controls="navbar_search_options" aria-label="Search the Archive. Filters and Advanced Search available below."/>
                       <input type="submit" value="Search"/>
                     </form>
                   </div>
