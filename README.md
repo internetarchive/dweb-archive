@@ -15,8 +15,8 @@ to support the decentralized web.
 ## Installation
 ### All cases
 ```
-git clone git+https://git@github.com/internetarchive/dweb-archive.git
-cd dweb-transport
+git clone https://git@github.com/internetarchive/dweb-archive.git
+cd dweb-archive
 
 # install the dependencies including IPFS & WebTorrent and dweb-transports and dweb-objects
 npm install  
@@ -68,10 +68,10 @@ Build (webpack) the bundles and copy needed files to dist/
 
 ### Repos:
 * *dweb-transports:* Common API to underlying transports (http, webtorrent, ipfs, yjs)
-* *dweb-objects:* Object model for Dweb inc Lists, Authentication, Key/Value, Naming
+* *dweb-objects:* Object model for Dweb inc Lists, Authentication, Key/Value, Naming and example html for these
 * *dweb-serviceworker:* Run Transports in ServiceWorker (experimental)
 * *dweb-archive:* Decentralized Archive webpage and bootstrapping
-* *dweb-transport:* Original Repo, still includes examples but being split into smaller repos
+* *dweb-transport:* Original Repo, still has some half-complete projects
 
 ## Directory structure here
 * dist - where files needed by dweb-transport are located
