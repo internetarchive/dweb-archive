@@ -175,6 +175,7 @@ Util.formats = {
     "JPEG 500px Thumb":   { type: "image",    mimetype: "image/jpeg",           playable: false, downloadable: 'JPEG 500PX THUMB' },
     'Spectrogram':        { type: "image",    mimetype: "image/png",            playable: false, downloadable: "SPECTROGRAM" },
     'Item Image':         { type: "image",    mimetype: "image/jpeg",           playable: true,  downloadable: "JPEG" }, // Note we might be lying about the type - at least some are JPG
+    'Thumbnail':          { type: "image",    mimetype: "image/jpeg",           playable: true,  downloadable: "JPEG" }, // Note we might be lying about the type - at least some are JPG
     'PDF':                { type: "text",     mimetype: "application/pdf",      playable: true,  downloadable: "PDF" },
     'HTML':               { type: "text",     mimetype: "text/html",            playable: false, downloadable: "HTML" },
     'DjVuTXT':            { type: "text",     mimetype: "text/plain",           playable: false, downloadable: "FULL TEXT" },
@@ -186,6 +187,7 @@ Util.formats = {
     '64Kb MPEG4':         { type: "video",    mimetype: "video/mp4",            playable: false, downloadable: "64KB MPEG" },
     'MPEG2':              { type: "video",    mimetype: "video/mpeg",           playable: false, downloadable: "MPEG2" },
     'MPEG1':              { type: "video",    mimetype: "video/mpeg",           playable: false, downloadable: "MPEG1" },
+    'Ogg Video':          { type: "video",    mimetype: "video/ogg",            playable: true,  downloadable: "OGG VIDEO" },
     'Archive BitTorrent': { type: "other",    mimetype: "application/x-bittorrent", playable: false, downloadable: 'TORRENT' },
     'Unknown':            { type: "unknown",  mimetype: "unknown",              playable: false, downloadable:  undefined },
     'Metadata':           { type: "other",    mimetype: "TODO",                 playable: false, downloadable:  undefined },
@@ -196,11 +198,11 @@ Util.formats = {
 }
 
 Util.gateway = {
-        "url_download": "https://gateway.dweb.me/arc/archive.org/download/",
-        "url_servicesimg": "https://gateway.dweb.me/arc/archive.org/thumbnail/",
-        "url_torrent": "https://gateway.dweb.me/arc/archive.org/torrent/",
-        "url_metadata": "https://gateway.dweb.me/arc/archive.org/metadata/",
-        "url_advancedsearch": "https://gateway.dweb.me/arc/archive.org/advancedsearch"
+        "url_download": "https://dweb.me/arc/archive.org/download/",
+        "url_servicesimg": "https://dweb.me/arc/archive.org/thumbnail/",
+        "url_torrent": "https://dweb.me/arc/archive.org/torrent/",
+        "url_metadata": "https://dweb.me/arc/archive.org/metadata/",
+        "url_advancedsearch": "https://dweb.me/arc/archive.org/advancedsearch"
 }
 // minified FROM http://sourcefrog.net/projects/natsort/natcompare.js
 function isWhitespaceChar(B){var A;A=B.charCodeAt(0);if(A<=32){return true;}else{return false;}}function isDigitChar(B){var A;A=B.charCodeAt(0);if(A>=48&&A<=57){return true;}else{return false;}}function compareRight(E,B){var G=0;var F=0;var D=0;var C;var A;for(;;F++,D++){C=E.charAt(F);A=B.charAt(D);if(!isDigitChar(C)&&!isDigitChar(A)){return G;}else{if(!isDigitChar(C)){return -1;}else{if(!isDigitChar(A)){return +1;}else{if(C<A){if(G==0){G=-1;}}else{if(C>A){if(G==0){G=+1;}}else{if(C==0&&A==0){return G;}}}}}}}}function natcompare(I,H){var C=0,A=0;var D=0,B=0;var F,E;var G;while(true){D=B=0;F=I.charAt(C);E=H.charAt(A);while(isWhitespaceChar(F)||F=="0"){if(F=="0"){D++;}else{D=0;}F=I.charAt(++C);}while(isWhitespaceChar(E)||E=="0"){if(E=="0"){B++;}else{B=0;}E=H.charAt(++A);}if(isDigitChar(F)&&isDigitChar(E)){if((G=compareRight(I.substring(C),H.substring(A)))!=0){return G;}}if(F==0&&E==0){return D-B;}if(F<E){return -1;}else{if(F>E){return +1;}}++C;++A;}};

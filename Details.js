@@ -340,8 +340,8 @@ export default class Details extends ArchiveBase {
                     </div>{/*--/.col-md-10--*/}
                     <div class="col-sm-4 thats-right item-details-archive-info">
                         {/*TODO need section class=boxy item-stats-summary- not obvious where data from, its not in metadata */}
-                        <div class="boxy quick-down">
-                            <div class="download-button">DOWNLOAD OPTIONS</div>
+                        <section class="boxy item-download-options">
+                            <div class="download-button" role="heading" aria-level="5">DOWNLOAD OPTIONS</div>
                             {Object.keys(downloadableFilesDict).map(k => (
                                 <div class="format-group">
                                     <div class="summary-rite">
@@ -373,7 +373,7 @@ export default class Details extends ArchiveBase {
                                 <a class="boxy-ttl" href={downloadURL} onClick={`Nav.nav_downloaddirectory("${itemid}"); return false;`}>SHOW ALL</a>{/*TODO-LINK this is an absolute link*/}
                                 <br clear="all" class="clearfix"/>
                             </div>
-                        </div>
+                        </section>
             
                         <div class="boxy collection-list">
                             <section class="quick-down collection-list">
