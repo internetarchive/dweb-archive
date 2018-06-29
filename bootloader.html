@@ -77,7 +77,7 @@ Name:&nbsp;<input type="text" class="formbox" id="urlorname" placeholder="/arc/a
     }
     async function p_bootname(name, {search_supplied=undefined}={}) {
         document.getElementById("urlorname").value = name;
-        statusupdate("Resolving name: ",name,);   // Appears after loading
+        statusupdate("Resolving name: ",name, "?", search_supplied || "");   // Appears after loading
         try {
             await DwebObjects.Domain.p_resolveAndBoot(name, {search_supplied, verbose})
         } catch(err) {  // If cant resolve to leaf, or boot fails
