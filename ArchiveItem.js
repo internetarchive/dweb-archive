@@ -64,12 +64,18 @@ export default class ArchiveItem {
             */
             // Fetch via Domain record - the dweb:/arc/archive.org/metadata resolves into a table that is dynamic on gateway.dweb.me
             const name = `dweb:/arc/archive.org/metadata/${this.itemid}`;
-            let m = await DwebTransports.p_rawfetch([name], {verbose, timeoutMS: 5000}); // Using Transports as its multiurl and might not be HTTP urls
-            m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
-            console.assert(m.metadata.identifier === this.itemid);
-            this.item = m;
-            this._listLoad();   // Load _list with ArchiveFile
-            if (verbose) console.log("Got metadata for " + this.itemid);
+            // Fetch using Transports as its multiurl and might not be HTTP urls
+            let m;
+            try {
+                m = await DwebTransports.p_rawfetch([name], {verbose, timeoutMS: 5000});    //TransportError if all urls fail (e.g. bad itemid)
+                m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
+                console.assert(m.metadata.identifier === this.itemid);
+                this.item = m;
+                this._listLoad();   // Load _list with ArchiveFile
+                if (verbose) console.log("Got metadata for " + this.itemid);
+            } catch(err) {
+                console.warn("Unable to get metadata for", this.itemid, err);
+            }
             if (verbose) console.groupEnd();
         }
     }
