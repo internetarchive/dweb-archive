@@ -249,7 +249,7 @@ export default class Nav {
         } else {
             let obj = await new Details(itemid).fetch();
             let item = obj.item;
-            if (!item.metadata) {
+            if (!(item && item.metadata)) {
                 new DetailsError(itemid, item, `item ${itemid} cannot be found or does not have metadata`).render(res);
             } else {
                 if (downloaddirectory) {
