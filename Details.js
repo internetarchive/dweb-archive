@@ -355,7 +355,7 @@ export default class Details extends ArchiveBase {
                                         onclick="Nav.nav_download(this)"
                                         title={k}
                                         data-toggle="tooltip" data-placement="auto left" data-container="body" target="_blank">{/*--new window to persist dweb--*/}
-                                        {Util.formats[k].downloadable} <span class="iconochive-download" aria-hidden="true"></span><span class="sr-only">download</span>
+                                        {Util.formats("format", k).downloadable} <span class="iconochive-download" aria-hidden="true"></span><span class="sr-only">download</span>
                                     </a>
                                 </div>
 
