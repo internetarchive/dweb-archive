@@ -27,9 +27,9 @@
     "copy-webpack-plugin": "^4.5.2",
     "http-server": "latest",
     "react": "^16.4.1",
-    "webpack": "^4.16.1",
+    "webpack": "^4.16.2",
     "webpack-cli": "^2.1.4",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.1.5"
   },
   "homepage": "https://github.com/internetarchive/dweb-archive#readme",
   "keywords": [],
@@ -41,9 +41,9 @@
     "url": "git://github.com/internetarchive/dweb-archive.git"
   },
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "webpack --mode development",
     "server": "http-server",
     "setuphttp": "ln -s ../node_modules/dweb-transports/dist/dweb-transports-bundle.js dist; ln -s ../node_modules/dweb-objects/dist/dweb-objects-bundle.js dist;"
   },
-  "version": "0.1.0"
+  "version": "0.1.1"
 }
