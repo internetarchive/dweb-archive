@@ -370,7 +370,7 @@ export default class Details extends ArchiveBase {
                                                                                                 aria-hidden="true"></span><span
                                             class="sr-only">download</span> {originalFilesCount} Original</a><br/>
                                 </div>
-                                <a class="boxy-ttl" href={downloadURL} onClick={`Nav.nav_downloaddirectory("${itemid}"); return false;`}>SHOW ALL</a>{/*TODO-LINK this is an absolute link*/}
+                                <a class="boxy-ttl" href={downloadURL}>SHOW ALL</a>{/*Link absolute, but will be captured by onclick*/}
                                 <br clear="all" class="clearfix"/>
                             </div>
                         </section>

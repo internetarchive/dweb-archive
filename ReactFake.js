@@ -353,6 +353,9 @@ export default class React  {
                     }
                     else if (href.startsWith("dweb:") && (name === "href")) {
                         possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href, {verbose}); return false;';
+                    } else if (href.indexof("/download/") >= 0) {
+                        let dirname =  href.slice(href.indexof("/download/")+10);
+                        possibleOnclick = `Nav.nav_downloaddirectory("${dirname}"); return false;`
                     }
                     if (possibleOnclick) {
                         if (attrs["onclick"] || ("onclick" in attrs)) {
