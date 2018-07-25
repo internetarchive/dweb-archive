@@ -26,6 +26,9 @@ if (typeof(Window) === "undefined") {
 }
 */
 
+const searchConfig = {
+    limitperpage: 30,  // How many to retrieve per page, smaller numbers load quicker, but then scroll down will have to get next page
+}
 export default class Search extends ArchiveBase {
     /*
     Superclass for Searches - including Collections & Home
@@ -34,7 +37,7 @@ export default class Search extends ArchiveBase {
     Inherited from ArchiveBase: item
     items   List of items found
      */
-    constructor({query='*:*', sort='', and='', limit=75, page=1, item=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
+    constructor({query='*:*', sort='', and='', limit=searchConfig.limitperpage, page=1, item=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
         super(itemid, {item: item});
         if (typeof(query) === "object") { // form { creator: "Foo bar" ... }
             // This next line uses JSON.stringify instead of toString() because we want  '"abc"' and '1' i.e. quotes if its a string
