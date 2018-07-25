@@ -104,6 +104,7 @@ export default class Util {
         url:   to be fetched - construct CORS safe JSON enquiry.
         throws: TypeError if cant fetch
         throws: Error if fetch doesnt return JSON.
+        throws: Error if fail to fetch
         resolves to: Decoded json response
          */
         let response = await fetch(new Request(url, // Throws TypeError on failed fetch
@@ -122,8 +123,10 @@ export default class Util {
                 let t = response.text(); // promise resolving to text
                 throw new Error(`Unable to fetch, return was not JSON - got: ${response.headers.get('Content-Type')} ${t}`);
             }
-        }   // Note - if copy this for binary files, make sure to look at TransportHTTP which uses response.arrayBuffer
-
+        } else { // response not OK (some files e.g. https://dweb.me/arc/archive.org/metadata/kaled_jalil/001.mp3 get !response.ok instead of error
+            // Note - if copy this for binary files, make sure to look at TransportHTTP which uses response.arrayBuffer
+            throw new Error(`failed to fetch ${url} message=${response.status} ${response.statusText}`);
+        }
     }
     static metaFromUpdater({uploader=undefined, email=undefined}={}) {
         // Need to be able to convert email to uploader
