@@ -117,7 +117,7 @@ export default class React  {
         el.src = objectURL;
         */
         if (verbose) console.log(`Loading Image ${urls}`);
-        urls = await this.p_resolveUrls(urls, rel); // Handles a range of urls include ArchiveFile
+        urls = await this.p_resolveUrls(urls, rel); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
         urls = await DwebTransports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
         // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
         let fileurl = urls.find(u => u.startsWith("file"))
@@ -231,24 +231,28 @@ export default class React  {
             // If can createReadStream (IPFS when fixed; webtorrent) => rendermedia
             // If http => video src
             // Default fetch as bytes and
-            let magneturl = urls.find(u => u.includes('magnet:'));
-            if ((DwebTransports.type === "ServiceWorker")  && magneturl) {
-                el.src = magneturl.replace('magnet:',`${window.origin}/magnet/`);
-            } else {
-                const streamUrls = (await DwebTransports.p_urlsValidFor(urls, "createReadStream"));
-                if (streamUrls.length) {
-                    await this._p_loadStreamRenderMedia(el, name, streamUrls, cb, rel)
+            if (urls.length) { // At least one url to try
+                let magneturl = urls.find(u => u.includes('magnet:'));
+                if ((DwebTransports.type === "ServiceWorker") && magneturl) {
+                    el.src = magneturl.replace('magnet:', `${window.origin}/magnet/`);
                 } else {
-                    // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
-                    // TODO clean this nasty kludge up,
-                    // Find a HTTP transport if connected, then ask it for the URL (as will probably be contenthash) note it leaves non contenthash urls untouched
-                    const url = await DwebTransports.p_httpfetchurl(urls);
-                    if (url) {
-                        el.src = url;
+                    const streamUrls = (await DwebTransports.p_urlsValidFor(urls, "createReadStream"));
+                    if (streamUrls.length) {
+                        await this._p_loadStreamRenderMedia(el, name, streamUrls, cb, rel)
                     } else {
-                        await this._p_loadStreamFetchAndBuffer(el, name, urls, cb, rel);
+                        // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
+                        // TODO clean this nasty kludge up,
+                        // Find a HTTP transport if connected, then ask it for the URL (as will probably be contenthash) note it leaves non contenthash urls untouched
+                        const url = await DwebTransports.p_httpfetchurl(urls);
+                        if (url) {
+                            el.src = url;
+                        } else {
+                            await this._p_loadStreamFetchAndBuffer(el, name, urls, cb, rel);
+                        }
                     }
                 }
+            } else { // No urls
+                console.warn('ReactFake.p_loadStream didnt find any resolvable urls - cant load stream')
             }
         } catch(err) {
             console.error("Uncaught error in p_loadStream",err);
@@ -349,6 +353,9 @@ export default class React  {
                     }
                     else if (href.startsWith("dweb:") && (name === "href")) {
                         possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href, {verbose}); return false;';
+                    } else if (href.indexof("/download/") >= 0) {
+                        let dirname =  href.slice(href.indexof("/download/")+10);
+                        possibleOnclick = `Nav.nav_downloaddirectory("${dirname}"); return false;`
                     }
                     if (possibleOnclick) {
                         if (attrs["onclick"] || ("onclick" in attrs)) {

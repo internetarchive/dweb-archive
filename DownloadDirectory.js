@@ -29,7 +29,7 @@ export default class DownloadDirectory extends Details {
                                 {/*-- TODO-DIR next loop needs doing --*/}
                                 { this._list.map(f => (
                                     <tr>
-                                    <td><a href={f.metadata.name}>{f.metadata.name}</a></td>{/*--TODO-DIR handle directory here as foo/ --*/}
+                                    <td><a href={`https://dweb.archive.org/download/${itemid}/${f.metadata.name}`}>{f.metadata.name}</a></td>{/*--TODO-DIR handle directory here as foo/ --*/}
                                     <td>27-Apr-2011 00:47{/*--TODO-DIR handle date from mtime --*/}</td>
                                     <td>{f.sizePretty()}{/*--TODO-DIR should be "-" for directory--*/}</td>
                                     </tr>
