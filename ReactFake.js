@@ -174,7 +174,8 @@ export default class React  {
             // f_createReadStream can initiate the stream before returning the function.
         };
 
-        RenderMedia.render(file, el, cb);  // Render into supplied element, will set window.WEBTORRENT_TORRENT if uses WebTorrent
+        // Enabled autoplay even though its being ignored - see https://github.com/internetarchive/dweb-archive/issues/41
+        RenderMedia.render(file, el, {autoplay: true}, cb);  // Render into supplied element, will set window.WEBTORRENT_TORRENT if uses WebTorrent
 
         if (window.WEBTORRENT_FILE) {    //TODO-SW need to get status back from WebTorrent
             const torrent = window.WEBTORRENT_TORRENT;
@@ -288,21 +289,23 @@ export default class React  {
         const kids = Array.prototype.slice.call(arguments).slice(2);
         //const rel = [ document.baseURI ]; // use baseURI as will be location.href if not explicitly set; [ window.location.href ];
         const rel = [ React._config.rootname ];
-        function cb(err, element) {
-            if (err) {
-                console.log("Caught error in createElement callback in loadImg or loadStream",err.message);
-                throw err;
-            }
-            React.setAttributes(element, tag, attrs, rel);
-            React.addKids(element, kids);
-            return element;
-        }
         if (tag === "img") {
             if (Object.keys(attrs).includes("src")) {
                 const src = attrs.src;
+                function cb(err, element) {
+                    if (err) {
+                        console.log("Caught error in createElement callback in loadImg or loadStream",
+                            (src instanceof ArchiveFile) ? src.name : src,
+                            err.message);
+                        throw err;
+                    }
+                    React.setAttributes(element, tag, attrs, rel);
+                    React.addKids(element, kids);
+                    return element;
+                }
                 const name = attrs["imgname"]
                     ? attrs["imgname"]
-                    : ( (src instanceof ArchiveFile) ? src.name() : "DummyName.PNG");
+                    : ( (src instanceof ArchiveFile) ? src.name() : "DUMMY.PNG");
                 delete attrs.src;   // Make sure dont get passed to cb for building into img (which wont like an array)
                 return this.loadImg(name, src, cb, rel);   //Creates a <span></span>, asynchronously creates an <img> under it and calls cb on that IMG. The <div> is returned immediately.
             }
