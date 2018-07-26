@@ -156,7 +156,7 @@ export default class Details extends ArchiveBase {
             //TODO  Replace "a" with onclicks to download function on f
         let filesCount = item.files_count;
         let originalFilesCount = item.files.filter((f)=>f.source === "original").length+1; // Adds in Archive Bittorrent
-        let downloadURL = `https://archive.org/download/${itemid}`; //TODO-LINKS check direct link
+        let downloadURL = `https://dweb.archive.org/download/${itemid}`;
         let compressURL = `https://archive.org/compress/${itemid}`; // leave as direct link, else need to zip and store each item in IPFS
         let compressAllURL = `https://archive.org/compress/${itemid}/formats=JSON,METADATA,JPEG,ARCHIVE BITTORRENT,MUSICBRAINZ METADATA`; // As above leave as direct
         let collections = Array.isArray(metadata.collection) ? metadata.collection : [ metadata.collection ];

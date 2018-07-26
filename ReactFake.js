@@ -328,6 +328,29 @@ export default class React  {
             <a source=ArchiveFile  => source=ArchiveFile (stored correctly)
             Dont try and catch img.src here, its too late - catch it in loadImg (called from createElement)
         */
+        function _setahref(href) {
+            // Expects attrs & element set in outer setAttributes
+            let possibleOnclick;
+            if (href.includes("archive.org/search.php?query=")) { //Note this doesnt handle other parameters in the URL (esp verbose) but unlikely to find in legacy urls like search.php
+                if (! "onclick" in attrs) {
+                    console.error("archive.org/search.php should always be accompanied with an onclick handler");
+                }
+                // Don't set possibleOnClock, we want it explicitly
+            }
+            else if (href.startsWith("dweb:")) {
+                possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href, {verbose}); return false;';
+            } else if (href.indexOf("/download/") >= 0) {
+                let dirname =  href.slice(href.indexOf("/download/")+10);
+                possibleOnclick = `Nav.nav_downloaddirectory("${dirname}"); return false;`
+            }
+            if (possibleOnclick) {
+                if (attrs["onclick"] || ("onclick" in attrs)) {
+                    console.error("Setting href to dweb wont work if onclick already set");
+                } else {
+                    element.setAttribute("onclick", possibleOnclick); // Note this will handle search like href=xx?aa=bb
+                }
+            } // no need for else, setting href is sufficient
+        }
         for (let name in attrs) {
             const attrname = (name.toLowerCase() === "classname" ? "class" : name);
             if (name === "dangerouslySetInnerHTML") {
@@ -335,38 +358,20 @@ export default class React  {
                 delete attrs.dangerouslySetInnerHTML;
             }
             // Turn root-relative URLS in IMG and A into absolute urls - ideally these are also caught by special cases (note don't appear to be any of these in most code)
-            if (["a.href"].includes(tag + "." + name) &&
-                (typeof attrs[name] === "string") && (attrs[name].startsWith('./') || attrs[name].startsWith('/'))
-            ) {
-                if (attrs.id && attrs.id.startsWith('tabby-')) {  // There is some weird javascript in AJS.tabby which assumes this is root-relative, so dont change it
-                    attrs[name] = React._config.tabbyrootinsert + attrs[name]; // Rewrite value to store
+            if (["a.href"].includes(tag + "." + name) && (typeof attrs[name] === "string") ) { // <a href=<string>
+                if (attrs[name].startsWith('./') || attrs[name].startsWith('/')) {
+                    if (attrs.id && attrs.id.startsWith('tabby-')) {  // There is some weird javascript in AJS.tabby which assumes this is root-relative, so dont change it
+                        attrs[name] = React._config.tabbyrootinsert + attrs[name]; // Rewrite value to store
+                    } else {
+                        let hrefs = this.resolveUrls(attrs[name], rel); // Array of urls, but should be just one since href name will be singular as will rel
+                        if (hrefs.length > 1) {
+                            console.error("Decide what mean by multiple hrefs in an anchor handle onclick for it below hrefs=",hrefs)
+                        }
+                        attrs[name] = hrefs[0];
+                        _setahref(hrefs[0]); // Handles special cases
+                    }
                 } else {
-                    let hrefs = this.resolveUrls(attrs[name], rel); // Array of urls, but should be just one since href name will be singular as will rel
-                    if (hrefs.length > 1) {
-                        console.error("Decide what mean by multiple hrefs in an anchor handle onclick for it below hrefs=",hrefs)
-                    }
-                    let href = hrefs[0]
-                    attrs[name] = href;
-                    let possibleOnclick;
-                    if (href.includes("archive.org/search.php?query=")) { //Note this doesnt handle other parameters in the URL (esp verbose) but unlikely to find in legacy urls like search.php
-                        if (! "onclick" in attrs) {
-                            console.error("archive.org/search.php should always be accompanied with an onclick handler");
-                        }
-                        // Don't set possibleOnClock, we want it explicitly
-                    }
-                    else if (href.startsWith("dweb:") && (name === "href")) {
-                        possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href, {verbose}); return false;';
-                    } else if (href.indexof("/download/") >= 0) {
-                        let dirname =  href.slice(href.indexof("/download/")+10);
-                        possibleOnclick = `Nav.nav_downloaddirectory("${dirname}"); return false;`
-                    }
-                    if (possibleOnclick) {
-                        if (attrs["onclick"] || ("onclick" in attrs)) {
-                            console.error("Setting href to dweb wont work if onclick already set");
-                        } else {
-                            element.setAttribute("onclick", possibleOnclick); // Note this will handle search like href=xx?aa=bb
-                        }
-                    } // no need for else, setting href is sufficient
+                    _setahref(attrs[name]); // Handles special cases
                 }
             }
             // Load ArchiveFile inside a div if specify in src
