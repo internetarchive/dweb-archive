@@ -110,6 +110,14 @@ export default class Nav {
                   </a>
                 </li>
               </ul> {/*--navbar-main--*/}
+                <ul id="nav-abouts" className="">
+                    <li>DWeb</li>
+                    <li><a target="_top">WEBTORRENT</a></li>
+                    <li><a target="_top">IPFS</a></li>
+                    <li><a target="_top">GUN</a></li>
+                    <li><a target="_top">HTTP</a></li>
+                    <li><a target="_top">YJS</a></li>
+                </ul>
               <ul id="nav-abouts" class="">
                 {/*--TODO-BOOTSTRAP ongoing, was trying to make these eg. /about and use name lookup, but fails because not CORS and havent built gateway, and there is no "headless" version of these pages--*/}
                 <li><a target="_top" data-event-click-tracking="TopNav|AboutLink" href="https://archive.org/about/">ABOUT</a>
@@ -131,7 +139,7 @@ export default class Nav {
                 <li><a target="_top" data-event-click-tracking="TopNav|PeopleLink"
                        href="https://archive.org/about/bios.php">PEOPLE</a></li>
               </ul>
-            {/*--navbar--*/} </div>
+                {/*--navbar--*/} </div>
           {/*--nav-wrap2--*/} </div>
         {/*--nav-wrap1--*/} </div>
       );
