@@ -66,7 +66,7 @@ export default class Nav {
                 {/* TODO-DETAILS-INFOREQD Need to figure out how to auto-generator the other rows of nav-tophat for each media type */}
             </div>{/*--/#nav-tophat--*/}
 
-            <div className="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div id="nav-dweb-parent" className="navbar navbar-inverse navbar-static-top" role="navigation">
               <div id="nav-tophat-helper" className="hidden-xs"></div>
               <ul className="nav navbar-nav navbar-main">
 
@@ -110,14 +110,6 @@ export default class Nav {
                   </a>
                 </li>
               </ul> {/*--navbar-main--*/}
-                <ul id="nav-abouts" className="">
-                    <li>DWeb</li>
-                    <li><a target="_top">WEBTORRENT</a></li>
-                    <li><a target="_top">IPFS</a></li>
-                    <li><a target="_top">GUN</a></li>
-                    <li><a target="_top">HTTP</a></li>
-                    <li><a target="_top">YJS</a></li>
-                </ul>
               <ul id="nav-abouts" class="">
                 {/*--TODO-BOOTSTRAP ongoing, was trying to make these eg. /about and use name lookup, but fails because not CORS and havent built gateway, and there is no "headless" version of these pages--*/}
                 <li><a target="_top" data-event-click-tracking="TopNav|AboutLink" href="https://archive.org/about/">ABOUT</a>

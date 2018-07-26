@@ -1,4 +1,5 @@
 /* Styles used for both bootloader & archive */
+/* Not used for archive any more - using nav-dweb below */
 #statuselement { margin: 0 0 3px 10px; float: right; clear: right; text-align: right; position: relative; }  /* "floatright" Grouped in top right corner */
 #statuselement li {display: table-row; padding-top: 3px; padding-right: 0; margin: 0 0 3px 3px;}
 
@@ -20,9 +21,21 @@
 /* These edits are made to archive-min.js as they are bugs in the CSS rather than changes.
    because that file is minimized its hard to see
    if update archive-min.js will need to reapply, or can apply here*/
-//-body.ia-module.tiles .row>.tilebars .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px
-//+body.ia-module.tiles .row>.tilebars .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px;width:45px;width:45px}
-//-body.ia-module.tiles .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px}
-//+body.ia-module.tiles .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px;width:45px;width:45px}
-//-body.ia-module.tiles .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px}
-//+body.ia-module.tiles .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px;width:45px;width:45px}
+/*
+-body.ia-module.tiles .row>.tilebars .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px
++body.ia-module.tiles .row>.tilebars .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px;width:45px;width:45px}
+-body.ia-module.tiles .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px}
++body.ia-module.tiles .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px;width:45px;width:45px}
+-body.ia-module.tiles .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px}
++body.ia-module.tiles .item-ia .item-parent .item-parent-img img{max-height:90px;max-width:90px;width:45px;width:45px}
+ */
+
+
+body.navia .navbar #nav-dweb{position:static;margin:0;width:100%;background-color:#353535;text-align:center}/*padding-top:8px;*/
+body.navia .navbar #nav-dweb li{vertical-align:top;display:inline-block;*display:inline;zoom:1;margin:0 10px;font-size:12px;height:20px;line-height:1;margin-left:15px;margin-right:15px}/*color:#999 !important;*/
+body.navia .navbar #nav-dweb li a{display:block;line-height:1;padding-bottom:3px;text-decoration:none !important;cursor:pointer}/*color:#aaa !important;*/
+body.navia .navbar #nav-dweb li a:hover{color:white !important}
+body.navia .navbar #nav-dweb ul{margin-bottom: 0px}
+@media (max-width:991px){body.navia .navbar #nav-dweb li{margin-left:9px;margin-right:9px}}
+@media (max-width:820px){body.navia .navbar #nav-dweb li{margin-left:7px;margin-right:7px}}
+@media (max-width:767px){body.navia .navbar #nav-dweb{display:none !important}}

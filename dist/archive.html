@@ -35,7 +35,7 @@
     $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
 
     async function main({query=undefined, item=undefined, download=false}={}) {
-        await DwebTransports.p_connect({statuselement: document.getElementById("statuselement"), transports: searchparams.getAll("transport"), paused: searchparams.getAll("paused")});
+        await DwebTransports.p_connect({statuselement: document.getElementById("dweb-status"), transports: searchparams.getAll("transport"), paused: searchparams.getAll("paused")});
         if (query) {
             Nav.nav_search(query)
         } else if (item) {
@@ -50,8 +50,7 @@
     }
 
 </script>
-<div class="floatright" id="statuselement">
-</div><!--End of standard network status and login panel-->
+<div id="nav-dweb"><!--<span style="color:purple;">DWeb:</span>--><div id="dweb-status"></div></div><!--End of standard network status and login panel-->
 
 <div id="main"></div><!-- destination for part accumulated by Details.js etc as html-->
 <script>
