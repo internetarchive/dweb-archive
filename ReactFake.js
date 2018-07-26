@@ -174,7 +174,8 @@ export default class React  {
             // f_createReadStream can initiate the stream before returning the function.
         };
 
-        RenderMedia.render(file, el, cb);  // Render into supplied element, will set window.WEBTORRENT_TORRENT if uses WebTorrent
+        // Enabled autoplay even though its being ignored - see https://github.com/internetarchive/dweb-archive/issues/41 
+        RenderMedia.render(file, el, {autoplay: true}, cb);  // Render into supplied element, will set window.WEBTORRENT_TORRENT if uses WebTorrent
 
         if (window.WEBTORRENT_FILE) {    //TODO-SW need to get status back from WebTorrent
             const torrent = window.WEBTORRENT_TORRENT;
