@@ -175,7 +175,7 @@ export default class Collection extends Search {
                             <div>
                                 <a id="tabby-about-finder"
                                    class="stealth"
-                                   href="/details/prelinger&tab=about"
+                                   href={`/details/${this.itemid}&tab=about`}
                                    onclick="return AJS.tabby(this,'tabby-about')">
                                     <span class="tabby-text">ABOUT</span>
                                 </a>
@@ -185,7 +185,7 @@ export default class Collection extends Search {
                             <div>
                                 <a id="tabby-collection-finder"
                                    class="stealth tabby-default-finder"
-                                   href="/details/prelinger&tab=collection"
+                                   href={`/details/${this.itemid}&tab=collection`}
                                    onclick="return AJS.tabby(this,'tabby-collection')">
                                     <span class="tabby-text">COLLECTION</span>
                                 </a>
@@ -195,7 +195,7 @@ export default class Collection extends Search {
                             <div>
                                 <a id="tabby-forum-finder"
                                    class="stealth"
-                                   href="/details/prelinger&tab=forum"
+                                   href={`http://archive.org/details/${this.itemid}&tab=forum`}
                                    onclick="return AJS.tabby(this,'tabby-forum')">
                                     <span class="tabby-text">FORUM</span>
                                 </a>
