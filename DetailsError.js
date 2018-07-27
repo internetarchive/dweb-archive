@@ -8,7 +8,11 @@ export default class DetailsError extends Details {
         this.message = message;
     }
     theatreIaWrap() {
-        return this.message;
+        return (
+        <div class="dweb-message">
+            {this.message}
+        </div>
+        )
     }
     render(res) {
         super.render(res)
