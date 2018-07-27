@@ -198,7 +198,7 @@ Util._formatarr = [
     {format: '64Kb MPEG4',  ext: undefined, type: "video",    mimetype: "video/mp4",            playable: false, downloadable: "64KB MPEG" },
     {format: 'MPEG2', ext: '.mpeg', type: 'video', mimetype: 'video/mpeg', playable: false, downloaable: "MPEG2" },
     {format: 'MPEG1',  ext: undefined, type: "video",    mimetype: "video/mpeg",           playable: false, downloadable: "MPEG1" },
-    {format: 'Ogg Video',  ext: '.ogv', type: "video",    mimetype: "video/ogg",            playable: true,  downloadable: "OGG VIDEO" },
+    {format: 'Ogg Video',  ext: '.ogv', type: "video",    mimetype: "video/ogg",            playable: false,  downloadable: "OGG VIDEO" },
     {format: 'Archive BitTorrent',  ext: undefined, type: "other",    mimetype: "application/x-bittorrent", playable: false, downloadable: 'TORRENT' },
     {format: 'Unknown',  ext: undefined, type: "unknown",  mimetype: "unknown",              playable: false, downloadable:  undefined },
     {format: 'Metadata',  ext: undefined, type: "other",    mimetype: "TODO",                 playable: false, downloadable:  undefined },
