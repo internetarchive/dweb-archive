@@ -14,7 +14,7 @@
     "es2015": "latest",
     "from2": "^2.3.0",
     "prettier-bytes": "^1.0.4",
-    "render-media": "^3.1.0",
+    "render-media": "^3.1.2",
     "throttleit": "^1.0.0"
   },
   "devDependencies": {
@@ -27,7 +27,7 @@
     "copy-webpack-plugin": "^4.5.2",
     "http-server": "latest",
     "react": "^16.4.1",
-    "webpack": "^4.16.2",
+    "webpack": "^4.16.3",
     "webpack-cli": "^2.1.4",
     "webpack-dev-server": "^3.1.5"
   },
@@ -45,5 +45,5 @@
     "server": "http-server",
     "setuphttp": "ln -s ../node_modules/dweb-transports/dist/dweb-transports-bundle.js dist; ln -s ../node_modules/dweb-objects/dist/dweb-objects-bundle.js dist;"
   },
-  "version": "0.1.13"
+  "version": "0.1.14"
 }
