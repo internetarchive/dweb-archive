@@ -7,7 +7,7 @@ This library is part of a general project at the Internet Archive (archive.org)
 to support the decentralized web.
 
 ## Goals
-* to allow unmodified browsers to access the Internet Archive's
+* to allow unmodified browsers to access the Internet Archive's millions of items
 * to support as many of the IA's features as possible, adding them iteratively
 * to use decentralized platforms for as many features as possible, without sacrificing functionality
 * to avoid single points of failure where possible
