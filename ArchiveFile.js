@@ -1,7 +1,7 @@
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 import Util from './Util';
 import prettierBytes from "prettier-bytes";
-//const Transports = require('dweb-transports');
+//const Transports = require('@internetarchive/dweb-transports');
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
 export default class ArchiveFile {
