@@ -166,7 +166,7 @@ export default class Details extends ArchiveBase {
         let contributor = metadata.contributor;
         let reviews = item.reviews;
         let writeReviewsURL = `https://archive.org/write-review.php?identifier=${itemid}`;  //TODO need an indirect way to submit a review
-        let loginURL = "https://archive.org/account/login.php"; //TODO - its a Direct link as dont support authentication in Dweb version
+        let loginURL = "https://archive.org/account/login.php"; //TODO - its a Direct link as dont support authentication in DWeb version
         let bookmarksAddURL = `https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=image&amp;identifier=${itemid}&amp;title=${title}`; //TODO find way to submit distributed
         let credits = metadata.credits;
         //TODO-DETAILS much of below doesn't work (yet)

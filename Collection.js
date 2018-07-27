@@ -98,7 +98,7 @@ export default class Collection extends Search {
                                         class="grafs about-box js-top-regions-table"
                                         data-caption="Top Regions (Last 30 Days) – Beta"
                                         data-caption-class="micro-label"
-                                        data-identifier="prelinger"
+                                        data-identifier=prelinger
                                         data-days="30"
                                         data-limit="10"
                                 >
@@ -120,7 +120,7 @@ export default class Collection extends Search {
                             </div>{/*!--/.col-sm-5-->*/}
                         </div>{/*<!--/.row-->*/}
                     </div>{/*<!--/#.tabby-about-->*/}
-                    <div id="tabby-forum" class="tabby-data hidden row">{/*TODO-TABBY forum*/}Forum not yet supported on Dweb</div>
+                    <div id="tabby-forum" class="tabby-data hidden row">{/*TODO-TABBY forum*/}Forum not yet supported on DWeb - heading to the legacy web...</div>
                 </div>{/*container*/}
                 {/*--TODO-ANALYTiCS is missing --*/}
 

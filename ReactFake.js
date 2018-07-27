@@ -107,7 +107,7 @@ export default class React  {
 
          */
         /*
-        //This method makes use of the full Dweb library, can get any kind of link, BUT doesnt work in Firefox, the image doesn't get rendered.
+        //This method makes use of the full DWeb library, can get any kind of link, BUT doesnt work in Firefox, the image doesn't get rendered.
         let data = await  Transports.p_rawfetch(urls, {verbose});  //Typically will be a Uint8Array
         let blob = new Blob([data], {type: Util.formats("format", this.metadata.format).mimetype}) // Works for data={Uint8Array|Blob}
         // This next code is bizarre combination needed to open a blob from within an HTML window.
