@@ -34,10 +34,10 @@
 <script>
     $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
 
-    async function main({query=undefined, item=undefined, download=false}={}) {
+    async function main({query=undefined, sort=undefined, item=undefined, download=false}={}) {
         await DwebTransports.p_connect({statuselement: document.getElementById("dweb-status"), transports: searchparams.getAll("transport"), paused: searchparams.getAll("paused")});
         if (query) {
-            Nav.nav_search(query)
+            Nav.nav_search({query, sort});
         } else if (item) {
             if (download) { // Note only works for downloading items, not files - can add later if reqd
                 Nav.nav_downloaddirectory(item);
@@ -65,6 +65,7 @@
     main({
         item: (i > -1) ? location.pathname.slice(i + 9) : searchparams.get("item"),
         query: searchparams.get("query"),
+        sort: searchparams.get("sort"),
         download: (location.pathname.indexOf("/download/") > -1) || searchparams.get("download") || false
     });
 </script>

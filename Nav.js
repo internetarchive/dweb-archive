@@ -163,6 +163,10 @@ export default class Nav {
     }
 
     static async nav_search(q, wanthistory=true) {
+        /*
+        Navigate to a search
+        q = query (string to search for) or object e.g. {query; foo, sort: -date} as passed to new Search()
+         */
         console.log("Navigating to Search");
         let destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
@@ -193,7 +197,7 @@ export default class Nav {
         s.render(destn);
     }
     static onclick_search(q) {
-        // Build the onclick part of a search, q can be a string or an object e.g. {creator: "Foo bar"}
+        // Build the onclick part of a search, q can be a string or an object e.g. {creator: "Foo bar", sort: "-date"}
         return `Nav.nav_search(${JSON.stringify(q)}); return false;`;
     }
 
