@@ -174,6 +174,7 @@ export default class Details extends ArchiveBase {
         return (
             <div class="container container-ia item-details-about">
                 <div class="relative-row row">
+                    <div class="thats-right" style="text-align:right;">
                     <div class="action-buttons">
                         <div class="topinblock">
                             <a class="button " href={bookmarksAddURL} id="favorite-button" aria-haspopup="true"
@@ -220,6 +221,7 @@ export default class Details extends ArchiveBase {
                             </div> {/*--/.dropdown --*/}
                         </div>
                     </div>{/*--/.action-buttons--*/}
+                    </div>
                     {/*-- flag initialization moved to browserAfter() --*/}
                     <div class="col-sm-8 thats-left item-details-metadata">
                         <h1 style={{fontSize:"30px", "marginBottom":0}}>
