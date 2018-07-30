@@ -52,6 +52,14 @@ export default class ArchiveItem {
         return this;
     }
 
+    processMetadataFjords(m) {
+        // The Archive is nothing but edge cases, handle some of them here so the code doesnt have to !
+        Object.keys(Util.metadata.singletons).forEach(f => {
+            if (typeof m.metadata[f] === "undefined") m.metadata[f] = "";
+            if (Array.isArray(m.metadata[f])) m.metadata.f = m.metadata.f.join(Util.metadata.singletons[f]);
+        })
+        return m;
+    }
     async fetch_metadata() {
         if (this.itemid && !this.item) {
             if (verbose) console.group('getting metadata for ' + this.itemid);
@@ -70,7 +78,8 @@ export default class ArchiveItem {
                 m = await DwebTransports.p_rawfetch([name], {verbose, timeoutMS: 5000});    //TransportError if all urls fail (e.g. bad itemid)
                 m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
                 console.assert(m.metadata.identifier === this.itemid);
-                this.item = m;
+
+                this.item = this.processMetadataFjords(m);
                 this._listLoad();   // Load _list with ArchiveFile
                 if (verbose) console.log("Got metadata for " + this.itemid);
             } catch(err) {
