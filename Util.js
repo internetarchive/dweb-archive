@@ -1084,3 +1084,7 @@ Util.languageMapping = {
     'zun': 'Zuni',
     'zxx': 'No linguistic content'
 }
+
+Util.metadata.singletons = [    // Fields that should be single entry.
+    "description"
+]
