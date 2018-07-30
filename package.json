@@ -10,7 +10,7 @@
   "description": "Archive UI to run in Browser",
   "dependencies": {
     "@internetarchive/dweb-objects": "latest",
-    "@internetarchive/dweb-transports": "latest",
+    "@internetarchive/dweb-transports": "^0.1.8",
     "es2015": "latest",
     "from2": "^2.3.0",
     "prettier-bytes": "^1.0.4",
@@ -45,5 +45,5 @@
     "server": "http-server",
     "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist; ln -s ../node_modules/@internetarchive/dweb-objects/dist/dweb-objects-bundle.js dist;"
   },
-  "version": "0.1.20"
+  "version": "0.1.21"
 }

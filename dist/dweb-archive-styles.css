@@ -41,17 +41,21 @@ body.navia .navbar #nav-dweb ul{margin-bottom: 0px; display: inline}
 @media (max-width:767px){body.navia .navbar #nav-dweb{display:none !important}}
 */
 
-
-#dweb-status, .dweb-nav-left {
+#nav-dweb {
     text-align: left;
     width: 100%;
     color: #ccc;
     background-color: #2A2A2A;
-    padding: 8px 0px 8px 0;
+    padding: 4px 0px 4px 0;
     box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
     height: auto;
-    display: inline; /* Make sure Dweb ipfs, etc all on one line - flexgrid could be better*/
-
+    display: block; /* Make sure Dweb ipfs, etc all on one line - flexgrid could be better*/
+}
+#dweb-status {
+    display: inline-block;
+}
+#dweb-status ul {
+    padding-left:0;
 }
 body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb a {
     height: auto;
@@ -77,6 +81,7 @@ body.navia .navbar #nav-dweb a {
 }
 body.navia .navbar #nav-dweb a img {
     height: 30px;
+    margin-top: 4px;
 }
 .transportstatus0 {
     color: #ccc;
