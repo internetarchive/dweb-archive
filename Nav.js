@@ -74,7 +74,7 @@ export default class Nav {
                      <li key={'mikey'+n} className="dropdown dropdown-ia pull-left">
                        <a title={mt} className={'navia-link '+mt}
                           onClick={`Nav.nav_details("${mt}")`}
-                          data-top-kind={mt} data-toggle="tooltip" target="_top" data-placement="bottom">
+                          >{/*--disabled till top hat worked on -- data-top-kind={mt} data-toggle="tooltip" target="_top" data-placement="bottom"--*/}
                          <span className={'iconochive-'+mt} aria-hidden="true"></span>
                          <span className="sr-only">{mt}</span>
                        </a>
