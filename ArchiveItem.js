@@ -56,7 +56,7 @@ export default class ArchiveItem {
         // The Archive is nothing but edge cases, handle some of them here so the code doesnt have to !
         Object.keys(Util.metadata.singletons).forEach(f => {
             if (typeof m.metadata[f] === "undefined") m.metadata[f] = "";
-            if (Array.isArray(m.metadata[f])) m.metadata.f = m.metadata.f.join(Util.metadata.singletons[f]);
+            if (Array.isArray(m.metadata[f])) m.metadata[f] = m.metadata[f].join(Util.metadata.singletons[f]); //e.g. biographyofbanan0000eage
         })
         return m;
     }
