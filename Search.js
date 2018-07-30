@@ -57,8 +57,8 @@ export default class Search extends ArchiveBase {
     async more() {
         AJS.more_searching = true;
         this.page++;
+        let el = document.getElementById("appendTiles"); // Get the el, before the search in case user clicks away we add to right place
         let items = await this.fetch_query({append: true});   // Appends to this.items
-        let el = document.getElementById("appendTiles");
         items.forEach(item => el.appendChild(new Tile().render(item)));
         AJS.tiler();
         AJS.more_searching = false;
