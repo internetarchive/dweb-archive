@@ -108,3 +108,9 @@ body.navia .navbar #nav-dweb a img {
 }
 
 .dweb-message { padding-top: 60px; padding-left; 3em } /*Else gets hidden behind navwrap - not sure why */
+
+.dweb-nav-left {
+    position: relative;
+    top: 1px;
+}
+body.ia-module .welcome { padding-top: 75px;}
