@@ -9,8 +9,8 @@
   },
   "description": "Archive UI to run in Browser",
   "dependencies": {
-    "@internetarchive/dweb-objects": "latest",
-    "@internetarchive/dweb-transports": "latest",
+    "@internetarchive/dweb-objects": "^0.1.2",
+    "@internetarchive/dweb-transports": "^0.1.8",
     "es2015": "latest",
     "from2": "^2.3.0",
     "prettier-bytes": "^1.0.4",
