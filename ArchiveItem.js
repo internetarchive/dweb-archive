@@ -54,9 +54,9 @@ export default class ArchiveItem {
 
     processMetadataFjords(m) {
         // The Archive is nothing but edge cases, handle some of them here so the code doesnt have to !
-        Util.metadata.singletons.forEach(f => {
+        Object.keys(Util.metadata.singletons).forEach(f => {
             if (typeof m.metadata[f] === "undefined") m.metadata[f] = "";
-            if (Array.isArray(m.metadata[f])) m.metadata.f = m.metadata.f.join('\n ');
+            if (Array.isArray(m.metadata[f])) m.metadata.f = m.metadata.f.join(Util.metadata.singletons[f]);
         })
         return m;
     }
