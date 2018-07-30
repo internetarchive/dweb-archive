@@ -33,7 +33,7 @@
 
 body.navia .navbar #nav-dweb{position:static;margin:0;width:100%;background-color:#353535;text-align:center}
 body.navia .navbar #nav-dweb li:hover{color:white !important}
-body.navia .navbar #nav-dweb ul{margin-bottom: 0px}
+body.navia .navbar #nav-dweb ul{margin-bottom: 0px; display: inline}
 
 /* TODO check and figure out why these break the above rules
 @media (max-width:991px){body.navia .navbar #nav-dweb li{margin-left:9px;margin-right:9px}}
@@ -59,9 +59,8 @@ body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb a {
     cursor: pointer;
     margin: 0 6px;
     vertical-align:top;
-    display:inline-block;
     zoom:1;
-    line-height:1}
+    line-height:1;
 }
 body.navia .navbar #nav-dweb #dweb-status li {
     padding: 5px 8px 5px 20px;
@@ -70,9 +69,14 @@ body.navia .navbar #nav-dweb #dweb-status li {
     background-position: 5px 50%;
     background-size: 10px;
     background-repeat: no-repeat;
+    display:inline-block;
 }
 body.navia .navbar #nav-dweb a {
-    padding: 5px; 0px; 5px; 0px
+    padding: 5px 0px 5px 0px;
+    display: inline
+}
+body.navia .navbar #nav-dweb a img {
+    height: 30px;
 }
 .transportstatus0 {
     color: #ccc;
