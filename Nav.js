@@ -187,9 +187,9 @@ export default class Nav {
             cnp.push(`query=${q}`);
             cnp = cnp.filter(p => !!p).join('&');
             if (window.location.origin === "file://") {
-                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`
+                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`;
             } else { //Might not work on http, this is intended for SW
-                historyloc = `${window.location.origin}/arc/archive.org/details?${cnp}`
+                historyloc = `${window.location.origin}/arc/archive.org/details?${cnp}`;
             }
             console.log("Writing history:", historyloc);
             history.pushState(historystate, `Internet Archive search ${q}`, historyloc);

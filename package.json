@@ -11,6 +11,7 @@
   "dependencies": {
     "@internetarchive/dweb-objects": "latest",
     "@internetarchive/dweb-transports": "^0.1.8",
+    "debug": "^3.1.0",
     "es2015": "latest",
     "from2": "^2.3.0",
     "prettier-bytes": "^1.0.4",
