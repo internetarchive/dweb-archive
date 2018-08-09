@@ -1,0 +1,24 @@
+@import 'typography.less';
+
+/**
+ * QR code image
+ *
+ * Custom Properties:
+ *   --qr-code-safe-inset <length> the margin around the "safe zone" that
+ *                                 ensures the code always fits on the screen
+ *
+ * See: Views\QrCode
+ */
+
+.qr-code {
+  // Maintains pixelated edges at different sizes
+  -ms-interpolation-mode: nearest-neighbor;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  // Ensure the QR code always fits on the screen
+  // Custom property allow us to modify the safe inset dynamically in
+  // media queries
+  max-width: ~'calc(100vmin - 2 * var(--qr-code-safe-inset, @{vertical-rhythm}))';
+  max-height: ~'calc(100vmin - 2 * var(--qr-code-safe-inset, @{vertical-rhythm}))';
+}

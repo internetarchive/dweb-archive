@@ -1,0 +1,39 @@
+/**
+ * A table of item/collection stats.
+ *
+ * See: AJS.RegionsTable in archive.js
+ */
+
+@dark-grey: rgb(170, 170, 170);
+@light-grey: rgb(217, 217, 217);
+
+.stats-table {
+  width: 100%;
+  border: 0.2rem solid @dark-grey;
+  hyphens: auto;
+
+  // Larger padding on the edges, smaller padding inside
+  tr > * {
+    padding: 0.5rem;
+    // Table size magic
+    width: 2%;
+
+    &:first-child {
+      padding-left: 2rem;
+    }
+
+    &:last-child {
+      padding-right: 2rem;
+    }
+  }
+
+  tbody tr {
+    border-top: 0.1rem solid @light-grey;
+  }
+
+  // Two class selectors to beat the selectors above
+  .stats-table__numeric-column {
+    width: 1%;
+    text-align: right;
+  }
+}

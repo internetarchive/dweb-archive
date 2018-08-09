@@ -1,0 +1,28 @@
+@import 'base.less';
+@import 'colors.less';
+@import 'layouts.less';
+@import 'typography.less';
+
+/**
+ * Large introductory section (or "hero") with eye-catching text, color, or imagery
+ *
+ * See: Views\Hero
+ */
+
+.hero {
+  background-color: @bright-blue-darker;
+  color: @color-white;
+  padding: (@vertical-rhythm * 2) @vertical-rhythm;
+  text-shadow: 0 0.1rem 0.2rem hsla(0, 0%, 0%, 0.167);
+
+  .layout-one-column-spaced(@vertical-rhythm / 2);
+
+  // Select all headings that are direct descendants of the options
+  .selector-heading({
+    .line-height(@vertical-rhythm * 1.5, @ia-font-size-larger);
+    font-size: @ia-font-size-largest;
+    font-weight: 200;
+    // A bit of extra tracking for white-on-dark text
+    letter-spacing: 0.01em;
+  }, ~'>');
+}

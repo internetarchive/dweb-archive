@@ -1,0 +1,41 @@
+/**
+ * Social sharing link styling for selected social media services.
+ *
+ * See FacebookShareLink & TwitterShareLink for HTML rendering.
+ */
+
+@twitter-blue: rgb(0, 161, 249);
+@facebook-blue: rgb(54, 88, 157);
+@twitter-blue-dark: darken(@twitter-blue, 10%);
+@facebook-blue-dark: darken(@facebook-blue, 10%);
+
+.facebook-share-link,
+.twitter-share-link {
+  display: inline-block;
+
+  font-size: 2em;
+  line-height: 1;
+
+  &:focus,
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.facebook-share-link {
+  color: @facebook-blue;
+
+  &:focus,
+  &:hover {
+    color: @facebook-blue-dark;
+  }
+}
+
+.twitter-share-link {
+  color: @twitter-blue;
+
+  &:focus,
+  &:hover {
+    color: @twitter-blue-dark;
+  }
+}

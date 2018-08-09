@@ -1,0 +1,38 @@
+/**
+ * A form for a user to sign up for a “Virtual Library Card.”
+ *
+ * Many of the styles for this form are already defined in the “iaform” class, but this one adds
+ * additional overrides. Eventually all of the signup form-specific styling should live in here.
+ */
+
+ @import 'typography.less';
+
+.signup-form {
+  &__form-error {
+    padding: @vertical-rhythm / 2;
+    background: #ffdddd;
+    border: 1px solid #ddaaaa;
+  }
+
+  &__field-error {
+    margin-left: @vertical-rhythm / 2;
+    color: #E44028;
+  }
+
+  legend {
+    margin: 0;
+
+    font-size: @ia-font-size-medium;
+    font-weight: bold;
+
+    border: 0;
+
+    + * {
+      margin-top: 1em;
+    }
+  }
+
+  fieldset > :not(legend) {
+    margin-left: @vertical-rhythm / 2;
+  }
+}

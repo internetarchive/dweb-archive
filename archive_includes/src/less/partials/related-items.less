@@ -1,0 +1,77 @@
+
+// styles for showing related items in a nice 3 column grid
+// currently uses will's 'Also Found' data on /details/ pages for jwplayer v8
+// but could be used elsewhere
+
+#related-items-bg {
+  background-image: url(/images/tv2op70.png);
+  background-repeat: repeat;
+  z-index: 100;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 50px;
+  right: 0;
+  width: 100%;
+
+  #related-items {
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+    display: grid;
+    grid-gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+    grid-template-columns: repeat(3, 1fr);
+    column-count: 3;       // !grid fallback
+
+    @media (max-width: @xs-max) {
+      // mobile -- switch from 3x3 to 2x3
+      grid-gap: 5px;
+      grid-template-columns: repeat(2, 1fr);
+
+      > div:nth-child(6),
+      > div:nth-child(7),
+      > div:nth-child(8) {
+        display: none;
+      }
+    }
+
+    > div {
+      height: 30%;           // !grid fallback
+      position: relative;
+      overflow: hidden;
+
+      &:hover .related-ttl {
+        background-image: url(/images/tv2op30.png);
+      }
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .related-ttl {
+      position: absolute;
+      left: 0;
+      right: 0;
+      background-image: url(/images/tv2op50.png);
+      text-align: left;
+      padding: 5px;
+      color: #ddd;
+
+      div {
+        text-align: right;
+        font-size: 80%;
+        color: #bbb;
+      }
+    }//.related-ttl
+  }//#related-items
+
+  @supports (display: grid) {
+    #related-items > div {
+      height: auto;
+    }
+  }
+}

@@ -1,0 +1,24 @@
+/**
+ * Message to display while a resource is loading.
+ *
+ * See AJS.LoadingMessage in archive.js
+ */
+.loading-message {
+  font-style: italic;
+
+  &::after {
+    @icon-size: 1.3445378151em;
+
+    content: '';
+
+    display: inline-block;
+    height: @icon-size;
+    margin-left: 0.5ch;
+    width: @icon-size;
+
+    vertical-align: middle;
+
+    background: no-repeat center url('/images/loading.gif');
+    background-size: cover;
+  }
+}

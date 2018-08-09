@@ -1,0 +1,37 @@
+/**
+ * Form for submitting a single text field.
+ *
+ * See: Views\SimpleTextForm.inc
+ */
+.simple-text-form {
+  * + * {
+    margin-top: 0.5rem;
+  }
+
+  input,
+  label {
+    display: block;
+  }
+
+  label {
+    line-height: @body-line-height;
+    margin-bottom: 0;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  /**
+   * Form for adding an object to another object.
+   */
+  &--add {
+    display: flex;
+    flex-direction: column;
+
+    button {
+      align-self: flex-end;
+      width: auto;
+    }
+  }
+}

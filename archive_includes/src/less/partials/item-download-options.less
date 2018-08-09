@@ -1,0 +1,183 @@
+@import 'colors.less';
+@import 'rotato.less';
+@import 'typography.less';
+
+/**
+ * Download options on Details page.
+ *
+ * Includes a lot of styles for the expandable download links inside the component.
+ */
+.item-download-options {
+  text-align: left;
+  margin-bottom: 0;
+
+  .download-format-description {
+    margin: 0;
+    font-size: @ia-font-size-smaller;
+    color: @gray-down;
+  }
+
+  .download-lending-message {
+    margin: @vertical-rhythm 0 @vertical-rhythm / 2 0;
+  }
+
+  .hover-badge {
+    .badge;
+
+    // Override Bootstrap default
+    &:empty {
+      display: inline-block;
+    }
+
+    font-weight: normal;
+    color: @gray-down;
+    background-color: transparent;
+
+    .iconochive-download {
+      visibility: hidden;
+    }
+  }//.hover-badge
+
+  .hover-badge-stealth {
+    .hover-badge;
+
+    cursor: normal;
+    pointer-events: none;
+  }//.hover-badge-stealth
+
+  .hover-badge-near {
+    color:@gray-down;
+    background-color:#ccc;
+    text-decoration:none;
+    cursor:pointer;
+    pointer-events:auto;
+    .iconochive-download {
+      visibility:visible;
+    }
+    &:hover {
+      color:white !important;
+      background-color:@linkcolor !important;
+    }
+  }//.hover-badge-near
+
+  .download-pill {
+    .iconochive-download {
+      .badge;
+
+      // Override Bootstrap default
+      &:empty {
+        display: inline-block;
+      }
+
+      visibility: hidden;
+      background-color: @linkcolor;
+      color: white;
+    }
+  }//.download-pill
+
+  .format-group {
+    border-bottom: 1px solid @base-border-color;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+  }
+
+  .quickdown {
+    .breaker-breaker;
+
+    display: none;
+    border-top: 1px solid @base-border-color;
+    margin-top: 7px;
+
+    .format-file {
+      border-top: 1px solid @base-border-color;
+      padding-top: 5px;
+      margin-top: 5px;
+
+      &:first-child{
+        border-top: 0;
+      }
+
+      &:hover {
+        .download-pill * {
+          visibility: visible;
+        }
+      }//&:hover
+    }//.format-file
+  }//.quickdown
+
+  .format-summary {
+    text-decoration: none;
+
+    .iconochive-right {
+      .rotato(90deg);
+
+      display: inline-block;
+      visibility: hidden;
+    }
+  }//.format-summary
+
+  .format-back {
+    display: none;
+  }
+
+  .format-group {
+    a.stealth {
+      color: @linkcolor;
+    }
+
+    .down-rite,
+    .summary-rite {
+      .pull-right;
+
+      color: rgba(0, 0, 0, 0.5);
+    }
+
+    &:hover {
+      .format-summary .iconochive-right,
+      .format-summary.download-pill * {
+        visibility: visible;
+      }
+    }//&:hover
+
+    &.in {
+      padding-top: 7px;
+
+      .format-summary {
+        display: none;
+      }
+
+      .format-back {
+        display: inline-block;
+        margin-top: 0;
+        color: @gray-down;
+
+        &:hover {
+          color: @linkcolor;
+        }
+      }//.format-back
+
+      .summary-rite .hover-badge-stealth {
+        .hover-badge-near;
+      }//.summary-rite .hover-badge-stealth
+    }//&.in
+  }//.format-group
+
+  .show-all {
+    padding-top: 20px;
+    padding-bottom: 10px;
+
+    .pull-right {
+      text-align: right;
+    }
+
+    &:hover {
+      a {
+        color: @linkcolor;
+      }
+
+      .hover-badge {
+        .hover-badge-near;
+      }
+    }//&:hover
+  }//.show-all
+}

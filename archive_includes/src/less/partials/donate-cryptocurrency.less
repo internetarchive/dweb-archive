@@ -1,0 +1,88 @@
+@import 'base.less';
+@import 'colors.less';
+@import 'layouts.less';
+@import 'typography.less';
+
+/**
+ * Page encouraging donors to donate via cryptocurrencies
+ *
+ * See: Views\DonateCryptocurrencyPage
+ */
+
+.donate-cryptocurrency-page {
+  .container-ia {
+    margin: 0;
+    max-width: none;
+    padding: 0;
+    text-align: left;
+
+    .layout-one-column-spaced();
+  }
+
+  .donate-cryptocurrency-page__main-content {
+    .layout-one-column-spaced();
+
+    padding: 0 @vertical-rhythm @vertical-rhythm @vertical-rhythm;
+  }
+
+  .hero > *,
+  .donate-cryptocurrency-page__main-content {
+    // Override box-sizing to maintain equal widths
+    box-sizing: content-box;
+    margin: 0 auto;
+    max-width: @vertical-rhythm * 34;
+  }
+
+  .hero {
+    background: none;
+    color: @body-text-color;
+    .line-height(@vertical-rhythm * 1.25, @ia-font-size-md-large);
+    margin: 0;
+    // Reduce vertical space between hero and main page content
+    padding-bottom: @vertical-rhythm;
+    text-shadow: none;
+
+    > * {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .cryptocurrency-options {
+    &__currency-actions {
+      display: grid;
+      grid-gap: @vertical-rhythm @vertical-rhythm * 2;
+
+      // Two-column layout on screens with enough space for it
+      @media (min-width: @xs-min-relative) {
+        padding-left: @vertical-rhythm * 1.5;
+        grid-template: ~'auto 1fr / auto 1fr';
+
+        // Ensure all grid items are right-aligned by default
+        > * {
+          grid-column-start: 2;
+        }
+      }
+
+      // Remove margins in favor of grid-gap
+      @supports (display: grid) {
+        > * {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .qr-code {
+    margin-left: auto;
+    margin-right: auto;
+
+    @media (min-width: @xs-min-relative) {
+      // Left column on large screens when Grid is supported
+      grid-area: ~'1 / 1 / -1';
+      // Centered on small screens, left-aligned on large ones
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+}

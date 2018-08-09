@@ -1,0 +1,21 @@
+/**
+ * See Views\ItemUploadInfo.inc
+ */
+@import 'typography.less';
+
+.item-upload-info {
+  font-size: @ia-font-size-small;
+
+  .line-height(@vertical-rhythm, @ia-font-size-small);
+
+  &__uploader-name {
+    display: block;
+    font-size: @ia-font-size-large;
+
+    .line-height(@vertical-rhythm * 1.5, @ia-font-size-large);
+  }
+
+  p {
+    margin: 0;
+  }
+}

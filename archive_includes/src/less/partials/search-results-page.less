@@ -1,0 +1,28 @@
+@import 'base.less';
+@import 'typography.less';
+
+// TODO: Move the rest of the page styles into here
+.search-results-page {
+  .fts-message {
+    // Default vertical spacing
+    margin: (@vertical-rhythm * 2) 1.2rem;
+
+    // Remove gutters once the .container padding kicks in
+    @media (min-width: @small-tiles-width) {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  // Ensure gutters are present when nested inside a container with no padding
+  .container.nopad > .fts-message {
+    margin-left: 1.2rem;
+    margin-right: 1.2rem;
+
+    // Remove gutters when screen is large enough to provide enough space on left & right
+    @media (min-width: @sm-min) {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+}

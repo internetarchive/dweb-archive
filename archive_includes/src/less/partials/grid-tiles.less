@@ -1,0 +1,39 @@
+
+// NOTE: presently unused
+// way to do _much more_ of our standard .item-ia tiles leveraging CSS Grid instead of (so much) JS
+// _and _ still be able to have 'masonry' based tile layout
+
+@supports (display: grid) {
+  body.devbox.tiles {
+    .results {
+      margin: 0 auto;
+      justify-content: center;
+      grid-row-gap: 25px;
+      grid-column-gap: 17px;
+      grid-auto-rows: 10px; //minmax(10px, auto);
+      grid-template-columns: repeat(auto-fill, 180px);
+      @media (max-width: @small-tiles-width) {
+        grid-template-columns: repeat(auto-fill, 150px);
+      }
+      &.grid-tiles { // <== JS AJS.tiler() sets this
+        display: grid;
+
+        .item-ia {
+          position: relative !important; // can be pulled when JS model is gone
+          margin: 0 auto !important; // grid-gap takes care of us instead
+
+          .collection-stats { // peg to bottom of tile
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+          }
+
+          &.collection-ia {
+            padding-bottom: 60px; // make space for collection-stats
+          }
+        }//.item-ia
+      }//&.grid-tiles
+    }//.results
+  }//body.devbox.tiles
+}//@supports ..

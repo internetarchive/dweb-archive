@@ -1,0 +1,67 @@
+@import 'base.less';
+@import 'layouts.less';
+@import 'typography.less';
+
+/**
+ * Set of options for paying IA via cryptocurrency
+ *
+ * See: Views\CryptocurrencyOptions
+ */
+
+.cryptocurrency-options {
+  .layout-one-column-spaced(@vertical-rhythm / 2);
+
+  &__currency-actions {
+    .layout-one-column-spaced();
+  }
+
+  &__address-label {
+    &,
+    input {
+      display: block;
+    }
+
+    input {
+      border: @border-width-sm solid @grey46;
+      border-radius: @border-radius-md;
+      margin-top: @vertical-rhythm / 4;
+      padding: (@vertical-rhythm / 4) (@vertical-rhythm / 2);
+      height: @vertical-rhythm * 2;
+      width: 100%;
+    }
+  }
+
+  .qr-code {
+    display: block;
+    // Using pixels to ensure it stays relatively small regardless of the default font size
+    width: 120px;
+  }
+
+  .accordion {
+    summary {
+      line-height: @vertical-rhythm * 2;
+
+      .selector-heading({
+        font-size: @ia-font-size-md-large;
+        // Align disclosure triangle
+        vertical-align: top;
+      });
+    }
+
+    details {
+      // Select all headings that are direct descendants
+      .selector-heading({
+        font-size: 1em;
+        font-weight: 500;
+
+        + * {
+          margin-top: @vertical-rhythm / 2;
+        }
+      }, ~'>');
+    }
+  }
+
+  .cryptocurrency-logo {
+    display: block;
+  }
+}

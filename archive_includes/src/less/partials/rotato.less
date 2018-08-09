@@ -1,0 +1,12 @@
+/**
+ * Allows easy ability to rotate, eg: an <img class="rot180" src="..">
+ *
+ * TODO: Create a file for all related transform mixins.
+ */
+.rotato(@deg) {
+  -ms-transform: rotate(@deg); /* IE 9 */
+-webkit-transform: rotate(@deg); /* Chrome, Safari, Opera */
+ -moz-transform: rotate(@deg);
+   -o-transform: rotate(@deg);
+      transform: rotate(@deg);
+}

@@ -1,0 +1,97 @@
+/**
+ * Read-only text input with a button to copy the text to the user's clipboard
+ *
+ * Currently only supports <input>s but it can be easily modified to support
+ * <textarea>s in the future
+ *
+ * See: Views\CopyableText
+ */
+
+@import 'base.less';
+@import 'colors.less';
+@import 'typography.less';
+
+// Fade in and slide down at the same time
+@keyframes fade-in-slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.copyable-text {
+  align-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+
+  > * {
+    margin: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  label,
+  output {
+    display: block;
+    flex: 1 1 100%;
+  }
+
+  button,
+  input {
+    margin-top: @vertical-rhythm / 4;
+    padding: (@vertical-rhythm / 4) (@vertical-rhythm / 2);
+    height: @vertical-rhythm * 2;
+  }
+
+  input {
+    border: 0.1rem solid @grey46;
+    border-radius: @border-radius-md;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset;
+    flex: 1 1 auto;
+
+    &:not(:last-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: 0;
+    }
+  }
+
+  button {
+    background: @color-white;
+    border: 0.1rem solid @grey46;
+    border-radius: 0 @border-radius-md @border-radius-md 0;
+    color: @grey46;
+    font-size: @ia-font-size-smaller;
+    letter-spacing: 0.075ch;
+    padding-left: @vertical-rhythm * 0.75;
+    padding-right: @vertical-rhythm * 0.75;
+    text-transform: uppercase;
+    transition:
+      background-color 0.125s ease-in-out,
+      color 0.125s ease-in-out;
+
+    &:focus,
+    &:hover {
+      background: @grey46;
+      color: @color-white;
+    }
+
+    &:active {
+      background: @grey40;
+    }
+  }
+
+  [role='alert'] {
+    animation: fade-in-slide-down 0.125s ease-out;
+    color: @grey46;
+    font-size: @ia-font-size-small;
+    margin-top: @vertical-rhythm / 4;
+    text-align: right;
+    z-index: 0;
+  }
+}

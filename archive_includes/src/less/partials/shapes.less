@@ -1,0 +1,12 @@
+/**
+ * @param {length} @width
+ * @param {length} @height
+ */
+.up-triangle(@width, @height) {
+  display: block;
+  height: @height;
+  width: @width;
+  border-bottom: @height solid currentColor;
+  border-left: @width / 2 solid transparent;
+  border-right: @width / 2 solid transparent;
+}

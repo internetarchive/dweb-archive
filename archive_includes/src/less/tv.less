@@ -1,0 +1,2624 @@
+
+/* the current file and the file below used to be combined -- split for client efficiency */
+@import "archive.less";
+
+
+
+@tvnavHT:  50px;
+@tvnavHT2: 35px;
+@theatreBG: rgb(67,71,83);
+
+.STICKY {
+  // single comment out location to simulate older browser that cant do position sticky
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+/* TV nav related tweaks */
+body.tv {
+  &.tvsearch {
+    .container-ia { // ultraaaaawide amount of results
+      padding-left: 0;
+      max-width: 3000px;
+    }
+  }//&.tvsearch
+
+  .popover-wider .popover-title {
+    font-size:30px;
+    line-height:1.2;
+  }
+
+
+  #exit-er {
+    position:absolute;
+    right:20px;
+    top:22px;
+    @media (min-width:@sm-min) {
+      top:@navbarHT - 5px;
+    }
+    height:15px;
+    overflow:hidden;
+    background-color:#222;
+    color:#999;
+    font-size:9px;
+    font-weight:400;
+    padding:1px 3px;
+    text-align:center;
+    border:1px solid #999;
+    .iconochive-tv-commercial {
+      .topinblock;
+      font-size:16px;
+      top:-5px;
+      margin-right:5px;
+    }
+    &:hover {
+      text-decoration:none !important;
+    }
+  }//#exit-er
+}//body.tv
+
+
+
+body.tv {
+  .sharee {
+    color:#444;
+    &:hover { background-color:white; }
+    &.iconochive-email:hover         { color:black; }
+    &.iconochive-embed:hover         { color:black; }
+    &.iconochive-tv-commercial:hover { color:@greenTV; }
+  }//.sharee
+}//body.tv
+
+
+
+/*****************    Styles for TV individual items details pages   *****************/
+body.trayTV .container-ia {
+  padding-top:@tvnavHT;
+}
+
+
+/*****************    Styles for TV individual items details pages   *****************/
+
+
+
+
+/********************   TV   ********************/
+
+@yellow-em:  rgb(252,194, 76);
+
+
+
+body.tv1k {
+  width:1000px;  /*1040 wide total, w/ left padding*/
+}
+
+
+body.tv {
+  .iconochive-quote { color: @orangeTV; }
+  .orangeTV         { color: @orangeTV; }
+  .greenTV          { color: @greenTV;  }
+
+  .iconochive-Check-wrap {
+    .topinblock;
+    background-color: @redTV;
+    border-radius: 1em;
+    padding:4px;
+    font-size:15px;
+    overflow: hidden;
+    .iconochive-Check {
+      font-size:15px;
+      background-color: @redTV;
+      color:white;
+    }
+  }//.iconochive-Check-wrap
+
+
+  &.no-scrolling {
+    width:100%;
+    height:100%;
+    overflow:hidden;
+  }
+
+
+  table.tooltiptable {
+    tr {
+      border-top: 1px solid @grey4;
+    }
+    td {
+      vertical-align:top;
+      &:first-child {
+        font-weight:bold;
+        color:@yellow;
+      }
+    }
+  }//table.tooltiptable
+
+
+
+
+
+
+  #continue-watching {
+    width:320px;
+    height:240px;
+    padding-top:50px;
+    position:absolute;
+    top:0px;
+    color:white;
+    text-align:center;
+    background: black;
+
+    a { color: white !important; }
+  }//#continue-watching
+
+
+  .posabs {
+    position:absolute;
+  }
+
+  .box { color:black; }
+
+
+  .tvhelp {
+    width:300px;
+    margin:auto;
+    display:none;
+    z-index:100000;
+    padding:20px;
+    background-color:#255460;
+    position:absolute;
+  }
+
+
+  #search {
+    position:absolute;
+    left:25px;
+    top:35px;
+    height:475px;
+    padding-left:15px;
+  }
+
+
+
+
+
+  .searchsel {
+    color:@white2;
+    background-color:@dark1;
+    width:100px;
+  }
+
+  #advsearch {
+    text-align:right;
+    width:450px;
+    margin-left:-210px;
+  }
+
+
+  #ozyopt {
+    .roundbox10;
+
+    width:440px;
+    background-color:rgb(37,84,96);/* @dark1 == rgb( 7,54,66) +30 for each */
+    z-index:6666;
+
+    -moz-box-shadow:    1px 1px 10px #999;
+    -webkit-box-shadow: 1px 1px 10px #999;
+    box-shadow:         1px 1px 10px #999;
+  }
+
+
+  #search-fail {
+    padding-top:50px;
+    font-size:18px;
+    max-width: 600px;
+    @media (max-width: @md-max) {
+      max-width:350px;
+    }
+    @media (max-width: @sm-max) {
+      max-width:400px;
+    }
+    @media (max-width: @xs-max) {
+      max-width:200px;
+    }
+  }//#search-fail
+}//body.tv
+
+
+
+body.tvhome, body.tvpress {
+  #tv-logo {
+    cursor: pointer;
+    font-weight: 200;
+    a {
+      color:black !important;
+    }
+    b {
+      font-size: 32px;
+      font-weight: 500;
+    }
+    @media (max-width:@sm-max){
+      float: initial;
+      margin: auto;
+    }
+  }//#tv-logo
+
+  .slick-next:before, .slick-prev:before {
+    color:#444 !important; // wow, where to begin on that 3rd-party assumption ...
+  }
+
+  // try for a decent no-JS and pre-image load (carousel kick in) experience:
+  .tvslick {
+    &:not(.slick-initialized) {
+      .oneliner;
+    }
+    .results {
+      // drop margins once JS and carousel activated
+      &:not(.slick-slide) {
+        .topinblock;
+        margin-right:20px;
+      }
+      &.slick-slide {
+        margin: 0 !important;
+      }
+    }//.results
+  }//.tvslick
+
+
+  &.tiles .tvslick-press .item-ia.collection-ia {
+    .collection-stats {
+      display:none;
+    }
+    padding-bottom:0;
+  }//&.tiles .tvslick-press .item-ia.collection-ia
+
+
+  .item-ia .SIN {
+    color: inherit !important;
+  }
+}//body.tvhome, body.tvpress
+
+
+body.tvpress {
+  .container-ia.width-max {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: 1600px;
+
+    .ikind {
+      visibility:initial !important;
+      margin:0 15px; // space for carousel L/R buttons
+      .item-ia {
+        position:relative !important;
+        margin:0 auto;
+      }
+    }//.ikind
+  }//.container-ia.width-max
+
+  .tablesorter img {
+    width: 240px;
+    height: 100px;
+    object-fit: cover;
+  }
+}//body.tvpress
+
+
+body.tvhome {
+  #tv-logo {
+    font-size: 32px;
+    white-space: nowrap;
+  }
+
+  #navwrap1 {
+    margin-bottom: 100px;
+  }
+
+  .iconochive-tv-commercial { color: @greenTV; }
+
+  // hides the standard search radio options
+  #search_options fieldset {
+    max-height: 10px;
+    visibility: hidden;
+  }
+
+  h1 {
+    margin: 25px 25px 10px 25px;
+    font-size:24px;
+    @media (max-width: @xs-max) {
+      text-align:center;
+    }
+  }//h1
+
+
+  .container-ia.width-max {
+    padding-left:0;
+    padding-right:0;
+    margin:auto;
+    max-width:1200px;
+    .row {
+      margin-left:0;
+      margin-right:0;
+
+      .ikind {
+        visibility:initial !important;
+        margin:0 15px; // space for carousel L/R buttons
+        .item-ia {
+          position:relative !important;
+          margin:0 auto;
+
+          .SIN {
+            em {
+              opacity:0.6;
+            }
+            a {
+              font-weight: bold;
+              display:block;
+              text-align:center;
+            }
+          }//.SIN
+        }//.item-ia
+      }//.ikind
+    }//.row
+  }//.container-ia.width-max
+
+  .navlinkTV {
+    .topinblock;
+    color: #ccc !important;
+    text-decoration:none !important;
+    cursor:pointer;
+    padding-bottom:5px;
+    &:hover {
+      color: white !important;
+      font-weight:normal;
+    }
+  }//.navlinkTV
+
+
+  #descrip {
+    .ease(all, 1s);
+    width: 100%;
+    max-width: 1000px;
+    padding-left: 20px;
+    margin: auto;
+    margin-bottom: 80px;
+    font-size: 15px;
+    color: #333;
+    line-height: 1.0;
+    .dglyph {
+      .topinblock;
+      text-align:center;
+      margin-top:-1px;
+      width:25px;
+      height:25px;
+    }
+    @media (max-width: @sm-max) {
+      padding-left:35px;
+      font-size:13px;
+      .dglyph {
+        width:20px;
+        height:20px;
+      }
+    }//@media (max-width: @sm-max)
+    @media (max-width: @xs-max) {
+      padding-left:20px;
+    }
+  }//#descrip
+
+
+
+  @footerHT: 30px;
+  #wrap {
+    height:     initial; //our bootstrap setup override
+    margin-bottom:-1 * @footerHT; // make footer show in page w/o scroll down!
+  }
+
+  #footer {
+    position:static; // for popups to go *up*
+    width:100%;
+    height:@footerHT;
+    bottom:0;
+    color:#ddd;
+    background-color:#222;
+
+    .dropdown-toggle:hover { // eg: TV drop "up"!
+      background-color:#666;
+    }
+
+    a {
+      padding:0 10px;
+    }
+    .popover p {
+      margin:0;
+    }
+  }//#footer
+}//body.tvhome
+
+
+
+
+
+
+body.tv {
+  #comtime, .comtime {
+    .roundbox3;
+
+    font-size:80%;
+    background-color:@red;
+    padding:2px 5px;
+    color:@white1;
+    font-weight:bold;
+    margin:0 6px 0 10px;
+  }
+  .comtime a {
+    color: @white1 !important;
+  }
+  .comtime a:hover {
+    text-decoration: none;
+    color: @white1 !important;
+  }
+  .comtime:hover {
+    background-color: #00aef0 !important;
+  }
+
+  .comment {
+    padding:2px;
+  }
+
+  .tvhid {
+    display:none;
+  }
+
+  #thumbs div.thumb {
+    width:80px;
+    height:55px;
+    padding:0;/*xxxx 2px?*/
+  }
+
+  #thumbs div.thumb img {
+    border:0;
+    width:80px;
+    height:55px;
+  }
+
+
+  // map and pins (body.oneday + shows in that collections /details pages)
+  a.tvpin,
+  #mapall a.tvpin {
+    color:#999 !important;
+    text-decoration:none !important;
+  }
+
+  a.tvpin div span {
+    padding:1px 3px;
+  }
+
+  a.tvpin .lit {
+    .opake;
+    color:white;
+    background-color:@red;
+  }
+
+  .tvpinR {
+    font-weight:bold;
+  }
+  .tvpinB {
+    font-weight:bold;
+    position:absolute;
+    top:12px;
+  }
+  .tvpinL {
+    font-weight:bold;
+    position:absolute;
+    left:-120px;
+    text-align:right;
+    width:120px;
+  }
+  .tvpinL div {
+    text-align:right;
+    margin-left:auto;
+  }
+  // map and pins (body.oneday + shows in that collections /details pages)
+
+}//body.tv
+
+
+
+
+
+body.tv911 {
+  background-color: @dark1; // note "about" pane overrides this
+  color: @white2; /*color from "white2"*/
+  margin:0px;/*tracey 20px;*/
+
+  .white2 {color: @white2;}
+
+
+  div, ul, ol, li, form, input, textarea, th, td {
+    margin:0;
+    padding:0;
+  }
+
+  h1,h2,h3 { font-weight:bold; }
+  h1 { font-size: 28px; color: @white1; }
+  h2 { font-size: 19px; color: @red; }
+  h3 { font-size: 14px; color: @red; }
+
+
+  .nosel {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;//IE9-11
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+
+
+  .articles {
+    li {margin-bottom: 20px;}
+    .author {font-size: 13px; color: @grey1;}
+    em {
+      .serif;
+      font-size: 13px;
+      line-height: 24px;
+    }
+    img {
+      float:right;
+      margin-left: 30px;
+      margin-bottom: 20px;
+    }
+  }//.articles
+
+  #hist1, #hist2, #hist3 {
+    .serif;
+    font-style: italic;
+    text-align: center;
+    color: @grey1;
+    width:310px;
+  }
+  #hist2 {
+    width:320px;
+  }
+
+
+  .closer {
+    position:absolute;
+    right:10px;
+    top:5px;
+    width:20px;
+    height:20px;
+
+    img {
+      width:20px;
+      height:20px;
+      border:0 !important;
+      background: url(/images/911-close-window-icon-on.png) top left no-repeat;
+    }
+    &:hover img{
+      background: url(/images/911-close-window-icon-off.png) top left no-repeat;
+    }
+  }//.closer
+
+
+
+  .container-ia a:link,
+  .container-ia a:visited,
+  .container-ia a:active,
+  #gridW      a:link,
+  #gridW      a:visited,
+  #gridW      a:active,
+  #tv         a:link,
+  #tv         a:visited,
+  #tv         a:active {
+    color: #00aef0 !important;
+  }
+  .container-ia a:hover,
+  #gridW      a:hover,
+  #tv         a:hover {
+    color: @green;
+  }
+
+  .container {
+    margin-left:0;
+  }
+
+  #wrap {
+    line-height:normal;
+  }
+  #wrap > .container {
+    padding-left:0;
+    padding-right:0;
+  }
+  .container-ia {
+    background-color: @dark1;
+    z-index:2;
+  }
+
+  #gridW,
+  #gridminiholder,
+  #vplayholder,
+  #playlist {
+    /*changes to bootstrap defaults to keep pixels expected in img/player area */
+    .content-box-sizing;
+  }
+
+
+  .headerNav {
+    text-align: left;
+    font-weight: normal;
+    font-size: 0.6em;
+    font-style: italic;
+    margin-left: 20px;
+    color:@grey1;
+  }
+
+  @sitenav-HT: 55px; // NOTE: includes 30px of transparent top/bottom borders (logical padding)
+  @daynav-HT: 54px;
+  @gridT-HT: 31px;
+  @gridL-WD: 100px;
+
+  .container-ia, #sitenav, #daynav {
+    // ensures: 1024x768 resolutions dont 'wrap'; decent sticky left scrolling
+    width: 3000px; // semi randomly picked/observed
+  }
+
+  #sitenav {
+    .STICKY;
+    left: 0px;
+    height: @sitenav-HT;
+    color: @grey3;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: left;
+    font-size: 1em;
+    z-index: 2;
+    box-sizing: border-box !important;
+    border-bottom: 10px solid transparent;
+    border-top: 20px solid transparent;
+    h1 {
+      margin: 0;
+    }
+  } //#sitenav
+
+  #daynav {
+    .STICKY;
+    top: 0px;
+    left: 0px;
+    height: @daynav-HT;
+    background-color:@dark1;
+    margin:0;
+    padding:0 0 0 20px;
+    text-align:left;
+    color: @grey3;
+    z-index: 3;
+
+
+    > div {
+      text-align: left;
+      margin-right: 10px;
+      padding: 10px;
+      font-weight: bold;
+      z-index: 3;
+    }
+    .day {
+      font-size: 0.875em;
+      font-weight:normal;
+      color: @grey3;
+    }
+
+    .youAreHere {
+      background-color: @dark2;
+      color: @red;
+      z-index: 3 !important;
+
+      a {
+        color: @red !important;
+        text-decoration:none;
+        font-weight:bold;
+      }
+    }//.youAreHere
+  }//#daynav
+
+
+  .container-ia .ui-tab-out {
+    color: @grey3;
+
+    a:hover {
+      color: @red !important;
+    }
+  }//.ui-tab-out
+
+
+  #playlist {
+    width: 450px;
+    margin-right:10px;
+
+    table {
+      color:@grey1;
+      border:0;
+
+      tr:hover {
+        background-color:@red !important;
+      }
+      tr.odd {
+        background-color:@dark2
+      }
+      tr.eve {
+        background-color:@dark1;
+      }
+
+      td {
+        vertical-align:top;
+        font-size:11px;
+        color:@grey1;
+        border:0;
+        padding: 10px;
+        font-weight: normal;
+      }
+      td.c1 {
+        color:@white2;
+        text-align:right;
+        width:60px;
+      }
+      td span.nsec {
+        color: @grey1;
+      }
+    }//table
+  }//#playlist
+
+
+
+  #events {
+    position:relative;
+  }
+
+  .evmark {
+    position:absolute;
+    top:17px;/*30 - 22 + 9*/
+    z-index: 5;
+    background-image:url(/images/tv-cone-off.png);
+    background-repeat:no-repeat;
+    width:16px;
+    height:22px;
+  }
+  .evtime, .evtext {
+    .roundbox3;
+    position:absolute;
+    z-index: 6;
+    text-align:center;
+    color: @white2;
+    background-color:@red;
+  }
+  .evtime {
+    display:none;
+    top:12px;
+    left:-24px; /* approx width:60px;*/
+    padding:3px 5px 3px 5px;
+    font-size:15px;
+    font-weight:bold;
+    -moz-box-shadow:    4px 4px 4px #333;
+    -webkit-box-shadow: 4px 4px 4px #333;
+    box-shadow:         4px 4px 4px #333;
+  }
+  .evtext {
+    visibility:hidden;
+    width:2000px;
+    top:-33px;
+    padding:3px 5px 3px 5px;
+    font-size:12px;
+    -moz-box-shadow:    4px -4px 4px #333;
+    -webkit-box-shadow: 4px -4px 4px #333;
+    box-shadow:         4px -4px 4px #333;
+  }
+  .evup {
+    z-index:666;
+  }
+
+
+  /** THE GRID -- W(rapper) + MISC **/
+  #gridW {
+    position:relative;
+  }
+  /** THE GRID -- W(rapper) + MISC **/
+
+
+
+  #gridT { // THE GRID -- FIRST ROW (T for TOP)
+    .STICKY;
+    height: @gridT-HT;
+    box-sizing: border-box !important;
+    top: @daynav-HT;
+    z-index: 4;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-bottom:1px solid @grey4;
+    color: #ddd;
+    text-align: left;
+    background:@dark2 url(/images/tvguide.png) bottom left no-repeat;// php -r 'foreach (range(12198,170,-84) as $i){ if (!$c) $c="convert -size ".($i+1)."x2  xc:transparent -fill \"@grey4\"";  $c.= " -draw \"point $i,1\" -draw \"point $i,0\" -draw \"point ".($i-1).",1\" -draw \"point ".($i+1).",1\"";   $n++; }  `$c ~/www/images/tvguide.png`;'
+
+    div.tt {
+      .topinblock;
+      font-size:13px;
+      font-weight: bold;
+      color: @white1;
+      height: @gridT-HT - 1; /* make it 30px total, w/ 12px font in it*/
+      width:504px; /* 6 * 84px */
+      padding:7px 0 0 0;
+      margin:0px;
+      border:0px;
+    }
+
+    i {
+      font-size:12px;
+      font-weight: normal;
+      color: @grey2;
+    }
+  }//#gridT  // THE GRID -- FIRST ROW (T for TOP)
+
+
+  // THE GRID -- FIRST COLUMN (L for LEFT)
+  #gridL {
+    .STICKY;
+    left: 0px;
+    z-index: 2;
+    width: @gridL-WD;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background-color:@dark1;
+
+    > div {
+      border-color: @grey4;
+      border-style:solid;
+      border-width:0 1px 1px 0;
+      padding:5px 10px 5px 10px;
+      height:59px;
+      color:#ddd;
+      text-align:left;
+      overflow: hidden;
+      word-wrap: break-word;  /* this wraps long urls in IE */
+    }
+
+    i {
+      font-size:80%;
+    }
+  }//#gridL  // THE GRID -- FIRST COLUMN (L for LEFT)
+
+
+  // THE GRID
+  #grid2 {
+    position: absolute;
+    top: @gridT-HT + @daynav-HT + @sitenav-HT;
+    left: @gridL-WD;
+    text-align: left;
+
+    div {
+      border-color:@grey4;
+      border-style:solid;
+      border-width:0 0 1px 0;
+
+      div {
+        .topinblock;
+        .nosel; // disable selection
+
+        width:80px;
+        height:55px;
+        padding:0px;
+        margin:3px 0 3px 0;
+        border-width:4px 2px 4px 2px;
+        border-style:solid;
+        border-color:@dark1;
+        -webkit-user-drag: none;
+        -webkit-background-origin: padding-box;/*for better iOS position*/
+        -webkit-background-clip: padding;/*for iOS to stop bg bleed*/
+      }
+
+      div.i0 {
+        border-left-width:4px !important;
+      }
+      div.blank {
+        background-repeat:repeat;
+        background-image:url(/images/tvop100.png);/* convert -size 1x1 'xc:@dark1' tvop100.png */
+      }
+      div img { /*for dark cells*/
+        width:80px;
+        height:55px;
+      }
+    }//div
+  }//#grid2  // THE GRID
+
+
+
+  #gridmini, #gridminiholder  {
+    width:820px;/*(5 img * 160px) + (4*3px img border) + (2*2px img border) + 4px?*/
+  }
+
+  #gridmini {
+    .roundbox3;
+    text-align:left;
+    z-index:101;
+    padding:30px 10px 10px 10px;
+    background-color:@grey4;
+    position:relative;
+
+    img {
+      .topinblock;
+
+      position:relative;
+      border:2px solid black;
+      margin:0px;
+      padding:0px;
+      width:160px;
+      height:110px;
+      z-index:102;
+    }
+    img.lit {
+      z-index:103;
+      border-color:@white1;
+    }
+    .arial {
+      position:absolute;
+      top:5px;
+      font-size:125%;
+
+      i {
+        font-size:80%;
+      }
+    }//.arial
+  }//#gridmini
+
+  #vplayholder {
+    .roundbox3;
+    text-align:left;
+    z-index:201;
+    padding:30px 10px 10px 10px;
+    background-color:@grey4;
+    width:640px;
+    position:relative;
+  }
+
+
+  #about {
+    width:620px;
+    font-size: 1em;
+    padding-top: 10px;
+    padding-right: 20px;
+    margin-bottom:10px;
+    text-align: left;
+    line-height: 1.5em;
+    color: @white2;
+
+    strong {
+      font-size: 1.5em;
+      font-weight: normal;
+      color: @grey1;
+    }
+  }//#about
+
+
+  /* For the "About" pane */
+  #tv {
+    width:950px;
+    margin-left:20px;
+    text-align: left;
+
+    li {
+      margin-left: 20px;
+    }
+  }//#tv
+
+  #jw6, #player {
+    border:0;
+    position:relative;
+    color: @grey1;
+  }
+
+  #jw6, #player, #video, #splash, #c2pimg {
+    width:480px;
+    height:360px;
+  }
+  #c2pimg {
+    position:absolute;
+    top:0px;
+    left:0px;
+    z-index:2;
+    border:0px;
+  }
+  /* For the "About" pane */
+
+
+
+  #rite {
+    width:300px;
+    margin-bottom:10px;
+    color: @grey1;
+
+    li { line-height: 1.5em; }
+  }//#rite
+
+  #history {
+    margin-top:10px;
+    padding:10px 0;
+  }
+
+  #footer9 {
+    color: @grey1;
+    text-align: center;
+    border-top: 1px dotted @grey3;
+    margin-top: 40px;
+    padding-bottom: 100px;
+  }
+
+  // whittled down from http://tayles.tumblr.com/post/321497631/flags-css-sprite
+  .flag{width:16px;height:11px;line-height:11px;background:url(/images/flags_sprite.png) no-repeat}
+  .flag.ca{background-position:0 -385px}
+  .flag.cn{background-position:0 -506px}
+  .flag.fr{background-position:-16px -253px}
+  .flag.gb{background-position:-16px -275px}
+  .flag.iq{background-position:-32px 0}
+  .flag.jp{background-position:-32px -66px}
+  .flag.mx{background-position:-32px -528px}
+  .flag.ru{background-position:-48px -319px}
+  .flag.us{background-position:-64px -187px}
+
+}//body.tv911
+
+
+
+/* NOTE: this is for /details/1Day which is another special TV collection/exhibition */
+body.oneday {
+  background-color:@dark1 !important;
+  padding-left:0px !important;
+  margin:0px;
+  color: #ddd;
+
+  .navbar {
+    margin-bottom:0;
+  }
+  #wrap > .container {
+    padding-left:0;
+    padding-right:0;
+  }
+
+  #welcome {
+    .ghost;
+    position:absolute;
+    left:20px;
+    top:0;
+    z-index:666;
+    color: @white1;
+    background-color: @dark2;
+    padding:10px 20px 20px 20px;
+    text-align: left;
+  }
+
+  #wall {
+    margin-top:20px;
+    margin-left:40px;
+    margin-bottom:100px;
+    padding-left:2px;
+    background-color:black;
+    font-size: 10pt;     // change to bootstrap defaults to keep pixels expected in img/player area
+    line-height: normal; // change to bootstrap defaults to keep pixels expected in img/player area
+
+    img,
+    a div.x {
+      width:108px; /*VW*/
+      height:80px; /*VH*/
+    }
+    a:hover { text-decoration: none !important; }
+
+    a div.x {
+      .topinblock;
+
+      position:relative;
+      border:2px solid transparent;
+    }
+    a div.playing {
+      border-color:@red;
+    }
+    div.info {
+      width:102px; /*VW-6*/
+      position:absolute;
+      top:80px; /*VH*/
+      left:-2px;
+      display:none;
+      background-color:@red;
+      color:@white1;
+      min-height:50px;
+      padding:3px;
+      border:2px solid @red;
+      z-index:101 !important;
+      overflow:hidden;
+    }
+
+    span.time {
+      font-size:70%;
+    }
+  }//#wall
+
+
+
+  #footer1 {
+    border-top: 1px dashed @dark2;
+    padding: 10px;
+    margin-bottom: 50px;
+    margin-top: 20px;
+
+    #playall {
+      .serif;
+      width: 30%;
+      margin-right: 20px;
+      font-size: 1.25em;
+      font-style:italic;
+      line-height: 1.25em;
+    }
+    #credits {
+      font-size: 1em;
+      text-align: center;
+      width: 45%;
+
+      #creditstitle {
+        color: @red;
+        font-weight: bold;
+        font-size: 1em;
+      }
+    }//#credits
+
+    #partners {
+      font-size: 1em;
+      width:20%;
+      text-align: center;
+    }
+  }//#footer1
+}//body.oneday
+
+
+
+body.oneday-item{
+  margin:0;
+  background-color: @dark2;
+}//body.oneday-item
+
+
+
+
+body.tv {
+
+  #collectionName {font-size:1.5em; font-weight:bold; line-height: 1.5em;text-shadow: 1px 1px 1px #000;}
+  #collectionDesc {
+    .serif;
+    font-style: italic;
+    line-height: 1.25em;
+    text-shadow: 1px 1px 1px #000;
+  }
+
+  // from george oates
+  #programComments {
+    padding-top:20px;
+    color: @grey1;
+
+    img { margin-right: 5px; }
+  }//#programComments
+
+  #header { background-color: @dark1; padding: 5px; }
+  #contentArea {width: 960px; margin-left: auto; margin-right: auto; }
+  .goBack { font-size: 1em; color: @cyan; padding-top: 10px; padding-bottom: 10px;}
+  #avrap { width:640px; height:480px; }
+
+  .programMeta {width:300px; height:480px; margin-left:20px; color: @grey1; position:relative; }
+
+  h1.programName  { font-size: 1.5em; color: @white1 }
+  .programDescription { color: @grey1; font-size: 1.25em;}
+  .programDetails { margin-top: 10px; font-size: 1em; color: @grey3; }
+
+  .programMap {
+    height:300px;
+    width:300px;
+    margin-top: 20px;
+    position:absolute;
+    bottom:0;
+
+    #map {
+      width:300px;
+    }
+  }//.programMap
+
+  .comtime {
+    width: 60px;
+    color: @white1;
+    font-weight: bold;
+    font-size: 0.75em;
+    padding: 4px;
+    background-color: @red;
+    margin-right: 10px;
+    text-align: right;
+
+    a {
+      color: @white1;
+      text-decoration: none;
+    }
+  }//.comtime
+
+
+  .comtimeAdd {
+    color: @white1;
+    font-weight: bold;
+    font-size: 0.75em;
+    padding: 4px;
+    background-color: @green;
+    margin-right: 10px;
+
+    a {
+      color: @white1;
+      text-decoration: none;
+    }
+  }//.comtimeAdd
+
+  #clipthis {
+    width: 300px;
+    margin-left:0;
+    margin-right:0;
+
+    textarea {
+      .serif;
+      width: 500px;
+      height: 60px;
+      font-size: 1em;
+    }
+  }//#clipthis
+
+  a.cancel  { color: @red !important; font-size: 0.75em; text-decoration: underline }
+  .comment { padding: 10px; }
+  .comment .comtime { background-color: @dark2; padding: 4px; margin-right: 10px; }
+  .who { font-size: 1em; color: @grey3; }
+  #comments .content {
+    .serif;
+    font-size: 1.5em;
+    font-style:italic;
+    line-height: 1.5em;
+    width:800px;
+  }
+
+  #morePrograms {
+    padding-bottom: 20px;
+    h2 {
+      color: @red;
+      font-weight: bold;
+      font-size: 1.25em;
+    }
+    .program {
+      .topinblock;
+
+      color: @grey1;
+      margin-left: 10px;
+      width:300px;
+
+      .map {
+        width: 300px;
+        height: 100px;
+        margin-bottom: 10px;
+      }
+    }//.program
+  }//#morePrograms
+
+
+  #addComment { background-color: @dark2; padding: 10px; margin-bottom: 10px; }
+  #addComment img, #comments img { width:21px; height:18px; }
+
+  span.topP,  a.topP { /* TOP phrase -- Person */
+    text-decoration:none !important;
+    color:@red !important;
+    &:hover { color:@grey1 !important; }
+  }
+  span.topL,  a.topL { /* TOP phrase -- Location */
+    text-decoration:none !important;
+    color:@green !important;
+    &:hover { color:@grey1 !important; }
+  }
+  span.topO,  a.topO { /* TOP phrase -- Organization */
+    text-decoration:none !important;
+    color:@violet !important;
+    &:hover { color:@grey1 !important; }
+  }
+  span.topT,   a.topT { /* TOP phrase -- Tag Trends */
+    text-decoration:none !important;
+    color:#999 !important;
+  }
+
+
+  // TV calendar pages
+  ul.cal li { font-size: 15pt; }
+
+  #tvcal {
+    padding-left:10px;
+    width:1000px;
+    margin:10px auto;
+    border-bottom:1px solid #999;
+    background-color:#eee;
+    height:61px;
+
+    div.tab, div.tab7 {
+      width:150px;
+      text-align:center;
+      height:30px;
+      padding-top:20px;
+
+      a  {
+        text-decoration:none !important;
+      }
+    }//div.tab, div.tab7
+
+    div.tab7 {
+      width:100px;
+      font-size:13px;
+    }
+  }//#tvcal
+
+
+  #toptop {
+    width:300px;
+    height:400px;
+    padding:10px;
+    font-size:125%;
+
+    a {
+      text-decoration:none !important;
+    }
+  }
+
+  .tvmo .thumb {
+    margin:4px;
+    width:160px;
+    height:160px;
+    float:left;
+    text-align:center;
+
+    a {
+      text-decoration:none !important;
+    }
+    img {
+      padding:0;
+      width:160px;
+      height:120px;
+    }
+  }
+  // TV calendar pages
+
+  #tvblog {
+    .roundbox3;
+    .topinblock;
+    width:365px;
+    height:266px;
+    border:1px solid #ccc;
+    //-webkit-mask-image: radial-gradient(50% 50%, black 80%, transparent 100%);
+    margin:auto;
+  }
+
+
+}//body.tv
+
+
+
+
+
+.commercial-maker-fn() {
+  #commercial-maker {
+    input[type=text] {
+      .topinblock;
+      font-size:14px;
+      line-height:1.0;
+      padding:0 2px;
+      width:175px;
+      margin-right:25px;
+    }
+    .moreHid {
+      display:none;
+    }
+    .moreShow {
+      margin-top:2px;
+      padding-top:2px;
+      border-top:1px solid #666;
+      display:block;
+    }
+    .complex {
+      display:none;
+    }
+  }//#commercial-maker
+}//.commercial-maker-fn
+
+
+body.tvimport {
+  .commercial-maker-fn();
+}
+
+
+
+
+body.clipstream {
+  @scaleIM: 2;
+
+  // clipstream "regular" column img/player dimens
+  @tvcol-imW: 160px * @scaleIM;
+  @tvcol-imH: 110px * @scaleIM;
+  /* OK, so we have these legacy crappy 160x110 thumbnails for all videos,
+   * which is neither 4:3 nor 16:9 (thanks to prior implementor not being a video person).
+   * These days, that means 16:9 vids get quashed into 160:110 with top/bottom black bars.
+   * And that's just fugly.  SO 160:90 is the 16:9 natural ideal ratio,
+   * which winds up being just under 10% (occluded) off the top and bottom.
+   * BUT!  20px gutters for 320x220 imagery doesnt look so great, so max cap at 15px!
+   */
+  @ltrbxHT: min(15px, (@tvcol-imH - (@tvcol-imW/16*9))/2);
+
+  @col-morph-time: 1s;
+  @timeline-pad: 15px;
+  @timeline-color: #6f6f6f;
+  @col-gutter: @ltrbxHT;
+  @col-pad: 5px;
+  @tvsharing-gutter: .10; //25%
+  @quote-sharerHT: 105px;
+  @quote-hrHT: 13px;
+
+  @share-top: 14px + @ltrbxHT;
+
+  #wrap {
+    height:     initial; //our bootstrap setup override
+    min-height: initial; //our bootstrap setup override
+  }
+
+  .nosel, &.IE {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;//IE9-11
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  #thumbzilla {
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    right:0;
+  }
+
+  #jw6wrap {
+    position:absolute;
+    z-index:@navZ + 1;
+    background-color:black;
+    top: @ltrbxHT;
+    > div {
+      margin:auto;
+    }
+  }//#jw6wrap
+
+  #jwQwrap {
+    background-color:black;
+    > div {
+      margin:auto;
+    }
+    &.topping {
+      position:absolute;
+      z-index:2;
+      margin-top:@ltrbxHT;
+    }
+  }//#jwQwrap
+
+
+  .share-icon-35 {
+    width:35px;
+    height:35px;
+    font-size:23px;
+  }
+
+
+  #descript {
+    margin-top: 0;
+  }
+
+
+  .sniptitle {
+    .ease(left, @col-morph-time);
+    position:absolute;
+    top: -20px;
+    left: 50%;
+    z-index:2;
+    line-height:1.0;
+    color:rgb(195,195,195);
+    padding:0 15px 0 10px;
+    font-size:11px;
+    height:14px;
+    max-width:@tvcol-imW;
+    overflow:hidden;
+    text-overflow:ellipsis;/*CSS3*/
+    white-space:nowrap;
+
+    /*http://www.w3schools.com/cssref/trycss3_transform-origin_inuse.htm*/
+    /*rotate 45 degrees CCW*/
+    -ms-transform:    rotate(-45deg); /* IE 9 */
+    -webkit-transform:rotate(-45deg); /* Safari and Chrome */
+    -moz-transform:   rotate(-45deg); /* Firefox */
+    -o-transform:     rotate(-45deg); /* Opera */
+    transform:        rotate(-45deg);
+
+    /*now move up a bit*/
+    -ms-transform-origin:    5px 5px; /* IE 9 */
+    -webkit-transform-origin:5px 5px; /* Safari and Chrome */
+    -moz-transform-origin:   5px 5px; /* Firefox */
+    -o-transform-origin:     5px 5px; /* Opera */
+    transform-origin:        5px 5px;
+  }
+
+
+  .share-icon {
+    .ease(all, @col-morph-time);
+  }
+
+  .snipshare {
+    .opac(60);
+    position:absolute;
+    margin-top:@share-top;
+    left:2px;
+    z-index:2;
+    &:hover {
+      .opac(100);
+    }
+  }
+
+
+
+  @timeline-HT: 5px;
+  @timeline-y: 85px;
+  @timedot-WH: 13px; // WxH dimens of dot img
+  @cols-left-pad: 50px;
+  @colspacer-width: 1000px; // this basically needs to be something wider than max video play width
+
+  #cols {
+    position: relative;
+    white-space: nowrap;
+    width: 100%; // NOTE: js updates this (for sticky left/right positioning of metadata)
+    min-height: 300px;
+    -webkit-overflow-scrolling: touch;
+    background-color: @theatreBG;
+  }
+  #cols > div {
+    white-space: normal;
+  }
+
+  .colspacer, .tvcol {
+    .topinblock;
+    min-height: 100%;
+    height:     100%;
+    width: 100px;
+  }
+  .colspacer {
+    position: absolute;
+    width: @colspacer-width;
+    margin-left: -1 * @colspacer-width;
+    background-color: white;
+    .gutr {
+      position: absolute;
+      right: 0;
+      width: @col-gutter;
+      height: 100%;
+      background-color: @theatreBG;
+      z-index: 1;
+    }
+
+    .timeline {
+      // timeline should extend a little into far left wide margin
+      top: @timeline-y - @timeline-HT;
+      left: initial;
+      width: 35px;
+    }
+  }//.colspacer
+  .colspacer:first-child {
+    margin-left: @cols-left-pad - @colspacer-width;
+    background-color: @theatreBG;
+    z-index: 1;
+  }
+
+  .timeline {
+    position: absolute;
+    z-index: 1;
+    top: (-1 * @timedot-WH/2) + 1;
+    left: 0;
+    right: -1 * @col-gutter;
+    height: @timeline-HT;
+    border-top: @timeline-HT solid @timeline-color;
+  }
+
+  .midinblock {
+    vertical-align:middle;
+    display:inline-block;
+    *display:inline; /*for IEv8, at least*/
+    zoom:1; /*for IEv7*/
+  }
+
+
+  .tvcol {
+    .ease(all, @col-morph-time);
+    z-index: 2;
+    .tvcolin {
+      // @col-height: .85; // 85%
+      height: 100%;// * @col-height;
+      max-height: 100%;// * @col-height;
+      overflow-y:hidden;
+      overflow-x:visible;
+      position:relative;
+    }
+
+    position: relative;
+    width: @tvcol-imW + @col-gutter;
+    border-right: @col-gutter solid @theatreBG;
+    border-top: @timeline-y solid @theatreBG;
+    white-space: normal;
+
+    .snippet {
+      color:gray;
+      font-size:16px;
+      overflow:hidden;
+      overflow-x:hidden;
+      overflow-y:hidden;
+      font-weight:normal !important;
+      margin-top:5px;
+      min-height:50px;
+      padding-bottom:15px;
+      b {
+        font-weight:normal;
+      }
+      i {
+        font-style:normal;
+      }
+    }//.snippet
+
+    em {
+      .roundboxer(2px);
+      padding:0 2px 1px 2px;
+      font-style:normal;
+      line-height:1;
+      color:white;
+      background-color:black;
+    }
+
+
+    .timedot, .timequo, .timead {
+      position:absolute !important;
+      z-index:2;
+      height:@timedot-WH;
+      text-align:center;
+      top: -9px !important;
+    }
+    .timedot {
+      left:0;
+      right:0;
+      background:transparent center 0px no-repeat url(/images/timedot.png);
+    }
+    .timequo {
+      .roundboxer(11px);
+      color:@orangeTV;
+      background-color:white;
+      width:20px;
+      height:20px;
+      margin-top:-4px;
+      .iconohchive-quote {
+        font-size:18px;
+      }
+    }//.timequo
+    .timead {
+      .roundboxer(11px);
+      color:white;
+      background-color:@greenTV;
+      width:22px;
+      height:20px;
+      padding-top:1px;
+      margin-top:-3px;
+      .iconochive-tv-commercial {
+        font-size:14px;
+      }
+    }//.timead
+
+
+    .coltop {
+      border-top:@timeline-pad solid @theatreBG;
+      position:relative;
+
+      // make tooltip launch below image
+      .th > .tooltip {
+        margin-top:25%;
+      }
+    }//.coltop
+
+    .col-y-0 {
+      .ease(opacity, @col-morph-time);
+      padding-left : @col-pad;
+      padding-right: @col-pad;
+      height: 100%;
+      max-height: 100%;
+      overflow-y: hidden;
+    }
+
+    .th {
+      position:relative;
+      min-height: @tvcol-imH;
+      background-color:@theatreBG;
+      .ltrbx { //letterbox
+        position:absolute;
+        left:0;
+        right:0;
+        background-color:@theatreBG;
+        height: @ltrbxHT;
+        bottom:0;
+        z-index:1;
+      }
+      .ltrbx:first-child {
+        top:0;
+        bottom:initial;
+      }
+      img {
+        .ease(all, @col-morph-time);
+        background-color:black;
+        width:100%;
+        max-width:100%;
+      }
+    }//.th
+
+
+
+    .snipin {
+      padding-top:10px;
+      b {
+        color:white;
+        background-color:@orangeTV;
+      }
+      i {
+        color:white;
+        background-color:@greenTV;
+      }
+    }//.snipin
+
+
+    #quoter-wrap {
+      @quoter-pad:10px;
+      .quoteCC {
+        color: @orangeTV;
+        font-size:13px;//initial value -- JS will try to resize/fit
+        border-style:solid;
+        border-color:@orangeTV;
+        border-width: @col-pad @col-pad 0 @col-pad;
+        background-color:white;
+        overflow:hidden;
+        > div {
+          padding:@quoter-pad;
+        }
+      }//.quoteCC
+      .quoter {
+        padding-top:@quoter-pad;
+        border-style:solid;
+        border-color:@orangeTV;
+        border-width: 0 @col-pad @col-pad @col-pad;
+        background-color:white;
+
+        hr {
+          border:0;
+          border-bottom:3px solid #ddd;
+          margin:0 0 10px 0;
+        }
+
+        .row {
+          margin:0;
+        }
+
+        .quoter-by {
+          color:#aaa;
+        }
+
+        .quoter-btn {
+          .topinblock;
+          .roundbox3;
+          color:@orangeTV;
+          border-width:2px;
+          border-style:solid;
+          padding:4px 25px;
+          margin-right:5px;
+          margin-bottom:5px;
+          text-align:center;
+        }
+
+        .quoter-edit {
+          .stealth;
+          color:@orangeTV !important;
+        }
+
+        #reposts:hover .quoter-btn {
+          background-color:#e7e7e7;
+        }
+      }//.quoter
+
+      #reposts-table {
+        display:none;
+      }
+
+      &.Ad {
+        .quoteCC {
+          color: @greenTV;
+          border-color:@greenTV;
+        }
+        .quoter {
+          border-color:@greenTV;
+          .quoter-btn {
+            color:@greenTV;
+          }
+          .quoter-edit {
+            color:@greenTV !important;
+          }
+        }//.quoter
+      }//&.Ad
+    }//#quoter-wrap
+
+
+    // make it so the click-to-play image and the share image tooltips dont compete as much!
+    .tooltip { max-width:100px; }
+
+    margin-left: @cols-left-pad; // NOTE: reverted below for all but first elem!
+  }//.tvcol
+  .tvcol ~ .tvcol {
+    margin-left: initial; // NOTE: reverting above for all but first elem!
+  }
+
+
+
+
+  #cols.noCC {
+    min-height: initial !important;
+    max-height: 600px !important; // this makes JS TVQ.player_sizes() fit a 180px high video and just barely/mostly fit a quote or Ad
+    .tvcol, .col-y-0 {
+      background-color:@theatreBG;
+    }
+  }//#cols.noCC
+
+
+  .tvcolx {
+    font-weight:normal !important;
+
+    // make it so once click, the "click to play" image tooltip goes away!
+    .th > .tooltip {
+      display:none !important;
+    }
+
+    .share-icon {
+      .share-icon-35;
+    }
+
+    .snippet {
+      color:black;
+      font-size:20px;
+      line-height:1.3;
+      padding:2px;
+    }
+    .snipin  {
+      padding-left:10px;
+      padding-right:10px;
+    }
+  }//.tvcolx
+
+
+  #tvquoted {
+    background-color:@theatreBG;
+
+    #jwQwrap { //center the video, too!
+      left:0;
+      right:0;
+    }
+
+    .th {
+      background-color:black; // "pillar" image w/ left/right black bars!
+      img {
+        display:block; // center image in (typically) wider column
+        margin:auto;   // center image in (typically) wider column
+        width:initial;
+      }//img
+    }//.th
+
+    .tvcolin {
+      height: 97.5%;
+      max-height: 97.5%;
+    }
+    .col-y-0{
+      padding:0;
+      background-color:transparent;
+    }//.col-y-0
+    .snippet {
+      display:none;
+    }
+  }//#tvquoted
+
+
+  .tvsharing {
+    position:fixed;
+    z-index:@navZ + 2;
+    left: 100% * @tvsharing-gutter;
+    right:100% * @tvsharing-gutter;
+    width: 100% - (100% * (2 * @tvsharing-gutter));
+    top:0;
+    bottom:0;
+    border-top:0;
+    background-color:transparent;
+    border-right:0;
+
+    .quote-info, #quote-sharer, #quote-hr {
+      position:fixed;
+      left: 100% * @tvsharing-gutter;
+      right:100% * @tvsharing-gutter;
+      width: 100% - (100% * (2 * @tvsharing-gutter));
+      background-color:white;
+      overflow-x:hidden;
+      overflow-y:scroll !important;
+
+      //custom scrollbar colors (nearly white-on-white) for chrome/safari/firefox
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+      &::-webkit-scrollbar-track {
+        background: white;
+        -webkit-box-shadow: inset 0 0 6px rgba(255,255,255,0.3);
+        border-radius: 10px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: #bbb;
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 10px rgba(255,255,255,0.5);
+      }
+    }//.quote-info, #quote-sharer, #quote-hr
+
+    .quote-info {
+      top:0;
+      bottom:0;
+      font-size:14px;
+      margin-top:0; // NOTE: JS adjusts this to player height
+      margin-bottom:@quote-sharerHT + @quote-hrHT;
+
+      #qcc {
+        text-align:justify;
+
+        #cc-all {
+          padding:2px 10px 0 10px;
+        }
+
+        #ccb b {
+          .opac(0);
+          .ease(opacity, 1.5s);
+          font-weight:normal;
+          padding-right:5px;
+
+          &.qhi {
+            .opake-important;
+            background-color:@orangeTV;
+          }
+        }
+        #ccb b.qhi {
+          background-color:@orangeTV;
+        }
+        &.commercial-making #ccb b.qhi {
+          background-color:@greenTV;
+        }
+
+
+        #handleL, #handleR {
+          position:absolute;
+          top:0px;
+          left:0px;
+          z-index:2;
+          cursor:pointer;
+          width:30px;
+          height:50px;
+        }
+
+        #handleL { background-image:url(/images/quotepinL.png); }
+        #handleR { background-image:url(/images/quotepinR.png); }
+        &.commercial-making {
+          #handleL { background-image:url(/images/commercialpinL.png); } //xxxphl update once iconochive-tv-commercial updated
+          #handleR { background-image:url(/images/commercialpinR.png); }
+        }
+
+        &.big {
+          #ccb b, #handleL, #handleR {
+            .opake-important;
+          }
+        }//&.big
+      }//#qcc
+    }//.quote-info
+
+
+    .quote-first {
+      font-size:120%;
+    }
+
+    .quote-commercial-meta {
+      padding-top:15px;
+      padding-left:5px;
+      max-width:215px;
+      > b {
+        .topinblock;
+        min-width:80px;
+      }
+      > br {
+        margin-bottom:3px;
+      }
+    }//.quote-commercial-meta
+
+
+    #quote-sharer {
+      bottom:0;
+      height:@quote-sharerHT;
+    }
+
+
+    #quote-hr {
+      bottom:@quote-sharerHT;
+      height:@quote-hrHT;
+      border-top:5px solid white;
+      border-bottom:5px solid white;
+      background-color:#ddd;
+    }
+
+    .commercial-making {
+      .quote-done {
+        > a > div {
+          width:100px;
+          height:33px;
+          background: transparent 0px 0px no-repeat url(/images/done.png);
+          &:hover                { background-image:url(/images/done-hover.png); }
+        }
+      }//.quote-done
+      .commercial-maker {
+        display:block;
+        margin-top:10px;
+      }
+    }//.commercial-making
+
+    .commercial-maker-fn();
+
+    #sharembed {
+      padding:0 10px;
+    }
+
+
+
+    @margin:15px;
+    h1 {
+      color:@orangeTV;
+      font-size:16px;
+      margin:@margin;
+    }
+
+    #sharer {
+      margin-left:@margin;
+      text-align:center;
+      a {
+        text-decoration: none;
+        > div {
+          .roundboxer(20px);
+          .topinblock;
+          margin-right:7px;
+          margin-bottom:5px;
+          overflow:hidden;
+          border:2px solid black;
+          background-color:white;
+          width:40px;
+          height:40px;
+          text-align:center;
+          &:hover {
+            border-color:@linkcolor;
+          }
+
+          > div {
+            &:hover {
+              background-color:@linkcolor;
+            }
+            background-color:black;
+            width:40px;
+            height:40px;
+            border:0;
+            overflow:hidden;
+
+            > .tooltip {
+              margin-left:10px; // get tooltip more "centered" in "0-width" require hack divs below
+            }
+
+            .sharee {
+              padding:0;
+              width:0;
+              font-size:48px;
+              color:white;
+              margin-left:-5px;
+              margin-top:-5px;
+
+              &.iconochive-tv-commercial,
+              &.iconochive-email,
+              &.iconochive-embed {
+                color:black;
+                background-color:white;
+                width:50px;
+                font-size:30px;
+                margin-top:-6px;
+                padding:10px;
+                &:hover {
+                  color:@linkcolor;
+                }
+              }
+              &.iconochive-tv-commercial { /*ugh!*/
+                margin-top:-3px;
+                margin-left:-6px;
+                font-size:26px;
+                padding:5px;
+              }
+            }//.sharee
+          }//> div
+        }//> div
+      }//a
+    }//#sharer
+  }//.tvsharing
+
+
+
+  #leftrite {
+    @myWH:35px;
+    z-index:100;
+    position:absolute;
+    top:-1 * @myWH - 75px;
+    right:50px;
+    height:@myWH;
+    > a {
+      .stealth;
+      color:#ddd;
+      &:hover {
+        color:white;
+      }
+      > div {
+        .roundboxer(3px);
+        .topinblock;
+        padding-top:5px;
+        height:@myWH;
+        text-align:center;
+        background-color:@blue;
+        font-size:20px;
+        margin-left:10px;
+          }
+    }//> a
+  }//#leftrite
+
+
+
+  .opscreen {
+    /* for x in 50 60 70 77 80; do convert -size 1x1 xc:none -draw "fill #080000 fill-opacity 0.$x rectangle 0,0 1,1" www/images/tv2op${x}.png; done */
+    background-image:url(/images/tv2op60.png);
+    background-repeat:repeat;
+    display:none;
+
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    z-index:@navZ + 1;
+  }
+
+  #popover-reposts {
+    width:400px;
+    max-width:100%;
+    .popover-content {
+      line-height:1.1;
+      font-size:12px;
+      overflow-x:hidden;
+      overflow-y:auto;
+      table {
+        width:100%;
+      }
+    }//.popover-content
+  }//#popover-reposts
+
+
+
+  .relative-row-wrap {
+    .STICKY;
+    left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    margin: initial;
+    background-color: white;
+    padding: 0 10px;
+    z-index: 2;
+
+    // NOTE: will only apply to 1st one (see below):
+    bottom: 0;
+    border-top: @ltrbxHT solid @theatreBG;
+    min-height: 100px;
+  }//.relative-row-wrap
+  .relative-row-wrap ~ .relative-row-wrap {
+     // revert above for 2nd+
+    bottom: initial;
+    border-top: 0;
+    min-height: initial;
+  }
+
+
+  #tvbanner {
+    .oneliner;
+    position:fixed;
+    z-index:100;
+    font-size:16px;
+    font-weight:normal;
+    margin:0;
+    color:rgb(195,195,195);
+    width:100%;
+    background-color:@theatreBG;
+    padding: 5px 5px 3px 50px;
+    a.stealth {
+      color: @redMT;
+      &:hover {
+        text-decoration: none;
+        opacity: 0.8;
+      }
+      .topinblock {
+        font-size:13px;
+        margin-top:-2px;
+        line-height:1.0;
+        color:white;
+      }
+      img {
+        margin-top:-4px;
+        margin-bottom:-2px;
+        height:30px;
+      }
+    }//a.stealth
+    @media (max-width: @xs-max) {
+      font-size:12px;
+      padding:0 3px;
+      a.stealth .topinblock {
+        font-size:12px;
+        margin-top:3px;
+      }
+    }//@media
+  }//#tvbanner
+
+}//body.clipstream
+
+
+
+
+body.tv {
+  #clips {
+    height:480px;
+    width:640px;
+  }
+
+  .borrow a,
+  .playbtn a,
+  #playholder .playbtn a {
+    color:black !important;
+    -moz-box-shadow:    2px 2px 10px #999;
+    -webkit-box-shadow: 2px 2px 10px #999;
+    box-shadow:         2px 2px 10px #999;
+  }
+  .playbtn a:hover,
+  .playbtn:hover,
+  .borrow  a:hover,
+  .borrow:hover { cursor:pointer; color:@dark2 !important; }
+
+  .playbtn a                       { font-size:16px; }
+  .borrow a:hover,.playbtn a:hover { text-decoration: none; }
+
+
+
+  /* only for rare TV "program" and "show" pages */
+  table.tvhits tr {
+    th {
+      text-align:left;
+      padding-left:6px;
+      padding-right:6px;
+      background-color:transparent !important;
+    }
+
+    td {
+      padding-left:10px;
+      padding-right:10px;
+      text-align:left;
+    }
+
+    td.thumb,
+    td.thumb img {
+      width:80px;
+      height:55px;
+    }
+  }
+  /* only for rare TV "program" and "show" pages */
+
+
+
+
+  /* clipstream date range slider/picker */
+  #ui-datepicker-div { display:none; }
+  #datepicker { z-index: 1; }
+
+  #slider {
+    z-index: 0;
+    width: 200px;
+    background: transparent !important;
+    border: 0;
+    top: 46px !important;
+
+    .ui-slider-range {
+      top:-50px !important;
+      height:50px !important;
+      border-top-left-radius    :0 !important;
+      border-top-right-radius   :0 !important;
+      border-bottom-left-radius :0 !important;
+      border-bottom-right-radius:0 !important;
+    }
+
+    .ptrL, .ptrR {
+      .roundbox3;
+      width:0.8em;
+      height:0.8em;
+      border:1px solid gray !important;
+
+      &:hover {
+        border-color: @white1 !important;
+        cursor:pointer;
+      }
+    }//.ptrL, .ptrR
+
+    .ptrL {
+      background: @dark1 center center no-repeat url(/images/tvTriPtrL6.png) !important;
+      margin-left:-8px;
+    }
+    .ptrR {
+      background: @dark1 center center no-repeat url(/images/tvTriPtrR6.png) !important;
+      margin-left:0;
+    }
+
+    .ui-widget-header {
+      background-image: none !important;
+      background-color: transparent;
+      border-left:2px solid white;
+      border-right:2px solid white;
+    }
+  }//#slider
+
+
+
+  .tvdateLR {
+    display:none;
+    position:absolute;
+  }
+
+  #from, #to { top:60px;  }
+
+
+  #slidelen {
+    width:244px;
+    height:15px;
+    background: transparent !important;
+    border: 0;
+    margin-left:7px;
+  }
+
+  .ui-slider-handle {
+    top:0px;
+  }
+  /* clipstream date range slider/picker */
+
+  div.kv { margin-bottom:10px; }
+
+}//body.tv
+
+
+
+
+
+
+
+body.tvnix  {
+  .tablesorter {
+    td { padding:2px 10px; }
+    tbody tr  { opacity:0.5; }
+    tr.active { opacity:1.0; }
+    tr.nomp4  { background-color:pink; }
+  }
+  pre           { white-space:pre; word-wrap:normal; border:0; background-color:white; }
+  #tbo b        { font-size:115%; }
+  pre b, li b   { font-size:125%; color:red; font-weight:normal; }
+  li i { text-decoration:underline; font-size:125%; font-style:normal; color:red; }
+
+  .ozy {
+    .topinblock;
+  }
+
+  #qa__list {
+    width:150px !important;
+    position:absolute;
+    top:-80px; left:645px;
+
+    .jwrow {
+      font-size:9px !important;
+      height:9px;
+    }
+  }//#qa__list
+
+  #sortable {
+    list-style-type: none;
+    margin: auto;
+    padding: 0;
+
+    li {
+      margin: 1px;
+      padding-top:10px;
+      float:left;
+      width:67px;
+      height: 25px;
+      font-size:9px;
+      text-align:center;
+
+      div {
+        float:right;
+        opacity:.5;
+        color:red;
+        padding-right:2px;
+        margin-top:-12px;
+
+        &:hover {
+          cursor:pointer;
+          opacity:.8;
+        }
+      }//div
+    }//li
+  }//#sortable
+} //body.tvnix
+
+
+body.tvclip {
+  .tv-clip {
+    .well-sm;
+    h3 {
+      margin-top: 0;
+      font-size: 16px;
+    }
+    border: 1px solid #ccc;
+    .startend {
+      display: inline-block;
+      max-width: 80px;
+      margin-left: 10px;
+    }
+    .iconochive-tv-commercial {
+     .roundboxer(11px);
+      color: white;
+      background-color: @greenTV;
+      font-size: 16px;
+      padding: 2px;
+      font-size: 16px;
+      padding: 2px;
+    }
+    .row {
+      .iconochive-plus-circle {
+        opacity: 0.3;
+        font-size: 14px;
+        padding-left: 5px;
+        &:hover {
+          opacity: 1.0;
+        }
+      } // .iconochive-plus-circle
+      .slim {
+        max-width: 175px;
+      }
+    } // .row
+  } // .tv-clip
+
+  #clipstrip {
+    .topinblock;
+    position: fixed;
+    margin-top: @navbarHT;
+    top: 0;
+    bottom: 0;
+    left:0;
+    background-image: url(/images/tv2op50.png);
+    background-repeat: repeat;
+    > div > a > div {
+      position: absolute;
+      background-color: @yellow;
+      overflow: hidden;
+      &:hover {
+        .ease(all, 0.5s);
+        .blink;
+        transform: scale(3);
+      }
+      &.ad_id {
+        background-color: @greenTV;
+      }
+      &.factcheck {
+        background-color: @redTV;
+      }
+    } // > div > a > div
+  } // #clipstrip
+} // body.tvclip
+
+
+
+body.TVX {
+  .tvmin {
+    margin-bottom: 5px;
+    clear: left;
+    font-size: 16px;
+    color: gray;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-top: 4rem; // NOTE: only for 1st in reality (see below negation)
+    > div {
+      .topinblock;
+      float: left;
+      font-size: 14px;
+      color: black;
+    }
+    img {
+      width: 120px;
+      height: 82px;
+      display: block;
+      margin-right: 5px;
+    }
+    em {
+      border-radius: 2px;
+      background-color: rgb(252, 194, 76)/*@yellow-em*/;
+      background-color: rgb(255, 214, 96)/*@yellow-em*/;
+      background-color: #FCF5E6;
+      background-color: @manilla;
+      color: black;
+      font-style: normal;
+      padding: 0 0 1px 2px;
+      margin-right: 5px;
+    }
+  }//.tvmin
+  .tvmin ~ .tvmin {
+    padding-top: 0;
+  }
+
+
+  #TVX {
+    .STICKY;
+    top: 0px;
+    z-index: 2000001;
+
+    #TBG {
+      height: 50vh;
+      @media (max-height: 600px) {
+        height: 30vh;
+      }
+      @media (max-width: @xs-max) {
+        height: 20vh;
+      }
+
+      background-color: black; // only needed as backup if no jwplayer
+      text-align: center;      // only needed as backup if no jwplayer
+
+      #jw6 {
+        height: 100%;
+        max-height: 100%;
+      }
+    }//#TBG
+  }//#TVX
+  .relative-row-wrap {
+    // NOTE: some of these styles _only_ apply to *first* .relative-row-wrap (see below)
+    z-index: 2000002;
+    border-top: 1px solid #ccc;
+    margin-top: 4rem;
+  }
+  .relative-row-wrap ~ .relative-row-wrap {
+    // revert styles above intended _only_ for *first* .relative-row-wrap
+    border-top: 0;
+    margin-top: 0;
+  }
+}

@@ -1,0 +1,68 @@
+/**
+ * Page for managing members of a SimpleList.
+ *
+ * See: Views\SimpleListsAdmin.inc
+ */
+.simple-lists-admin {
+  margin: 2rem 0;
+
+  > * {
+    margin: 0;
+
+    + * {
+      margin-top: 4rem;
+    }
+  }
+
+  h1 {
+    font-size: 2.4rem;
+  }
+  h2 {
+    font-size: 1.8rem;
+  }
+  h4 {
+    margin-top: 0.25rem;
+  }
+
+  button,
+  input {
+    box-sizing: border-box;
+  }
+
+  button {
+    box-sizing: border-box;
+    padding: 0.5rem 2rem;
+    height: 3rem;
+  }
+
+  input {
+    height: 3rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+
+    border: 0.1rem solid #999;
+  }
+
+  .simple-text-form--add {
+    @media (min-width: 35.5em) {
+      display: block;
+
+      * + * {
+        margin-left: 1rem;
+        margin-top: 0;
+      }
+
+      button,
+      input,
+      label {
+        display: inline-block;
+        width: auto;
+        vertical-align: middle;
+      }
+
+      input {
+        width: 25rem;
+      }
+    }
+  }
+}

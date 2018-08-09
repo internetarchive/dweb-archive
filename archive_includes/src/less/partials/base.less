@@ -1,0 +1,97 @@
+@import 'colors.less';
+@import 'typography.less';
+
+/*
+Defines global variables and mixins
+
+Currently this is where we're putting any variables/mixins that don't
+deserve their own dedicated files.
+
+TODO: Organize all variable/mixin files (colors.less, layouts.less, etc.) in one place.
+*/
+
+/*
+xs WIDTH [(320)..767]
+sm WIDTH [768..991]
+md WIDTH [992..1199]
+lg WIDTH [1200..]
+*/
+@sm-min:  768px;
+@md-min:  992px;
+@lg-min: 1200px;
+@xs-max: (@sm-min - 1);
+@sm-max: (@md-min - 1);
+@md-max: (@lg-min - 1);
+
+// Relative versions of breakpoints for more accessible responsive design
+@xs-min-relative: 35.5em;
+@sm-min-relative: 48em;
+
+// TODO: Declare entire range of border widths
+@border-width-sm: 0.1rem;
+
+// TODO: Declare entire range of border-radius sizes
+@border-radius-md: 0.3rem;
+
+@navbarHT:50px;
+@navbarOuterHT: 78px;
+@navbarHT-xs: 30px;
+@navbg: #222;
+@navbg2: #474747;
+@nav-tophat-min-height: 210px;
+@nav-tophat-time: 0.33s;
+@theatreBG: black;
+@action-buttons-height:    90px; // 50 + 20 margin
+@action-buttons-height-xs: 50px; // 30 + 10 margin
+@left-icon-width:45px;
+@small-tiles-width: 390px;
+
+/**
+ * Selects all heading elements
+ *
+ * Params:
+ *   @rules  - ruleset to apply to the headings
+ *   @prefix - additional selector to prepend (ugly but necessary for >, +, etc.)
+ */
+.selector-heading(@rules, @prefix: ~'') {
+  @{prefix} h1,
+  @{prefix} h2,
+  @{prefix} h3,
+  @{prefix} h4,
+  @{prefix} h5,
+  @{prefix} h6 {
+    @rules();
+  }
+}
+
+/**
+* White, drop-shadowed navbar dropdown box with arrow on the top.
+*/
+.nav-dropdown() {
+  position: relative;
+  background: @color-white;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.15);
+
+  // Box shadow doesn't follow the shape of the triangle but filter isn't supported in all
+  // browsers.
+  @supports (filter: drop-shadow(0 0 0 transparent)) {
+    box-shadow: none;
+    filter: drop-shadow(0 1px 1px @base-border-color);
+  }
+
+  &::after {
+    @height: 7px;
+    @width: 12px;
+
+    .up-triangle(@width, @height);
+
+    content: '';
+
+    position: absolute;
+    right: @height;
+    top: -@height;
+
+    color: rgb(255, 255, 255);
+  }
+}

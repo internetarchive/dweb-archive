@@ -1,0 +1,42 @@
+@import 'base.less';
+@import 'layouts.less';
+@import 'typography.less';
+
+/**
+ * Accordion with multiple expandable sections, implemented via
+ * <details> and <summary> elements
+ *
+ * See: Views\Accordion
+ */
+
+.accordion {
+  > details {
+    .layout-one-column-spaced(@vertical-rhythm);
+
+    > summary {
+      border-radius: @border-radius-md;
+      padding: @vertical-rhythm / 2;
+      transition: background-color 0.125s ease-in-out;
+
+      .selector-heading({
+        display: inline-block;
+        font: inherit;
+        margin: 0;
+      });
+
+      &:focus,
+      &:hover {
+        background-color: @x-light-grey;
+      }
+
+      // Reduce space in between <summary> and the first element
+      + * {
+        margin-top: @vertical-rhythm / 2;
+      }
+    }
+
+    &[open] + * {
+      margin-top: @vertical-rhythm;
+    }
+  }
+}
