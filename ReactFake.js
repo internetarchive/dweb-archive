@@ -12,6 +12,8 @@ import from2 from "from2";
 import prettierBytes from "prettier-bytes";
 const Url = require('url');
 import ArchiveFile from "./ArchiveFile";
+const debug = require('debug')('archive:ReactFake');
+
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
 function deletechildren(el, keeptemplate) { //Note same function in htmlutils
@@ -104,18 +106,7 @@ export default class React  {
         Previous version got a static (non stream) content and puts in an existing IMG tag but this fails in Firefox
         This version appends to a tag using RenderMedia.append which means using a stream
         Note it can't be inside load_img which has to be synchronous and return a jsx tree.
-
          */
-        /*
-        //This method makes use of the full DWeb library, can get any kind of link, BUT doesnt work in Firefox, the image doesn't get rendered.
-        let data = await  Transports.p_rawfetch(urls, {verbose});  //Typically will be a Uint8Array
-        let blob = new Blob([data], {type: Util.formats("format", this.metadata.format).mimetype}) // Works for data={Uint8Array|Blob}
-        // This next code is bizarre combination needed to open a blob from within an HTML window.
-        let objectURL = URL.createObjectURL(blob);
-        if (verbose) console.log("Blob URL=",objectURL);
-        //el.src = `http://archive.org/download/${this.itemid}/${this.metadata.name}`
-        el.src = objectURL;
-        */
         if (verbose) console.log(`Loading Image ${urls}`);
         urls = await this.p_resolveUrls(urls, rel); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
         urls = await DwebTransports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
