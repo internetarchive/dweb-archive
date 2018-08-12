@@ -8,7 +8,7 @@ module.exports = merge.smart(common, {
 
   output: {
     // Use minified name
-    //filename: 'js/[name].min.js',
+    filename: '[name].min.js',
   },
 
   module: {
