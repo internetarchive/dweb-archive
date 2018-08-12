@@ -4,7 +4,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 const srcPath = path.resolve(__dirname, 'src')
 const lessSrcPath = path.join(srcPath, 'less')
 const jsSrcPath = path.join(srcPath, 'js')
-const buildPath = path.resolve(__dirname, 'build')
+const buildPath = path.resolve(__dirname)
 const includesPath = path.resolve(__dirname)
 const nodeModulesPath = path.resolve(__dirname, 'node_modules')
 
@@ -19,6 +19,8 @@ module.exports = {
       path.join(lessSrcPath, 'archive.less'),
     ],
 
+      //TODO-LESS disabled archive.js build
+      /*
     tv: [
       // JS and LESS together since they use the same name, will be split via loaders
       path.join(jsSrcPath, 'tv.js'),
@@ -33,12 +35,13 @@ module.exports = {
     ThreeD:   path.join(jsSrcPath, 'ThreeD.js'),
     tvsearch: path.join(jsSrcPath, 'tvsearch.js'),
     webamp:   path.join(jsSrcPath, 'webamp.js'),
+      */
   },
 
   // Define where we output the built JS files
   output: {
     // JS subdirectory to allow for future separation of JS and CSS
-    filename: 'js/[name].js',
+    filename: '[name].js',
     path: buildPath,
   },
 
@@ -88,7 +91,7 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              name: 'css/[name].css',
+              name: '[name].css',
             },
           },
           'extract-loader',

@@ -1,10 +1,10 @@
 // Using ~ to pull from node_modules
-@import '~ia-design-system/src/styles/index.less';
+@import '../../node_modules/ia-design-system/src/styles/index.less';
 
 @import "bootstrap/bootstrap.less";
 
 //  CUSTOM FONT-BASED GLYPHS (SYMBOLS) FROM KRISTEN AND DAVID!
-@import "../../fonts/Iconochive.less";
+@import "fonts/Iconochive.less";
 //@import "iconochive-css.css";
 
 // Mixins/Variables
@@ -237,7 +237,7 @@ div.well {
 
 
 body.navia {
-  :-moz-full-screen { background:url(/images/black.png) } //fix for firefox fullscreen videos (!)
+  :-moz-full-screen { background:url(./images/black.png) } //fix for firefox fullscreen videos (!)
 
   #navwrap1 {
     .ease(height, @nav-tophat-time);
@@ -1209,7 +1209,7 @@ div.stamped {
 
 #opscreen1, #opscreen2, #opscreen1M {
   /* for x in 30 50 60 70 77 80; do convert -size 1x1 xc:none -draw "fill #080000 fill-opacity 0.$x rectangle 0,0 1,1" www/images/tv2op${x}.png; done */
-  background-image:url(/images/tv2op70.png);
+  background-image:url(./images/tv2op70.png);
   background-repeat:repeat;
   display:none;
   position:fixed;
@@ -4546,8 +4546,8 @@ body.catalog {
 
   .steppum  {font-family:Steppum; font-size:400%; }
   .steppum b{font-family:Flip !important; padding-right:40px; }
-  @font-face{font-family:Steppum;src:url("/includes/fonts/steppum fo rotsap.otf");}
-  @font-face{font-family:Flip   ;src:url("/includes/fonts/steppum fo rotsap flipped.otf");}
+  @font-face{font-family:Steppum;src:url("./fonts/steppum fo rotsap.otf");}
+  @font-face{font-family:Flip   ;src:url("./fonts/steppum fo rotsap flipped.otf");}
 
   .popover { min-width:340px; word-wrap:break-word; }
 
@@ -5855,17 +5855,17 @@ body.donateThankYou {
 /* pairs with optional additional include:  jquery.tablesorter.min.js */
 table.tablesorter thead tr {
   .header {
-    background-image: url(/includes/bg.gif);
+    background-image: url(./bg.gif);
     background-repeat: no-repeat;
     background-position: center right;
     cursor: pointer;
     padding-right: 15px;
   }
   .headerSortUp {
-    background-image: url(/includes/asc.gif);
+    background-image: url(./asc.gif);
   }
   .headerSortDown {
-    background-image: url(/includes/desc.gif);
+    background-image: url(./desc.gif);
   }
 }
 /* pairs with optional additional include:  jquery.tablesorter.min.js */

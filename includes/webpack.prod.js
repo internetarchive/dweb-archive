@@ -8,7 +8,7 @@ module.exports = merge.smart(common, {
 
   output: {
     // Use minified name
-    filename: 'js/[name].min.js',
+    //filename: 'js/[name].min.js',
   },
 
   module: {
@@ -20,7 +20,7 @@ module.exports = merge.smart(common, {
             loader: 'file-loader',
             options: {
               // Use minified name
-              name: 'css/[name].min.css',
+              name: '[name].min.css',
             },
           },
           'extract-loader',

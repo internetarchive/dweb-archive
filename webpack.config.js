@@ -42,7 +42,8 @@ module.exports = {
                 { from: 'favicon.ico', to: './'},
                 { from: 'fonts/', to: 'fonts/'},
                 { from: 'images/', to: 'images/'},
-                { from: 'includes/', to: 'includes/'}
+                { from: 'includes/', to: 'includes/'},
+                { from: 'includes/node_modules_dist', to: 'includes/node_modules'} // Note in node_modules need react/dist/react.js
             ],
             { }
         )
