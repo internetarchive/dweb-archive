@@ -39,18 +39,14 @@ http to 6 streams and we need to implement a limited http pool to fix this.
 
 `open "http://localhost:8080/archive.html"`
 
-OR Generally while debugging run with verbose=true
-
-`open "http://localhost:8080/archive.html&verbose=true"`
-
 OR load via the bootloader, 
 passing the url parameter will simulate what happens at https://dweb.archive.org/
 
-`open "http://localhost:8080/bootloader.html?url=http://dweb.archive.org&verbose=true`
+`open "http://localhost:8080/bootloader.html?url=http://dweb.archive.org`
 
 To test with limited transports, for example HTTP only, add the transport parameter.
 
-`open "http://localhost:8080/archive.html?verbose=true&transport=HTTP"`
+`open "http://localhost:8080/archive.html?transport=HTTP"`
 
 
 ### Node Installation to work on this repo

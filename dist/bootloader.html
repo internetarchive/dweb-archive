@@ -79,7 +79,7 @@ Name:&nbsp;<input type="text" class="formbox" id="urlorname" placeholder="/arc/a
         document.getElementById("urlorname").value = name;
         statusupdate("Resolving name: ",name, "?", search_supplied || "");   // Appears after loading
         try {
-            await DwebObjects.Domain.p_resolveAndBoot(name, {search_supplied, verbose})
+            await DwebObjects.Domain.p_resolveAndBoot(name, {search_supplied})
         } catch(err) {  // If cant resolve to leaf, or boot fails
             console.error("Got error",err);
             statusupdate(err.message);
@@ -94,7 +94,7 @@ Name:&nbsp;<input type="text" class="formbox" id="urlorname" placeholder="/arc/a
     // Next few lines need explaining!  If passed an extra parameter url= then it will use that as the URL instead of ...bootloader.html
     // This is only useful until we have the server returning this file for anything under dweb.archive.org
     var searchparams = new URL(window.location.href).searchParams;  // Original parameters, which includes url if faking
-    var verbose = searchparams.get("verbose");
+    localStorage.debug = "dweb-transports:* dweb-objects:* dweb-archive:*";
     main()
 </script>
 <!--TODO add a form here -->

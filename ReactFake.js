@@ -11,8 +11,8 @@ import throttle from "throttleit";
 import from2 from "from2";
 import prettierBytes from "prettier-bytes";
 const Url = require('url');
+const debug = require('debug')('dweb-archive');
 import ArchiveFile from "./ArchiveFile";
-const debug = require('debug')('archive:ReactFake');
 
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
@@ -107,7 +107,7 @@ export default class React  {
         This version appends to a tag using RenderMedia.append which means using a stream
         Note it can't be inside load_img which has to be synchronous and return a jsx tree.
          */
-        if (verbose) console.log(`Loading Image ${urls}`);
+        debug("Loading Image %s from %o", name, urls);
         urls = await this.p_resolveUrls(urls, rel); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
         urls = await DwebTransports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
         // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
@@ -121,7 +121,7 @@ export default class React  {
         } else if (streamUrls.length) {
             const file = {
                 name: name,
-                createReadStream: await DwebTransports.p_f_createReadStream(streamUrls, {verbose})
+                createReadStream: await DwebTransports.p_f_createReadStream(streamUrls)
                 // Initiate a stream, & return a f({start, end}) => readstream
                 // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
             };
@@ -130,8 +130,8 @@ export default class React  {
             // Otherwise fetch the file, and pass via rendermedia and from2
             //TODO-MULTI-GATEwAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
             try {
-                const buff = await  DwebTransports.p_rawfetch(urls, {verbose, timeoutMS: 5000, relay: false});  //Typically will be a Uint8Array TODO-TIMEOUT make timeoutMS depend on size of file
-                if (verbose) console.log("Retrieved image size", buff.length);
+                const buff = await  DwebTransports.p_rawfetch(urls, {timeoutMS: 5000, relay: false});  //Typically will be a Uint8Array TODO-TIMEOUT make timeoutMS depend on size of file
+                // Logged by Transports
                 const file = {
                     name: name,
                     createReadStream: function (opts) {
@@ -159,7 +159,7 @@ export default class React  {
     static async _p_loadStreamRenderMedia(el, name, urls, cb, rel) {
         const file = {
             name: name,
-            createReadStream: await DwebTransports.p_f_createReadStream(urls, {verbose})
+            createReadStream: await DwebTransports.p_f_createReadStream(urls)
             // Return a function that returns a readable stream that provides the bytes between offsets "start" and "end" inclusive.
             // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
             // f_createReadStream can initiate the stream before returning the function.
@@ -199,7 +199,7 @@ export default class React  {
     static async _p_loadStreamFetchAndBuffer(el, name, urls, cb, rel) {
 
         // Worst choice - fetch the file, and pass via rendermedia and from2
-        const buff = await DwebTransports.p_rawfetch(urls, {verbose});  //Typically will be a Uint8Array, TODO-TIMEOUT make timeoutMS dependent on file size
+        const buff = await DwebTransports.p_rawfetch(urls);  //Typically will be a Uint8Array, TODO-TIMEOUT make timeoutMS dependent on file size
         const file = {
             name: name,
             createReadStream: function (opts) {
@@ -285,7 +285,7 @@ export default class React  {
                 const src = attrs.src;
                 function cb(err, element) {
                     if (err) {
-                        console.log("Caught error in createElement callback in loadImg or loadStream",
+                        console.warn("Caught error in createElement callback in loadImg or loadStream",
                             (src instanceof ArchiveFile) ? src.name : src,
                             err.message);
                         throw err;
@@ -322,14 +322,14 @@ export default class React  {
         function _setahref(href) {
             // Expects attrs & element set in outer setAttributes
             let possibleOnclick;
-            if (href.includes("archive.org/search.php?query=")) { //Note this doesnt handle other parameters in the URL (esp verbose) but unlikely to find in legacy urls like search.php
+            if (href.includes("archive.org/search.php?query=")) { //Note this doesnt handle other parameters in the URL but unlikely to find in legacy urls like search.php
                 if (! "onclick" in attrs) {
                     console.error("archive.org/search.php should always be accompanied with an onclick handler");
                 }
                 // Don't set possibleOnClock, we want it explicitly
             }
             else if (href.startsWith("dweb:")) {
-                possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href, {verbose}); return false;';
+                possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href); return false;';
             } else if (href.indexOf("/download/") >= 0) {
                 let dirname =  href.slice(href.indexOf("/download/")+10);
                 possibleOnclick = `Nav.nav_downloaddirectory("${dirname}"); return false;`

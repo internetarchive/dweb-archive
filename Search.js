@@ -13,13 +13,11 @@ var fetch,Headers,Request;
 if (typeof(Window) === "undefined") {
     //var fetch = require('whatwg-fetch').fetch; //Not as good as node-fetch-npm, but might be the polyfill needed for browser.safari
     //XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;  // Note this doesnt work if set to a var or const, needed by whatwg-fetch
-    console.log("Node loaded");
     fetch = nodefetch;
     Headers = fetch.Headers;      // A class
     Request = fetch.Request;      // A class
 } else {
     // If on a browser, need to find fetch,Headers,Request in window
-    console.log("Loading browser version of fetch,Headers,Request");
     fetch = window.fetch;
     Headers = window.Headers;
     Request = window.Request;

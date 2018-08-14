@@ -1,6 +1,8 @@
+// noinspection JSUnresolvedFunction
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 import Util from './Util';
 import prettierBytes from "prettier-bytes";
+// noinspection JSUnresolvedFunction
 //const Transports = require('@internetarchive/dweb-transports');
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
@@ -39,7 +41,10 @@ export default class ArchiveFile {
             return []; // Empty array as nowhere to fetch
         }
         // Includes both ipfs and ipfs via gateway link as the latter can prime the IPFS DHT so the former works for the next user
-        return [this.metadata.ipfs, this.metadata.ipfs ? this.metadata.ipfs.replace('ipfs:/ipfs/','https://ipfs.io/ipfs/') : undefined, this.metadata.magnetlink, this.metadata.contenthash].filter(f => !!f);   // Multiple potential sources elimate any empty
+        // noinspection JSUnresolvedFunction
+        // noinspection JSUnresolvedVariable
+        // noinspection JSUnresolvedVariable
+        return [this.metadata.ipfs, this.metadata.ipfs ? this.metadata.ipfs.replace('ipfs:/ipfs/','https://ipfs.io/ipfs/') : undefined, this.metadata.magnetlink, this.metadata.contenthash].filter(f => !!f);   // Multiple potential sources eliminate any empty
     }
     httpUrl() {
         return `${Util.gateway.url_download}${this.itemid}/${this.metadata.name}`;
@@ -48,7 +53,7 @@ export default class ArchiveFile {
        return Util.formats("format", this.metadata.format).mimetype;
     }
     async data() {
-        return await DwebTransports.p_rawfetch(await this.p_urls(), {verbose}); //TODO-TIMEOUT add timeoutMS depending on size of file
+        return await DwebTransports.p_rawfetch(await this.p_urls()); //TODO-TIMEOUT add timeoutMS depending on size of file
     }
     async blob() {
         return new Blob([await this.data()], {type: this.mimetype()} );
@@ -57,9 +62,10 @@ export default class ArchiveFile {
         return URL.createObjectURL(await this.blob());
     }
     async p_download(a, options) {
+        // noinspection JSUnusedLocalSymbols
         let urls = await this.p_urls();   // Multiple potential sources elimating any empty - may fetch file metadata in process
+        // noinspection UnnecessaryLocalVariableJS
         let objectURL = await this.blobUrl();
-        if (verbose) console.log("Blob URL=",objectURL);
         //browser.downloads.download({filename: this.metadata.name, url: objectURL});   //Doesnt work
         //Downloads.fetch(objectURL, this.metadata.name);   // Doesnt work
         a.href = objectURL;
@@ -81,13 +87,15 @@ export default class ArchiveFile {
     }
     istype(type) {
         // True if specify a type and it matches, or don't specify a type BUT fails if type unrecognized
-        let format = Util.formats("format", this.metadata.format)
-        if (!format) console.warn("Format", this.metadata.format, "unrecognized")
+        let format = Util.formats("format", this.metadata.format);
+        if (!format) console.warn("Format", this.metadata.format, "unrecognized");
         return format && (!type || (format.type === type));
     }
+    // noinspection JSUnusedGlobalSymbols
     playable(type) {
         return this.istype(type) && Util.formats("format", this.metadata.format).playable;
     }
+    // noinspection JSUnusedGlobalSymbols
     downloadable(type) {
         return this.istype(type) && !!Util.formats("format", this.metadata.format).downloadable;
     }
