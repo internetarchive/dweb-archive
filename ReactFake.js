@@ -11,7 +11,9 @@ import throttle from "throttleit";
 import from2 from "from2";
 import prettierBytes from "prettier-bytes";
 const Url = require('url');
+const debug = require('debug')('dweb-archive');
 import ArchiveFile from "./ArchiveFile";
+
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
 function deletechildren(el, keeptemplate) { //Note same function in htmlutils
@@ -104,20 +106,9 @@ export default class React  {
         Previous version got a static (non stream) content and puts in an existing IMG tag but this fails in Firefox
         This version appends to a tag using RenderMedia.append which means using a stream
         Note it can't be inside load_img which has to be synchronous and return a jsx tree.
-
          */
-        /*
-        //This method makes use of the full Dweb library, can get any kind of link, BUT doesnt work in Firefox, the image doesn't get rendered.
-        let data = await  Transports.p_rawfetch(urls, {verbose});  //Typically will be a Uint8Array
-        let blob = new Blob([data], {type: Util.formats[this.metadata.format].mimetype}) // Works for data={Uint8Array|Blob}
-        // This next code is bizarre combination needed to open a blob from within an HTML window.
-        let objectURL = URL.createObjectURL(blob);
-        if (verbose) console.log("Blob URL=",objectURL);
-        //el.src = `http://archive.org/download/${this.itemid}/${this.metadata.name}`
-        el.src = objectURL;
-        */
-        if (verbose) console.log(`Loading Image ${urls}`);
-        urls = await this.p_resolveUrls(urls, rel); // Handles a range of urls include ArchiveFile
+        debug("Loading Image %s from %o", name, urls);
+        urls = await this.p_resolveUrls(urls, rel); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
         urls = await DwebTransports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
         // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
         let fileurl = urls.find(u => u.startsWith("file"))
@@ -130,7 +121,7 @@ export default class React  {
         } else if (streamUrls.length) {
             const file = {
                 name: name,
-                createReadStream: await DwebTransports.p_f_createReadStream(streamUrls, {verbose})
+                createReadStream: await DwebTransports.p_f_createReadStream(streamUrls)
                 // Initiate a stream, & return a f({start, end}) => readstream
                 // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
             };
@@ -139,8 +130,8 @@ export default class React  {
             // Otherwise fetch the file, and pass via rendermedia and from2
             //TODO-MULTI-GATEwAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
             try {
-                const buff = await  DwebTransports.p_rawfetch(urls, {verbose, timeoutMS: 5000, relay: false});  //Typically will be a Uint8Array TODO-TIMEOUT make timeoutMS depend on size of file
-                if (verbose) console.log("Retrieved image size", buff.length);
+                const buff = await  DwebTransports.p_rawfetch(urls, {timeoutMS: 5000, relay: false});  //Typically will be a Uint8Array TODO-TIMEOUT make timeoutMS depend on size of file
+                // Logged by Transports
                 const file = {
                     name: name,
                     createReadStream: function (opts) {
@@ -168,13 +159,14 @@ export default class React  {
     static async _p_loadStreamRenderMedia(el, name, urls, cb, rel) {
         const file = {
             name: name,
-            createReadStream: await DwebTransports.p_f_createReadStream(urls, {verbose})
+            createReadStream: await DwebTransports.p_f_createReadStream(urls)
             // Return a function that returns a readable stream that provides the bytes between offsets "start" and "end" inclusive.
             // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
             // f_createReadStream can initiate the stream before returning the function.
         };
 
-        RenderMedia.render(file, el, cb);  // Render into supplied element, will set window.WEBTORRENT_TORRENT if uses WebTorrent
+        // Enabled autoplay even though its being ignored - see https://github.com/internetarchive/dweb-archive/issues/41
+        RenderMedia.render(file, el, {autoplay: true}, cb);  // Render into supplied element, will set window.WEBTORRENT_TORRENT if uses WebTorrent
 
         if (window.WEBTORRENT_FILE) {    //TODO-SW need to get status back from WebTorrent
             const torrent = window.WEBTORRENT_TORRENT;
@@ -207,7 +199,7 @@ export default class React  {
     static async _p_loadStreamFetchAndBuffer(el, name, urls, cb, rel) {
 
         // Worst choice - fetch the file, and pass via rendermedia and from2
-        const buff = await DwebTransports.p_rawfetch(urls, {verbose});  //Typically will be a Uint8Array, TODO-TIMEOUT make timeoutMS dependent on file size
+        const buff = await DwebTransports.p_rawfetch(urls);  //Typically will be a Uint8Array, TODO-TIMEOUT make timeoutMS dependent on file size
         const file = {
             name: name,
             createReadStream: function (opts) {
@@ -224,7 +216,6 @@ export default class React  {
         //If its a HTTP URL use that
         //Dont try and use IPFS till get a fix for createReadStream
         try {
-            //urls = [ 'ipfs:/ipfs/QmRfcgjWEWdzKBnnSYwmV7Kt5wVVuWZvLm96o4dj7myWuy']  - TODO delete this line once Kyle fixes files.cat for urlstored files - this replaces all with a test video
             urls = await this.p_resolveUrls(urls, rel); // Allow relative urls
             urls = await DwebTransports.p_resolveNames(urls); // Allow names among urls
             // Strategy here ...
@@ -232,24 +223,28 @@ export default class React  {
             // If can createReadStream (IPFS when fixed; webtorrent) => rendermedia
             // If http => video src
             // Default fetch as bytes and
-            let magneturl = urls.find(u => u.includes('magnet:'));
-            if ((DwebTransports.type === "ServiceWorker")  && magneturl) {
-                el.src = magneturl.replace('magnet:',`${window.origin}/magnet/`);
-            } else {
-                const streamUrls = (await DwebTransports.p_urlsValidFor(urls, "createReadStream"));
-                if (streamUrls.length) {
-                    await this._p_loadStreamRenderMedia(el, name, streamUrls, cb, rel)
+            if (urls.length) { // At least one url to try
+                let magneturl = urls.find(u => u.includes('magnet:'));
+                if ((DwebTransports.type === "ServiceWorker") && magneturl) {
+                    el.src = magneturl.replace('magnet:', `${window.origin}/magnet/`);
                 } else {
-                    // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
-                    // TODO clean this nasty kludge up,
-                    // Find a HTTP transport if connected, then ask it for the URL (as will probably be contenthash) note it leaves non contenthash urls untouched
-                    const url = await DwebTransports.p_httpfetchurl(urls);
-                    if (url) {
-                        el.src = url;
+                    const streamUrls = (await DwebTransports.p_urlsValidFor(urls, "createReadStream"));
+                    if (streamUrls.length) {
+                        await this._p_loadStreamRenderMedia(el, name, streamUrls, cb, rel)
                     } else {
-                        await this._p_loadStreamFetchAndBuffer(el, name, urls, cb, rel);
+                        // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
+                        // TODO clean this nasty kludge up,
+                        // Find a HTTP transport if connected, then ask it for the URL (as will probably be contenthash) note it leaves non contenthash urls untouched
+                        const url = await DwebTransports.p_httpfetchurl(urls);
+                        if (url) {
+                            el.src = url;
+                        } else {
+                            await this._p_loadStreamFetchAndBuffer(el, name, urls, cb, rel);
+                        }
                     }
                 }
+            } else { // No urls
+                console.warn('ReactFake.p_loadStream didnt find any resolvable urls - cant load stream')
             }
         } catch(err) {
             console.error("Uncaught error in p_loadStream",err);
@@ -285,21 +280,23 @@ export default class React  {
         const kids = Array.prototype.slice.call(arguments).slice(2);
         //const rel = [ document.baseURI ]; // use baseURI as will be location.href if not explicitly set; [ window.location.href ];
         const rel = [ React._config.rootname ];
-        function cb(err, element) {
-            if (err) {
-                console.log("Caught error in createElement callback in loadImg or loadStream",err.message);
-                throw err;
-            }
-            React.setAttributes(element, tag, attrs, rel);
-            React.addKids(element, kids);
-            return element;
-        }
         if (tag === "img") {
             if (Object.keys(attrs).includes("src")) {
                 const src = attrs.src;
+                function cb(err, element) {
+                    if (err) {
+                        console.warn("Caught error in createElement callback in loadImg or loadStream",
+                            (src instanceof ArchiveFile) ? src.name : src,
+                            err.message);
+                        throw err;
+                    }
+                    React.setAttributes(element, tag, attrs, rel);
+                    React.addKids(element, kids);
+                    return element;
+                }
                 const name = attrs["imgname"]
                     ? attrs["imgname"]
-                    : ( (src instanceof ArchiveFile) ? src.name() : "DummyName.PNG");
+                    : ( (src instanceof ArchiveFile) ? src.name() : "DUMMY.PNG");
                 delete attrs.src;   // Make sure dont get passed to cb for building into img (which wont like an array)
                 return this.loadImg(name, src, cb, rel);   //Creates a <span></span>, asynchronously creates an <img> under it and calls cb on that IMG. The <div> is returned immediately.
             }
@@ -317,11 +314,34 @@ export default class React  {
 
         Note: This is called back by loadImg after creating the tag.
         Special cases coded here:
-            <a href='./aaa' | href='/aaa' id='tabby-bbb'> => <a href="/arc/archive.org/tabby-bbb" id='tabby-bbb'>
+            <a href='./aaa' | href='/aaa' id='tabby-bbb'> => <a href="/arc/archive.org/aaa" id='tabby-bbb'>
             <audio|video src=ArchiveFile> => loadStream(ArchiveFile)
             <a source=ArchiveFile  => source=ArchiveFile (stored correctly)
             Dont try and catch img.src here, its too late - catch it in loadImg (called from createElement)
         */
+        function _setahref(href) {
+            // Expects attrs & element set in outer setAttributes
+            let possibleOnclick;
+            if (href.includes("archive.org/search.php?query=")) { //Note this doesnt handle other parameters in the URL but unlikely to find in legacy urls like search.php
+                if (! "onclick" in attrs) {
+                    console.error("archive.org/search.php should always be accompanied with an onclick handler");
+                }
+                // Don't set possibleOnClock, we want it explicitly
+            }
+            else if (href.startsWith("dweb:")) {
+                possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href); return false;';
+            } else if (href.indexOf("/download/") >= 0) {
+                let dirname =  href.slice(href.indexOf("/download/")+10);
+                possibleOnclick = `Nav.nav_downloaddirectory("${dirname}"); return false;`
+            }
+            if (possibleOnclick) {
+                if (attrs["onclick"] || ("onclick" in attrs)) {
+                    console.error("Setting href to dweb wont work if onclick already set");
+                } else {
+                    element.setAttribute("onclick", possibleOnclick); // Note this will handle search like href=xx?aa=bb
+                }
+            } // no need for else, setting href is sufficient
+        }
         for (let name in attrs) {
             const attrname = (name.toLowerCase() === "classname" ? "class" : name);
             if (name === "dangerouslySetInnerHTML") {
@@ -329,35 +349,20 @@ export default class React  {
                 delete attrs.dangerouslySetInnerHTML;
             }
             // Turn root-relative URLS in IMG and A into absolute urls - ideally these are also caught by special cases (note don't appear to be any of these in most code)
-            if (["a.href"].includes(tag + "." + name) &&
-                (typeof attrs[name] === "string") && (attrs[name].startsWith('./') || attrs[name].startsWith('/'))
-            ) {
-                if (attrs.id && attrs.id.startsWith('tabby-')) {  // There is some weird javascript in AJS.tabby which assumes this is root-relative, so dont change it
-                    attrs[name] = React._config.tabbyrootinsert + attrs[name]; // Rewrite value to store
+            if (["a.href"].includes(tag + "." + name) && (typeof attrs[name] === "string") ) { // <a href=<string>
+                if (attrs[name].startsWith('./') || attrs[name].startsWith('/')) {
+                    if (attrs.id && attrs.id.startsWith('tabby-')) {  // There is some weird javascript in AJS.tabby which assumes this is root-relative, so dont change it
+                        attrs[name] = React._config.tabbyrootinsert + attrs[name]; // Rewrite value to store
+                    } else {
+                        let hrefs = this.resolveUrls(attrs[name], rel); // Array of urls, but should be just one since href name will be singular as will rel
+                        if (hrefs.length > 1) {
+                            console.error("Decide what mean by multiple hrefs in an anchor handle onclick for it below hrefs=",hrefs)
+                        }
+                        attrs[name] = hrefs[0];
+                        _setahref(hrefs[0]); // Handles special cases
+                    }
                 } else {
-                    let hrefs = this.resolveUrls(attrs[name], rel); // Array of urls, but should be just one since href name will be singular as will rel
-                    if (hrefs.length > 1) {
-                        console.error("Decide what mean by multiple hrefs in an anchor handle onclick for it below hrefs=",hrefs)
-                    }
-                    let href = hrefs[0]
-                    attrs[name] = href;
-                    let possibleOnclick;
-                    if (href.includes("archive.org/search.php?query=")) { //Note this doesnt handle other parameters in the URL (esp verbose) but unlikely to find in legacy urls like search.php
-                        if (! "onclick" in attrs) {
-                            console.error("archive.org/search.php should always be accompanied with an onclick handler");
-                        }
-                        // Don't set possibleOnClock, we want it explicitly
-                    }
-                    else if (href.startsWith("dweb:") && (name === "href")) {
-                        possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href, {verbose}); return false;';
-                    }
-                    if (possibleOnclick) {
-                        if (attrs["onclick"] || ("onclick" in attrs)) {
-                            console.error("Setting href to dweb wont work if onclick already set");
-                        } else {
-                            element.setAttribute("onclick", possibleOnclick); // Note this will handle search like href=xx?aa=bb
-                        }
-                    } // no need for else, setting href is sufficient
+                    _setahref(attrs[name]); // Handles special cases
                 }
             }
             // Load ArchiveFile inside a div if specify in src
@@ -365,7 +370,7 @@ export default class React  {
                 const af = attrs[name];
                 const videoname = af.metadata.name;
                 //Dont need mimetype currently
-                //const mimetype = Util.formats[af.metadata.format].mimetype; // Might be undefined for many formats still
+                //const mimetype = Util.formats("format", af.metadata.format).mimetype; // Might be undefined for many formats still
                 //if (!mimetype) console.warning("Unknown mimetype for ",af.metadata.format, "on",af.metadata.name);
                 this.loadStream(element, videoname, af, undefined, rel);  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
             } else if (["a.source"].includes(tag + "." + name) && attrs[name] instanceof Object) {
@@ -404,9 +409,27 @@ export default class React  {
         }
         return element;
     }
-    static domrender(els, node) {
+    static domrender(els, node) { // Four cases - have/dont old/new
+        let navdweb = document.getElementById('nav-dweb'); // Find the navbar element TODO-STATUS this might move
+        let navdwebparent;
+        if (navdweb) { // old, ?new
+            navdwebparent = navdweb.parentElement;
+            navdwebparent.removeChild(navdweb)
+            navdwebparent = undefined; // Removed old version
+        }
         deletechildren(node, false);
         node.appendChild(els);
+        let navdwebnew = document.getElementById('nav-dweb'); // Look for a new one, note wont find the one we removed above
+        if (navdwebnew) navdwebparent = navdwebnew.parentElement;  // ?o&&n
+        if (navdweb && navdwebnew) { // o&&n
+            navdwebparent.removeChild(navdwebnew); // Remove new copy
+        }
+        if ( !navdwebparent) { // o&&!n,
+            navdwebparent = document.getElementById('nav-dweb-parent') || document.children[0]; // Find the navbar element and if fails then put on HTML for now TODO-STATUS this might move
+        }
+        if (navdweb) { // o&&?n Add in old one if we have it
+            navdwebparent.append(navdweb); // Put it back in the right place, or stash temporarily if not found
+        }
     }
 };
 

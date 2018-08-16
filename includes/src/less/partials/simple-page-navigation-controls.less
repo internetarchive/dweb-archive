@@ -1,0 +1,38 @@
+/**
+ * Form with minimal affordance of page navigation when viewing tables
+ * or other lists best displayed across multiple pages.
+ *
+ * See: Views\SimplePageNavigationControl.inc
+ */
+.simple-page-navigation-controls {
+  * + * {
+    margin-top: 0.5rem;
+  }
+
+  input,
+  label {
+    display: block;
+  }
+
+  label {
+    line-height: @body-line-height;
+    margin-bottom: 0;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  /**
+   * Form for adding an object to another object.
+   */
+  &--add {
+    display: flex;
+    flex-direction: column;
+
+    button {
+      align-self: flex-end;
+      width: auto;
+    }
+  }
+}

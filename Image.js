@@ -61,7 +61,7 @@ export default class Image extends Details {
                                             <a className="carousel-image-wrapper"
                                                 onclick="Nav.nav_download(this);"
                                                 source={mainArchiveFile}
-                                                title="Open full sized image" target="_blank">{/*--Separate window so dont break Dweb--*/}
+                                                title="Open full sized image" target="_blank">{/*--Separate window so dont break DWeb--*/}
                                                     <img src={mainArchiveFile} id="streamContainer" className="rot0 carousel-image" alt="item image #1"/> {/*--Note this div not img to work around ffox bug, see ArchiveFile.loadImg--*/}
                                             </a>
                                             <div className="carousel-caption">

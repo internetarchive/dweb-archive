@@ -1,0 +1,21 @@
+@import 'typography.less';
+
+.fts-message {
+  display: flex;
+  font-size: @ia-font-size-small;
+  font-weight: 600;
+  // Max width to prevent long lines, rems as fallback
+  max-width: 73rem;
+  max-width: 94ch;
+
+  &__message-icon {
+    margin-right: 1rem;
+  }
+
+  &__text {
+    min-width: 0;
+    // overflow-wrap plus word-wrap fallback for long error messages
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+}

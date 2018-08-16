@@ -1,0 +1,24 @@
+/**
+ * Default styles for built-in HTML elements, properties, and states
+ *
+ * Currently Bootstrap normalizes a lot of these already, so this file exists
+ * mostly to undo some of the Bootstrap defaults.
+ *
+ * TODO: Reconcile differences between Bootstrap normalize and this file into a
+ * single, IA-specific normalize stylesheet.
+ */
+
+// Bootstrap sets <summary> to display: block, which removes the
+// disclosure triangle in Firefox
+summary {
+  cursor: default;
+  display: list-item;
+  font-weight: bold;
+}
+
+input,
+textarea {
+  &[readonly] {
+    color: @grey46;
+  }
+}

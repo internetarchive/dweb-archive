@@ -20,7 +20,9 @@ export default class Video extends AV {
         const detailsurl = `https://archive.org/details/${itemid}`; // OK to be direct url since its an itemprop
         const title = item.title;
         // The videothumbnailurl is intentionally a direct Http link as its intended only for search engines etc
-        const videothumbnailurl = this._list.filter(fi => (fi.metadata.name.includes(`${itemid}.thumbs/`)))[1].httpUrl(); // 2nd thumbnail, first is usually black-sreen
+        // Preference is 2nd thumbnail (first is usually black-sreen) in .thumbs/ directory (e.g. for "commute"); if only one (e.g. stairs) use that.
+        const videothumbnailurls = this._list.filter(fi => (fi.metadata.name.includes(`${itemid}.thumbs/`)));
+        const videothumbnailurl = videothumbnailurls[Math.min(videothumbnailurls.length-1,1)].httpUrl();
         //let cfg  = {"aspectratio": 4/3 }; // Old version in Traceys code which was missing other parts of cfg below
         let cfg =    {"start":0,"embed":null,"so":false,"autoplay":false,"width":0,"height":0,"list_height":0,"audio":false,
             "responsive":true,"flash":false, "hide_list":true,

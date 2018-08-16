@@ -1,0 +1,71 @@
+/**
+ * See Views/SearchOptions.inc
+ */
+
+.search-options {
+  @transition-duration: 0.3s;
+
+  // Two-column view, but children can wrap into one column if there isn't enough space.
+  display: flex;
+  align-items: flex-start;
+  flex-flow: row wrap;
+  justify-content: space-between;
+
+  &__advanced-search-link {
+    // Set to block to ensure margins work when Flexbox isn't supported.
+    display: block;
+    flex: 0 1 auto;
+  }
+
+  // Hide by default.
+  fieldset {
+    flex: 1 1 auto;
+    overflow-y: hidden;
+    margin: 0;
+    max-height: 0;
+
+    visibility: hidden;
+
+    transition: max-height @transition-duration ease-out;
+  }
+
+  label {
+    align-items: center;
+    // Fallback for browsers that don’t support flexbox
+    display: block;
+    display: flex;
+    margin: 0;
+
+    font-weight: normal;
+
+    + label {
+      margin-top: 0.5em;
+    }
+  }
+
+  input[type='radio'] {
+    // Fallback for browsers that don’t support ch unit
+    margin: 0 0.5em 0 0.25em;
+    margin: 0 1ch 0 0.5ch;
+  }
+
+  input[type='radio']:disabled ~ * {
+    color: @grey46;
+  }
+
+  // Show the fields when the options are open.
+  &.is-open {
+    fieldset {
+      margin: 0 1em 0.5em 0;
+      max-height: 10em;
+
+      visibility: visible;
+
+      transition: max-height @transition-duration ease-in;
+
+      &:last-child {
+        margin: 0;
+      }
+    }
+  }
+}

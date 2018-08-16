@@ -2,7 +2,8 @@ const ArchiveFile = require("./ArchiveFile");
 const Util = require("./Util");
 
 //require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
-//const Transports = require('dweb-transports');
+const debug = require('debug')('dweb-archive');
+//const Transports = require('@internetarchive/dweb-transports');
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 //TODO-NAMING url could be a name
 
@@ -24,7 +25,7 @@ class ArchiveItem {
 
     constructor({itemid = undefined, item = undefined}={}) {
         this.itemid = itemid;
-        this.item = item; // Havent fetched yet, subclass constructors may override
+        this.item = item; // Haven't fetched yet, subclass constructors may override
     }
 
     _listLoad() {
@@ -52,37 +53,49 @@ class ArchiveItem {
         return this;
     }
 
+    processMetadataFjords(m) {
+        // The Archive is nothing but edge cases, handle some of them here so the code doesnt have to !
+        Object.keys(Util.metadata.singletons).forEach(f => {
+            if (typeof m.metadata[f] === "undefined") m.metadata[f] = "";
+            if (Array.isArray(m.metadata[f])) m.metadata[f] = m.metadata[f].join(Util.metadata.singletons[f]); //e.g. biographyofbanan0000eage
+        });
+        return m;
+    }
     async fetch_metadata() {
         if (this.itemid && !this.item) {
-            if (verbose) console.group('getting metadata for ' + this.itemid);
-            //this.item = await Util.fetch_json(`https://archive.org/metadata/${this.itemid}`);
-            const transports = await DwebTransports.p_connectedNamesParm(); // Pass transports, as metadata (currently) much quicker if not using IPFS
-            /* OLD WAY VIA HTTP
-                this.item = await Util.fetch_json(`https://gateway.dweb.me/metadata/archiveid/${this.itemid}?${transports}`);
-                which with new URIs would be
-                this.item = await Util.fetch_json(`https://gateway.dweb.me/arc/archive.org/metadata/${this.itemid}?${transports}`);
-            */
+            debug('getting metadata for %s', this.itemid);
             // Fetch via Domain record - the dweb:/arc/archive.org/metadata resolves into a table that is dynamic on gateway.dweb.me
             const name = `dweb:/arc/archive.org/metadata/${this.itemid}`;
-            let m = await DwebTransports.p_rawfetch([name], {verbose, timeoutMS: 5000}); // Using Transports as its multiurl and might not be HTTP urls
-            m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
-            console.assert(m.metadata.identifier === this.itemid);
-            this.item = m;
-            this._listLoad();   // Load _list with ArchiveFile
-            if (verbose) console.log("Got metadata for " + this.itemid);
-            if (verbose) console.groupEnd();
+            // Fetch using Transports as its multiurl and might not be HTTP urls
+            let m;
+            try {
+                m = await DwebTransports.p_rawfetch([name], {timeoutMS: 5000});    //TransportError if all urls fail (e.g. bad itemid)
+                // noinspection ES6ModulesDependencies
+                m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
+                console.assert(m.metadata.identifier === this.itemid);
+
+                this.item = this.processMetadataFjords(m);
+                this._listLoad();   // Load _list with ArchiveFile
+                debug("metadata for %s fetched successfully");
+            } catch(err) {
+                console.warn("Unable to get metadata for", this.itemid, err);
+            }
         }
     }
 
     async fetch_query({append=false}={}) {
-        // Action a query, return the array of docs found.
+        /*  Action a query, return the array of docs found.
+            Subclassed in Account.js since dont know the query till the metadata is fetched
+            */
+        // noinspection JSUnresolvedVariable
         if (this.query) {   // This is for Search, Collection and Home.
-            const sort = (this.item && this.item.collection_sort_order) || this.sort
+            const sort = (this.item && this.item.collection_sort_order) || this.sort;
+            // noinspection JSUnresolvedVariable
             const url =
                 //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
-                `${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}`;
+                `${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
                 //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
-            console.log(url);
+            debug("Searching with %s", url);
             const j = await Util.fetch_json(url);
             this.items = append ? this.items.concat(j.response.docs) : j.response.docs;
             this.start = j.response.start;

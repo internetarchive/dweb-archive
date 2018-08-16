@@ -13,19 +13,20 @@ var fetch,Headers,Request;
 if (typeof(Window) === "undefined") {
     //var fetch = require('whatwg-fetch').fetch; //Not as good as node-fetch-npm, but might be the polyfill needed for browser.safari
     //XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;  // Note this doesnt work if set to a var or const, needed by whatwg-fetch
-    console.log("Node loaded");
     fetch = nodefetch;
     Headers = fetch.Headers;      // A class
     Request = fetch.Request;      // A class
 } else {
     // If on a browser, need to find fetch,Headers,Request in window
-    console.log("Loading browser version of fetch,Headers,Request");
     fetch = window.fetch;
     Headers = window.Headers;
     Request = window.Request;
 }
 */
 
+const searchConfig = {
+    limitperpage: 30,  // How many to retrieve per page, smaller numbers load quicker, but then scroll down will have to get next page
+}
 export default class Search extends ArchiveBase {
     /*
     Superclass for Searches - including Collections & Home
@@ -34,7 +35,7 @@ export default class Search extends ArchiveBase {
     Inherited from ArchiveBase: item
     items   List of items found
      */
-    constructor({query='*:*', sort='', and='', limit=75, banner='', page=1, item=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
+    constructor({query='*:*', sort='', and='', limit=searchConfig.limitperpage, page=1, item=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
         super(itemid, {item: item});
         if (typeof(query) === "object") { // form { creator: "Foo bar" ... }
             // This next line uses JSON.stringify instead of toString() because we want  '"abc"' and '1' i.e. quotes if its a string
@@ -54,8 +55,8 @@ export default class Search extends ArchiveBase {
     async more() {
         AJS.more_searching = true;
         this.page++;
+        let el = document.getElementById("appendTiles"); // Get the el, before the search in case user clicks away we add to right place
         let items = await this.fetch_query({append: true});   // Appends to this.items
-        let el = document.getElementById("appendTiles");
         items.forEach(item => el.appendChild(new Tile().render(item)));
         AJS.tiler();
         AJS.more_searching = false;
@@ -64,7 +65,7 @@ export default class Search extends ArchiveBase {
     wrap() {
         /* Wrap the content up: wrap ( TODO-DONATE | navwrap |
         TODO-DETAILS need stuff before nav-wrap1 and after detailsabout and need to check this against Search and Collection examples
-        returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
+        returns:      JSX elements tree suitable for adding into another render
          */
         //TODO-DETAILS is putting the description (in 'htm' in as raw html which would be a nasty security hole since that comes from user !
         return (
@@ -117,7 +118,9 @@ export default class Search extends ArchiveBase {
                                     <div class="topinblock">
                                         <div class="hidden-md hidden-lg">
                                             <select class="ikind-mobile form-control" onchange="AJS.ikind_mobile_change(this)">
-                                                <option data-id="relevance" selected="selected">RELEVANCE</option>
+                                                {(!this.itemid) ?  // Dont show on collections
+                                                    <option data-id="relevance" selected="selected">RELEVANCE</option>
+                                                : undefined }
                                                 <option data-id="views">VIEWS</option>
                                                 <option data-id="title">TITLE</option>
                                                 <option data-id="date-archived">DATE ARCHIVED</option>
@@ -133,26 +136,30 @@ export default class Search extends ArchiveBase {
                                                 SORT BY
                                             </div>
                                             {/*--TODO-DETAILS this dropdown doesnt reorder, test other UI elements in vicinity as well see https://github.com/internetarchive/dweb-archive/issues/15--*/}
-                                            <span class="big-label blue-pop">
-                                                <a class="ikind stealth in" data-id="relevance" href={`/search.php?query=${encodedQuery}`} onclick={`Nav.onclick_search({query:this.query})`}>RELEVANCE</a>
-                                                <div class="iconochive-dot ikind-sep"></div>
+                                            <span class="big-label blue-pop">{/*TODO-ISSUE dweb-archive#57 remove relevance on Collections*/}
+                                                {(!this.itemid) ? // Dont show on collections
+                                                    <a class="ikind stealth in" data-id="relevance" href={`/search.php?query=${encodedQuery}`} onclick={`Nav.onclick_search({query:this.query})`}>RELEVANCE</a>
+                                                    : undefined }
+                                                {(!this.itemid) ? // Dont show on collections
+                                                    <div class="iconochive-dot ikind-sep"></div>
+                                                : undefined }
                                                 <a class="ikind stealth" data-id="views" href={`/search.php?query=${encodedQuery}&amp;sort=-downloads`}
-                                                    onclick={`Nav.onclick_search({query:this.query, sort: "-downloads"})`}>VIEWS</a>
+                                                    onclick={Nav.onclick_search({query:this.query, sort: "-downloads"})}>VIEWS</a>
                                                 <div class="iconochive-dot ikind-sep"></div>
                                                 <a class="ikind stealth" data-id="title" href={`/search.php?query=${encodedQuery}&amp;sort=titleSorter`}
-                                                    onclick={`Nav.onclick_search({query:this.query, sort: "titleSorter"})`}>TITLE</a>
+                                                    onclick={Nav.onclick_search({query:this.query, sort: "titleSorter"})}>TITLE</a>
                                                 <div class="iconochive-dot ikind-sep"></div>
                                                 <a class="ikind stealth" id="date_switcher" data-id="date-archived" href={`/search.php?query=${encodedQuery}&amp;sort=-publicdate`}
-                                                    onclick={`Nav.onclick_search({query:this.query, sort: "-publicdate" })`}>DATE ARCHIVED</a>
+                                                    onclick={Nav.onclick_search({query:this.query, sort: "-publicdate" })}>DATE ARCHIVED</a>
                                                 <div class="iconochive-dot ikind-sep hidden"></div>
                                                 <a class="ikind stealth hidden" data-id="date-published" href={`/search.php?query=${encodedQuery}&amp;sort=-date`}
-                                                    onclick={`Nav.onclick_search({query:this.query, sort: "-date"})`}>DATE PUBLISHED</a>
+                                                    onclick={Nav.onclick_search({query:this.query, sort: "-date"})}>DATE PUBLISHED</a>
                                                 <div class="iconochive-dot ikind-sep hidden"></div>
                                                 <a class="ikind stealth hidden" data-id="date-reviewed" href={`/search.php?query=${encodedQuery}&amp;sort=-reviewdate`}
-                                                    onclick={`Nav.onclick_search({query:this.query, sort: "-reviewdate"})`}>DATE REVIEWED</a>
+                                                    onclick={Nav.onclick_search({query:this.query, sort: "-reviewdate"})}>DATE REVIEWED</a>
                                                 <div class="iconochive-dot ikind-sep"></div>
                                                 <a class="ikind stealth" data-id="creator" href={`/search.php?query=${encodedQuery}&amp;sort=creatorSorter`}
-                                                    onclick={`Nav.onclick_search({query:this.query, sort: "creatorSorter"})`}>CREATOR</a>
+                                                    onclick={Nav.onclick_search({query:this.query, sort: "creatorSorter"})}>CREATOR</a>
                                             </span>
                                         </div>
                                     </div>
@@ -192,9 +199,9 @@ export default class Search extends ArchiveBase {
 
     archive_setup_push() { // run in browserAfter
         let self = this;
+        AJS.date_switcher(`&nbsp;<a href="https://dweb.archive.org/search/${encodeURIComponent(this.query)+"?sort=-publicdate"}" onclick='${Nav.onclick_search({query:this.query, sort: "-publicdate"})}'><div class="date_switcher in">Date Archived</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(this.query)+"?sort=-date"}" onclick='${Nav.onclick_search({query:this.query, sort: "-date"})}'><div class="date_switcher">Date Published</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(this.query)+"?sort=-reviewdate"}" onclick='${Nav.onclick_search({query:this.query, sort: "-reviewdate"})}'><div class="date_switcher">Date Reviewed</div></a> `);
         archive_setup.push(function() {
-            AJS.date_switcher(`&nbsp;<a href="/search.php?query=${encodeURIComponent(self.query)}&amp;sort=-publicdate"><div class="date_switcher in">Date Archived</div></a> <a href="/search.php?query=${encodeURIComponent(self.query)}&amp;sort=-date"><div class="date_switcher">Date Published</div></a> <a href="/search.php?query=${encodeURIComponent(self.query)}&amp;sort=-reviewdate"><div class="date_switcher">Date Reviewed</div></a> `);
-            AJS.lists_v_tiles_setup('search');
+            AJS.lists_v_tiles_setup('search');  //TODO-DETAILS this line should for example be 'account' for Account
             AJS.popState('search');
             $('div.ikind').css({visibility:'visible'});
             AJS.tiler();      // Note Traceys code had AJS.tiler('#ikind-search') but Search and Collections examples have it with no args

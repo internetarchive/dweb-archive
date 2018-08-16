@@ -1,0 +1,18 @@
+@import 'typography.less';
+
+/**
+ * Images representing major cryptocurrencies
+ *
+ * See: Views\CryptocurrencyLogo
+ */
+
+.cryptocurrency-logo {
+  display: inline-block;
+  height: @vertical-rhythm * 2;
+
+  &--bitcoin,
+  &--bitcoin-cash {
+    padding-bottom: @vertical-rhythm * 0.375;
+    padding-top: @vertical-rhythm * 0.375;
+  }
+}

@@ -14,7 +14,7 @@ export default class Collection extends Search {
 
     wrap() {
         /* Wrap the content up: wrap ( TODO-aside; navwrap; #maincontent; welcome; cher-modal; container-tabby-collection-row (TODO-columns-facets; columns-items) (tabby-about; tabby-form)
-        returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
+        returns:      elements tree suitable for adding into another render
          */
         //Note both description & rights need dangerousHTML and \n -> <br/>
         const reviewlink = `/details/${this.itemid}&sort=-reviewdate`; // TODO-LINKS - its not clear how this is used. \
@@ -98,7 +98,7 @@ export default class Collection extends Search {
                                         class="grafs about-box js-top-regions-table"
                                         data-caption="Top Regions (Last 30 Days) – Beta"
                                         data-caption-class="micro-label"
-                                        data-identifier="prelinger"
+                                        data-identifier=prelinger
                                         data-days="30"
                                         data-limit="10"
                                 >
@@ -120,7 +120,7 @@ export default class Collection extends Search {
                             </div>{/*!--/.col-sm-5-->*/}
                         </div>{/*<!--/.row-->*/}
                     </div>{/*<!--/#.tabby-about-->*/}
-                    <div id="tabby-forum" class="tabby-data hidden row">{/*TODO-TABBY forum*/}Forum not yet supported on Dweb</div>
+                    <div id="tabby-forum" class="tabby-data hidden row">{/*TODO-TABBY forum*/}Forum not yet supported on DWeb - heading to the legacy web...</div>
                 </div>{/*container*/}
                 {/*--TODO-ANALYTiCS is missing --*/}
 
@@ -136,7 +136,7 @@ export default class Collection extends Search {
         const creator = (item.metadata.creator  &&  (item.metadata.creator != item.metadata.title) ? item.metadata.creator : '');
         //ARCHIVE-BROWSER note the elements below were converted to HTML 3 times in original version
         //TODO-DETAILS on prelinger, banner description is getting truncated.
-        const description = this.preprocessDescription(item.metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
+        const description = this.preprocessDescription(item.metadata.description).replace(/(..\/)+..\//g, "../"); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const thumbnaillinks = item.metadata.thumbnaillinks;
         const imgname = this.itemid + ".PNG";   // Required or rendermedia has difficulty knowing what to render since it doesnt take a mimetype
 
@@ -175,7 +175,7 @@ export default class Collection extends Search {
                             <div>
                                 <a id="tabby-about-finder"
                                    class="stealth"
-                                   href="/details/prelinger&tab=about"
+                                   href={`/details/${this.itemid}&tab=about`}
                                    onclick="return AJS.tabby(this,'tabby-about')">
                                     <span class="tabby-text">ABOUT</span>
                                 </a>
@@ -185,7 +185,7 @@ export default class Collection extends Search {
                             <div>
                                 <a id="tabby-collection-finder"
                                    class="stealth tabby-default-finder"
-                                   href="/details/prelinger&tab=collection"
+                                   href={`/details/${this.itemid}&tab=collection`}
                                    onclick="return AJS.tabby(this,'tabby-collection')">
                                     <span class="tabby-text">COLLECTION</span>
                                 </a>
@@ -195,7 +195,7 @@ export default class Collection extends Search {
                             <div>
                                 <a id="tabby-forum-finder"
                                    class="stealth"
-                                   href="/details/prelinger&tab=forum"
+                                   href={`http://archive.org/details/${this.itemid}&tab=forum`}
                                    onclick="return AJS.tabby(this,'tabby-forum')">
                                     <span class="tabby-text">FORUM</span>
                                 </a>

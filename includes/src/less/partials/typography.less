@@ -1,0 +1,23 @@
+// TODO: WEBDEV-1247 - Define full sitewide type scale.
+// Prefixed with "ia-" to prevent Bootstrap conflicts.
+@ia-font-size-smaller: 1.2rem;
+@ia-font-size-small: 1.4rem;
+@ia-font-size-medium: 1.6rem;
+// In between medium and large. TODO: Rename all of these when we define the type scale
+@ia-font-size-md-large: 1.8rem;
+@ia-font-size-large: 2.2rem;
+@ia-font-size-larger: 2.6rem;
+@ia-font-size-largest: 3.6rem;
+
+// Value to repeat in line heights and spacing.
+@vertical-rhythm: 2rem;
+
+/**
+ * Sets line-height to a unitless value corresponding to the target-size.
+ *
+ * @param target-size
+ * @param font-size
+ */
+.line-height(@target-size, @font-size) {
+  line-height: unit(@target-size / @font-size);
+}

@@ -1,11 +1,11 @@
 //import ReactDOM from "react-dom";
 
+// noinspection JSUnresolvedFunction
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 
 // https://ponyfoo.com/articles/universal-react-babel
-
+// noinspection JSUnresolvedFunction
 import React from './ReactFake';
-import Util from './Util';
 import Search from './Search';
 import Details from './Details'
 import Home from './Home'
@@ -14,9 +14,11 @@ import Texts from './Texts'
 import Image from './Image'
 import Audio from './Audio'
 import Video from './Video'
+import Account from './Account'
 import DetailsError from './DetailsError'
 import DownloadDirectory from './DownloadDirectory'
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
+const debug = require('debug')('dweb-archive');
 
 const TRANSPORT_STATUS_PAUSED = 4;  // Cheat to avoid having to import Transport here, which would make service worker much more complex
 
@@ -65,7 +67,7 @@ export default class Nav {
                 {/* TODO-DETAILS-INFOREQD Need to figure out how to auto-generator the other rows of nav-tophat for each media type */}
             </div>{/*--/#nav-tophat--*/}
 
-            <div className="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div id="nav-dweb-parent" className="navbar navbar-inverse navbar-static-top" role="navigation">
               <div id="nav-tophat-helper" className="hidden-xs"></div>
               <ul className="nav navbar-nav navbar-main">
 
@@ -73,7 +75,7 @@ export default class Nav {
                      <li key={'mikey'+n} className="dropdown dropdown-ia pull-left">
                        <a title={mt} className={'navia-link '+mt}
                           onClick={`Nav.nav_details("${mt}")`}
-                          data-top-kind={mt} data-toggle="tooltip" target="_top" data-placement="bottom">
+                          >{/*--disabled till top hat worked on dweb-archive issue#70 -- data-top-kind={mt} data-toggle="tooltip" target="_top" data-placement="bottom"--*/}
                          <span className={'iconochive-'+mt} aria-hidden="true"></span>
                          <span className="sr-only">{mt}</span>
                        </a>
@@ -91,17 +93,19 @@ export default class Nav {
                     <span className="iconochive-search" aria-hidden="true"></span>
                     <span className="sr-only">search</span>
                   </a>
-                  <div>
-                    <form role="search" onSubmit="Nav.nav_search(this.elements[0].value); return 0;">
+                  <div class="searchbar">
+                    <form  class="search-form js-search-form" role="search" onSubmit="Nav.nav_search(this.elements[0].value); return 0;"
+                        data-event-form-tracking="TopNav|SearchForm" data-wayback-machine-search-url="https://web.archive.org/web/*/">
                       <label htmlFor="search-bar-2" className="sr-only">Search the Archive</label>
-                      <input id="search-bar-2" placeholder="Search" type="text" name="query" value=""/>
+                      <input id="search-bar-2" class="js-search-bar" placeholder="Search" type="text" name="search" value=""
+                        aria-controls="navbar_search_options" aria-label="Search the Archive. Filters and Advanced Search available below."/>
                       <input type="submit" value="Search"/>
                     </form>
                   </div>
                 </li>
 
                 <li className="dropdown dropdown-ia pull-right">
-                  <a href="https://archive.org/create" _target="top" data-toggle="tooltip" data-placement="bottom" title="Upload">
+                  <a href="https://archive.org/create" target="top" data-toggle="tooltip" data-placement="bottom" title="Upload">
                     <span className="iconochive-upload"  aria-hidden="true"></span>
                     <span className="sr-only">upload</span>
                   </a>
@@ -128,7 +132,7 @@ export default class Nav {
                 <li><a target="_top" data-event-click-tracking="TopNav|PeopleLink"
                        href="https://archive.org/about/bios.php">PEOPLE</a></li>
               </ul>
-            {/*--navbar--*/} </div>
+                {/*--navbar--*/} </div>
           {/*--nav-wrap2--*/} </div>
         {/*--nav-wrap1--*/} </div>
       );
@@ -137,15 +141,15 @@ export default class Nav {
     static clear(destn) {
         // Clear the screen to give confidence that action under way
         // Leaves Nav, clears rest
-        React.domrender(new DetailsError(undefined, undefined, < span >Loading - note this can take a while if no-one else has accessed this item yet< /span>).wrap(), destn)
+        React.domrender(new DetailsError(undefined, undefined, < span >Loading - note this can take a while if no-one else has accessed this item yet</span>).wrap(), destn)
     }
     static async nav_home(wanthistory=true) {
-        console.log("Navigating to Home");
+        debug("Going home");
         return await Nav.nav_details(undefined, wanthistory);
     }
 
     static async nav_details(id, wanthistory=true) {
-        console.log("Navigating to Details", id);
+        debug("Navigating to Details %s", id);
         let destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
         await Nav.factory(id, destn, {wanthistory}); // Not sure what returning ....
@@ -160,51 +164,57 @@ export default class Nav {
     }
 
     static async nav_search(q, wanthistory=true) {
-        console.log("Navigating to Search");
+        /*
+        Navigate to a search
+        q = query (string to search for) or object e.g. {query; foo, sort: -date} as passed to new Search()
+         */
+        debug("Navigating to Search for %s", q);
         let destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
         let s = await new Search((typeof(q) === "object") ? q : (typeof(q) === "string") ? {query: q} : undefined).fetch();
         q = s.query;    // Flattened from object to string
         if (wanthistory) {
-            let historystate = {query: q}; //TODO-HISTORY may want  to store verbose, transports etc here
-            let cnp = []
+            let historystate = {query: q}; //TODO-HISTORY may want  to store transports, paused etc here
+            let cnp = [];
             cnp.push(await this.pausedParm()); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
             // Add any other searchparams back in, especially "tab"
             for (let sp of searchparams) {
-                if (!["transport", "verbose", "query", "item"].includes(sp[0]))
+                if (!["transport", "paused", "query", "item"].includes(sp[0]))
                     cnp.push(`${sp[0]}=${sp[1]}`);
             }
             // See notes on async_factory about history.pushState
             let historyloc;
-            cnp.push(verbose ? "verbose=true": "");
             cnp.push(`query=${q}`);
-            cnp = cnp.filter(p => !!p).join('&')
+            cnp = cnp.filter(p => !!p).join('&');
             if (window.location.origin === "file://") {
-                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`
+                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`;
             } else { //Might not work on http, this is intended for SW
-                historyloc = `${window.location.origin}/arc/archive.org/details?${cnp}`
+                historyloc = `${window.location.origin}/arc/archive.org/details?${cnp}`;
             }
-            console.log("Writing history:", historyloc);
+            //debug("Writing history:", historyloc);
             history.pushState(historystate, `Internet Archive search ${q}`, historyloc);
         }
         s.render(destn);
     }
     static onclick_search(q) {
-        // Build the onclick part of a search, q can be a string or an object e.g. {creator: "Foo bar"}
+        // Build the onclick part of a search, q can be a string or an object e.g. {creator: "Foo bar", sort: "-date"}
         return `Nav.nav_search(${JSON.stringify(q)}); return false;`;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     static async nav_download(el) {
         let source = el.source; // Should be an ArchiveFile. - see example in Details.js
         if (Array.isArray(source)) {
-            for (let s in source) await source[s].p_download(el);
+            for (let s in source) { // noinspection JSUnfilteredForInLoop
+                await source[s].p_download(el);
+            }
         } else {
             await source.p_download(el);
         }
     }
 
     static async nav_downloaddirectory(itemid) {
-        console.log("Navigating to Download directory for", itemid);
+        debug("Navigating to Download directory for %s", itemid);
         let destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
         await Nav.factory(itemid, destn, {wanthistory: true, downloaddirectory: true}); // Not sure what returning ....
@@ -212,43 +222,45 @@ export default class Nav {
     }
 
     static async factory(itemid, res, {wanthistory=true, downloaddirectory=false}={}) {
-        console.group("Nav.factory",itemid);
+        //console.group("Nav.factory",itemid);
+        window.loopguard = itemid;  // Tested in dweb-transport/httptools, will cancel any old loops - this is a kludge to get around a Chrome bug/feature
         if (wanthistory) {
-            let historystate = {itemid}; //TODO-HISTORY may want  to store verbose, transports etc here
-            let cnp = []
+            let historystate = {itemid}; //TODO-HISTORY may want  to store transports, paused etc here
+            let cnp = [];
             cnp.push(await this.pausedParm()); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
             // Add any other searchparams back in, especially "tab"
             for (let sp of searchparams) {
-                if (!["transport", "verbose", "item"].includes(sp[0]))
+                if (!["transport", "paused", "item"].includes(sp[0]))
                     cnp.push(`${sp[0]}=${sp[1]}`);
             }
             // See notes on async_factory about history.pushState
             let historyloc;
-            cnp.push(verbose ? "verbose=true": "");
-            if ((window.location.origin === "file://") && itemid) cnp.push(`item=${itemid}`);   // Need item id parameter on local files
-            cnp = cnp.filter(p => !!p).join('&')
+            if (window.location.origin === "file://") {
+                if (itemid) cnp.push(`item=${itemid}`);   // Need item id parameter on local files
+                if (downloaddirectory) cnp.push('download=1');   // Need item id parameter on local files
+            }
+            cnp = cnp.filter(p => !!p).join('&');
             // History is tricky .... take care of: SW (with Base set) \ !SW; file | http; cases
             // when loaded from file, non SW window.location.origin = document.location.origin = "file://" and document.baseURI is unset
             if (window.location.origin === "file://") {
-                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`
+                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`;
             } else {
-                historyloc = `${window.location.origin}/arc/archive.org/details${itemid ? "/"+itemid :""}?${cnp}`
+                historyloc = `${window.location.origin}/arc/archive.org/${downloaddirectory ? "download" : "details"}${itemid ? "/"+itemid :""}?${cnp}`;
             }
-            console.log("Writing history:", historyloc);
             history.pushState(historystate, `Internet Archive item ${itemid ? itemid : ""}`, historyloc);
         }
         if (!itemid) {
-            (await new Home(itemid, undefined).fetch()).render(res);
+            (await new Home().fetch()).render(res);
         } else {
             let obj = await new Details(itemid).fetch();
             let item = obj.item;
-            if (!item.metadata) {
+            if (!(item && item.metadata)) {
                 new DetailsError(itemid, item, `item ${itemid} cannot be found or does not have metadata`).render(res);
             } else {
                 if (downloaddirectory) {
                     new DownloadDirectory(itemid, item).render(res);
                 } else {
-                    if (verbose) console.log("Found mediatype", item.metadata.mediatype);
+                    debug("%s has mediatype %s", itemid, item.metadata.mediatype);
                     let switchmediatype = item.metadata.mediatype;
                     if (item.metadata.mediatype === "education") {
                         // Typically miscategorized, have a guess !
@@ -262,7 +274,7 @@ export default class Nav {
 
                     switch (switchmediatype) {
                         case "collection":
-                            return (await new Collection(itemid, item).fetch()).render(res);   //fetch will do search
+                            (await new Collection(itemid, item).fetch()).render(res);   //fetch will do search
                             break;
                         case "texts":
                             new Texts(itemid, item).render(res);
@@ -277,6 +289,8 @@ export default class Nav {
                         case "movies":
                             new Video(itemid, item).render(res);
                             break;
+                        case "account":
+                            return (await new Account({itemid, item}).fetch()).render(res);
                         default:
                             //TODO Not yet supporting software, zotero (0 items); data; web
                             new DetailsError(itemid, item, `Unsupported mediatype: ${item.metadata.mediatype}`).render(res);
@@ -285,14 +299,15 @@ export default class Nav {
                 }
             }
         }
-        console.groupEnd("Nav.factory",itemid);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     static audioPlay(elAnchor) {
         // Used by Audio to play a track - since "Nav" is a global it can access
         Audio.play(elAnchor);
         return false;
     }
+    // noinspection JSUnusedGlobalSymbols
     static searchMore(elAnchor) {
         Search.searchMore(elAnchor); // Ignore promise returned
         return false;
@@ -301,13 +316,16 @@ export default class Nav {
 
 
 window.onpopstate = function(event) {
-    if (verbose) console.log("Popping state",document.location,"state=",event.state);
+    debug("Going back to: %s %o", document.location, event.state);
     if (event.state && event.state.query) {
-        Nav.nav_search(event.state.query, false)
+        // noinspection JSIgnoredPromiseFromCall
+        Nav.nav_search(event.state.query, false);
     } else if (event.state && event.state.itemid) {
+        // noinspection JSIgnoredPromiseFromCall
         Nav.nav_details(event.state.itemid, false);
     } else {
+        // noinspection JSIgnoredPromiseFromCall
         Nav.nav_home(false);
     }
 
-}
+};

@@ -1,0 +1,26 @@
+/**
+ * Simple table with one or more buttons for taking actions on each row.
+ *
+ * See: Views\CompetentAuthorityAccountsTable.inc
+ */
+.table-with-actions {
+  word-break: break-all;
+
+  td,
+  th {
+    padding: 0.5rem 0;
+  }
+
+  th {
+    word-break: normal;
+  }
+
+  thead tr {
+    border-bottom: 0.1rem solid #999;
+  }
+
+  * + td,
+  * + th {
+    padding-left: 2rem;
+  }
+}

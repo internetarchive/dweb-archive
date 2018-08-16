@@ -1,0 +1,34 @@
+/**
+ * Set of fields allowing a user to make a choice between multiple options.
+ *
+ * It may be possible to select any of the options (i.e. checkboxes) or only one (i.e. radio
+ * buttons).
+ *
+ * Most of the styling here is to override Bootstrap default styling.
+ */
+ @import 'typography.less';
+
+.choice-fieldset {
+  // Add space between children.
+  > * + * {
+    margin-top: @vertical-rhythm / 4;
+  }
+
+  legend {
+    border-bottom: 0;
+    margin-bottom: 0;
+    font: inherit;
+
+    // Add extra space after the legend, but only if a sibling exists
+    + * {
+      margin-top: @vertical-rhythm / 2;
+    }
+  }
+
+  [type="checkbox"],
+  [type="radio"] {
+    + label {
+      display: inline;
+    }
+  }
+}

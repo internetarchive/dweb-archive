@@ -7,7 +7,7 @@ This library is part of a general project at the Internet Archive (archive.org)
 to support the decentralized web.
 
 ## Goals
-* to allow unmodified browsers to access the Internet Archive's
+* to allow unmodified browsers to access the Internet Archive's millions of items
 * to support as many of the IA's features as possible, adding them iteratively
 * to use decentralized platforms for as many features as possible, without sacrificing functionality
 * to avoid single points of failure where possible
@@ -15,8 +15,8 @@ to support the decentralized web.
 ## Installation
 ### All cases
 ```
-git clone git+https://git@github.com/internetarchive/dweb-archive.git
-cd dweb-transport
+git clone https://git@github.com/internetarchive/dweb-archive.git
+cd dweb-archive
 
 # install the dependencies including IPFS & WebTorrent and dweb-transports and dweb-objects
 npm install  
@@ -39,18 +39,14 @@ http to 6 streams and we need to implement a limited http pool to fix this.
 
 `open "http://localhost:8080/archive.html"`
 
-OR Generally while debugging run with verbose=true
-
-`open "http://localhost:8080/archive.html&verbose=true"`
-
 OR load via the bootloader, 
 passing the url parameter will simulate what happens at https://dweb.archive.org/
 
-`open "http://localhost:8080/bootloader.html?url=http://dweb.archive.org&verbose=true`
+`open "http://localhost:8080/bootloader.html?url=http://dweb.archive.org`
 
 To test with limited transports, for example HTTP only, add the transport parameter.
 
-`open "http://localhost:8080/archive.html?verbose=true&transport=HTTP"`
+`open "http://localhost:8080/archive.html?transport=HTTP"`
 
 
 ### Node Installation to work on this repo
@@ -68,10 +64,10 @@ Build (webpack) the bundles and copy needed files to dist/
 
 ### Repos:
 * *dweb-transports:* Common API to underlying transports (http, webtorrent, ipfs, yjs)
-* *dweb-objects:* Object model for Dweb inc Lists, Authentication, Key/Value, Naming
+* *dweb-objects:* Object model for Dweb inc Lists, Authentication, Key/Value, Naming and example html for these
 * *dweb-serviceworker:* Run Transports in ServiceWorker (experimental)
 * *dweb-archive:* Decentralized Archive webpage and bootstrapping
-* *dweb-transport:* Original Repo, still includes examples but being split into smaller repos
+* *dweb-transport:* Original Repo, still has some half-complete projects
 
 ## Directory structure here
 * dist - where files needed by dweb-transport are located

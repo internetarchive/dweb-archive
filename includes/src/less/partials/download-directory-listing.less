@@ -1,0 +1,52 @@
+@import 'colors.less';
+@import 'typography.less';
+
+/**
+ * Page listing files within an item directory.
+ *
+ * See Views\DownloadDirectoryListing.inc
+ */
+.download-directory-listing {
+  .iconochive-lock {
+    font-size: 0.875em;
+  }
+
+  .directory-listing-table {
+    color: @grey20;
+
+    &__restricted-file {
+      color: @grey40;
+    }
+
+    thead {
+      border-bottom: 1px solid @grey3;
+    }
+
+    thead th {
+      text-align: left;
+      line-height: @vertical-rhythm;
+    }
+
+    tbody tr td {
+      line-height: @vertical-rhythm;
+    }
+
+    .iconochive-Uplevel {
+      margin-top: 0.5rem;
+      display: inline-block;
+    }
+  }
+
+  pre {
+    color: @grey40;
+    padding: @vertical-rhythm;
+    padding-top: 0px;
+
+    > * + * {
+      // Add one line of vertical space between elements inside the <pre>.
+      margin-top: @body-line-height * 1em;
+    }
+  }
+
+
+}

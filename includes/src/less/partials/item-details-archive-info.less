@@ -1,0 +1,22 @@
+/**
+ * Information related to the archival of an item. May contain a number of sub-components with
+ * different kinds of info.
+ *
+ * See item-metadata.less
+ */
+@import 'typography.less';
+
+.item-details-archive-info {
+  > * {
+    margin: 0;
+
+    + * {
+      margin-top: @vertical-rhythm;
+    }
+  }
+
+  // Sometimes links are included without a wrapper element.
+  > a {
+    display: block;
+  }
+}

@@ -1,0 +1,24 @@
+/**
+ * @param {ms|s} @duration
+ * @see .fade-out
+ */
+.fade-in(@duration) {
+  visibility: visible;
+  opacity: 1;
+
+  transition: opacity @duration ease-in-out;
+}
+
+/**
+ * @param {ms|s} @duration
+ * @see .fade-in
+ */
+.fade-out(@duration) {
+  visibility: hidden;
+  opacity: 0;
+
+  // Transition opacity first, then turn visibility off.
+  transition:
+    opacity @duration ease-in-out,
+    visibility 0s @duration;
+}

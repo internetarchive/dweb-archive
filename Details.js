@@ -27,8 +27,10 @@ export default class Details extends ArchiveBase {
     }
 
     wrap() {
-        /* Wrap the content up checked on mbid (Red Shift) image:  wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | TODO-ALSOFOUND  | TODO-ANALYTICS )
-        returns:      JSX elements tree suitable for passing to ReactDOM.render or ReactDOMServer.renderToStaticMarkup
+        /* Wrap the content up checked on mbid (Red Shift)
+        context: body wrap(
+        content: (on image)  wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | TODO-ALSOFOUND  | TODO-ANALYTICS )
+        returns: elements tree suitable for adding into another render
          */
         return (
             <div id="wrap" itemscope itemtype={this.itemtype}>
@@ -154,7 +156,7 @@ export default class Details extends ArchiveBase {
             //TODO  Replace "a" with onclicks to download function on f
         let filesCount = item.files_count;
         let originalFilesCount = item.files.filter((f)=>f.source === "original").length+1; // Adds in Archive Bittorrent
-        let downloadURL = `https://archive.org/download/${itemid}`; //TODO-LINKS check direct link
+        let downloadURL = `https://dweb.archive.org/download/${itemid}`;
         let compressURL = `https://archive.org/compress/${itemid}`; // leave as direct link, else need to zip and store each item in IPFS
         let compressAllURL = `https://archive.org/compress/${itemid}/formats=JSON,METADATA,JPEG,ARCHIVE BITTORRENT,MUSICBRAINZ METADATA`; // As above leave as direct
         let collections = Array.isArray(metadata.collection) ? metadata.collection : [ metadata.collection ];
@@ -164,7 +166,7 @@ export default class Details extends ArchiveBase {
         let contributor = metadata.contributor;
         let reviews = item.reviews;
         let writeReviewsURL = `https://archive.org/write-review.php?identifier=${itemid}`;  //TODO need an indirect way to submit a review
-        let loginURL = "https://archive.org/account/login.php"; //TODO - its a Direct link as dont support authentication in Dweb version
+        let loginURL = "https://archive.org/account/login.php"; //TODO - its a Direct link as dont support authentication in DWeb version
         let bookmarksAddURL = `https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=image&amp;identifier=${itemid}&amp;title=${title}`; //TODO find way to submit distributed
         let credits = metadata.credits;
         //TODO-DETAILS much of below doesn't work (yet)
@@ -172,6 +174,7 @@ export default class Details extends ArchiveBase {
         return (
             <div class="container container-ia item-details-about">
                 <div class="relative-row row">
+                    <div class="thats-right" style="text-align:right;">
                     <div class="action-buttons">
                         <div class="topinblock">
                             <a class="button " href={bookmarksAddURL} id="favorite-button" aria-haspopup="true"
@@ -218,6 +221,7 @@ export default class Details extends ArchiveBase {
                             </div> {/*--/.dropdown --*/}
                         </div>
                     </div>{/*--/.action-buttons--*/}
+                    </div>
                     {/*-- flag initialization moved to browserAfter() --*/}
                     <div class="col-sm-8 thats-left item-details-metadata">
                         <h1 style={{fontSize:"30px", "marginBottom":0}}>
@@ -338,8 +342,8 @@ export default class Details extends ArchiveBase {
                     </div>{/*--/.col-md-10--*/}
                     <div class="col-sm-4 thats-right item-details-archive-info">
                         {/*TODO need section class=boxy item-stats-summary- not obvious where data from, its not in metadata */}
-                        <div class="boxy quick-down">
-                            <div class="download-button">DOWNLOAD OPTIONS</div>
+                        <section class="boxy item-download-options">
+                            <div class="download-button" role="heading" aria-level="5">DOWNLOAD OPTIONS</div>
                             {Object.keys(downloadableFilesDict).map(k => (
                                 <div class="format-group">
                                     <div class="summary-rite">
@@ -353,7 +357,7 @@ export default class Details extends ArchiveBase {
                                         onclick="Nav.nav_download(this)"
                                         title={k}
                                         data-toggle="tooltip" data-placement="auto left" data-container="body" target="_blank">{/*--new window to persist dweb--*/}
-                                        {Util.formats[k].downloadable} <span class="iconochive-download" aria-hidden="true"></span><span class="sr-only">download</span>
+                                        {Util.formats("format", k).downloadable} <span class="iconochive-download" aria-hidden="true"></span><span class="sr-only">download</span>
                                     </a>
                                 </div>
 
@@ -368,10 +372,10 @@ export default class Details extends ArchiveBase {
                                                                                                 aria-hidden="true"></span><span
                                             class="sr-only">download</span> {originalFilesCount} Original</a><br/>
                                 </div>
-                                <a class="boxy-ttl" href={downloadURL} onClick={`Nav.nav_downloaddirectory("${itemid}"); return false;`}>SHOW ALL</a>{/*TODO-LINK this is an absolute link*/}
+                                <a class="boxy-ttl" href={downloadURL}>SHOW ALL</a>{/*Link absolute, but will be captured by onclick*/}
                                 <br clear="all" class="clearfix"/>
                             </div>
-                        </div>
+                        </section>
             
                         <div class="boxy collection-list">
                             <section class="quick-down collection-list">

@@ -56,11 +56,11 @@
     //Nav.nav_details("zandvoort.newspapers.1992.zandvoorts.nieuwsblad"); //Text through book reader
     //Nav.nav_home();
     //Nav.nav_details("mbid-b105f712-d75e-4d0a-a9c5-bf1948461e2b") // Image (Red Shift)
+    localStorage.debug = "dweb-transports:* dweb-objects:* dweb-archive:*";
     var searchparams = new URL(window.location.href).searchParams;
     i = location.pathname.indexOf("/details/");
     var item = (i > -1) ? location.pathname.slice(i+9) : searchparams.get("item");
     var query =  searchparams.get("query");
-    var verbose = searchparams.get("verbose") || false;  // Anything specified for verbose is true (could truthify buy no need)
     main();
 </script>
 

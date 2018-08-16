@@ -1,3 +1,4 @@
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
     entry: __dirname + '/archive.js',
@@ -26,6 +27,20 @@ module.exports = {
         setImmediate: false,
         console: false
     },
+    optimization: {
+        minimizer: [
+            new UglifyJsPlugin({
+                uglifyOptions: {
+                    compress: {
+                        unused: false,
+                        collapse_vars: false // debug has a problem in production without this.
+                    }
+
+                    //compress: false  or alternatively remove compression, it only makes about a 5% difference
+                }
+            })
+        ]
+    },
     output: {
         filename: 'dweb-archive-bundle.js',
         path: __dirname + '/dist'
@@ -40,9 +55,16 @@ module.exports = {
                 { from: 'bootloader.html', to: './'},
                 { from: 'dweb-archive-styles.css', to: './'},
                 { from: 'favicon.ico', to: './'},
-                { from: 'fonts/', to: 'fonts/'},
                 { from: 'images/', to: 'images/'},
-                { from: 'includes/', to: 'includes/'}
+                { from: 'includes/fonts/', to: 'includes/fonts'},
+                { from: 'includes/jw/', to: 'includes/jw'},
+                { from: 'includes/archive*css', to: './'},
+                { from: 'includes/.+[css|gif]', to: './'},
+                { from: 'includes/archive.*js', to: './'},
+                { from: 'includes/archive.*js.map', to: './'},
+                { from: 'includes/bootstrap.*js', to: './'},
+                { from: 'includes/jquery.*js', to: './'},
+                { from: 'includes/node_modules_dist', to: 'includes/node_modules'} // Note in node_modules need react/dist/react.js
             ],
             { }
         )
