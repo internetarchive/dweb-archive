@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 //require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 const Util = require( './Util');
 const prettierBytes = require( "prettier-bytes");
