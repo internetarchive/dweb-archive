@@ -12,6 +12,7 @@ import from2 from "from2";
 import prettierBytes from "prettier-bytes";
 const Url = require('url');
 const debug = require('debug')('dweb-archive');
+import ArchiveItem from "./ArchiveItem";
 import ArchiveFile from "./ArchiveFile";
 
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
@@ -65,11 +66,15 @@ export default class React  {
         } else if (url.startsWith("//")) {
             return "https:"+url;    // Ick - a reference to href="//foo.bar" rather than href="https://foo.bar"
         } else if (url.startsWith("/")) {
-            console.warn("Probably not a good idea to use root-relative URL",url); //could genericise to use rel instead of config but might not catch cases e.g. of /images
+            if (!url.startsWith("/search.php")) {
+                console.warn("Probably not a good idea to use root-relative URL", url); //could genericise to use rel instead of config but might not catch cases e.g. of /images
+            }
             if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
             return [this.relativeurl(React._config.rootname, url)].filter(u => !!u);;  // e.g. /foo => [https://bar.com/foo]
         } else if (url.startsWith("./")) {
-            console.warn("Relative URLs arent a great idea as what to be relative to is often unclear",url,rel); //could genericise to use rel instead of config but might not catch cases e.g. of /images
+            if (!url.startsWith("./images")) {
+                console.warn("Relative URLs arent a great idea as what to be relative to is often unclear", url, rel); //could genericise to use rel instead of config but might not catch cases e.g. of /images
+            }
             return [this.relativeurl(React._config.relname, url)].filter(u => !!u);
         } else {
             return [url]; // Not relative, just pass it back
@@ -100,15 +105,29 @@ export default class React  {
         el.appendChild(elImg);
     }
 
+    static async thumbnailUrlsFrom(itemid) {
+        // Return thumbnail links
+        //itemid
+        return await new ArchiveItem({itemid}).thumbnaillinks()
+    }
     static async p_loadImg(el, name, urls, cb, rel) {
         /*
         This is the asyncronous part of loadImg, runs in the background to update the image.
         Previous version got a static (non stream) content and puts in an existing IMG tag but this fails in Firefox
         This version appends to a tag using RenderMedia.append which means using a stream
         Note it can't be inside load_img which has to be synchronous and return a jsx tree.
+
+        Some cases of interest
+        /services/img/foo with rel=["dweb:/arc/archive.org/"] > "dweb:/arc/archive.org/services/img/  special case > metadata>thumbnailimg
          */
         debug("Loading Image %s from %o", name, urls);
         urls = await this.p_resolveUrls(urls, rel); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
+        for (i in urls) {
+            if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
+                urls[i] = await this.thumbnailUrlsFrom(urls[i].slice(35));
+            }
+        };
+        urls = [].concat(...urls); // Flatten any urls expanded above
         urls = await DwebTransports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
         // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
         let fileurl = urls.find(u => u.startsWith("file"))
@@ -280,7 +299,7 @@ export default class React  {
         const kids = Array.prototype.slice.call(arguments).slice(2);
         //const rel = [ document.baseURI ]; // use baseURI as will be location.href if not explicitly set; [ window.location.href ];
         const rel = [ React._config.rootname ];
-        if (tag === "img") {
+        if (tag === "img") { // We'll build a span, and set a async process to rewrite it as an img connected to a stream
             if (Object.keys(attrs).includes("src")) {
                 const src = attrs.src;
                 function cb(err, element) {
@@ -294,9 +313,11 @@ export default class React  {
                     React.addKids(element, kids);
                     return element;
                 }
-                const name = attrs["imgname"]
-                    ? attrs["imgname"]
-                    : ( (src instanceof ArchiveFile) ? src.name() : "DUMMY.PNG");
+                const name = attrs["imgname"] ? attrs["imgname"]
+                    : ( (src instanceof ArchiveFile) ? src.name()
+                    : (src.includes("/services/img") ? src + ".jpg"
+                    : ( src ? src : "DUMMY.PNG"
+                    )));
                 delete attrs.src;   // Make sure dont get passed to cb for building into img (which wont like an array)
                 return this.loadImg(name, src, cb, rel);   //Creates a <span></span>, asynchronously creates an <img> under it and calls cb on that IMG. The <div> is returned immediately.
             }
@@ -323,12 +344,14 @@ export default class React  {
             // Expects attrs & element set in outer setAttributes
             let possibleOnclick;
             if (href.includes("archive.org/search.php?query=")) { //Note this doesnt handle other parameters in the URL but unlikely to find in legacy urls like search.php
-                if (! "onclick" in attrs) {
+                if (!"onclick" in attrs) {
                     console.error("archive.org/search.php should always be accompanied with an onclick handler");
                 }
                 // Don't set possibleOnClock, we want it explicitly
-            }
-            else if (href.startsWith("dweb:")) {
+            } else if (href.startsWith("dweb:/arc/archive.org/details/")) { // E.g <a href="/details/foo">
+                let itemid = href.slice(30);
+                possibleOnclick = `Nav.nav_details("${itemid}"); return false;`;
+            } else if (href.startsWith("dweb:")) {
                 possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href); return false;';
             } else if (href.indexOf("/download/") >= 0) {
                 let dirname =  href.slice(href.indexOf("/download/")+10);

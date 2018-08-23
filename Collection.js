@@ -106,7 +106,7 @@ export default class Collection extends Search {
                                     <p class="grafs-content js-top-regions-message">(data not available)</p>
                                 </section> */}
 
-                                {/*TODO-RELATED-COLLECTIONS not supported yet
+                                {/*TODO-RELATED-COLLECTIONS not supported yet and not supported on e.g. archive.org/details/prelinger anyway
                                 <div class="about-box">
                                     <div class="micro-label">RELATED COLLECTIONS</div>
                                     <div style="margin-top:10px;">
