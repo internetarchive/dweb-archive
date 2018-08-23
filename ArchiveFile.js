@@ -25,7 +25,7 @@ export default class ArchiveFile {
         /* Name suitable for downloading etc */
         return this.metadata.name;
     }
-    async p_urls() {
+    async p_urls() { //TODO-MIRROR fix this to make sense for _torrent.xml files which dont have sha1 and probably not IPFS
         /*
         Return an array of URLs that might be a good place to get this item
         Throws: Error if fetch_json doesn't succeed, or retrieves something other than JSON

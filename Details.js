@@ -42,6 +42,7 @@ export default class Details extends ArchiveBase {
                 </div>{/*--//.container-ia--*/}
                 {this.theatreIaWrap()} {/*This is the main-content*/}
                 {this.itemDetailsAboutJSX()}
+                {this.itemDetailsAlsoFound()}
                 {/* should have: alsoFound here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?) */}
                 {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
             {/*--wrap--*/}</div>
@@ -398,7 +399,16 @@ export default class Details extends ArchiveBase {
         );
     }
 
-    alsoFoundJSX() {
-        //TODO-DETAILS this needs implementing, but its another API call - it goes beneath itemDetailsAboutJSX
+    itemDetailsAlsoFound() {
+        return (
+            <div id="also-found" className="container container-ia width-max">
+                <div className="row">
+                    <div className="col-xs-12 tilebars" style="padding-bottom:30px">
+                        <h5 className="small-label"
+                            style="margin-top:20px; margin-bottom:20px; font-weight:200;">SIMILAR ITEMS
+                            (based on metadata)</h5>
+                        <div className="results">
+
+        );
     }
 }
