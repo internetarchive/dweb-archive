@@ -149,7 +149,7 @@ export default class React  {
             // Otherwise fetch the file, and pass via rendermedia and from2
             //TODO-MULTI-GATEwAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
             try {
-                const buff = await  DwebTransports.p_rawfetch(urls, {timeoutMS: 5000, relay: false});  //Typically will be a Uint8Array TODO-TIMEOUT make timeoutMS depend on size of file
+                const buff = await  DwebTransports.p_rawfetch(urls, {timeoutMS: 5000, relay: false});  //Maybe should not time out since streams will almost always get used, and in this case could be a large file and last resort to use a download url.
                 // Logged by Transports
                 const file = {
                     name: name,
@@ -218,7 +218,8 @@ export default class React  {
     static async _p_loadStreamFetchAndBuffer(el, name, urls, cb, rel) {
 
         // Worst choice - fetch the file, and pass via rendermedia and from2
-        const buff = await DwebTransports.p_rawfetch(urls);  //Typically will be a Uint8Array, TODO-TIMEOUT make timeoutMS dependent on file size
+        const buff = await DwebTransports.p_rawfetch(urls);  //Typically will be a Uint8Array, note that this is a fallback to http, only used if streams not available,
+        // currently not timing out which is probably OK since it should always be last choice.
         const file = {
             name: name,
             createReadStream: function (opts) {

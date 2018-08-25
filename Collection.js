@@ -17,7 +17,7 @@ export default class Collection extends Search {
         returns:      elements tree suitable for adding into another render
          */
         //Note both description & rights need dangerousHTML and \n -> <br/>
-        const reviewlink = `/details/${this.itemid}&sort=-reviewdate`; // TODO-LINKS - its not clear how this is used. \
+        const reviewlink = `/details/${this.itemid}&sort=-reviewdate`; //TODO The use of this is sr-only, and may not be correct
         const metadata = this.item.metadata;
         const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const rights = this.preprocessDescription(metadata.rights); // Contains HTML (supposedly safe) inserted via innerHTML thing
@@ -157,11 +157,11 @@ export default class Collection extends Search {
                         <div className="col-xs-1 col-sm-2 welcome-right">
                             <a class="stealth" href="#" onclick="return AJS.modal_go(this,{ignore_lnk:1,shown:AJS.embed_codes_adjust})"
                                data-target="#cher-modal"><span class="iconochive-share"  aria-hidden="true"></span><span class="sr-only">share</span><span class="hidden-xs-span"> Share</span></a><br/>
-                            {/*TODO-LINKS TODO-LOGIN /bookmarks isnt going to work, also not logged in https://github.com/internetarchive/dweb-archive/issues/new
+                            {/*TODO-LOGIN /bookmarks isnt going to work, also not logged in https://github.com/internetarchive/dweb-archive/issues/new
                             <a class="stealth" href="/bookmarks.php?add_bookmark=1&amp;mediatype=collection&amp;identifier=prelinger&amp;title=Prelinger+Archives" onclick="return AJS.modal_go(this,{favorite:1})"
                                data-target="#confirm-modal"><span class="iconochive-favorite"  aria-hidden="true"></span><span class="sr-only">favorite</span><span class="hidden-xs-span"> Favorite</span></a><br/>
                             */}
-                            {/* TODO-LINKS TODO-LOGIN /editxml isn't going to wrk - we aren't logged in. and its an absolute URL
+                            {/*TODO-LOGIN /editxml isn't going to wrk - we aren't logged in. and its an absolute URL
                             <div id="editlink" style="display:none">
                               <a id="edlink" class="stealth" href="/editxml/prelinger"><span class="iconochive-edit"  aria-hidden="true"></span><span class="sr-only">edit</span><span
                                 class="hidden-xs-span"> Edit</span></a><br/>
