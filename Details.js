@@ -404,7 +404,7 @@ export default class Details extends ArchiveBase {
         let el = (
             <div id="also-found" className="container container-ia width-max" data-identifier={this.itemid} ></div>
             );
-        Util.fetch_json(`https://be-api.us.archive.org/mds/v1/get_related/software/${this.itemid}`)
+        Util.fetch_json(Util.gateway.url_related+this.itemid)
             .then(data => this.loadDetailsAlsoFound(el, this.itemid, data.hits.hits)); // Asynchronous TODO move to gateway ?
         return el;
     }

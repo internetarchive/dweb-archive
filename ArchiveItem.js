@@ -111,4 +111,8 @@ export default class ArchiveItem {
         await this.fetch_metadata();
         return this.item.metadata.thumbnaillinks; // Short cut since metadata changes may move this
     }
+    async itemid() {
+        await this.fetch_metadata();
+        return this.item.metadata.identifier; // Short cut since metadata changes may move this
+    }
 }
