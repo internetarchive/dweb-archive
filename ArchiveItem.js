@@ -133,6 +133,7 @@ class ArchiveItem {
         // This is modelled on the structure passed to jw in the Audio on archive.org
         // Differences: sources.urls=ArchiveFile, image=af instead of single URL, title is just title, prettyduration has duration
         console.assert(this._list, "Should be running playlist after _listLoad (or fetch_metadata)")
+        type = {"video": "video", "audio": "audio", "movies": "video"}[type || this.item.metadata.mediatype];
         let pl = this._list.reduce( (res, af) => {
                 let metadata = af.metadata;
                 if (["original","derivative"].includes(metadata.source)) {
@@ -170,7 +171,7 @@ class ArchiveItem {
                             if (metadata.source === "original" || !orig.duration) orig.duration = totalsecs;  // In seconds
                         }
                     }
-                    if (af.playable("audio")) {
+                    if (af.playable(type)) {
                         res[original].sources.push({
                             name: metadata.name,
                             file: `http://dweb.archive.org/downloads/${this.itemid}/${metadata.name}`,
