@@ -113,5 +113,82 @@ class ArchiveItem {
         await this.fetch_metadata();
         return this.item.metadata.identifier; // Short cut since metadata changes may move this
     }
+
+    setPlaylist(type) { //TODO could order the playability and pick by preference
+        /*
+        type:   "audio"
+        returns: [ { title
+            original: filename of original file
+            sources: [ {name, file, urls, type}]  # urls is singular ArchiveFile, type is last file extension (e.g. "jpg"
+            } ]
+        Note should be after an explicit await this._listLoad
+
+        This gets a bit painful as there are so many different cases over a decade or more of "best practice"
+        Some cases to test for ...
+        gd73-02-15.sbd.hall.1580.sbeok.shnf  has no lengths on derived tracks, and original has length = "0"
+         */
+
+        // Note Video.js is currently using the .avs, while Audio is using this .playlist
+
+        // This is modelled on the structure passed to jw in the Audio on archive.org
+        // Differences: sources.urls=ArchiveFile, image=af instead of single URL, title is just title, prettyduration has duration
+        console.assert(this._list, "Should be running playlist after _listLoad (or fetch_metadata)")
+        let pl = this._list.reduce( (res, af) => {
+                let metadata = af.metadata;
+                if (["original","derivative"].includes(metadata.source)) {
+                    let original = ((metadata.source === "derivative") ? metadata.original : metadata.name );  // Filename of original
+                    if (!res[original]) {
+                        res[original] = { title: "UNKNOWN", original: original, sources: [] }; // Create place to push this file whether its original or derivative
+                    }
+                    let orig = res[original];
+                    if ((metadata.source === "original") || (orig.title==="UNKNOWN")) orig.title = metadata.title;
+                    let totalsecs;
+                    let pretty;
+                    if (metadata.length && (metadata.length !== "0")) {
+                        if (metadata.length.includes(':')) {
+                            let tt = metadata.length.split(':').map(t => parseInt(t));
+                            if (tt.length === 3) {
+                                totalsecs = ((tt[0] * 60) + tt[1]) * 60 + tt[2];
+                            } else if (tt.length === 2) {
+                                totalsecs = (tt[0] * 60 + tt[1]);
+                            } else if (tt.length == 1) {
+                                totalsecs = (tt[0]);
+                            }
+                            pretty = metadata.length;
+                        } else { // Probably of 123.45 form in seconds
+                            let secs = parseInt(metadata.length % 60);
+                            if (secs === NaN) { // Check we could parse it
+                                pretty = "";
+                                totalsecs = 0;
+                            } else {
+                                pretty = `${parseInt(metadata.length / 60)}:${secs < 10 ? "0" + secs : secs}`;
+                                totalsecs = metadata.length;  // In seconds
+                            }
+                        }
+                        if (totalsecs) { // dont store if we think its 0
+                            if (metadata.source === "original" || !orig.prettyduration) orig.prettyduration = pretty;
+                            if (metadata.source === "original" || !orig.duration) orig.duration = totalsecs;  // In seconds
+                        }
+                    }
+                    if (af.playable("audio")) {
+                        res[original].sources.push({
+                            name: metadata.name,
+                            file: `http://dweb.archive.org/downloads/${this.itemid}/${metadata.name}`,
+                            urls: af,
+                            type: metadata.name.split('.').pop(),
+                        });
+                    } else if (af.playable("image")) {
+                        if (!res[original].image) res[original].image = af; // Currently loads with first playable one, Tracey is prepping an exposed service to get a prefered one in metadata
+                    }
+                }
+                return res;
+
+            }, {}
+        );
+        this.playlist = Object.values(pl).filter(p => p.sources.length);
+    }
+
+
+
 }
 exports = module.exports = ArchiveItem;
