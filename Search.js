@@ -239,7 +239,7 @@ export default class Search extends ArchiveBase {
                                   role="search"
                                   action="https://archive.org/searchresults.php"
                                   data-event-form-tracking="Search|SearchForm"
-                                  data-wayback-machine-search-url="https://web.archive.org/web/*/"> {/* TODO-WAYBACK TODO-LINKS*/}
+                                  data-wayback-machine-search-url="https://web.archive.org/web/*/"> {/* TODO-WAYBACK*/}
                                 <div class="form-group" style="position:relative">
                                     <div style="position:relative">
                                         <span aria-hidden="true">

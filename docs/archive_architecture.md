@@ -4,7 +4,7 @@ This document covers the overall architecture of the the Internet Archive Dweb p
 
 Last edited to match reality 14 August 2018
 
-##Contents below
+## Contents below
 
 * Major Components: Bootloader; ArchiveUI
 * Dweb Integtration: IPFS, GUN, WEBTORRENT, YJS
@@ -25,7 +25,7 @@ Last edited to match reality 14 August 2018
     
 ### Archive UI 
 * Core: lives in dweb-archive/archive.html which loads the rest of the UI from dweb-archive and functionality from dweb-transports and dweb-objects
-* Process: lives mostly in Nav.js - its not identical for each type but at a high level
+* Process: lives mostly in Nav.js - its not identical for each mediatype but at a high level
     * Creates an object depending on whether its a Search/Collection or Details
     * Fetches metadata or performs the search in the .fetch() method of the object 
     * Displays it via its .render() method (see below)

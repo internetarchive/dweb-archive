@@ -23,7 +23,7 @@ class ArchiveFile {
         /* Name suitable for downloading etc */
         return this.metadata.name;
     }
-    async p_urls() {
+    async p_urls() { //TODO-MIRROR fix this to make sense for _torrent.xml files which dont have sha1 and probably not IPFS
         /*
         Return an array of URLs that might be a good place to get this item
         Throws: Error if fetch_json doesn't succeed, or retrieves something other than JSON
@@ -50,13 +50,13 @@ class ArchiveFile {
     async mimetype() {
        return Util.formats("format", this.metadata.format).mimetype;
     }
-    async data() {
-        return await DwebTransports.p_rawfetch(await this.p_urls()); //TODO-TIMEOUT add timeoutMS depending on size of file
+    async data() { // Not timedout currently as only used in .blob which could be slow on big files
+        return await DwebTransports.p_rawfetch(await this.p_urls());
     }
-    async blob() {
+    async blob() { // Not timedout currently as only used in .blobUrl which could be slow on big files
         return new Blob([await this.data()], {type: this.mimetype()} );
     }
-    async blobUrl() {
+    async blobUrl() { // Not timedout currently as could be slow on big files
         return URL.createObjectURL(await this.blob());
     }
     async p_download(a, options) {

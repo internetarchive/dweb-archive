@@ -105,7 +105,13 @@ class ArchiveItem {
             return undefined;
         }
     }
-
-
+    async thumbnaillinks() {
+        await this.fetch_metadata();
+        return this.item.metadata.thumbnaillinks; // Short cut since metadata changes may move this
+    }
+    async itemid() {
+        await this.fetch_metadata();
+        return this.item.metadata.identifier; // Short cut since metadata changes may move this
+    }
 }
 exports = module.exports = ArchiveItem;
