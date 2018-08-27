@@ -4,7 +4,7 @@ This document covers the overall architecture of the the Internet Archive Dweb p
 
 Last edited to match reality 14 August 2018
 
-##Contents below
+## Contents below
 
 * Major Components: Bootloader; ArchiveUI
 * Dweb Integtration: IPFS, GUN, WEBTORRENT, YJS
