@@ -56,7 +56,7 @@ export default class Search extends ArchiveBase {
         AJS.more_searching = true;
         this.page++;
         let el = document.getElementById("appendTiles"); // Get the el, before the search in case user clicks away we add to right place
-        let items = await this.fetch_query({append: true});   // Appends to this.items
+        let items = await this.fetch_query({append: true});   // Appends to this.items but returns just the new one
         items.forEach(item => el.appendChild(new Tile().render(item)));
         AJS.tiler();
         AJS.more_searching = false;
@@ -239,7 +239,7 @@ export default class Search extends ArchiveBase {
                                   role="search"
                                   action="https://archive.org/searchresults.php"
                                   data-event-form-tracking="Search|SearchForm"
-                                  data-wayback-machine-search-url="https://web.archive.org/web/*/"> {/* TODO-WAYBACK TODO-LINKS*/}
+                                  data-wayback-machine-search-url="https://web.archive.org/web/*/"> {/* TODO-WAYBACK*/}
                                 <div class="form-group" style="position:relative">
                                     <div style="position:relative">
                                         <span aria-hidden="true">

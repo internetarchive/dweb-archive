@@ -1,3 +1,4 @@
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
     entry: __dirname + '/archive.js',
@@ -25,6 +26,20 @@ module.exports = {
         clearImmediate: false,
         setImmediate: false,
         console: false
+    },
+    optimization: {
+        minimizer: [
+            new UglifyJsPlugin({
+                uglifyOptions: {
+                    compress: {
+                        unused: false,
+                        collapse_vars: false // debug has a problem in production without this.
+                    }
+
+                    //compress: false  or alternatively remove compression, it only makes about a 5% difference
+                }
+            })
+        ]
     },
     output: {
         filename: 'dweb-archive-bundle.js',

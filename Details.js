@@ -42,6 +42,7 @@ export default class Details extends ArchiveBase {
                 </div>{/*--//.container-ia--*/}
                 {this.theatreIaWrap()} {/*This is the main-content*/}
                 {this.itemDetailsAboutJSX()}
+                {this.itemDetailsAlsoFound()}
                 {/* should have: alsoFound here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?) */}
                 {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
             {/*--wrap--*/}</div>
@@ -398,7 +399,75 @@ export default class Details extends ArchiveBase {
         );
     }
 
-    alsoFoundJSX() {
-        //TODO-DETAILS this needs implementing, but its another API call - it goes beneath itemDetailsAboutJSX
+    itemDetailsAlsoFound() {
+        if (!this.itemid) return undefined; // No related to home page, TODO maybe other places dont have also found = e.g. collections
+        let el = (
+            <div id="also-found" className="container container-ia width-max" data-identifier={this.itemid} ></div>
+            );
+        Util.fetch_json(Util.gateway.url_related+this.itemid)
+            .then(data => this.loadDetailsAlsoFound(el, this.itemid, data.hits.hits)); // Asynchronous TODO move to gateway ?
+        return el;
     }
+    loadDetailsAlsoFound(el, itemid, results) {
+        el.appendChild( (
+            <div className="row">
+                <div className="col-xs-12 tilebars" style="display: block;">
+                    <h5 className="small-label">SIMILAR ITEMS (based on metadata){/*<span id="playplayset">
+                        *<a data-reactroot="" className="stealth" href="#play-items" data-event-click-tracking="Playset|PlayAllLink"><span
+                        className="iconochive-play" aria-hidden="true"></span><span className="sr-only">play</span><span
+                        className="hidden-xs-span"> Play All</span><br></a></span>*/}</h5>
+                    <div id="also-found-result">
+                        <section data-reactroot="" aria-label="Related Items">
+                            { results.map(i => this.alsoFoundTile(i)) }
+                        </section>
+                    </div>
+                </div>
+            </div>
+        ) )
+    }
+    alsoFoundTile(i) { //TODO catch the /details and /serices urls in ReactFake
+        let foo = (
+            <div className="results" style="visibility: visible;">
+                <div className="item-ia" data-id={i._id} data-mediatype={i._source.mediatype[0]} data-year=""><a
+                        className="stealth" tabIndex="-1" href={`/details/${i._id}`}>
+                    </a>
+                    <div className="C234">
+                        <div className="item-ttl C C2"><a href={`/details/${i._id}`}
+                                                           title={i._source.title}
+                                                           data-event-click-tracking="GenericNonCollection|ItemTile">
+                            <div className="tile-img"><img className="item-img" alt=""
+                                                           src={`/services/img/${i._id}`}/></div>
+                            <div className="ttl">{i._source.title}</div>
+                        </a></div>
+                        {/*NEEDS METADATA <div className="by C C4">
+                                    <div><span className="hidden-lists">by </span><span className="byv"
+                                                                                        title="Terebilov K.a ">Terebilov K.a </span>
+                                    </div>
+                                </div>*/}
+                    </div>
+                    <div className="statbar ">
+                        <div className="mt-icon C C5"><span className={`iconochive-{i._source.mediatype[0]}`}
+                                                            aria-hidden="true">&nbsp;</span><span
+                            className="sr-only">{i._source.mediatype[0]}</span></div>
+                        {i._source.downloads ? (
+                            <h6 className="stat"><span className="iconochive-eye"
+                                                       aria-hidden="true">&nbsp;</span><span
+                                className="sr-only">eye</span><span>{i._source.downloads[0]}</span></h6>
+                        ) : undefined }
+                        {i._source.collection ? (
+                            <h6 className="stat"><span className="iconochive-favorite"
+                                                            aria-hidden="true">&nbsp;</span><span
+                            className="sr-only">favorite</span>{i._source.collection.filter(c => c.startsWith('fav-')).length}</h6>
+                        ) : undefined }
+                        {/*<h6
+                        className="stat"><span className="iconochive-comment"
+                                               aria-hidden="true">&nbsp;</span><span
+                        className="sr-only">comment</span><!-- react-text: 38 -->1<!-- /react-text --></h6>*/}
+                    </div>
+                </div>
+            </div>
+        );
+        return foo;
+    }
+
 }

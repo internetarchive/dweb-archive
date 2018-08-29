@@ -51,7 +51,8 @@ export default class ArchiveItem {
             resolves to: this
          */
         await this.fetch_metadata();
-        await this.fetch_query();
+        await this.fetch_query({reqThumbnails: true});
+
         return this;
     }
 
@@ -64,6 +65,11 @@ export default class ArchiveItem {
         return m;
     }
     async fetch_metadata() {
+        /*
+        Fetch the metadata for this item if it hasn't already been.
+
+        returns ArchiveItem (for chaining or map)
+         */
         if (this.itemid && !this.item) {
             debug('getting metadata for %s', this.itemid);
             // Fetch via Domain record - the dweb:/arc/archive.org/metadata resolves into a table that is dynamic on gateway.dweb.me
@@ -83,30 +89,135 @@ export default class ArchiveItem {
                 console.warn("Unable to get metadata for", this.itemid, err);
             }
         }
+        return this;
     }
 
-    async fetch_query({append=false}={}) {
+    async fetch_query({append=false, reqThumbnails=false}={}) {
         /*  Action a query, return the array of docs found.
             Subclassed in Account.js since dont know the query till the metadata is fetched
             */
         // noinspection JSUnresolvedVariable
         if (this.query) {   // This is for Search, Collection and Home.
-            const sort = (this.item && this.item.collection_sort_order) || this.sort;
-            // noinspection JSUnresolvedVariable
-            const url =
-                //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
-                `${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
+            if (!this._list) this._listLoad();
+            const memberFileName = `${this.itemid}_members.json`;
+            const membersAF = this._list.find(af => af.metadata.name === memberFileName);   // af || undefined
+            if (membersAF) {
+                const membersJSON = JSON.parse(await membersAF.data()); //TODO cache this - but note transport should be caching it anyway
+                let newitems = membersJSON.slice((this.page-1)*this.limit, this.page*this.limit);
+                if (reqThumbnails) {
+                    //TODO I'm not totally happy with this, as delays for all Promises to retun or fail. would be better
+                    //TODO for Tile to support ArchiveItem and retrieve metadata in process that is already parallel
+                    //let xxx1 = newitems.map(i => new ArchiveItem({itemid: i.identifier}))
+                    //let xxx2 = (await Promise.all(xxx1.map(i=>i.fetch_metadata())))
+                    //newitems = xxx2.map(i=>i.item.metadata)
+                    newitems = (await Promise.all(newitems.map(i => new ArchiveItem({itemid: i.identifier}).fetch_metadata()))).map(i=>i.item.metadata)
+                }
+                this.items = append ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
+                // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveFiles
+                // Note this does NOT support sort, there isnt enough info in members.json to do that
+                return newitems;
+            } else {
+                const sort = (this.item && this.item.collection_sort_order) || this.sort;
+                // noinspection JSUnresolvedVariable
+                const url =
+                    //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
+                    `${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
                 //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
-            debug("Searching with %s", url);
-            const j = await Util.fetch_json(url);
-            this.items = append ? this.items.concat(j.response.docs) : j.response.docs;
-            this.start = j.response.start;
-            this.numFound = j.response.numFound;
-            return j.response.docs
+                debug("Searching with %s", url);
+                const j = await Util.fetch_json(url);
+                this.items = append ? this.items.concat(j.response.docs) : j.response.docs;
+                this.start = j.response.start;
+                this.numFound = j.response.numFound;
+                return j.response.docs
+            }
         } else {
             return undefined;
         }
     }
+    async thumbnaillinks() {
+        await this.fetch_metadata();
+        return this.item.metadata.thumbnaillinks; // Short cut since metadata changes may move this
+    }
+    async itemid() {
+        await this.fetch_metadata();
+        return this.item.metadata.identifier; // Short cut since metadata changes may move this
+    }
+
+    setPlaylist(type) { //TODO could order the playability and pick by preference
+        /*
+        type:   "audio"
+        returns: [ { title
+            original: filename of original file
+            sources: [ {name, file, urls, type}]  # urls is singular ArchiveFile, type is last file extension (e.g. "jpg"
+            } ]
+        Note should be after an explicit await this._listLoad
+
+        This gets a bit painful as there are so many different cases over a decade or more of "best practice"
+        Some cases to test for ...
+        gd73-02-15.sbd.hall.1580.sbeok.shnf  has no lengths on derived tracks, and original has length = "0"
+         */
+
+        // Note Video.js is currently using the .avs, while Audio is using this .playlist
+
+        // This is modelled on the structure passed to jw in the Audio on archive.org
+        // Differences: sources.urls=ArchiveFile, image=af instead of single URL, title is just title, prettyduration has duration
+        console.assert(this._list, "Should be running playlist after _listLoad (or fetch_metadata)")
+        type = {"video": "video", "audio": "audio", "movies": "video"}[type || this.item.metadata.mediatype];
+        const pl = this._list.reduce( (res, af) => {
+                const metadata = af.metadata;
+                if (["original","derivative"].includes(metadata.source)) {
+                    const original = ((metadata.source === "derivative") ? metadata.original : metadata.name );  // Filename of original
+                    if (!res[original]) {
+                        res[original] = { title: "UNKNOWN", original: original, sources: [] }; // Create place to push this file whether its original or derivative
+                    }
+                    const orig = res[original];
+                    if ((metadata.source === "original") || (orig.title==="UNKNOWN")) orig.title = metadata.title;
+                    let totalsecs;
+                    let pretty;
+                    if (metadata.length && (metadata.length !== "0")) {
+                        if (metadata.length.includes(':')) {
+                            const tt = metadata.length.split(':').map(t => parseInt(t));
+                            if (tt.length === 3) {
+                                totalsecs = ((tt[0] * 60) + tt[1]) * 60 + tt[2];
+                            } else if (tt.length === 2) {
+                                totalsecs = (tt[0] * 60 + tt[1]);
+                            } else if (tt.length == 1) {
+                                totalsecs = (tt[0]);
+                            }
+                            pretty = metadata.length;
+                        } else { // Probably of 123.45 form in seconds
+                            const secs = parseInt(metadata.length % 60);
+                            if (secs === NaN) { // Check we could parse it
+                                pretty = "";
+                                totalsecs = 0;
+                            } else {
+                                pretty = `${parseInt(metadata.length / 60)}:${secs < 10 ? "0" + secs : secs}`;
+                                totalsecs = metadata.length;  // In seconds
+                            }
+                        }
+                        if (totalsecs) { // dont store if we think its 0
+                            if (metadata.source === "original" || !orig.prettyduration) orig.prettyduration = pretty;
+                            if (metadata.source === "original" || !orig.duration) orig.duration = totalsecs;  // In seconds
+                        }
+                    }
+                    if (af.playable(type)) {
+                        res[original].sources.push({
+                            name: metadata.name,
+                            file: `http://dweb.archive.org/downloads/${this.itemid}/${metadata.name}`,
+                            urls: af,
+                            type: metadata.name.split('.').pop(),
+                        });
+                    } else if (af.playable("image")) {
+                        if (!res[original].image) res[original].image = af; // Currently loads with first playable one, Tracey is prepping an exposed service to get a prefered one in metadata
+                    }
+                }
+                return res;
+
+            }, {}
+        );
+        this.playlist = Object.values(pl).filter(p => p.sources.length);
+    }
+
 
 
 }
