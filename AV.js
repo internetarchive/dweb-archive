@@ -27,14 +27,16 @@ export default class AV extends Details {
 
         // Note Video.js is currently using the .avs, while Audio is using the .playlist
 
+        /* AVS obsolete - using playlist
         this.avs = this._list.filter(af => af.playable(type));  //TODO-VIDEO - TODO-XXX refactor to use playlist instead of avs
         if (this.avs.length) {
             this.avs.sort((a, b) => Util.natcompare(a.metadata.name, b.metadata.name));   //Unsure why sorting names, presumably tracks are named alphabetically ?
-            /* This was old playlist mapping name to URL but its not clear it ever gets used.
-            this.playlist.push({ name: this.avs[0].name,
-                urls: [this.item.metadata.magnetlink + '/' + this.avs[0].name] }); // TODO-STREAM support IPFS link here once can stream it
-            */
+            // This was old playlist mapping name to URL but its not clear it ever gets used.
+            //this.playlist.push({ name: this.avs[0].name,
+            //    urls: [this.item.metadata.magnetlink + '/' + this.avs[0].name] }); // TODO-STREAM support IPFS link here once can stream it
+            //
         }
+        */
         // This is modelled on the structure passed to jw in the Audio on archive.org
         // Differences: sources.urls=ArchiveFile, image=af instead of single URL, title is just title, prettyduration has duration
         this.setPlaylist(type);

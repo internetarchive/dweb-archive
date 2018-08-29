@@ -51,7 +51,8 @@ export default class ArchiveItem {
             resolves to: this
          */
         await this.fetch_metadata();
-        await this.fetch_query();
+        await this.fetch_query({reqThumbnails: true});
+
         return this;
     }
 
@@ -64,6 +65,11 @@ export default class ArchiveItem {
         return m;
     }
     async fetch_metadata() {
+        /*
+        Fetch the metadata for this item if it hasn't already been.
+
+        returns ArchiveItem (for chaining or map)
+         */
         if (this.itemid && !this.item) {
             debug('getting metadata for %s', this.itemid);
             // Fetch via Domain record - the dweb:/arc/archive.org/metadata resolves into a table that is dynamic on gateway.dweb.me
@@ -83,9 +89,10 @@ export default class ArchiveItem {
                 console.warn("Unable to get metadata for", this.itemid, err);
             }
         }
+        return this;
     }
 
-    async fetch_query({append=false}={}) {
+    async fetch_query({append=false, reqThumbnails=false}={}) {
         /*  Action a query, return the array of docs found.
             Subclassed in Account.js since dont know the query till the metadata is fetched
             */
@@ -96,7 +103,15 @@ export default class ArchiveItem {
             const membersAF = this._list.find(af => af.metadata.name === memberFileName);   // af || undefined
             if (membersAF) {
                 const membersJSON = JSON.parse(await membersAF.data()); //TODO cache this - but note transport should be caching it anyway
-                const newitems = membersJSON.slice((this.page-1)*this.limit, this.page*this.limit);
+                let newitems = membersJSON.slice((this.page-1)*this.limit, this.page*this.limit);
+                if (reqThumbnails) {
+                    //TODO I'm not totally happy with this, as delays for all Promises to retun or fail. would be better
+                    //TODO for Tile to support ArchiveItem and retrieve metadata in process that is already parallel
+                    //let xxx1 = newitems.map(i => new ArchiveItem({itemid: i.identifier}))
+                    //let xxx2 = (await Promise.all(xxx1.map(i=>i.fetch_metadata())))
+                    //newitems = xxx2.map(i=>i.item.metadata)
+                    newitems = (await Promise.all(newitems.map(i => new ArchiveItem({itemid: i.identifier}).fetch_metadata()))).map(i=>i.item.metadata)
+                }
                 this.items = append ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
                 // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveFiles
                 // Note this does NOT support sort, there isnt enough info in members.json to do that
