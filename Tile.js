@@ -10,11 +10,13 @@ export default class Tile {
     //xxx shorten/safify certain title usages (compared to Lists.inc)
     const collections = (Array.isArray(item.collection) ? item.collection : (typeof(item.collection) === 'string' ? [item.collection] : []));
     const collection0 = collections[0];
-    const collection0title = item.collection0title;
     const nFavorites = collections.filter(e => e.startsWith('fav-')).length;
     const is_collection = (item.mediatype === 'collection');
     const classes = 'item-ia' + (is_collection ? ' collection-ia' : '');
-    const collection0thumbnaillinks = item.collection0thumbnaillinks;
+    // If dont have collection0 data then probably came from minimal metadata in fav-xxx and then ArchiveItem metadata
+      // Should really do this async, but that would mean rewriting a lot of code, sofor now, chea
+    const collection0thumbnaillinks = item.collection0thumbnaillinks || `dweb:/arc/archive.org/services/img/${collection0}`; //ReactFake will handle async
+    const collection0title = item.collection0title || collection0; // Wrong but acceptable for now
     const imgname = item.identifier + ".PNG"; // Required since rendermedia doesnt know the filetype otherwise
     //ARCHIVE-BROWSER on browser, want to load links locally (via APIs) rather than rebuilding HTML page
       // ARCHIVE-BROWSER added key= to keep react happy (I hope)
@@ -23,6 +25,7 @@ export default class Tile {
       { (collection0) ?
         <a className="stealth" tabIndex="-1" onClick={`Nav.nav_details("${collection0}");`}>
           <div className="item-parent">
+              {/*collection0thumbnaillinks wont be there for the metadata req on items in fav-xyz so use the URL and let ReactFake expand it*/}
             <div className="item-parent-img"><img src={collection0thumbnaillinks}/></div>
             <div className="item-parent-ttl">{collection0title}</div>
           </div>{/*.item-parent*/}

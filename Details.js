@@ -449,12 +449,16 @@ export default class Details extends ArchiveBase {
                         <div className="mt-icon C C5"><span className={`iconochive-{i._source.mediatype[0]}`}
                                                             aria-hidden="true">&nbsp;</span><span
                             className="sr-only">{i._source.mediatype[0]}</span></div>
-                        <h6 className="stat"><span className="iconochive-eye"
-                                                   aria-hidden="true">&nbsp;</span><span
-                            className="sr-only">eye</span><span>{i._source.downloads[0]}</span></h6>
-                        <h6 className="stat"><span className="iconochive-favorite"
-                                                        aria-hidden="true">&nbsp;</span><span
-                        className="sr-only">favorite</span>{i._source.collection.filter(c => c.startsWith('fav-')).length}</h6>
+                        {i._source.downloads ? (
+                            <h6 className="stat"><span className="iconochive-eye"
+                                                       aria-hidden="true">&nbsp;</span><span
+                                className="sr-only">eye</span><span>{i._source.downloads[0]}</span></h6>
+                        ) : undefined }
+                        {i._source.collection ? (
+                            <h6 className="stat"><span className="iconochive-favorite"
+                                                            aria-hidden="true">&nbsp;</span><span
+                            className="sr-only">favorite</span>{i._source.collection.filter(c => c.startsWith('fav-')).length}</h6>
+                        ) : undefined }
                         {/*<h6
                         className="stat"><span className="iconochive-comment"
                                                aria-hidden="true">&nbsp;</span><span

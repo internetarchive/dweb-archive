@@ -11,7 +11,7 @@ export default class Video extends AV {
         this.itemtype = "http://schema.org/VideoObject";
     }
     setupPlaylist() {
-        super.setupPlaylist("video");  // Setup this.avs
+        super.setupPlaylist("video");  // Setup this.playlist
     }
 
     theatreIaWrap() {
@@ -37,11 +37,13 @@ export default class Video extends AV {
                 {"file":"/download/commute/commute.ogv","type":"ogg","height":"304","width":"400","label":"304p"}],
             "tracks":[{"file":"https://archive.org/stream/commute/commute.thumbs/commute_000005.jpg&vtt=vtt.vtt","kind":"thumbnails"}]}],
         */
-        this.setupPlaylist();   // Creates this.avs
-        const contenturl = `${Util.gateway.url_download}${itemid}/${this.avs[0].metadata.name}`;
-        const embedurlname = (this.avs[0].metadata.source === "original") ? this.avs[0].metadata.name : this.avs[0].metadata.original;
-        const embedurl = `${Util.gateway.url_download}${itemid}/${embedurlname}`;
-        const schemacontentlength = `PT0M${parseInt(this.avs[0].metadata.length)}S`;
+        this.setupPlaylist();   // Creates this.playlist
+        const playing = this.playlist[0];
+        const source = playing.sources[0];
+        const af = source.urls;     // An ArchiveFile
+        const contenturl = `${Util.gateway.url_download}${itemid}/${source.name}`;
+        const embedurl = `${Util.gateway.url_download}${itemid}/${playing.original}`;
+        const schemacontentlength = `PT0M${parseInt(playing.duration)}S`;
         return (
             <div id="theatre-ia-wrap" class="container container-ia width-max ">
                 <link itemprop="url" href={detailsurl}/>
@@ -76,7 +78,7 @@ export default class Video extends AV {
                             </div>{/*--/#theatre-controls--*/}
                             <div id="videoContainerX" style="text-align: center;">
                                 {/* This videothumbnailurl is http since if getting decentralized there is little value compared to loading video itself */}
-                                <video id="streamContainer" src={this.avs[0]} poster={videothumbnailurl} controls></video>
+                                <video id="streamContainer" src={af} poster={videothumbnailurl} controls></video>
                             </div>
                             <div id="webtorrentStats" style="color: white; text-align: center;"></div>
                             {this.cherModal("video")}

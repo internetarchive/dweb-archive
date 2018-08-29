@@ -314,11 +314,12 @@ export default class React  {
                     React.addKids(element, kids);
                     return element;
                 }
-                const name = attrs["imgname"] ? attrs["imgname"]
-                    : ( (src instanceof ArchiveFile) ? src.name()
-                    : (src.includes("/services/img") ? src + ".jpg"
-                    : ( src ? src : "DUMMY.PNG"
-                    )));
+                const name = attrs["imgname"]       ? attrs["imgname"]
+                    : (src instanceof ArchiveFile)  ? src.name()
+                    : src.includes("/services/img") ? src + ".jpg"
+                    : Array.isArray(src)            ? src[0] + ".jpg"   // E.g. thumbnaillinks are typical [ipfs://, http:...]
+                    : src                           ? src : "DUMMY.PNG"
+                    ;
                 delete attrs.src;   // Make sure dont get passed to cb for building into img (which wont like an array)
                 return this.loadImg(name, src, cb, rel);   //Creates a <span></span>, asynchronously creates an <img> under it and calls cb on that IMG. The <div> is returned immediately.
             }
