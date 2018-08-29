@@ -11,7 +11,7 @@ export default class Account extends Search {
 
     constructor({itemid=undefined, item=undefined}={}) {
         super({
-            query:  'uploader:'+itemid, //TODO-ACCOUNT what should this query be?
+            query:  'uploader:'+itemid,
             sort:   '-publicdate',   // This will be overridden based on collection_sort_order
             itemid: itemid,
             item:   item,
@@ -70,7 +70,7 @@ export default class Account extends Search {
                                     <td>Replies</td>
                                     <td>Date</td>
                                 </tr>
-                                {/*-- TODO-ACCOUNT this is a loop  need query for forum posts--*/}
+                                {/*-- TODO-ACCOUNT this is a loop  need query for forum posts https://github.com/internetarchive/dweb-archive/issues/86--*/}
                                 <tr><td>Still being implemented</td></tr>
         {/*
                                 <tr valign="top" class="eve forumRow">
