@@ -89,18 +89,30 @@ class ArchiveItem {
             */
         // noinspection JSUnresolvedVariable
         if (this.query) {   // This is for Search, Collection and Home.
-            const sort = (this.item && this.item.collection_sort_order) || this.sort;
-            // noinspection JSUnresolvedVariable
-            const url =
-                //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
-                `${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
+            if (!this._list) this._listLoad();
+            const memberFileName = `${this.itemid}_members.json`;
+            const membersAF = this._list.find(af => af.metadata.name === memberFileName);   // af || undefined
+            if (membersAF) {
+                const membersJSON = JSON.parse(await membersAF.data()); //TODO cache this - but note transport should be caching it anyway
+                const newitems = membersJSON.slice((this.page-1)*this.limit, this.page*this.limit);
+                this.items = append ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
+                // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveFiles
+                // Note this does NOT support sort, there isnt enough info in members.json to do that
+                return newitems;
+            } else {
+                const sort = (this.item && this.item.collection_sort_order) || this.sort;
+                // noinspection JSUnresolvedVariable
+                const url =
+                    //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
+                    `${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
                 //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
-            debug("Searching with %s", url);
-            const j = await Util.fetch_json(url);
-            this.items = append ? this.items.concat(j.response.docs) : j.response.docs;
-            this.start = j.response.start;
-            this.numFound = j.response.numFound;
-            return j.response.docs
+                debug("Searching with %s", url);
+                const j = await Util.fetch_json(url);
+                this.items = append ? this.items.concat(j.response.docs) : j.response.docs;
+                this.start = j.response.start;
+                this.numFound = j.response.numFound;
+                return j.response.docs
+            }
         } else {
             return undefined;
         }
@@ -134,20 +146,20 @@ class ArchiveItem {
         // Differences: sources.urls=ArchiveFile, image=af instead of single URL, title is just title, prettyduration has duration
         console.assert(this._list, "Should be running playlist after _listLoad (or fetch_metadata)")
         type = {"video": "video", "audio": "audio", "movies": "video"}[type || this.item.metadata.mediatype];
-        let pl = this._list.reduce( (res, af) => {
-                let metadata = af.metadata;
+        const pl = this._list.reduce( (res, af) => {
+                const metadata = af.metadata;
                 if (["original","derivative"].includes(metadata.source)) {
-                    let original = ((metadata.source === "derivative") ? metadata.original : metadata.name );  // Filename of original
+                    const original = ((metadata.source === "derivative") ? metadata.original : metadata.name );  // Filename of original
                     if (!res[original]) {
                         res[original] = { title: "UNKNOWN", original: original, sources: [] }; // Create place to push this file whether its original or derivative
                     }
-                    let orig = res[original];
+                    const orig = res[original];
                     if ((metadata.source === "original") || (orig.title==="UNKNOWN")) orig.title = metadata.title;
                     let totalsecs;
                     let pretty;
                     if (metadata.length && (metadata.length !== "0")) {
                         if (metadata.length.includes(':')) {
-                            let tt = metadata.length.split(':').map(t => parseInt(t));
+                            const tt = metadata.length.split(':').map(t => parseInt(t));
                             if (tt.length === 3) {
                                 totalsecs = ((tt[0] * 60) + tt[1]) * 60 + tt[2];
                             } else if (tt.length === 2) {
@@ -157,7 +169,7 @@ class ArchiveItem {
                             }
                             pretty = metadata.length;
                         } else { // Probably of 123.45 form in seconds
-                            let secs = parseInt(metadata.length % 60);
+                            const secs = parseInt(metadata.length % 60);
                             if (secs === NaN) { // Check we could parse it
                                 pretty = "";
                                 totalsecs = 0;
