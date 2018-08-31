@@ -97,24 +97,28 @@ class ArchiveItem {
         // noinspection JSUnresolvedVariable
         if (this.query) {   // This is for Search, Collection and Home.
             if (!this._list) this._listLoad();
+            // First we look for the fav-xyz type collection, where there is an explicit JSON of the members
             const memberFileName = `${this.itemid}_members.json`;
             const membersAF = this._list.find(af => af.metadata.name === memberFileName);   // af || undefined
             if (membersAF) {
                 const membersJSON = JSON.parse(await membersAF.data()); //TODO cache this - but note transport should be caching it anyway
-                let newitems = membersJSON.slice((this.page-1)*this.limit, this.page*this.limit);
+                let newitems = membersJSON.slice((this.page - 1) * this.limit, this.page * this.limit);
                 if (reqThumbnails) {
                     //TODO I'm not totally happy with this, as delays for all Promises to retun or fail. would be better
                     //TODO for Tile to support ArchiveItem and retrieve metadata in process that is already parallel
                     //let xxx1 = newitems.map(i => new ArchiveItem({itemid: i.identifier}))
                     //let xxx2 = (await Promise.all(xxx1.map(i=>i.fetch_metadata())))
                     //newitems = xxx2.map(i=>i.item.metadata)
-                    newitems = (await Promise.all(newitems.map(i => new ArchiveItem({itemid: i.identifier}).fetch_metadata()))).map(i=>i.item.metadata)
+                    newitems = (await Promise.all(newitems.map(i => new ArchiveItem({itemid: i.identifier}).fetch_metadata()))).map(i => i.item.metadata)
                 }
                 this.items = append ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
                 // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveFiles
                 // Note this does NOT support sort, there isnt enough info in members.json to do that
                 return newitems;
             } else {
+                if (this.item.metadata.search_collection) {
+                    this.query = this.item.metadata.search_collection.replace('\"', '"')
+                }
                 const sort = (this.item && this.item.collection_sort_order) || this.sort;
                 // noinspection JSUnresolvedVariable
                 const url =
