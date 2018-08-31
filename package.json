@@ -9,7 +9,7 @@
   },
   "description": "Archive UI to run in Browser",
   "dependencies": {
-    "@internetarchive/dweb-objects": "^0.1.4",
+    "@internetarchive/dweb-objects": "^0.1.6",
     "@internetarchive/dweb-transports": "^0.1.14",
     "debug": "^3.1.0",
     "es2015": "latest",
