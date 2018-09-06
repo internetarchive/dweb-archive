@@ -38,6 +38,7 @@
     $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
 
     async function main({query=undefined, sort=undefined, item=undefined, download=false}={}) {
+        // Note that any other searchparams.query,sort,downloaded handled in caller, and others in Nav.js/factory
         await DwebTransports.p_connect({statuselement: document.getElementById("dweb-status"), transports: searchparams.getAll("transport"), paused: searchparams.getAll("paused")});
         if (query) {
             // noinspection JSIgnoredPromiseFromCall
@@ -63,6 +64,7 @@
 <script>
     var searchparams = new URL(window.location.href).searchParams;
     i = location.pathname.indexOf("/details/") || location.pathname.indexOf("/download/");
+    // Other searchparams handled inside main or in Nav.js/factory() or search()
     // noinspection JSIgnoredPromiseFromCall
     main({
         item: (i > -1) ? location.pathname.slice(i + 9) : searchparams.get("item"),

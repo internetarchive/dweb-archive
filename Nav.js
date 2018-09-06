@@ -174,6 +174,7 @@ export default class Nav {
         let s = await new Search((typeof(q) === "object") ? q : (typeof(q) === "string") ? {query: q} : undefined).fetch();
         q = s.query;    // Flattened from object to string
         if (wanthistory) {
+            let supportsArc = ! (window.location.origin === "file://" || window.location.pathname.startsWith("/ipfs/")  || window.location.pathname.startsWith("/ipns/") )
             let historystate = {query: q}; //TODO-HISTORY may want  to store transports, paused etc here
             let cnp = [];
             cnp.push(await this.pausedParm()); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
@@ -186,10 +187,10 @@ export default class Nav {
             let historyloc;
             cnp.push(`query=${q}`);
             cnp = cnp.filter(p => !!p).join('&');
-            if (window.location.origin === "file://") {
-                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`;
-            } else { //Might not work on http, this is intended for SW
+            if (supportsArc) {
                 historyloc = `${window.location.origin}/arc/archive.org/details?${cnp}`;
+            } else { //Might not work on http, this is intended for SW
+                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`;
             }
             //debug("Writing history:", historyloc);
             history.pushState(historystate, `Internet Archive search ${q}`, historyloc);
@@ -235,17 +236,19 @@ export default class Nav {
             }
             // See notes on async_factory about history.pushState
             let historyloc;
-            if (window.location.origin === "file://") {
+            // Ideally we'd like to be on a service that supports /arc but if it doesnt we've got an alternative.
+            let supportsArc = ! (window.location.origin === "file://" || window.location.pathname.startsWith("/ipfs/")  || window.location.pathname.startsWith("/ipns/"))
+            if (!supportsArc) {
                 if (itemid) cnp.push(`item=${itemid}`);   // Need item id parameter on local files
                 if (downloaddirectory) cnp.push('download=1');   // Need item id parameter on local files
             }
             cnp = cnp.filter(p => !!p).join('&');
             // History is tricky .... take care of: SW (with Base set) \ !SW; file | http; cases
             // when loaded from file, non SW window.location.origin = document.location.origin = "file://" and document.baseURI is unset
-            if (window.location.origin === "file://") {
-                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`;
-            } else {
+            if (supportsArc) {
                 historyloc = `${window.location.origin}/arc/archive.org/${downloaddirectory ? "download" : "details"}${itemid ? "/"+itemid :""}?${cnp}`;
+            } else {
+                historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`;
             }
             history.pushState(historystate, `Internet Archive item ${itemid ? itemid : ""}`, historyloc);
         }

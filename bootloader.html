@@ -76,6 +76,11 @@ Name:&nbsp;<input type="text" class="formbox" id="urlorname" placeholder="/arc/a
         }
     }
     async function p_bootname(name, {search_supplied=undefined}={}) {
+        /*
+        Boot from a name,searchparams
+        name: e.g. /arc/archive.org/details  in form that Domain.js can resolve
+        search_supplied:    Anything provided after the ? - should be appended to the url during the boot.
+         */
         document.getElementById("urlorname").value = name;
         statusupdate("Resolving name: ",name, "?", search_supplied || "");   // Appears after loading
         try {

@@ -82,7 +82,7 @@ class ArchiveItem {
 
                 this.item = this.processMetadataFjords(m);
                 this._listLoad();   // Load _list with ArchiveFile
-                debug("metadata for %s fetched successfully");
+                debug("metadata for %s fetched successfully", this.itemid);
             } catch(err) {
                 console.warn("Unable to get metadata for", this.itemid, err);
             }
@@ -116,7 +116,7 @@ class ArchiveItem {
                 // Note this does NOT support sort, there isnt enough info in members.json to do that
                 return newitems;
             } else {
-                if (this.item.metadata.search_collection) {
+                if (this.item && this.item.metadata.search_collection) {
                     this.query = this.item.metadata.search_collection.replace('\"', '"')
                 }
                 const sort = (this.item && this.item.collection_sort_order) || this.sort;
