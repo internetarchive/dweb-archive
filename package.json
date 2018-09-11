@@ -47,5 +47,5 @@
     "server": "http-server",
     "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist; ln -s ../node_modules/@internetarchive/dweb-objects/dist/dweb-objects-bundle.js dist;"
   },
-  "version": "0.1.30"
+  "version": "0.1.31"
 }
