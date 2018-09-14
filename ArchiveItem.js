@@ -84,11 +84,11 @@ class ArchiveItem {
                     if (cb) cb(null, this);
                     return this;
                 })
-                .catch((err) => { if (cb) { cb(err); } else { reject(err); };
-                } else {
-                if (cb) { cb(null, this); } else { return new Promise((resolve, reject) => resolve(this)); }
-            }
+                .catch((err) => { if (cb) { cb(err); } else { reject(err); }});
+        } else {
+            if (cb) { cb(null, this); } else { return new Promise((resolve, reject) => resolve(this)); }
         }
+    }
 
     async fetch_query({append=false, reqThumbnails=false}={}) {
         /*  Action a query, return the array of docs found.
