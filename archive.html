@@ -36,9 +36,7 @@
 <a href="#maincontent" class="hidden-for-screen-readers">Skip to main content</a>
 <script>
     $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
-
-    async function main({query=undefined, sort=undefined, item=undefined, download=false}={}) {
-        // Note that any other searchparams.query,sort,downloaded handled in caller, and others in Nav.js/factory
+    async function main({query=undefined, sort=undefined, item=undefined, download=false }={}) {
         await DwebTransports.p_connect({statuselement: document.getElementById("dweb-status"), transports: searchparams.getAll("transport"), paused: searchparams.getAll("paused")});
         if (query) {
             // noinspection JSIgnoredPromiseFromCall
@@ -56,7 +54,6 @@
             Nav.nav_home();
         }
     }
-
 </script>
 <div id="nav-dweb"><span class="dweb-nav-left">DWeb</span>: <!--<span style="color:purple;">DWeb:</span>--><div id="dweb-status"></div><a href="https://docs.google.com/forms/d/e/1FAIpQLSe7pXiSLrmeLoKvlDi2wODcL3ro7D6LegPksb86jr5bCJa7Ig/viewform" target="_blank"><img src="https://dweb.archive.org/images/feedback.svg"/></a></div><!--End of standard network status and login panel-->
 
@@ -64,7 +61,6 @@
 <script>
     var searchparams = new URL(window.location.href).searchParams;
     i = location.pathname.indexOf("/details/") || location.pathname.indexOf("/download/");
-    // Other searchparams handled inside main or in Nav.js/factory() or search()
     // noinspection JSIgnoredPromiseFromCall
     main({
         item: (i > -1) ? location.pathname.slice(i + 9) : searchparams.get("item"),
