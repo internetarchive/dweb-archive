@@ -62,33 +62,33 @@ class ArchiveItem {
         });
         return m;
     }
-    async fetch_metadata() {
+    fetch_metadata(cb) {
         /*
         Fetch the metadata for this item if it hasn't already been.
 
-        returns ArchiveItem (for chaining or map)
+        calls cb(err, archiveitem) or resolves (for chaining or map)
          */
         if (this.itemid && !this.item) {
             debug('getting metadata for %s', this.itemid);
             // Fetch via Domain record - the dweb:/arc/archive.org/metadata resolves into a table that is dynamic on gateway.dweb.me
             const name = `dweb:/arc/archive.org/metadata/${this.itemid}`;
             // Fetch using Transports as its multiurl and might not be HTTP urls
-            let m;
-            try {
-                m = await DwebTransports.p_rawfetch([name], {timeoutMS: 5000});    //TransportError if all urls fail (e.g. bad itemid)
-                // noinspection ES6ModulesDependencies
-                m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
-                console.assert(m.metadata.identifier === this.itemid);
+            let prom = DwebTransports.p_rawfetch([name], {timeoutMS: 5000})    //TransportError if all urls fail (e.g. bad itemid)
+                .then((m) => {
+                    m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
+                    console.assert(m.metadata.identifier === this.itemid);
 
-                this.item = this.processMetadataFjords(m);
-                this._listLoad();   // Load _list with ArchiveFile
-                debug("metadata for %s fetched successfully", this.itemid);
-            } catch(err) {
-                console.warn("Unable to get metadata for", this.itemid, err);
+                    this.item = this.processMetadataFjords(m);
+                    this._listLoad();   // Load _list with ArchiveFile
+                    debug("metadata for %s fetched successfully", this.itemid);
+                    if (cb) cb(null, this);
+                    return this;
+                })
+                .catch((err) => { if (cb) { cb(err); } else { reject(err); };
+                } else {
+                if (cb) { cb(null, this); } else { return new Promise((resolve, reject) => resolve(this)); }
             }
         }
-        return this;
-    }
 
     async fetch_query({append=false, reqThumbnails=false}={}) {
         /*  Action a query, return the array of docs found.
