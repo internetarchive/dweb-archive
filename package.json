@@ -11,6 +11,7 @@
   "dependencies": {
     "@internetarchive/dweb-objects": "^0.1.6",
     "@internetarchive/dweb-transports": "^0.1.14",
+    "canonical-json": "latest",
     "debug": "^3.1.0",
     "es2015": "latest",
     "from2": "^2.3.0",
