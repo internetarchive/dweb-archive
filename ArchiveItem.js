@@ -85,6 +85,7 @@ class ArchiveItem {
                     return this;
                 })
                 .catch((err) => { if (cb) { cb(err); } else { reject(err); }});
+            return prom;
         } else {
             if (cb) { cb(null, this); } else { return new Promise((resolve, reject) => resolve(this)); }
         }
