@@ -102,6 +102,6 @@ TODO create a meta-task in issues for a summary of what needs doing
 
 ## See also
 
-* List of repos in [README.md](../README.md)
-* Issues for each repo on github
 * [IPFS Architecture](./archive_architecture_ipfs.md) which also has some general topics <<TODO move the general topics here>>
+
+See [Dweb document index](https://github.com/internetarchive/dweb-transports/blob/master/DOCUMENTINDEX.md) for a list of the repos that make up the Internet Archive's Dweb project, and an index of other documents. 

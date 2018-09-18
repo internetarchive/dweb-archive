@@ -20,7 +20,7 @@ export default class AV extends Details {
             } ]
 
         This gets a bit painful as there are so many different cases over a decade or more of "best practice"
-        Some cases to test for ...
+        Some Fjord cases to test for ...
         gd73-02-15.sbd.hall.1580.sbeok.shnf  has no lengths on derived tracks, and original has length = "0"
 
          */

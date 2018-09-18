@@ -266,7 +266,7 @@ export default class Nav {
                 } else {
                     debug("%s has mediatype %s", itemid, item.metadata.mediatype);
                     let switchmediatype = item.metadata.mediatype;
-                    if (item.metadata.mediatype === "education") {
+                    if (item.metadata.mediatype === "education") { //Fjords
                         // Typically miscategorized, have a guess !
                         if (item._list.find(af => af.playable("video")))
                             switchmediatype = "movies";
