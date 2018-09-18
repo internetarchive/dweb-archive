@@ -38,7 +38,7 @@ class ArchiveItem {
             : [];   // Default to empty, so usage simpler.
     }
 
-    async fetch() {
+    async fetch({append = false, reqThumbnails = true}) {
         /* Fetch what we can about this item, it might be an item or something we have to search for.
             Fetch item metadata as JSON by talking to Metadata API
             Fetch collection info by an advanced search.
@@ -49,7 +49,7 @@ class ArchiveItem {
             resolves to: this
          */
         await this.fetch_metadata();
-        await this.fetch_query({reqThumbnails: true});
+        await this.fetch_query({apppend, reqThumbnails});
 
         return this;
     }
@@ -128,7 +128,7 @@ class ArchiveItem {
                 //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
                 debug("Searching with %s", url);
                 const j = await Util.fetch_json(url);
-                this.items = append ? this.items.concat(j.response.docs) : j.response.docs;
+                this.items = (append && this.items) ? this.items.concat(j.response.docs) : j.response.docs;
                 this.start = j.response.start;
                 this.numFound = j.response.numFound;
                 return j.response.docs
