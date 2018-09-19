@@ -82,7 +82,7 @@ class ArchiveItem {
                     this._listLoad();   // Load _list with ArchiveFile
                     debug("metadata for %s fetched successfully", this.itemid);
                     if (cb) cb(null, this);
-                    return this;
+                    return this;    // So prom resolves to this
                 })
                 .catch((err) => { if (cb) { cb(err); } else { reject(err); }});
             return prom;
