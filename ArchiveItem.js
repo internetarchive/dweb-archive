@@ -54,7 +54,7 @@ class ArchiveItem {
         return this;
     }
 
-    processMetadataFjords(m) {
+    processMetadataFjords(m) { // TODO-FJORDS move code tagged TODO-FJORDS to this routine where possible
         // The Archive is nothing but edge cases, handle some of them here so the code doesnt have to !
         Object.keys(Util.metadata.singletons).forEach(f => {
             if (typeof m.metadata[f] === "undefined") m.metadata[f] = "";
@@ -155,7 +155,7 @@ class ArchiveItem {
             } ]
         Note should be after an explicit await this._listLoad
 
-        This gets a bit painful as there are so many different cases over a decade or more of "best practice"
+        TODO-FJORDS: This gets a bit painful as there are so many different cases over a decade or more of "best practice"
         Some cases to test for ...
         gd73-02-15.sbd.hall.1580.sbeok.shnf  has no lengths on derived tracks, and original has length = "0"
          */
@@ -177,7 +177,7 @@ class ArchiveItem {
                     if ((metadata.source === "original") || (orig.title==="UNKNOWN")) orig.title = metadata.title;
                     let totalsecs;
                     let pretty;
-                    if (metadata.length && (metadata.length !== "0")) {
+                    if (metadata.length && (metadata.length !== "0")) { //TODO-FJORDS move to processMetadataFjords
                         if (metadata.length.includes(':')) {
                             const tt = metadata.length.split(':').map(t => parseInt(t));
                             if (tt.length === 3) {
