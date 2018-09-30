@@ -1,13 +1,15 @@
-const ArchiveFile = require("./ArchiveFile");
-const Util = require("./Util");
+import ArchiveFile from "./ArchiveFile";
+import Util from "./Util";
 
-//require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
+// noinspection JSUnresolvedFunction
+require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
+// noinspection JSUnresolvedFunction
 const debug = require('debug')('dweb-archive');
 //const Transports = require('@internetarchive/dweb-transports');
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 //TODO-NAMING url could be a name
 
-class ArchiveItem {
+export default class ArchiveItem {
     /*
     Base class representing an Item and/or a Search query (A Collection is both).
     This is just storage, the UI is in ArchiveBase and subclasses, theoretically this class could be used for a server or gateway app with no UI.
@@ -224,4 +226,3 @@ class ArchiveItem {
 
 
 }
-exports = module.exports = ArchiveItem;
