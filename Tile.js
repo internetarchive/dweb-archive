@@ -62,7 +62,7 @@ export default class Tile {
 
 
         <div className="mt-icon C C5">
-          {Util.mediatype_icon(item.mediatype)}
+          {Tile.glyph(Util.mediatype_canonical(item.mediatype))}
         </div>
         <h6 className="stat ">
           <span className="iconochive-eye" aria-hidden="true"></span><span className="sr-only">eye</span>
@@ -83,7 +83,7 @@ export default class Tile {
   collection_stats(item){
     return (
       <div className="collection-stats">
-        {Util.glyph({name:'collection', classes:'topinblock hidden-lists'})}
+        {Tile.glyph({name:'collection', classes:'topinblock hidden-lists'})}
         <div className="num-items topinblock">
           0
           <div className="micro-label">ITEMS</div>
@@ -95,4 +95,15 @@ export default class Tile {
       </div>
     );
   }
+
+  static glyph({name = 'question', classes = ''} = {}) {
+      return (
+          <span className={classes}>
+              <span className={'iconochive-'+name} aria-hidden="true"></span>
+              <span className="sr-only">{name}</span>
+          </span>
+      );
+  }
+
+
 }
