@@ -30,7 +30,7 @@ export default class Audio extends AV {
             .forEach(el => el.classList.remove("playing"));
         elAnchor.querySelectorAll(".jwrowV2").forEach(el => el.classList.add("playing"));
         let elAudio = document.getElementById("streamContainer");
-        React.loadStream(elAudio, af.metadata.name, af, undefined, undefined);
+        React.loadStream(elAudio, af, {name: af.metadata.name, preferredTransports: Util.config.preferredAVtransports});
         return false;
     }
 

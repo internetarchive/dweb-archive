@@ -1084,4 +1084,7 @@ Util.metadata = {
         "description": "<br/>"
     }
 }
+Util.config = {
+    preferredAVtransports: [ "WEBTORRENT", "IPFS"], // Current reliability issues with IPFS streams accompanied by lack of negative feedback on fail
+}
 exports = module.exports = Util;

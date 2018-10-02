@@ -14,6 +14,7 @@ const Url = require('url');
 const debug = require('debug')('dweb-archive');
 import ArchiveItem from "./ArchiveItem";
 import ArchiveFile from "./ArchiveFile";
+import Util from "./Util";
 
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
@@ -175,10 +176,10 @@ export default class React  {
         return element;
     }
 
-    static async _p_loadStreamRenderMedia(el, name, urls, cb, rel) {
+    static async _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined, rel=undefined, preferredTransports=[]} = {}) {
         const file = {
             name: name,
-            createReadStream: await DwebTransports.p_f_createReadStream(urls)
+            createReadStream: await DwebTransports.p_f_createReadStream(urls, {preferredTransports})
             // Return a function that returns a readable stream that provides the bytes between offsets "start" and "end" inclusive.
             // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
             // f_createReadStream can initiate the stream before returning the function.
@@ -215,7 +216,7 @@ export default class React  {
             updateSpeed(); //Do it once
         }
     }
-    static async _p_loadStreamFetchAndBuffer(el, name, urls, cb, rel) {
+    static async _p_loadStreamFetchAndBuffer(el, urls, { name=undefined, cb=undefined, rel=undefined, preferredTransports=[]} = {}) {
 
         // Worst choice - fetch the file, and pass via rendermedia and from2
         const buff = await DwebTransports.p_rawfetch(urls);  //Typically will be a Uint8Array, note that this is a fallback to http, only used if streams not available,
@@ -230,7 +231,7 @@ export default class React  {
         RenderMedia.render(file, el, cb);  // Render into supplied element
     }
 
-    static async p_loadStream(el, name, urls, cb, rel) {
+    static async p_loadStream(el, urls, { name=undefined, cb=undefined, rel=undefined, preferredTransports=[]} = {}) {
         //More complex strategy. ....
         //If the Transports supports urls/createReadStream (webtorrent only at this point) then load it.
         //If its a HTTP URL use that
@@ -250,7 +251,7 @@ export default class React  {
                 } else {
                     const streamUrls = (await DwebTransports.p_urlsValidFor(urls, "createReadStream"));
                     if (streamUrls.length) {
-                        await this._p_loadStreamRenderMedia(el, name, streamUrls, cb, rel)
+                        await this._p_loadStreamRenderMedia(el, streamUrls, {name, cb, preferredTransports, rel})
                     } else {
                         // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
                         // TODO clean this nasty kludge up,
@@ -259,7 +260,7 @@ export default class React  {
                         if (url) {
                             el.src = url;
                         } else {
-                            await this._p_loadStreamFetchAndBuffer(el, name, urls, cb, rel);
+                            await this._p_loadStreamFetchAndBuffer(el, urls, {name, cb, preferredTransports, rel});
                         }
                     }
                 }
@@ -272,11 +273,11 @@ export default class React  {
         }
 
     }
-    static loadStream(el, name, urls, cb, rel) {
+    static loadStream(el, urls, { name=undefined, cb=undefined, rel=undefined, preferredTransports=[]} = {}) {
         //asynchronously loads file from one of metadata, turns into blob, and stuffs into element
         // usage like <VIDEO src=<ArchiveFile instance>  >
         // noinspection JSIgnoredPromiseFromCall
-        this.p_loadStream(el, name, urls, cb, rel); /* Asynchronously load image, intentionally not waiting for it to complete*/
+        this.p_loadStream(el, urls, {name, cb, rel, preferredTransports}); /* Asynchronously load image, intentionally not waiting for it to complete*/
         return el;
     }
 
@@ -397,7 +398,7 @@ export default class React  {
                 //Dont need mimetype currently
                 //const mimetype = Util.formats("format", af.metadata.format).mimetype; // Might be undefined for many formats still
                 //if (!mimetype) console.warning("Unknown mimetype for ",af.metadata.format, "on",af.metadata.name);
-                this.loadStream(element, videoname, af, undefined, rel);  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
+                this.loadStream(element, af, {name: videoname, rel: rel, preferredTransports: Util.config.preferredAVtransports});  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
             } else if (["a.source"].includes(tag + "." + name) && attrs[name] instanceof Object) {
                 element[name] = attrs[name];      // Store the ArchiveFile or Track in the DOM, function e.g. onClick will access it.
             } else if (name && attrs.hasOwnProperty(name)) {
