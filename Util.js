@@ -18,19 +18,8 @@ class Util {
         return x1 + x2;
     }
 
-    /*
-    static glyph({name = 'question', classes = ''} = {}) {
-        return (
-            <span className={classes}>
-                <span className={'iconochive-'+name} aria-hidden="true"></span>
-                <span className="sr-only">{name}</span>
-            </span>
-        );
-    }
-    */
-
     // pass in a <mediatype> value
-    static mediatype_icon(mediatype) {
+    static mediatype_canonical(mediatype) {
         const ICONS = {
             "account": "person",
             "audio": "audio",
@@ -62,7 +51,7 @@ class Util {
         if (!icon)
             icon = 'question';
 
-        return this.glyph({name: icon});
+        return icon;
     }
 
     static natcompare(a, b) {

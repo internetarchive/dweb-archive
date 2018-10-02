@@ -38,7 +38,7 @@ class ArchiveItem {
             : [];   // Default to empty, so usage simpler.
     }
 
-    async fetch({append = false, reqThumbnails = true}) {
+    async fetch({append = false, reqThumbnails = true}={}) {
         /* Fetch what we can about this item, it might be an item or something we have to search for.
             Fetch item metadata as JSON by talking to Metadata API
             Fetch collection info by an advanced search.
@@ -49,7 +49,7 @@ class ArchiveItem {
             resolves to: this
          */
         await this.fetch_metadata();
-        await this.fetch_query({apppend, reqThumbnails});
+        await this.fetch_query({append, reqThumbnails});
 
         return this;
     }
