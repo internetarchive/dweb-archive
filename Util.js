@@ -1,10 +1,9 @@
-require('babel-core/register')({presets: ['env', 'react']}); // ES6 JS below!
+//require('babel-core/register')({presets: ['env', 'react']}); // ES6 JS below!
 
-//import React from 'react';
-import React from './ReactFake';    // Note React is used by the JSX compiler that handles the HTML below this fakes the React.createElement
+//import React from './ReactFake';    // Note React is used by the JSX compiler that handles the HTML below this fakes the React.createElement
 
 
-export default class Util {
+class Util {
     static number_format(nStr)//this is just addCommas now
     {
         //http://www.mredkj.com/javascript/numberFormat.html
@@ -19,17 +18,8 @@ export default class Util {
         return x1 + x2;
     }
 
-    static glyph({name = 'question', classes = ''} = {}) {
-        return (
-            <span className={classes}>
-                <span className={'iconochive-'+name} aria-hidden="true"></span>
-                <span className="sr-only">{name}</span>
-            </span>
-        );
-    }
-
     // pass in a <mediatype> value
-    static mediatype_icon(mediatype) {
+    static mediatype_canonical(mediatype) {
         const ICONS = {
             "account": "person",
             "audio": "audio",
@@ -61,7 +51,7 @@ export default class Util {
         if (!icon)
             icon = 'question';
 
-        return this.glyph({name: icon});
+        return icon;
     }
 
     static natcompare(a, b) {
@@ -141,6 +131,7 @@ export default class Util {
 
         }
     }
+    /*
     static listperson(uu) {
         // Note - might need to tighten up layout to avoid extra spaces/breaks
         return (
@@ -159,6 +150,8 @@ export default class Util {
             </div>
         );
     }
+    */
+
     static formats(k,v,{first=true}={}) {
         let ff = Util._formatarr.filter(f => f[k] === v);
         return first ? (ff.length ? ff[0] : undefined) : ff;
@@ -1091,3 +1084,4 @@ Util.metadata = {
         "description": "<br/>"
     }
 }
+exports = module.exports = Util;

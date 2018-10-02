@@ -25,9 +25,10 @@ export default class ArchiveFile {
         /* Name suitable for downloading etc */
         return this.metadata.name;
     }
-    async p_urls() { //TODO-MIRROR fix this to make sense for _torrent.xml files which dont have sha1 and probably not IPFS
+    async p_urls(cb) { //TODO-MIRROR fix this to make sense for _torrent.xml files which dont have sha1 and probably not IPFS
         /*
-        Return an array of URLs that might be a good place to get this item
+        cb(err, urls)   passed an array of urls that might be a good place to get this item
+        if no cb: resolve to urls
         Throws: Error if fetch_json doesn't succeed, or retrieves something other than JSON
          */
         try {
@@ -38,19 +39,20 @@ export default class ArchiveFile {
             }
         } catch(err) {
             console.warn("Error from Util.fetch_json meant ArchiveFile failed to retrieve metadata for", this.itemid, this.metadata.name);
-            return []; // Empty array as nowhere to fetch
+            if (cb) { cb(null, []) } else { return []} // Empty array as nowhere to fetch
         }
         // Includes both ipfs and ipfs via gateway link as the latter can prime the IPFS DHT so the former works for the next user
         // noinspection JSUnresolvedFunction
         // noinspection JSUnresolvedVariable
         // noinspection JSUnresolvedVariable
-        return [this.metadata.ipfs, this.metadata.ipfs ? this.metadata.ipfs.replace('ipfs:/ipfs/','https://ipfs.io/ipfs/') : undefined, this.metadata.magnetlink, this.metadata.contenthash].filter(f => !!f);   // Multiple potential sources eliminate any empty
+        let res = [this.metadata.ipfs, this.metadata.ipfs ? this.metadata.ipfs.replace('ipfs:/ipfs/','https://ipfs.io/ipfs/') : undefined, this.metadata.magnetlink, this.metadata.contenthash].filter(f => !!f);   // Multiple potential sources eliminate any empty
+        return cb ? cb(null, res) : res;
     }
     httpUrl() {
         return `${Util.gateway.url_download}${this.itemid}/${this.metadata.name}`;
     }
     async mimetype() {
-       return Util.formats("format", this.metadata.format).mimetype;
+        return Util.formats("format", this.metadata.format).mimetype;
     }
     async data() { // Not timedout currently as only used in .blob which could be slow on big files
         return await DwebTransports.p_rawfetch(await this.p_urls());

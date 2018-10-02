@@ -2,6 +2,7 @@
 
 // noinspection JSUnresolvedFunction
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
+const stringify = require('canonical-json');
 
 // https://ponyfoo.com/articles/universal-react-babel
 // noinspection JSUnresolvedFunction
@@ -171,7 +172,7 @@ export default class Nav {
         debug("Navigating to Search for %s", q);
         let destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
-        let s = await new Search((typeof(q) === "object") ? q : (typeof(q) === "string") ? {query: q} : undefined).fetch();
+        let s = await new Search((typeof(q) === "object") ? q : (typeof(q) === "string") ? {query: q} : undefined).fetch({append: false, reqThumbnails: true});
         q = s.query;    // Flattened from object to string
         if (wanthistory) {
             let supportsArc = ! (window.location.origin === "file://" || window.location.pathname.startsWith("/ipfs/")  || window.location.pathname.startsWith("/ipns/") )
@@ -199,7 +200,7 @@ export default class Nav {
     }
     static onclick_search(q) {
         // Build the onclick part of a search, q can be a string or an object e.g. {creator: "Foo bar", sort: "-date"}
-        return `Nav.nav_search(${JSON.stringify(q)}); return false;`;
+        return `Nav.nav_search(${stringify(q)}); return false;`;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -265,7 +266,7 @@ export default class Nav {
                 } else {
                     debug("%s has mediatype %s", itemid, item.metadata.mediatype);
                     let switchmediatype = item.metadata.mediatype;
-                    if (item.metadata.mediatype === "education") {
+                    if (item.metadata.mediatype === "education") { //Fjords TODO-FJORDS move to ArchiveItem.processMetadataFjords
                         // Typically miscategorized, have a guess !
                         if (item._list.find(af => af.playable("video")))
                             switchmediatype = "movies";

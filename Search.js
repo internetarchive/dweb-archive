@@ -2,6 +2,8 @@ import React from './ReactFake';
 
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 
+const stringify = require('canonical-json');
+
 import Util from './Util';
 import ArchiveBase from './ArchiveBase';
 import Tile from './Tile';
@@ -39,7 +41,7 @@ export default class Search extends ArchiveBase {
         super(itemid, {item: item});
         if (typeof(query) === "object") { // form { creator: "Foo bar" ... }
             // This next line uses JSON.stringify instead of toString() because we want  '"abc"' and '1' i.e. quotes if its a string
-            query = Object.keys(query).map(k => `${k}:${JSON.stringify(query[k])}`).join(' AND ');
+            query = Object.keys(query).map(k => `${k}:${stringify(query[k])}`).join(' AND ');
         }
         this.query = query; // Note this should be an UNENCODED query  or an object
         this.limit= limit;

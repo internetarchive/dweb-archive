@@ -40,7 +40,7 @@ export default class ArchiveItem {
             : [];   // Default to empty, so usage simpler.
     }
 
-    async fetch() {
+    async fetch({append = false, reqThumbnails = true}={}) {
         /* Fetch what we can about this item, it might be an item or something we have to search for.
             Fetch item metadata as JSON by talking to Metadata API
             Fetch collection info by an advanced search.
@@ -51,12 +51,12 @@ export default class ArchiveItem {
             resolves to: this
          */
         await this.fetch_metadata();
-        await this.fetch_query({reqThumbnails: true});
+        await this.fetch_query({append, reqThumbnails});
 
         return this;
     }
 
-    processMetadataFjords(m) {
+    processMetadataFjords(m) { // TODO-FJORDS move code tagged TODO-FJORDS to this routine where possible
         // The Archive is nothing but edge cases, handle some of them here so the code doesnt have to !
         Object.keys(Util.metadata.singletons).forEach(f => {
             if (typeof m.metadata[f] === "undefined") m.metadata[f] = "";
@@ -64,32 +64,33 @@ export default class ArchiveItem {
         });
         return m;
     }
-    async fetch_metadata() {
+    fetch_metadata(cb) {
         /*
         Fetch the metadata for this item if it hasn't already been.
 
-        returns ArchiveItem (for chaining or map)
+        calls cb(err, archiveitem) or resolves (for chaining or map)
          */
         if (this.itemid && !this.item) {
             debug('getting metadata for %s', this.itemid);
             // Fetch via Domain record - the dweb:/arc/archive.org/metadata resolves into a table that is dynamic on gateway.dweb.me
             const name = `dweb:/arc/archive.org/metadata/${this.itemid}`;
             // Fetch using Transports as its multiurl and might not be HTTP urls
-            let m;
-            try {
-                m = await DwebTransports.p_rawfetch([name], {timeoutMS: 5000});    //TransportError if all urls fail (e.g. bad itemid)
-                // noinspection ES6ModulesDependencies
-                m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
-                console.assert(m.metadata.identifier === this.itemid);
+            let prom = DwebTransports.p_rawfetch([name], {timeoutMS: 5000})    //TransportError if all urls fail (e.g. bad itemid)
+                .then((m) => {
+                    m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
+                    console.assert(m.metadata.identifier === this.itemid);
 
-                this.item = this.processMetadataFjords(m);
-                this._listLoad();   // Load _list with ArchiveFile
-                debug("metadata for %s fetched successfully", this.itemid);
-            } catch(err) {
-                console.warn("Unable to get metadata for", this.itemid, err);
-            }
+                    this.item = this.processMetadataFjords(m);
+                    this._listLoad();   // Load _list with ArchiveFile
+                    debug("metadata for %s fetched successfully", this.itemid);
+                    if (cb) cb(null, this);
+                    return this;    // So prom resolves to this
+                })
+                .catch((err) => { if (cb) { cb(err); } else { reject(err); }});
+            return prom;
+        } else {
+            if (cb) { cb(null, this); } else { return new Promise((resolve, reject) => resolve(this)); }
         }
-        return this;
     }
 
     async fetch_query({append=false, reqThumbnails=false}={}) {
@@ -129,7 +130,7 @@ export default class ArchiveItem {
                 //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
                 debug("Searching with %s", url);
                 const j = await Util.fetch_json(url);
-                this.items = append ? this.items.concat(j.response.docs) : j.response.docs;
+                this.items = (append && this.items) ? this.items.concat(j.response.docs) : j.response.docs;
                 this.start = j.response.start;
                 this.numFound = j.response.numFound;
                 return j.response.docs
@@ -156,7 +157,7 @@ export default class ArchiveItem {
             } ]
         Note should be after an explicit await this._listLoad
 
-        This gets a bit painful as there are so many different cases over a decade or more of "best practice"
+        TODO-FJORDS: This gets a bit painful as there are so many different cases over a decade or more of "best practice"
         Some cases to test for ...
         gd73-02-15.sbd.hall.1580.sbeok.shnf  has no lengths on derived tracks, and original has length = "0"
          */
@@ -178,7 +179,7 @@ export default class ArchiveItem {
                     if ((metadata.source === "original") || (orig.title==="UNKNOWN")) orig.title = metadata.title;
                     let totalsecs;
                     let pretty;
-                    if (metadata.length && (metadata.length !== "0")) {
+                    if (metadata.length && (metadata.length !== "0")) { //TODO-FJORDS move to processMetadataFjords
                         if (metadata.length.includes(':')) {
                             const tt = metadata.length.split(':').map(t => parseInt(t));
                             if (tt.length === 3) {
