@@ -1,5 +1,5 @@
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
-import React from './ReactFake';
+//import React from './ReactFake';
 import Util from "./Util";
 
 import Details from './Details';
