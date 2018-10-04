@@ -51,13 +51,13 @@ export default class React  {
         }
         return undefined
     }
-    static resolveUrls(url, rel) {
+    static resolveUrls(url, options={}) {
         /* Synchronous part of p_resolveUrls, handle subset of cases that don't require network access (asyncronicity)
         url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
         resolves:   Array of URLs suitable for passing to Transports
          */
         if (Array.isArray(url)) {
-            let urls = url.map(u => this.resolveUrls(u, rel));    // Recurse urls is now array of arrays (most of which will probably be single value
+            let urls = url.map(u => this.resolveUrls(u, options));    // Recurse urls is now array of arrays (most of which will probably be single value
             return [].concat(...urls);  // Flatten, for now accept there might be dupes
         }
         // Its now a singular URL
@@ -68,33 +68,33 @@ export default class React  {
             return "https:"+url;    // Ick - a reference to href="//foo.bar" rather than href="https://foo.bar"
         } else if (url.startsWith("/")) {
             if (!url.startsWith("/search.php")) {
-                console.warn("Probably not a good idea to use root-relative URL", url); //could genericise to use rel instead of config but might not catch cases e.g. of /images
+                console.warn("Probably not a good idea to use root-relative URL", url); //could genericise to use options.rel instead of config but might not catch cases e.g. of /images
             }
             if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
             return [this.relativeurl(React._config.rootname, url)].filter(u => !!u);;  // e.g. /foo => [https://bar.com/foo]
         } else if (url.startsWith("./")) {
             if (!url.startsWith("./images")) {
-                console.warn("Relative URLs arent a great idea as what to be relative to is often unclear", url, rel); //could genericise to use rel instead of config but might not catch cases e.g. of /images
+                console.warn("Relative URLs arent a great idea as what to be relative to is often unclear", url, options); //could genericise to use rel instead of config but might not catch cases e.g. of /images
             }
             return [this.relativeurl(React._config.relname, url)].filter(u => !!u);
         } else {
             return [url]; // Not relative, just pass it back
         }
     }
-    static async p_resolveUrls(url, rel) {
+    static async p_resolveUrls(url) {
         /*
         url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
         resolves:   Array of URLs suitable for passing to Transports
          */
         if (Array.isArray(url)) {
-            let urls = await Promise.all(url.map(u => this.p_resolveUrls(u, rel)));    // Recurse urls is now array of arrays (most of which will probably be single value
+            let urls = await Promise.all(url.map(u => this.p_resolveUrls(u)));    // Recurse urls is now array of arrays (most of which will probably be single value
             return [].concat(...urls);  // Flatten, for now accept there might be dupes
         }
         // Its now a singular URL
         if (url instanceof ArchiveFile) {
             return await url.p_urls();  // This could be slow, may have to get the gateway to cache the file in IPFS
         } else {
-            return this.resolveUrls(url, rel);  // Synchronous code will work
+            return this.resolveUrls(url);  // Synchronous code will work
         }
     }
 
@@ -111,7 +111,7 @@ export default class React  {
         //itemid
         return await new ArchiveItem({itemid}).thumbnaillinks()
     }
-    static async p_loadImg(el, name, urls, cb, rel) {
+    static async p_loadImg(el, name, urls, cb) {
         /*
         This is the asyncronous part of loadImg, runs in the background to update the image.
         Previous version got a static (non stream) content and puts in an existing IMG tag but this fails in Firefox
@@ -122,7 +122,7 @@ export default class React  {
         /services/img/foo with rel=["dweb:/arc/archive.org/"] > "dweb:/arc/archive.org/services/img/  special case > metadata>thumbnailimg
          */
         debug("Loading Image %s from %o", name, urls);
-        urls = await this.p_resolveUrls(urls, rel); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
+        urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
         for (i in urls) {
             if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
                 urls[i] = await this.thumbnailUrlsFrom(urls[i].slice(35));
@@ -166,17 +166,23 @@ export default class React  {
         }
     }
 
-    static loadImg(name, urls, cb, rel) {
+    static loadImg(name, urls, cb) {
         //asynchronously loads file from one of metadata, turns into blob, and stuffs into element
         // urls can be a array of URLs of an ArchiveFile (which is passed as an ArchiveFile because ArchiveFile.p_urls() is async as may require expanding metadata
         // Usage like  {this.loadImg(<img width=10>))
-        const element = document.createElement("span");
-        // noinspection JSIgnoredPromiseFromCall
-        this.p_loadImg(element, name, urls, cb, rel); /* Asynchronously load image under element - note NOT awaiting return*/
-        return element;
+            const element = document.createElement("span");
+            // noinspection JSIgnoredPromiseFromCall
+            this.p_loadImg(element, name, urls, cb);
+            /* Asynchronously load image under element - note NOT awaiting return*/
+            return element;
+        }
     }
 
-    static async _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined, rel=undefined, preferredTransports=[]} = {}) {
+    static async _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) {
+        /*
+            Render item by passing a data structure with a stream creating function to the RenderMedia
+            See p_loadStream for arguments
+         */
         const file = {
             name: name,
             createReadStream: await DwebTransports.p_f_createReadStream(urls, {preferredTransports})
@@ -216,9 +222,12 @@ export default class React  {
             updateSpeed(); //Do it once
         }
     }
-    static async _p_loadStreamFetchAndBuffer(el, urls, { name=undefined, cb=undefined, rel=undefined, preferredTransports=[]} = {}) {
-
-        // Worst choice - fetch the file, and pass via rendermedia and from2
+    static async _p_loadStreamFetchAndBuffer(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) {
+        /*
+            Render item by fetching a buffer and passing to the RenderMedia
+            This is the worst choice, if can't handle as a stream
+            See p_loadStream for arguments
+         */
         const buff = await DwebTransports.p_rawfetch(urls);  //Typically will be a Uint8Array, note that this is a fallback to http, only used if streams not available,
         // currently not timing out which is probably OK since it should always be last choice.
         const file = {
@@ -231,13 +240,24 @@ export default class React  {
         RenderMedia.render(file, el, cb);  // Render into supplied element
     }
 
-    static async p_loadStream(el, urls, { name=undefined, cb=undefined, rel=undefined, preferredTransports=[]} = {}) {
-        //More complex strategy. ....
-        //If the Transports supports urls/createReadStream (webtorrent only at this point) then load it.
-        //If its a HTTP URL use that
-        //Dont try and use IPFS till get a fix for createReadStream
+    static async p_loadStream(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) {
+        /*
+            More complex strategy. ....
+            If the Transports supports urls/createReadStream (webtorrent only at this point) then load it.
+            If its a HTTP URL use that
+            Dont try and use IPFS till get a fix for createReadStream
+
+            el: HTML element to load into (the video, img or audio tag)
+            urls:   String, Array or ArchiveFile
+            name:   Name of the stream - this is important to something, but I can't remember what
+            cb(err,el):     If present, will be passed to RenderMedia.render and called back on failure or when can play/view the element
+        */
         try {
-            urls = await this.p_resolveUrls(urls, rel); // Allow relative urls
+            //TODO-MIRROR-ISSUE47 have resolveUrls use Transports.canonicalUrls, and special patterns for rel and rootrel (maybe array of patterns)...
+            //TODO-MIRROR-ISSUE47 ...and then p_resolveNames (or in here) should probably be where we decide these can go to the cache...
+            //TODO-MIRRROR-ISSUE47 ... or merge p_resolveUrls with p_resolveNames into a urls->urls function esp if this pattern reused ...
+            //TODO-MIRROR-ISSUE47 ... but needs to know whether to handle the cache URL as a stream URL or not ...
+            urls = await this.p_resolveUrls(urls); // Allow relative urls
             urls = await DwebTransports.p_resolveNames(urls); // Allow names among urls
             // Strategy here ...
             // If serviceworker && webtorrent => video src=
@@ -251,7 +271,7 @@ export default class React  {
                 } else {
                     const streamUrls = (await DwebTransports.p_urlsValidFor(urls, "createReadStream"));
                     if (streamUrls.length) {
-                        await this._p_loadStreamRenderMedia(el, streamUrls, {name, cb, preferredTransports, rel})
+                        await this._p_loadStreamRenderMedia(el, streamUrls, {name, cb, preferredTransports})
                     } else {
                         // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
                         // TODO clean this nasty kludge up,
@@ -260,7 +280,7 @@ export default class React  {
                         if (url) {
                             el.src = url;
                         } else {
-                            await this._p_loadStreamFetchAndBuffer(el, urls, {name, cb, preferredTransports, rel});
+                            await this._p_loadStreamFetchAndBuffer(el, urls, {name, cb, preferredTransports});
                         }
                     }
                 }
@@ -273,11 +293,14 @@ export default class React  {
         }
 
     }
-    static loadStream(el, urls, { name=undefined, cb=undefined, rel=undefined, preferredTransports=[]} = {}) {
-        //asynchronously loads file from one of metadata, turns into blob, and stuffs into element
-        // usage like <VIDEO src=<ArchiveFile instance>  >
-        // noinspection JSIgnoredPromiseFromCall
-        this.p_loadStream(el, urls, {name, cb, rel, preferredTransports}); /* Asynchronously load image, intentionally not waiting for it to complete*/
+    static loadStream(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) {
+        /*
+            asynchronously loads file from one of metadata, turns into blob, and stuffs into element
+            usage like <VIDEO src=<ArchiveFile instance>  >
+            For arguments see p_loadStream
+        */
+        //noinspection JSIgnoredPromiseFromCall
+        this.p_loadStream(el, urls, {name, cb, preferredTransports}); /* Asynchronously load image, intentionally not waiting for it to complete*/
         return el;
     }
 
@@ -299,8 +322,6 @@ export default class React  {
         /* First we handle cases where we dont actually build the tag requested */
 
         const kids = Array.prototype.slice.call(arguments).slice(2);
-        //const rel = [ document.baseURI ]; // use baseURI as will be location.href if not explicitly set; [ window.location.href ];
-        const rel = [ React._config.rootname ];
         if (tag === "img") { // We'll build a span, and set a async process to rewrite it as an img connected to a stream
             if (Object.keys(attrs).includes("src")) {
                 const src = attrs.src;
@@ -311,7 +332,7 @@ export default class React  {
                             err.message);
                         throw err;
                     }
-                    React.setAttributes(element, tag, attrs, rel);
+                    React.setAttributes(element, tag, attrs);
                     React.addKids(element, kids);
                     return element;
                 }
@@ -322,16 +343,16 @@ export default class React  {
                     : src                           ? src : "DUMMY.PNG"
                     ;
                 delete attrs.src;   // Make sure dont get passed to cb for building into img (which wont like an array)
-                return this.loadImg(name, src, cb, rel);   //Creates a <span></span>, asynchronously creates an <img> under it and calls cb on that IMG. The <div> is returned immediately.
+                return this.loadImg(name, src, cb);   //Creates a <span></span>, asynchronously creates an <img> under it and calls cb on that IMG. The <div> is returned immediately.
             }
         } else {
             let element = document.createElement(tag);
-            React.setAttributes(element, tag, attrs, rel);
+            React.setAttributes(element, tag, attrs);
             React.addKids(element, kids);
             return element;
         }
     }
-    static setAttributes(element, tag, attrs, rel) {
+    static setAttributes(element, tag, attrs) {
         /* Build out a created element adding Attributes and Children
         tag:    Lower case string of element e.g. "img"
         attrs:  Object {attr: value}
@@ -380,7 +401,7 @@ export default class React  {
                     if (attrs.id && attrs.id.startsWith('tabby-')) {  // There is some weird javascript in AJS.tabby which assumes this is root-relative, so dont change it
                         attrs[name] = React._config.tabbyrootinsert + attrs[name]; // Rewrite value to store
                     } else {
-                        let hrefs = this.resolveUrls(attrs[name], rel); // Array of urls, but should be just one since href name will be singular as will rel
+                        let hrefs = this.resolveUrls(attrs[name]); // Array of urls, but should be just one since href name will be singular as will rel
                         if (hrefs.length > 1) {
                             console.error("Decide what mean by multiple hrefs in an anchor handle onclick for it below hrefs=",hrefs)
                         }
@@ -398,7 +419,7 @@ export default class React  {
                 //Dont need mimetype currently
                 //const mimetype = Util.formats("format", af.metadata.format).mimetype; // Might be undefined for many formats still
                 //if (!mimetype) console.warning("Unknown mimetype for ",af.metadata.format, "on",af.metadata.name);
-                this.loadStream(element, af, {name: videoname, rel: rel, preferredTransports: Util.config.preferredAVtransports});  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
+                this.loadStream(element, af, {name: videoname, preferredTransports: Util.config.preferredAVtransports});  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
             } else if (["a.source"].includes(tag + "." + name) && attrs[name] instanceof Object) {
                 element[name] = attrs[name];      // Store the ArchiveFile or Track in the DOM, function e.g. onClick will access it.
             } else if (name && attrs.hasOwnProperty(name)) {
