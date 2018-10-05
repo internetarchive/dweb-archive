@@ -42,7 +42,7 @@ export default class Nav {
                 <div class="row toprow web" style="max-width:1000px;margin:auto;">
                     <div class="col-xs-12">
                         <div class="wayback-txt">
-                            Search the history of over 308 billion
+                            Search the history of over 338 billion
                             <a style="display:inline" href="https://blog.archive.org/2016/10/23/defining-web-pages-web-sites-and-web-captures/">web pages</a> on the Internet.
                         </div>
                         <div class="roundbox7 wayback-main">

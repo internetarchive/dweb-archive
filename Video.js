@@ -41,8 +41,8 @@ export default class Video extends AV {
         const playing = this.playlist[0];
         const source = playing.sources[0];
         const af = source.urls;     // An ArchiveFile
-        const contenturl = `${Util.gateway.url_download}${itemid}/${source.name}`;
-        const embedurl = `${Util.gateway.url_download}${itemid}/${playing.original}`;
+        const contenturl = `${Util.gatewayServer()}${Util.gateway.url_download}${itemid}/${source.name}`;
+        const embedurl = `${Util.gatewayServer()}${Util.gateway.url_download}${itemid}/${playing.original}`;
         const schemacontentlength = `PT0M${parseInt(playing.duration)}S`;
         return (
             <div id="theatre-ia-wrap" class="container container-ia width-max ">

@@ -84,8 +84,7 @@ class ArchiveItem {
                     if (cb) cb(null, this);
                     return this;    // So prom resolves to this
                 })
-                .catch((err) => { if (cb) { cb(err); } else { reject(err); }});
-            return prom;
+            return (cb ? (prom.catch((err) => cb(err))) : prom);    // Either promise rejects or if cb, promise that will call teh cb
         } else {
             if (cb) { cb(null, this); } else { return new Promise((resolve, reject) => resolve(this)); }
         }
@@ -112,7 +111,7 @@ class ArchiveItem {
                     //newitems = xxx2.map(i=>i.item.metadata)
                     newitems = (await Promise.all(newitems.map(i => new ArchiveItem({itemid: i.identifier}).fetch_metadata()))).map(i => i.item.metadata)
                 }
-                this.items = append ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
+                this.items = (append && this.items) ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
                 // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveFiles
                 // Note this does NOT support sort, there isnt enough info in members.json to do that
                 return newitems;
@@ -124,7 +123,7 @@ class ArchiveItem {
                 // noinspection JSUnresolvedVariable
                 const url =
                     //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
-                    `${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
+                    `${Util.gatewayServer()}${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
                 //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
                 debug("Searching with %s", url);
                 const j = await Util.fetch_json(url);
