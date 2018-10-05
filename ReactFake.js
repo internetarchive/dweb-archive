@@ -54,7 +54,7 @@ export default class React  {
     static resolveUrls(url, options={}) {
         /* Synchronous part of p_resolveUrls, handle subset of cases that don't require network access (asyncronicity)
         url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
-        resolves:   Array of URLs suitable for passing to Transports
+        resolves:   Array of URLs suitable for passing to Transports - may be "dweb: or ipfs: etc, i.e. not canonical or gateway yet
          */
         if (Array.isArray(url)) {
             let urls = url.map(u => this.resolveUrls(u, options));    // Recurse urls is now array of arrays (most of which will probably be single value
@@ -414,8 +414,12 @@ export default class React  {
                 }
             }
             // Load ArchiveFile inside a div if specify in src
-            if (searchparams.get('mirror') && ["img.src", "video.src", "audio.src"].includes(tag + "." + name) && attrs[name] instanceof ArchiveFile ) {
-                element[name] = attrs[name].httpUrl();
+            if (searchparams.get('mirror') && ["img.src", "video.src", "audio.src"].includes(tag + "." + name)) {
+                if (attrs[name] instanceof ArchiveFile ) {
+                    element[name] = attrs[name].httpUrl();
+                } else {
+                    element[name] = DwebTransports.gatewayUrl(this.resolveUrls(attrs[name])[0]); // Will always be singular url
+                }
             } else if (["video.src", "audio.src"].includes(tag + "." + name) && attrs[name] instanceof ArchiveFile) {
                 const af = attrs[name];
                 const videoname = af.metadata.name;
