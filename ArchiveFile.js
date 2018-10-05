@@ -35,7 +35,7 @@ export default class ArchiveFile {
             if (!this.metadata.ipfs && (await DwebTransports.p_connectedNames()).includes("IPFS")) {   // Connected to IPFS but dont have IPFS URL yet (not included by default because IPFS caching is slow)
                 // Fjords: 17BananasIGotThis/17 Bananas? I Got This!.mp3  has a '?' in it
                 let name = this.metadata.name.replace('?','%3F');
-                this.metadata = await Util.fetch_json(`${Util.gateway.url_metadata}${this.itemid}/${name}`);
+                this.metadata = await Util.fetch_json(`${Util.gatewayServer()}${Util.gateway.url_metadata}${this.itemid}/${name}`);
             }
         } catch(err) {
             console.warn("Error from Util.fetch_json meant ArchiveFile failed to retrieve metadata for", this.itemid, this.metadata.name);
@@ -49,7 +49,8 @@ export default class ArchiveFile {
         return cb ? cb(null, res) : res;
     }
     httpUrl() {
-        return `${Util.gateway.url_download}${this.itemid}/${this.metadata.name}`;
+        // This will typically be dweb.me, but may be overridden un URL with mirror=localhost:4244
+        return `${Util.gatewayServer()}${Util.gateway.url_download}${this.itemid}/${this.metadata.name}`;
     }
     async mimetype() {
         return Util.formats("format", this.metadata.format).mimetype;

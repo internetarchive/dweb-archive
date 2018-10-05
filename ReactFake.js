@@ -61,7 +61,7 @@ export default class React  {
             return [].concat(...urls);  // Flatten, for now accept there might be dupes
         }
         // Its now a singular URL
-        if (url instanceof ArchiveFile) {
+        if (url instanceof ArchiveFile) { //NOTE dont think this is ever the case as p_resolveUrls will catch ArchiveFile
             console.error("resolveUrls called with ArchiveFile - use p_resolveUrls for this case");
             return [url];  // Will be very lucky if this works - its going to try and embed a url in an href for example
         } else if (url.startsWith("//")) {
@@ -170,12 +170,12 @@ export default class React  {
         //asynchronously loads file from one of metadata, turns into blob, and stuffs into element
         // urls can be a array of URLs of an ArchiveFile (which is passed as an ArchiveFile because ArchiveFile.p_urls() is async as may require expanding metadata
         // Usage like  {this.loadImg(<img width=10>))
-            const element = document.createElement("span");
-            // noinspection JSIgnoredPromiseFromCall
-            this.p_loadImg(element, name, urls, cb);
-            /* Asynchronously load image under element - note NOT awaiting return*/
-            return element;
-        }
+        console.assert(!searchparams.get('mirror')); // This should never get called in mirror case
+        const element = document.createElement("span");
+        // noinspection JSIgnoredPromiseFromCall
+        this.p_loadImg(element, name, urls, cb);
+        /* Asynchronously load image under element - note NOT awaiting return*/
+        return element;
     }
 
     static async _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) {
@@ -322,7 +322,8 @@ export default class React  {
         /* First we handle cases where we dont actually build the tag requested */
 
         const kids = Array.prototype.slice.call(arguments).slice(2);
-        if (tag === "img") { // We'll build a span, and set a async process to rewrite it as an img connected to a stream
+        if (tag === "img" && !searchparams.get('mirror')) { // We'll build a span, and set a async process to rewrite it as an img connected to a stream
+            //TODO-MIRROR check if need to handle case of src=af
             if (Object.keys(attrs).includes("src")) {
                 const src = attrs.src;
                 function cb(err, element) {
@@ -347,7 +348,7 @@ export default class React  {
             }
         } else {
             let element = document.createElement(tag);
-            React.setAttributes(element, tag, attrs);
+            React.setAttributes(element, tag, attrs);   // Note many more special cases in setAttributes
             React.addKids(element, kids);
             return element;
         }
@@ -413,7 +414,9 @@ export default class React  {
                 }
             }
             // Load ArchiveFile inside a div if specify in src
-            if (["video.src", "audio.src"].includes(tag + "." + name) && attrs[name] instanceof ArchiveFile) {
+            if (searchparams.get('mirror') && ["img.src", "video.src", "audio.src"].includes(tag + "." + name) && attrs[name] instanceof ArchiveFile ) {
+                element[name] = attrs[name].httpUrl();
+            } else if (["video.src", "audio.src"].includes(tag + "." + name) && attrs[name] instanceof ArchiveFile) {
                 const af = attrs[name];
                 const videoname = af.metadata.name;
                 //Dont need mimetype currently

@@ -86,8 +86,7 @@ export default class ArchiveItem {
                     if (cb) cb(null, this);
                     return this;    // So prom resolves to this
                 })
-                .catch((err) => { if (cb) { cb(err); } else { reject(err); }});
-            return prom;
+            return (cb ? (prom.catch((err) => cb(err))) : prom);    // Either promise rejects or if cb, promise that will call teh cb
         } else {
             if (cb) { cb(null, this); } else { return new Promise((resolve, reject) => resolve(this)); }
         }
@@ -126,7 +125,7 @@ export default class ArchiveItem {
                 // noinspection JSUnresolvedVariable
                 const url =
                     //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
-                    `${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
+                    `${Util.gatewayServer()}${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
                 //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
                 debug("Searching with %s", url);
                 const j = await Util.fetch_json(url);

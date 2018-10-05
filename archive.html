@@ -37,7 +37,13 @@
 <script>
     $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
     async function main({query=undefined, sort=undefined, item=undefined, download=false }={}) {
-        await DwebTransports.p_connect({statuselement: document.getElementById("dweb-status"), transports: searchparams.getAll("transport"), paused: searchparams.getAll("paused")});
+        await DwebTransports.p_connect({
+            statuselement: document.getElementById("dweb-status"),
+            http: {urlbase: DwebArchive.Util.gatewayServer()},
+            transports: searchparams.getAll("transport"),
+            paused: searchparams.getAll("paused"),
+            mirror: searchparams.get("mirror") ? DwebArchive.Util.gatewayServer() : undefined, // Careful with this, Util.gatewayServer will return dweb.me if mirror undefined
+        });
         if (query) {
             // noinspection JSIgnoredPromiseFromCall
             Nav.nav_search({query, sort});
