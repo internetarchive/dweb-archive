@@ -113,7 +113,7 @@ export default class ArchiveItem {
                     //newitems = xxx2.map(i=>i.item.metadata)
                     newitems = (await Promise.all(newitems.map(i => new ArchiveItem({itemid: i.identifier}).fetch_metadata()))).map(i => i.item.metadata)
                 }
-                this.items = append ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
+                this.items = (append && this.items) ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
                 // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveFiles
                 // Note this does NOT support sort, there isnt enough info in members.json to do that
                 return newitems;
