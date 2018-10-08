@@ -224,6 +224,8 @@ export default class Nav {
     }
 
     static async factory(itemid, res, {wanthistory=true, downloaddirectory=false}={}) {
+      /* Fetch and render an ArchiveItem
+      */
         //console.group("Nav.factory",itemid);
         window.loopguard = itemid;  // Tested in dweb-transport/httptools, will cancel any old loops - this is a kludge to get around a Chrome bug/feature
         if (wanthistory) {
@@ -264,19 +266,7 @@ export default class Nav {
                 if (downloaddirectory) {
                     new DownloadDirectory(itemid, item).render(res);
                 } else {
-                    debug("%s has mediatype %s", itemid, item.metadata.mediatype);
-                    let switchmediatype = item.metadata.mediatype;
-                    if (item.metadata.mediatype === "education") { //Fjords TODO-FJORDS move to ArchiveItem.processMetadataFjords
-                        // Typically miscategorized, have a guess !
-                        if (item._list.find(af => af.playable("video")))
-                            switchmediatype = "movies";
-                        else if (item._list.find(af => af.playable("text")))
-                            switchmediatype = "texts";
-                        else if (item._list.find(af => af.playable("image")))
-                            switchmediatype = "image";
-                    }
-
-                    switch (switchmediatype) {
+                    switch (item.metadata.mediatype) {
                         case "collection":
                             (await new Collection(itemid, item).fetch()).render(res);   //fetch will do search
                             break;

@@ -58,8 +58,21 @@ class ArchiveItem {
         // The Archive is nothing but edge cases, handle some of them here so the code doesnt have to !
         Object.keys(Util.metadata.singletons).forEach(f => {
             if (typeof m.metadata[f] === "undefined") m.metadata[f] = "";
-            if (Array.isArray(m.metadata[f])) m.metadata[f] = m.metadata[f].join(Util.metadata.singletons[f]); //e.g. biographyofbanan0000eage
+            if (Array.isArray(m.metadata[f])) {
+                m.metadata[f] = m.metadata[f].join(Util.metadata.singletons[f]); //e.g. biographyofbanan0000eage
+                debug("Metadata Fjords - concatenting multi-line description on %s", m.identifier);
+            }
         });
+        if (m.mediatype === "education") {
+            // Typically miscategorized, have a guess !
+            if (item._list.find(af => af.playable("video")))
+                m.mediatype = "movies";
+            else if (item._list.find(af => af.playable("text")))
+                m.mediatype = "texts";
+            else if (item._list.find(af => af.playable("image")))
+                m.mediatype = "image";
+            debug('Metadata Fjords - switched mediatype on %s from "education" to %s', m.identifier, m.mediatype);
+        }
         return m;
     }
     fetch_metadata(cb) {
