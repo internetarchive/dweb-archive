@@ -232,7 +232,7 @@ export default class Nav {
             cnp.push(await this.pausedParm()); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
             // Add any other searchparams back in, especially "tab"
             for (let sp of searchparams) {
-                if (!["transport", "paused", "item"].includes(sp[0]))
+                if (!["paused", "item"].includes(sp[0])) // Now including transport parameter if explicitly specified in searchparams (rather than in archive.html)
                     cnp.push(`${sp[0]}=${sp[1]}`);
             }
             // See notes on async_factory about history.pushState
