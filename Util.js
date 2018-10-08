@@ -157,7 +157,7 @@ class Util {
     static gatewayServer() {
         // Return location for http calls to a gateway server that understands canonical addresses like /arc/archive.. or /ipfs/Q...
         // Has to be a function rather than constant because searchparams is defined after this library is loaded
-        return ((typeof searchparams !== "undefined") && searchparams.get('mirror')) ? ("http://"+searchparams.get('mirror') ) : "https://dweb.me";
+        return DwebArchive.mirror || "https://dweb.me";
     }
 }
 
@@ -733,7 +733,8 @@ Util.gateway = {
     "url_torrent": "/arc/archive.org/torrent/", //TODO-MIRROR support this
     "url_metadata": "/arc/archive.org/metadata/", //TODO-MIRROR support this
     "url_advancedsearch": "/arc/archive.org/advancedsearch", //TODO-MIRROR support this
-    "url_related": "https://be-api.us.archive.org/mds/v1/get_related/all/"   // Direct, no CORS issues //TODO-MIRROR fix this
+    "url_related": "https://be-api.us.archive.org/mds/v1/get_related/all/",   // Direct, no CORS issues //TODO-MIRROR fix this
+    "url_related_local": "/arc/archive.org/mds/v1/get_related/all/"   // Direct, no CORS issues //TODO-MIRROR fix this
 }
 // minified FROM http://sourcefrog.net/projects/natsort/natcompare.js
 function isWhitespaceChar(B){var A;A=B.charCodeAt(0);if(A<=32){return true;}else{return false;}}function isDigitChar(B){var A;A=B.charCodeAt(0);if(A>=48&&A<=57){return true;}else{return false;}}function compareRight(E,B){var G=0;var F=0;var D=0;var C;var A;for(;;F++,D++){C=E.charAt(F);A=B.charAt(D);if(!isDigitChar(C)&&!isDigitChar(A)){return G;}else{if(!isDigitChar(C)){return -1;}else{if(!isDigitChar(A)){return +1;}else{if(C<A){if(G==0){G=-1;}}else{if(C>A){if(G==0){G=+1;}}else{if(C==0&&A==0){return G;}}}}}}}}function natcompare(I,H){var C=0,A=0;var D=0,B=0;var F,E;var G;while(true){D=B=0;F=I.charAt(C);E=H.charAt(A);while(isWhitespaceChar(F)||F=="0"){if(F=="0"){D++;}else{D=0;}F=I.charAt(++C);}while(isWhitespaceChar(E)||E=="0"){if(E=="0"){B++;}else{B=0;}E=H.charAt(++A);}if(isDigitChar(F)&&isDigitChar(E)){if((G=compareRight(I.substring(C),H.substring(A)))!=0){return G;}}if(F==0&&E==0){return D-B;}if(F<E){return -1;}else{if(F>E){return +1;}}++C;++A;}};

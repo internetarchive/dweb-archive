@@ -400,8 +400,8 @@ export default class Details extends ArchiveBase {
     }
 
     itemDetailsAlsoFound() {
-        let relatedUrl = Util.gatewayServer()+Util.gateway.url_related+this.itemid;
         if (!this.itemid) return undefined; // No related to home page, TODO maybe other places dont have also found = e.g. collections
+        let relatedUrl = ( DwebArchive.mirror ? (Util.gatewayServer()+Util.gateway.url_related_local) : Util.gateway.url_related)+this.itemid;
         let el = (
             <div id="also-found" className="container container-ia width-max" data-identifier={this.itemid} ></div>
             );

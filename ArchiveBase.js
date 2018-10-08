@@ -51,13 +51,13 @@ export default class ArchiveBase extends ArchiveItem {
         this.browserAfter();
     }
     preprocessDescription(description) {
-        // Now catch some things that often appear in descriptions because it assumes running on archive page
+        // Now catch some things that often appear in descriptions because it assumes running on archive page e.g. /server/commute/commute.jpg on "commute"
         // And handle multivalue (array) descriptions by concatenating with <br/>
 
         return  !description ? description
                 : (Array.isArray(description) ? description.join('<br/>') : description)
                 .replace('\n','<br/>')
-                .replace(/src=(['"])\//gi, 'src=$1'+React._config.root+'/');
+                .replace(/src=(['"])\//gi, 'src=$1'+ (DwebArchive.mirror ? (DwebArchive.mirror + "/arc/archive.org") : React._config.root)+'/');
     }
 
     cherModal(type) {
