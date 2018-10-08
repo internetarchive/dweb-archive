@@ -104,7 +104,7 @@ class Util {
             }
         ));
         if (response.ok) {
-            if (response.headers.get('Content-Type') === "application/json") {
+            if (response.headers.get('Content-Type').startsWith("application/json")) {
                 return await response.json(); // response.json is a promise resolving to JSON already parsed
             } else {
                 let t = response.text(); // promise resolving to text
