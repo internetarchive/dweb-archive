@@ -75,6 +75,7 @@ class ArchiveItem {
         }
         return m;
     }
+
     fetch_metadata(cb) {
         /*
         Fetch the metadata for this item if it hasn't already been.
@@ -153,6 +154,16 @@ class ArchiveItem {
         await this.fetch_metadata();
         return this.item.metadata.thumbnaillinks; // Short cut since metadata changes may move this
     }
+
+    videoThumbnailFile() {
+        // Get a thumbnail for a video - may extend to other types, return the ArchiveFile
+        // This is used to select the file for display and also in dweb-mirror to cache it
+        console.assert(this._list, "videoThumbnaillinks: assumes setup _list before")
+        console.assert(this.item.metadata.mediatype === "movies", "videoThumbnaillinks only valid for movies")
+        const videothumbnailurls = this._list.filter(fi => (fi.metadata.name.includes(`${itemid}.thumbs/`))); // Array of ArchiveFile
+        return videothumbnailurls[Math.min(videothumbnailurls.length-1,1)];
+    }
+
     async itemid() {
         await this.fetch_metadata();
         return this.item.metadata.identifier; // Short cut since metadata changes may move this
