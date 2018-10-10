@@ -157,7 +157,8 @@ class Util {
     static gatewayServer() {
         // Return location for http calls to a gateway server that understands canonical addresses like /arc/archive.. or /ipfs/Q...
         // Has to be a function rather than constant because searchparams is defined after this library is loaded
-        return DwebArchive.mirror || "https://dweb.me";
+        // Note that for example where Util.js is included from dweb-mirror that currently (this may change) DwebArchive is not defined
+        return (typeof DwebArchive != "undefined") && DwebArchive.mirror || "https://dweb.me";
     }
 }
 
