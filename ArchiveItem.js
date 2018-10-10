@@ -79,37 +79,38 @@ class ArchiveItem {
     fetch_metadata(cb) {
         /*
         Fetch the metadata for this item if it hasn't already been.
-
-        calls cb(err, archiveitem) or resolves (for chaining or map)
+        cb(err, this) or if none, returns a promise resolving to this
          */
-        if (this.itemid && !this.item) {
-            debug('getting metadata for %s', this.itemid);
-            // Fetch via Domain record - the dweb:/arc/archive.org/metadata resolves into a table that is dynamic on gateway.dweb.me
-            const name = `dweb:/arc/archive.org/metadata/${this.itemid}`;
-            // Fetch using Transports as its multiurl and might not be HTTP urls
-            let prom = DwebTransports.p_rawfetch([name], {timeoutMS: 5000})    //TransportError if all urls fail (e.g. bad itemid)
-                .then((m) => {
-                    m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
-                    console.assert(m.metadata.identifier === this.itemid);
+        //NOTE this is PROMISIFY pattern used elsewhere
+        if (cb) { return f.call(this, cb) } else { return new Promise((resolve, reject) => f.call(this, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
+        function f(cb) {
+            if (this.itemid && !this.item) {
+                debug('getting metadata for %s', this.itemid);
+                // Fetch via Domain record - the dweb:/arc/archive.org/metadata resolves into a table that is dynamic on gateway.dweb.me
+                const name = `dweb:/arc/archive.org/metadata/${this.itemid}`;
+                // Fetch using Transports as its multiurl and might not be HTTP urls
+                let prom = DwebTransports.p_rawfetch([name], {timeoutMS: 5000})    //TransportError if all urls fail (e.g. bad itemid)
+                    .then((m) => {
+                        m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
+                        console.assert(m.metadata.identifier === this.itemid);
 
-                    this.item = this.processMetadataFjords(m);
-                    this._listLoad();   // Load _list with ArchiveFile
-                    debug("metadata for %s fetched successfully", this.itemid);
-                    if (cb) cb(null, this);
-                    return this;    // So prom resolves to this
-                })
-            return (cb ? (prom.catch((err) => cb(err))) : prom);    // Either promise rejects or if cb, promise that will call teh cb
-        } else {
-            if (cb) { cb(null, this); } else { return new Promise((resolve, reject) => resolve(this)); }
+                        this.item = this.processMetadataFjords(m);
+                        this._listLoad();   // Load _list with ArchiveFile
+                        debug("metadata for %s fetched successfully", this.itemid);
+                        cb(null, this);
+                    }).catch(err => cb(err));
+            } else {
+                cb(null, this);
+            }
         }
     }
 
     async fetch_query({append=false, reqThumbnails=false}={}) {
         /*  Action a query, return the array of docs found.
             Subclassed in Account.js since dont know the query till the metadata is fetched
-            rejects: TransportError or CodingError if no urls
             */
         // noinspection JSUnresolvedVariable
+        // rejects: TransportError or CodingError if no urls
         if (this.query) {   // This is for Search, Collection and Home.
             if (!this._list) this._listLoad();
             // First we look for the fav-xyz type collection, where there is an explicit JSON of the members
@@ -161,11 +162,12 @@ class ArchiveItem {
         // This is used to select the file for display and also in dweb-mirror to cache it
         console.assert(this._list, "videoThumbnaillinks: assumes setup _list before")
         console.assert(this.item.metadata.mediatype === "movies", "videoThumbnaillinks only valid for movies")
-        const videothumbnailurls = this._list.filter(fi => (fi.metadata.name.includes(`${itemid}.thumbs/`))); // Array of ArchiveFile
+        const videothumbnailurls = this._list.filter(fi => (fi.metadata.name.includes(`${this.itemid}.thumbs/`))); // Array of ArchiveFile
         return videothumbnailurls[Math.min(videothumbnailurls.length-1,1)];
     }
 
     async itemid() {
+        console.assert(false, 'I dont this can ever get called, constructor will be overwriting it');
         await this.fetch_metadata();
         return this.item.metadata.identifier; // Short cut since metadata changes may move this
     }
