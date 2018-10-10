@@ -54,6 +54,7 @@ class ArchiveFile {
         return Util.formats("format", this.metadata.format).mimetype;
     }
     async data() { // Not timedout currently as only used in .blob which could be slow on big files
+        // Throws TransportError (or poss CodingError) if urls empty or cant fetch
         return await DwebTransports.p_rawfetch(await this.p_urls());
     }
     async blob() { // Not timedout currently as only used in .blobUrl which could be slow on big files
