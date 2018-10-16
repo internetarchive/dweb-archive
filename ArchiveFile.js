@@ -56,7 +56,7 @@ class ArchiveFile {
         // noinspection JSUnresolvedVariable
         const res = [this.metadata.ipfs, this.metadata.ipfs ? this.metadata.ipfs.replace('ipfs:/ipfs/','https://ipfs.io/ipfs/') : undefined, this.metadata.magnetlink, this.metadata.contenthash].filter(f => !!f);   // Multiple potential sources eliminate any empty
         res.push(this.httpUrl()); // HTTP link to file (note this was added Oct2018 and might not be correct)
-        return cb ? cb(null, res) : res;
+        return res;
     }
     httpUrl() {
         // This will typically be dweb.me, but may be overridden un URL with mirror=localhost:4244

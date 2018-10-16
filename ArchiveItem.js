@@ -105,15 +105,6 @@ class ArchiveItem {
         }
     }
 
-    _queryMembersSlice(arr, {append=false}={}) {
-        //TODO-MIRROR - this was split out for dweb-mirror, but check if its used, and if not merge back
-        const membersJSON = JSON.parse(arr);
-        let newitems = membersJSON.slice((this.page - 1) * this.limit, this.page * this.limit); // See copy of some of this logic in dweb-mirror.MirrorCollection.fetch_query
-        this.items = (append && this.items) ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
-        // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveItems
-        // Note this does NOT support sort, there isnt enough info in members.json to do that
-        return newitems;
-    }
     fetch_query(opts={}, cb) { // No opts currently,
         // Returns a promise or calls cb(err, json);
         if (cb) { return f.call(this, cb) } else { return new Promise((resolve, reject) => f.call(this, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
@@ -129,7 +120,13 @@ class ArchiveItem {
                 const memberFileName = `${this.itemid}_members.json`;
                 const membersAF = this._list.find(af => af.metadata.name === memberFileName);   // af || undefined
                 if (membersAF) {
-                    membersAF.data((err, data) => cb(null, this._queryMembersSice(data, {append})));    // Separated out, since used in dweb-mirror
+                    membersAF.data((err, jsonstring) => {
+                        const newitems = canonicaljson.parse(jsonstring).slice((this.page - 1) * this.limit, this.page * this.limit); // See copy of some of this logic in dweb-mirror.MirrorCollection.fetch_query
+                        this.items = this.items ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
+                        // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveItems
+                        // Note this does NOT support sort, there isnt enough info in members.json to do that
+                        cb(null, newitems)
+                    });
                 } else {
                     if (this.item && this.item.metadata.search_collection) {
                         this.query = this.item.metadata.search_collection.replace('\"', '"')
