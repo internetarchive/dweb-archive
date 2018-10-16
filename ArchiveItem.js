@@ -38,7 +38,7 @@ class ArchiveItem {
             : [];   // Default to empty, so usage simpler.
     }
 
-    async fetch({append = false, reqThumbnails = true}={}) {
+    async fetch({append = false}={}) {
         /* Fetch what we can about this item, it might be an item or something we have to search for.
             Fetch item metadata as JSON by talking to Metadata API
             Fetch collection info by an advanced search.
@@ -49,7 +49,7 @@ class ArchiveItem {
             resolves to: this
          */
         await this.fetch_metadata();
-        await this.fetch_query({append, reqThumbnails});
+        await this.fetch_query({append});
 
         return this;
     }
@@ -81,8 +81,7 @@ class ArchiveItem {
         Fetch the metadata for this item if it hasn't already been.
         cb(err, this) or if none, returns a promise resolving to this
          */
-        //NOTE this is PROMISIFY pattern used elsewhere
-        if (cb) { return f.call(this, cb) } else { return new Promise((resolve, reject) => f.call(this, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
+        if (cb) { return f.call(this, cb) } else { return new Promise((resolve, reject) => f.call(this, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}        //NOTE this is PROMISIFY pattern used elsewhere
         function f(cb) {
             if (this.itemid && !this.item) {
                 debug('getting metadata for %s', this.itemid);
@@ -105,51 +104,52 @@ class ArchiveItem {
         }
     }
 
-    async fetch_query({append=false, reqThumbnails=false}={}) {
-        /*  Action a query, return the array of docs found.
-            Subclassed in Account.js since dont know the query till the metadata is fetched
-            */
-        // noinspection JSUnresolvedVariable
-        // rejects: TransportError or CodingError if no urls
-        if (this.query) {   // This is for Search, Collection and Home.
-            if (!this._list) this._listLoad();
-            // First we look for the fav-xyz type collection, where there is an explicit JSON of the members
-            const memberFileName = `${this.itemid}_members.json`;
-            const membersAF = this._list.find(af => af.metadata.name === memberFileName);   // af || undefined
-            if (membersAF) {
-                const membersJSON = JSON.parse(await membersAF.data()); //TODO cache this - but note transport should be caching it anyway
-                let newitems = membersJSON.slice((this.page - 1) * this.limit, this.page * this.limit);
-                if (reqThumbnails) {
-                    //TODO I'm not totally happy with this, as delays for all Promises to retun or fail. would be better
-                    //TODO for Tile to support ArchiveItem and retrieve metadata in process that is already parallel
-                    //let xxx1 = newitems.map(i => new ArchiveItem({itemid: i.identifier}))
-                    //let xxx2 = (await Promise.all(xxx1.map(i=>i.fetch_metadata())))
-                    //newitems = xxx2.map(i=>i.item.metadata)
-                    newitems = (await Promise.all(newitems.map(i => new ArchiveItem({itemid: i.identifier}).fetch_metadata()))).map(i => i.item.metadata)
+    _queryMembersSlice(arr, {append=false}={}) {
+        //TODO-MIRROR - this was split out for dweb-mirror, but check if its used, and if not merge back
+        const membersJSON = JSON.parse(arr);
+        let newitems = membersJSON.slice((this.page - 1) * this.limit, this.page * this.limit); // See copy of some of this logic in dweb-mirror.MirrorCollection.fetch_query
+        this.items = (append && this.items) ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
+        // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveItems
+        // Note this does NOT support sort, there isnt enough info in members.json to do that
+        return newitems;
+    }
+    fetch_query({append=false}={}, cb) {
+        // Returns a promise or calls cb(err, json);
+        if (cb) { return f.call(this, cb) } else { return new Promise((resolve, reject) => f.call(this, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
+        function f(cb) {
+            /*  Action a query, return the array of docs found.
+                Subclassed in Account.js since dont know the query till the metadata is fetched
+                */
+            // noinspection JSUnresolvedVariable
+            // rejects: TransportError or CodingError if no urls
+            if (this.query) {   // This is for Search, Collection and Home.
+                if (!this._list) this._listLoad();
+                // First we look for the fav-xyz type collection, where there is an explicit JSON of the members
+                const memberFileName = `${this.itemid}_members.json`;
+                const membersAF = this._list.find(af => af.metadata.name === memberFileName);   // af || undefined
+                if (membersAF) {
+                    membersAF.data((err, data) => cb(null, this._queryMembersSice(data, {append})));    // Separated out, since used in dweb-mirror
+                } else {
+                    if (this.item && this.item.metadata.search_collection) {
+                        this.query = this.item.metadata.search_collection.replace('\"', '"')
+                    }
+                    const sort = (this.item && this.item.collection_sort_order) || this.sort;
+                    // noinspection JSUnresolvedVariable
+                    const url =
+                        //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
+                        `${Util.gatewayServer()}${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
+                    //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
+                    debug("Searching with %s", url);
+                    Util.fetch_json(url, (err, j) => {
+                        this.items = (append && this.items) ? this.items.concat(j.response.docs) : j.response.docs;
+                        this.start = j.response.start;
+                        this.numFound = j.response.numFound;
+                        cb(null, j.response.docs);
+                    });
                 }
-                this.items = (append && this.items) ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
-                // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveFiles
-                // Note this does NOT support sort, there isnt enough info in members.json to do that
-                return newitems;
             } else {
-                if (this.item && this.item.metadata.search_collection) {
-                    this.query = this.item.metadata.search_collection.replace('\"', '"')
-                }
-                const sort = (this.item && this.item.collection_sort_order) || this.sort;
-                // noinspection JSUnresolvedVariable
-                const url =
-                    //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
-                    `${Util.gatewayServer()}${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
-                //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
-                debug("Searching with %s", url);
-                const j = await Util.fetch_json(url);
-                this.items = (append && this.items) ? this.items.concat(j.response.docs) : j.response.docs;
-                this.start = j.response.start;
-                this.numFound = j.response.numFound;
-                return j.response.docs
+                cb(null, undefined);
             }
-        } else {
-            return undefined;
         }
     }
     async thumbnaillinks() {
@@ -157,9 +157,32 @@ class ArchiveItem {
         return this.item.metadata.thumbnaillinks; // Short cut since metadata changes may move this
     }
 
+    thumbnailFile() {
+        /*
+        Return the thumbnailfile for an item, this should handle the case of whether the item has had metadata fetched or not, and must be synchronous as stored in <img src=> (the resolution is asyncronous)
+         */
+        //console.assert(this._list, "Should have loaded metadata which loads _list before calling thumbnailFile"); // Could also do here
+        // Ne items should have __ia_thumb.jpg but older ones dont
+        let af = this._list && this._list.find(af => af.metadata.name === "__ia_thumb.jpg"
+            || af.metadata.name.endsWith("_itemimage.jpg"))
+        if (!af) {
+            const metadata =  {
+                format: "JPEG Thumb",
+                name:   "__ia_thumb.jpg",
+                // Could also set source:"original",rotation:"0",
+            }
+            const ipfs = this.metadata && this.metadata.thumbnaillinks.find(f=>f.startsWith("ipfs:")) // Will be empty if no thumbnaillinks
+            if (ipfs) metadata.ipfs = ipfs;
+            af = new ArchiveFile({itemid: this.itemid, metadata })
+            if (this._list) this._list.push(af); // So found by next call for thumbnailFile - if haven't loaded metadata no point in doing this
+        }
+        return af;
+    }
+
     videoThumbnailFile() {
         // Get a thumbnail for a video - may extend to other types, return the ArchiveFile
         // This is used to select the file for display and also in dweb-mirror to cache it
+        // Heuristic is to select the 2nd thumbnail from the thumbs/ directory (first is often a blank screen)
         console.assert(this._list, "videoThumbnaillinks: assumes setup _list before")
         console.assert(this.item.metadata.mediatype === "movies", "videoThumbnaillinks only valid for movies")
         const videothumbnailurls = this._list.filter(fi => (fi.metadata.name.includes(`${this.itemid}.thumbs/`))); // Array of ArchiveFile

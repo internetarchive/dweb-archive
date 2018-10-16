@@ -405,8 +405,11 @@ export default class Details extends ArchiveBase {
         let el = (
             <div id="also-found" className="container container-ia width-max" data-identifier={this.itemid} ></div>
             );
-        Util.fetch_json(relatedUrl)
-            .then(data => this.loadDetailsAlsoFound(el, this.itemid, data.hits.hits)); // Asynchronous TODO move to gateway ?
+        Util.fetch_json(relatedUrl, (err, data) => {
+            if (!err) { // If there is an error then fetch_json will have reported it, and can just ignore it here and not display
+                this.loadDetailsAlsoFound(el, this.itemid, data.hits.hits);  // Asynchronous TODO move to gateway ?
+            }
+        })
         return el;
     }
     loadDetailsAlsoFound(el, itemid, results) {

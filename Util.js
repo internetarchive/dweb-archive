@@ -86,7 +86,15 @@ class Util {
         AJS.footer();
     }
 
-    static async fetch_json(url) {
+    static fetch_json(url, cb) {
+        //TODO-PROMISIFY this is a temp patch between cb and promise till p_fetch_json handles cb
+        if (cb) {
+            this.p_fetch_json(url).then(j => cb(null, j)).catch(err => cb(err));
+        } else {
+            return this.p_fetch_json(url); // Return a promise
+        }
+    }
+    static async p_fetch_json(url) {
         /*
         url:   to be fetched - construct CORS safe JSON enquiry.
         throws: TypeError if cant fetch

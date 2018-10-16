@@ -172,7 +172,7 @@ export default class Nav {
         debug("Navigating to Search for %s", q);
         let destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
-        let s = await new Search((typeof(q) === "object") ? q : (typeof(q) === "string") ? {query: q} : undefined).fetch({append: false, reqThumbnails: true});
+        let s = await new Search((typeof(q) === "object") ? q : (typeof(q) === "string") ? {query: q} : undefined).fetch({append: false});
         q = s.query;    // Flattened from object to string
         if (wanthistory) {
             let supportsArc = ! (window.location.origin === "file://" || window.location.pathname.startsWith("/ipfs/")  || window.location.pathname.startsWith("/ipns/") )

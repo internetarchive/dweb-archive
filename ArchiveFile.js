@@ -23,7 +23,18 @@ class ArchiveFile {
         /* Name suitable for downloading etc */
         return this.metadata.name;
     }
-    async p_urls(cb) { //TODO-MIRROR fix this to make sense for _torrent.xml files which dont have sha1 and probably not IPFS
+
+    static urls(cb) {
+        //TODO-PROMISIFY this is a temp patch between cb and promise till p_urls handles cb which depends on p_connectdNames (fetch_json already does)
+        if (cb) {
+            this.p_urls().then(urls => cb(null, urls)).catch(err => cb(err));
+        } else {
+            return this.p_urls(); // Return a promise
+        }
+    }
+    async p_urls() { //TODO-MIRROR fix this to make sense for _torrent.xml files which dont have sha1 and probably not IPFS
+        //TODO-MIRROR may need to fix this for tiles where item's metadata not downloaded and no __ia_thumb.jpg file (e.g. fav_mitra)
+        //TODO-PROMISIFY - fix Util.fetch_json to not depend on the fetch/request library then fix this to use the Promisify pattern
         /*
         cb(err, urls)   passed an array of urls that might be a good place to get this item
         if no cb: resolve to urls
@@ -44,6 +55,7 @@ class ArchiveFile {
         // noinspection JSUnresolvedVariable
         // noinspection JSUnresolvedVariable
         let res = [this.metadata.ipfs, this.metadata.ipfs ? this.metadata.ipfs.replace('ipfs:/ipfs/','https://ipfs.io/ipfs/') : undefined, this.metadata.magnetlink, this.metadata.contenthash].filter(f => !!f);   // Multiple potential sources eliminate any empty
+        res.push(this.httpUrl()); // HTTP link to file (note this was added Oct2018 and might not be correct)
         return cb ? cb(null, res) : res;
     }
     httpUrl() {
@@ -53,9 +65,15 @@ class ArchiveFile {
     async mimetype() {
         return Util.formats("format", this.metadata.format).mimetype;
     }
-    async data() { // Not timedout currently as only used in .blob which could be slow on big files
+    data(cb) { // Not timedout currently as only used in .blob which could be slow on big files
+        // Fetch data, normally you shoud probably be streaming instead.
+        // cb(data)
         // Throws TransportError (or poss CodingError) if urls empty or cant fetch
-        return await DwebTransports.p_rawfetch(await this.p_urls());
+        //TODO-PROMISIFY need cb version of p_rawfetch then use promisify pattern here
+        return this.p_urls()
+            .then(urls => DwebTransports.p_rawfetch(urls))
+            .then(res => { if (cb) { cb(null, res); return undefined; } else {return res; } })
+            .catch(err => { if (cb) { cb(null, res); return undefined; } else { throw(err); } } )
     }
     async blob() { // Not timedout currently as only used in .blobUrl which could be slow on big files
         return new Blob([await this.data()], {type: this.mimetype()} );

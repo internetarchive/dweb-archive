@@ -3,25 +3,29 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 //import React from 'react';
 import React from './ReactFake';
 import Util from './Util';
+import ArchiveItem from './ArchiveItem';
 
 
 export default class Tile {
-  render(item){
+  render(searchresult){
+    // Searchresult will be a collection of metadata similar to that of an item,
+    // its close enough to fake it, BUT if that causes issues, try "new ArchiveItem({itemid: searchresult.identifier} but that will usually force a fetch_metadata somewhere)
+    const archiveitem = new ArchiveItem({itemid: searchresult.identifier, item:searchresult})
     //xxx shorten/safify certain title usages (compared to Lists.inc)
-    const collections = (Array.isArray(item.collection) ? item.collection : (typeof(item.collection) === 'string' ? [item.collection] : []));
+    const collections = (Array.isArray(searchresult.collection) ? searchresult.collection : (typeof(searchresult.collection) === 'string' ? [searchresult.collection] : []));
     const collection0 = collections[0];
     const nFavorites = collections.filter(e => e.startsWith('fav-')).length;
-    const is_collection = (item.mediatype === 'collection');
+    const is_collection = (searchresult.mediatype === 'collection');
     const classes = 'item-ia' + (is_collection ? ' collection-ia' : '');
     // If dont have collection0 data then probably came from minimal metadata in fav-xxx and then ArchiveItem metadata
       // Should really do this async, but that would mean rewriting a lot of code, sofor now, chea
-    const collection0thumbnaillinks = item.collection0thumbnaillinks || `dweb:/arc/archive.org/services/img/${collection0}`; //ReactFake will handle async
-    const collection0title = item.collection0title || collection0; // Wrong but acceptable for now
-    const imgname = item.identifier + ".PNG"; // Required since rendermedia doesnt know the filetype otherwise
+    const collection0thumbnaillinks = searchresult.collection0thumbnaillinks || `dweb:/arc/archive.org/services/img/${collection0}`; //ReactFake will handle async
+    const collection0title = searchresult.collection0title || collection0; // Wrong but acceptable for now
+    const imgname = searchresult.identifier + ".PNG"; // Required since rendermedia doesnt know the filetype otherwise
     //ARCHIVE-BROWSER on browser, want to load links locally (via APIs) rather than rebuilding HTML page
       // ARCHIVE-BROWSER added key= to keep react happy (I hope)
       return (
-      <div className={classes} data-id={item.identifier}  key={item.identifier}>
+      <div className={classes} data-id={searchresult.identifier}  key={searchresult.identifier}>
       { (collection0) ?
         <a className="stealth" tabIndex="-1" onClick={`Nav.nav_details("${collection0}");`}>
           <div className="item-parent">
@@ -32,19 +36,19 @@ export default class Tile {
         </a>
        : undefined }
         <div className="hidden-tiles views C C1">
-          <nobr className="hidden-xs">{Util.number_format(item.downloads)}</nobr>
-          <nobr className="hidden-sm hidden-md hidden-lg">{Util.number_format(item.downloads)}</nobr>
+          <nobr className="hidden-xs">{Util.number_format(searchresult.downloads)}</nobr>
+          <nobr className="hidden-sm hidden-md hidden-lg">{Util.number_format(searchresult.downloads)}</nobr>
         </div>
 
 
         <div className="C234">
           <div className="item-ttl C C2">
-            <a onClick={`Nav.nav_details("${item.identifier}");`} title={item.title}>
+            <a onClick={`Nav.nav_details("${searchresult.identifier}");`} title={searchresult.title}>
               <div className="tile-img">
-                <img className="item-img clipW clipH" imgname={imgname} src={item.thumbnaillinks}/>
+                <img className="item-img clipW clipH" imgname={imgname} src={archiveitem.thumbnailFile()}/>
               </div>{/*.tile-img*/}
               <div className="ttl">
-                {item.title}
+                {searchresult.title}
               </div>
             </a>
           </div>
@@ -55,18 +59,18 @@ export default class Tile {
           </div>
 
           <div className="by C C4">
-            <span className="hidden-lists">{item.creator && 'by '}</span>
-            <span title={Array.isArray(item.creator) ? item.creator.join(',') : item.creator}>{item.creator}</span>
+            <span className="hidden-lists">{searchresult.creator && 'by '}</span>
+            <span title={Array.isArray(searchresult.creator) ? searchresult.creator.join(',') : searchresult.creator}>{searchresult.creator}</span>
           </div>{/*.C4*/}
         </div>{/*.C234*/}
 
 
         <div className="mt-icon C C5">
-          {Tile.glyph(Util.mediatype_canonical(item.mediatype))}
+          {Tile.glyph(Util.mediatype_canonical(searchresult.mediatype))}
         </div>
         <h6 className="stat ">
           <span className="iconochive-eye" aria-hidden="true"></span><span className="sr-only">eye</span>
-          <nobr>{Util.number_format(item.downloads)}</nobr>
+          <nobr>{Util.number_format(searchresult.downloads)}</nobr>
         </h6>
         <h6 className="stat">
           <span className="iconochive-favorite" aria-hidden="true"></span><span className="sr-only">favorite</span>
@@ -74,7 +78,7 @@ export default class Tile {
         </h6>
         <h6 className="stat">
           <span className="iconochive-comment" aria-hidden="true"></span><span className="sr-only">comment</span>
-          {item.num_reviews || "0"}
+          {searchresult.num_reviews || "0"}
         </h6>
       </div>
     );
