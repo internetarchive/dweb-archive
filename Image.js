@@ -22,11 +22,11 @@ export default class Image extends Details {
     }
 
     theatreIaWrap() {
-        let item = this.item;
-        let itemid = item.metadata.identifier; // Shortcut as used a lot
-        let mainArchiveFile = this._list.find(fi => fi.playable("image")); // Can be undefined if none included
-        let detailsURL = `https://archive.org/details/${itemid}`; //This is probably correct to remain pointed at archive.org since used as an itemprop
-        let embedurl = `https://archive.org/embed/${itemid}`; //This is probably correct to remain pointed at archive.org since passed to social media
+        const item = this.item;
+        const itemid = item.metadata.identifier; // Shortcut as used a lot
+        const mainArchiveFile = this._list.find(fi => fi.playable("image")); // Can be undefined if none included
+        const detailsURL = `https://archive.org/details/${itemid}`; //This is probably correct to remain pointed at archive.org since used as an itemprop
+        const embedurl = `https://archive.org/embed/${itemid}`; //This is probably correct to remain pointed at archive.org since passed to social media
         return (
             <div id="theatre-ia-wrap" className="container container-ia width-max  resized" style={{height: "600px"}}>
                 <link itemProp="url" href={detailsURL}/>

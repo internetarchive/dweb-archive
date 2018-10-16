@@ -6,10 +6,10 @@ class Util {
         //http://www.mredkj.com/javascript/numberFormat.html
         nStr += '';
 
-        let x = nStr.split('.');
+        const x = nStr.split('.');
         let x1 = x[0];
-        let x2 = x.length > 1 ? '.' + x[1] : '';
-        let rgx = /(\d+)(\d{3})/;
+        const x2 = x.length > 1 ? '.' + x[1] : '';
+        const rgx = /(\d+)(\d{3})/;
         while (rgx.test(x1))
             x1 = x1.replace(rgx, '$1' + ',' + '$2');
         return x1 + x2;
@@ -44,7 +44,7 @@ class Util {
             "ad": "tv-commercial"
         };
 
-        let icon = ICONS[mediatype];
+        const icon = ICONS[mediatype];
         if (!icon)
             icon = 'question';
 
@@ -102,7 +102,7 @@ class Util {
         throws: Error if fail to fetch
         resolves to: Decoded json response
          */
-        let response = await fetch(new Request(url, // Throws TypeError on failed fetch
+        const response = await fetch(new Request(url, // Throws TypeError on failed fetch
             {
                 method: 'GET',
                 headers: new Headers(),
@@ -115,7 +115,7 @@ class Util {
             if (response.headers.get('Content-Type').startsWith("application/json")) {
                 return await response.json(); // response.json is a promise resolving to JSON already parsed
             } else {
-                let t = response.text(); // promise resolving to text
+                const t = response.text(); // promise resolving to text
                 throw new Error(`Unable to fetch, return was not JSON - got: ${response.headers.get('Content-Type')} ${t}`);
             }
         } else { // response not OK (some files e.g. https://dweb.me/arc/archive.org/metadata/kaled_jalil/001.mp3 get !response.ok instead of error
@@ -125,8 +125,8 @@ class Util {
     }
     static metaFromUpdater({uploader=undefined, email=undefined}={}) {
         // Need to be able to convert email to uploader
-        let u = uploader ||email; // TODO need to be able to convert back and forth with uploader and email
-        let id = `@${u}`; // TODO This needs some character stripping/conversion from update to id - @IA figure out what this is
+        const u = uploader ||email; // TODO need to be able to convert back and forth with uploader and email
+        const id = `@${u}`; // TODO This needs some character stripping/conversion from update to id - @IA figure out what this is
         return {
             updater: u,
             name: u,
@@ -158,7 +158,7 @@ class Util {
     */
 
     static formats(k,v,{first=true}={}) {
-        let ff = Util._formatarr.filter(f => f[k] === v);
+        const ff = Util._formatarr.filter(f => f[k] === v);
         return first ? (ff.length ? ff[0] : undefined) : ff;
     }
 

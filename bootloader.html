@@ -54,12 +54,12 @@ Name:&nbsp;<input type="text" class="formbox" id="urlorname" placeholder="/arc/a
             statuselement: document.getElementById("statuselement"),
             transports: searchparams.getAll("transport")
         });
-        let orighref = searchparams.get("url") || window.location.href;
+        const orighref = searchparams.get("url") || window.location.href;
         if (!orighref.startsWith("file:///")) {
             statusupdate("Loading URL: ", orighref);
-            let url = new URL(orighref);
+            const url = new URL(orighref);
             let name;
-            let pathname = (url.pathname === "/") ? "" : url.pathname; // Remove extraneous / if added by browser
+            const pathname = (url.pathname === "/") ? "" : url.pathname; // Remove extraneous / if added by browser
             url.pathname = "";  // Leave empty as intended, will resolve to Domain or Leaf of the domain name
             if (url.hostname === "dweb.me") {                                   // e.g. https://dweb.me/arc/archive.org/foo
                 name = pathname.substring(1);                                   // should be arc/ or ipfs/ or something like that
@@ -92,7 +92,7 @@ Name:&nbsp;<input type="text" class="formbox" id="urlorname" placeholder="/arc/a
     }
 
     async function p_bootfromfield(field) {
-        let nameandsearch = document.getElementById(field).value.split('?')
+        const nameandsearch = document.getElementById(field).value.split('?')
         return await p_bootname(nameandsearch, {});
     }
 

@@ -151,7 +151,7 @@ export default class Nav {
 
     static async nav_details(id, wanthistory=true) {
         debug("Navigating to Details %s", id);
-        let destn = document.getElementById('main'); // Blank window (except Nav) as loading
+        const destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
         await Nav.factory(id, destn, {wanthistory}); // Not sure what returning ....
         return false; // Dont follow anchor link - unfortunately React ignores this
@@ -170,13 +170,13 @@ export default class Nav {
         q = query (string to search for) or object e.g. {query; foo, sort: -date} as passed to new Search()
          */
         debug("Navigating to Search for %s", q);
-        let destn = document.getElementById('main'); // Blank window (except Nav) as loading
+        const destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
-        let s = await new Search((typeof(q) === "object") ? q : (typeof(q) === "string") ? {query: q} : undefined).fetch({append: false});
+        const s = await new Search((typeof(q) === "object") ? q : (typeof(q) === "string") ? {query: q} : undefined).fetch();
         q = s.query;    // Flattened from object to string
         if (wanthistory) {
-            let supportsArc = ! (window.location.origin === "file://" || window.location.pathname.startsWith("/ipfs/")  || window.location.pathname.startsWith("/ipns/") )
-            let historystate = {query: q}; //TODO-HISTORY may want  to store transports, paused etc here
+            const supportsArc = ! (window.location.origin === "file://" || window.location.pathname.startsWith("/ipfs/")  || window.location.pathname.startsWith("/ipns/") )
+            const historystate = {query: q}; //TODO-HISTORY may want  to store transports, paused etc here
             let cnp = [];
             cnp.push(await this.pausedParm()); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
             // Add any other searchparams back in, especially "tab"
@@ -205,7 +205,7 @@ export default class Nav {
 
     // noinspection JSUnusedGlobalSymbols
     static async nav_download(el) {
-        let source = el.source; // Should be an ArchiveFile. - see example in Details.js
+        const source = el.source; // Should be an ArchiveFile. - see example in Details.js
         if (Array.isArray(source)) {
             for (let s in source) { // noinspection JSUnfilteredForInLoop
                 await source[s].p_download(el);
@@ -217,7 +217,7 @@ export default class Nav {
 
     static async nav_downloaddirectory(itemid) {
         debug("Navigating to Download directory for %s", itemid);
-        let destn = document.getElementById('main'); // Blank window (except Nav) as loading
+        const destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
         await Nav.factory(itemid, destn, {wanthistory: true, downloaddirectory: true}); // Not sure what returning ....
         return false; // Dont follow anchor link - unfortunately React ignores this
@@ -229,7 +229,7 @@ export default class Nav {
         //console.group("Nav.factory",itemid);
         window.loopguard = itemid;  // Tested in dweb-transport/httptools, will cancel any old loops - this is a kludge to get around a Chrome bug/feature
         if (wanthistory) {
-            let historystate = {itemid}; //TODO-HISTORY may want  to store transports, paused etc here
+            const historystate = {itemid}; //TODO-HISTORY may want  to store transports, paused etc here
             let cnp = [];
             cnp.push(await this.pausedParm()); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
             // Add any other searchparams back in, especially "tab"

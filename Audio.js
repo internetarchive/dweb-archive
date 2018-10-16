@@ -23,13 +23,13 @@ export default class Audio extends AV {
     }
     static play(elAnchor) {
         // Note - this is redirected from Nav which is a global
-        let track = elAnchor.source;
-        let af = track.sources[0].urls;
+        const track = elAnchor.source;
+        const af = track.sources[0].urls;
         document.getElementById("tracklist")
             .querySelectorAll(".jwrowV2")
             .forEach(el => el.classList.remove("playing"));
         elAnchor.querySelectorAll(".jwrowV2").forEach(el => el.classList.add("playing"));
-        let elAudio = document.getElementById("streamContainer");
+        const elAudio = document.getElementById("streamContainer");
         React.loadStream(elAudio, af, {name: af.metadata.name, preferredTransports: Util.config.preferredAVtransports});
         return false;
     }
@@ -40,15 +40,15 @@ export default class Audio extends AV {
             wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | TODO-ALSOFOUND  | TODO-ANALYTICS )
             item-details-about looks empty on the example chosen but that is a change in structure and maybe related to presence absence of forum etc
         */
-        let item = this.item;
-        let itemid = this.itemid;
-        let detailsurl = `https://archive.org/details/${itemid}`;  //OK as absolute URL as only used as itemprop
-        let title = item.metadata.title
-        let imgurl = `https://archive.org/services/img/${itemid}`; //OK as absolute URL as only used as itemprop
+        const item = this.item;
+        const itemid = this.itemid;
+        const detailsurl = `https://archive.org/details/${itemid}`;  //OK as absolute URL as only used as itemprop
+        const title = item.metadata.title
+        const imgurl = `https://archive.org/services/img/${itemid}`; //OK as absolute URL as only used as itemprop
         this.setupPlaylist();
-        let af0 = this.playlist[0] && this.playlist[0].sources[0] && this.playlist[0].sources[0].urls;
-        let initialPlay = 1;
-        let trackCount = 1;
+        const af0 = this.playlist[0] && this.playlist[0].sources[0] && this.playlist[0].sources[0].urls;
+        const initialPlay = 1;
+        const trackCount = 1;
         return (
             <div id="theatre-ia-wrap" class="container container-ia width-max ">
                 <link itemprop="url" href={detailsurl}/>{/*Link to archive.org directly*/}

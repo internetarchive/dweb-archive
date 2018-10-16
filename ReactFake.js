@@ -71,7 +71,7 @@ export default class React  {
                 console.warn("Probably not a good idea to use root-relative URL", url); //could genericise to use options.rel instead of config but might not catch cases e.g. of /images
             }
             if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
-            return [this.relativeurl(React._config.rootname, url)].filter(u => !!u);;  // e.g. /foo => [https://bar.com/foo]
+            return [this.relativeurl(React._config.rootname, url)].filter(u => !!u);  // e.g. /foo => [https://bar.com/foo]
         } else if (url.startsWith("./")) {
             if (!url.startsWith("./images")) {
                 console.warn("Relative URLs arent a great idea as what to be relative to is often unclear", url, options); //could genericise to use rel instead of config but might not catch cases e.g. of /images
@@ -86,16 +86,18 @@ export default class React  {
         url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
         resolves:   Array of URLs suitable for passing to Transports
          */
+        let urls;
         if (Array.isArray(url)) {
-            let urls = await Promise.all(url.map(u => this.p_resolveUrls(u)));    // Recurse urls is now array of arrays (most of which will probably be single value
-            return [].concat(...urls);  // Flatten, for now accept there might be dupes
+            const urlarrs = await Promise.all(url.map(u => this.p_resolveUrls(u)));    // Recurse urls is now array of arrays (most of which will probably be single value
+            urls = [].concat(...urlarrs);  // Flatten, for now accept there might be dupes
         }
         // Its now a singular URL
         if (url instanceof ArchiveFile) {
-            return await url.p_urls();  // This could be slow, may have to get the gateway to cache the file in IPFS
+            urls = await url.p_urls();  // This could be slow, may have to get the gateway to cache the file in IPFS
         } else {
-            return this.resolveUrls(url);  // Synchronous code will work
+            urls = this.resolveUrls(url);  // Synchronous code will work
         }
+        return urls;
     }
 
     static _loadImgSrc(el, url, cb) {
@@ -127,11 +129,11 @@ export default class React  {
             if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
                 urls[i] = await this.thumbnailUrlsFrom(urls[i].slice(35));
             }
-        };
+        }
         urls = [].concat(...urls); // Flatten any urls expanded above
         urls = await DwebTransports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
         // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
-        let fileurl = urls.find(u => u.startsWith("file"))
+        let fileurl = urls.find(u => u.startsWith("file"));
         let magneturl = urls.find(u => u.includes('magnet:'));
         const streamUrls = await DwebTransports.p_urlsValidFor(urls, "createReadStream");
         if (fileurl) {
@@ -209,7 +211,7 @@ export default class React  {
                                 <b>Download speed:</b> {prettierBytes(torrent.downloadSpeed)}/s{' '}
                                 <b>Upload speed:</b> {prettierBytes(torrent.uploadSpeed)}/s
                             </span>
-                        )
+                        );
                         deletechildren(webtorrentStats);
                         webtorrentStats.appendChild(els);
                     }
@@ -257,30 +259,30 @@ export default class React  {
             //TODO-MIRROR-ISSUE47 ...and then p_resolveNames (or in here) should probably be where we decide these can go to the cache...
             //TODO-MIRRROR-ISSUE47 ... or merge p_resolveUrls with p_resolveNames into a urls->urls function esp if this pattern reused ...
             //TODO-MIRROR-ISSUE47 ... but needs to know whether to handle the cache URL as a stream URL or not ...
-            urls = await this.p_resolveUrls(urls); // Allow relative urls
-            urls = await DwebTransports.p_resolveNames(urls); // Allow names among urls
+            const urlsabs = await this.p_resolveUrls(urls); // Allow relative urls
+            const urlsresolved = await DwebTransports.p_resolveNames(urlsabs); // Allow names among urls
             // Strategy here ...
             // If serviceworker && webtorrent => video src=
             // If can createReadStream (IPFS when fixed; webtorrent) => rendermedia
             // If http => video src
             // Default fetch as bytes and
-            if (urls.length) { // At least one url to try
-                let magneturl = urls.find(u => u.includes('magnet:'));
+            if (urlsresolved.length) { // At least one url to try
+                let magneturl = urlsresolved.find(u => u.includes('magnet:'));
                 if ((DwebTransports.type === "ServiceWorker") && magneturl) {
                     el.src = magneturl.replace('magnet:', `${window.origin}/magnet/`);
                 } else {
-                    const streamUrls = (await DwebTransports.p_urlsValidFor(urls, "createReadStream"));
+                    const streamUrls = (await DwebTransports.p_urlsValidFor(urlsresolved, "createReadStream"));
                     if (streamUrls.length) {
                         await this._p_loadStreamRenderMedia(el, streamUrls, {name, cb, preferredTransports})
                     } else {
                         // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
                         // TODO clean this nasty kludge up,
                         // Find a HTTP transport if connected, then ask it for the URL (as will probably be contenthash) note it leaves non contenthash urls untouched
-                        const url = await DwebTransports.p_httpfetchurl(urls);
-                        if (url) {
-                            el.src = url;
+                        const httpurl = await DwebTransports.p_httpfetchurl(urlsresolved);
+                        if (httpurl) {
+                            el.src = httpurl;
                         } else {
-                            await this._p_loadStreamFetchAndBuffer(el, urls, {name, cb, preferredTransports});
+                            await this._p_loadStreamFetchAndBuffer(el, urlsresolved, {name, cb, preferredTransports});
                         }
                     }
                 }
@@ -325,17 +327,6 @@ export default class React  {
         if (tag === "img" && !DwebArchive.mirror) { // We'll build a span, and set a async process to rewrite it as an img connected to a stream
             if (Object.keys(attrs).includes("src")) {
                 const src = attrs.src;
-                function cb(err, element) {
-                    if (err) {
-                        console.warn("Caught error in createElement callback in loadImg or loadStream",
-                            (src instanceof ArchiveFile) ? src.name : src,
-                            err.message);
-                        throw err;
-                    }
-                    React.setAttributes(element, tag, attrs);
-                    React.addKids(element, kids);
-                    return element;
-                }
                 const name = attrs["imgname"]       ? attrs["imgname"]
                     : (src instanceof ArchiveFile)  ? src.name()
                     : src.includes("/services/img") ? src + ".jpg"
@@ -348,6 +339,17 @@ export default class React  {
         } else {
             let element = document.createElement(tag);
             React.setAttributes(element, tag, attrs);   // Note many more special cases in setAttributes
+            React.addKids(element, kids);
+            return element;
+        }
+        function cb(err, element) {
+            if (err) {
+                console.warn("Caught error in createElement callback in loadImg or loadStream",
+                    (src instanceof ArchiveFile) ? src.name : src,
+                    err.message);
+                throw err;
+            }
+            React.setAttributes(element, tag, attrs);
             React.addKids(element, kids);
             return element;
         }
@@ -467,7 +469,7 @@ export default class React  {
         let navdwebparent;
         if (navdweb) { // old, ?new
             navdwebparent = navdweb.parentElement;
-            navdwebparent.removeChild(navdweb)
+            navdwebparent.removeChild(navdweb);
             navdwebparent = undefined; // Removed old version
         }
         deletechildren(node, false);

@@ -23,7 +23,7 @@ export default class Video extends AV {
         // Preference is 2nd thumbnail (first is usually black-sreen) in .thumbs/ directory (e.g. for "commute"); if only one (e.g. stairs) use that.
         const videothumbnailurl = this.videoThumbnailFile().httpUrl();
             //let cfg  = {"aspectratio": 4/3 }; // Old version in Traceys code which was missing other parts of cfg below
-        let cfg =    {"start":0,"embed":null,"so":false,"autoplay":false,"width":0,"height":0,"list_height":0,"audio":false,
+        const cfg =    {"start":0,"embed":null,"so":false,"autoplay":false,"width":0,"height":0,"list_height":0,"audio":false,
             "responsive":true,"flash":false, "hide_list":true,
             "identifier": this.itemid,
             "collection": this.item.metadata.collection[0],

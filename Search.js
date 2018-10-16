@@ -57,8 +57,8 @@ export default class Search extends ArchiveBase {
     async more() {
         AJS.more_searching = true;
         this.page++;
-        let el = document.getElementById("appendTiles"); // Get the el, before the search in case user clicks away we add to right place
-        let items = await this.fetch_query({append: true});   // Appends to this.items but returns just the new one
+        const el = document.getElementById("appendTiles"); // Get the el, before the search in case user clicks away we add to right place
+        const items = await this.fetch_query({});   // Appends to this.items but returns just the new one
         items.forEach(item => el.appendChild(new Tile().render(item)));
         AJS.tiler();
         AJS.more_searching = false;
@@ -89,7 +89,7 @@ export default class Search extends ArchiveBase {
 
     rowColumnsItems() {
         /* Output the columns-items, wrapped in a row - this will then be wrapped differently for Collections (tabbed) and Search (not) */
-        let encodedQuery = encodeURIComponent(this.query);
+        const encodedQuery = encodeURIComponent(this.query);
         return (
                     <div class="row">{/*--DONT NEED TILL HAVE FACETS --*/}
                         {/*TODO-DETAILS Facets not available over advancedsearch*/}
@@ -200,7 +200,7 @@ export default class Search extends ArchiveBase {
     }
 
     archive_setup_push() { // run in browserAfter
-        let self = this;
+        const self = this;
         AJS.date_switcher(`&nbsp;<a href="https://dweb.archive.org/search/${encodeURIComponent(this.query)+"?sort=-publicdate"}" onclick='${Nav.onclick_search({query:this.query, sort: "-publicdate"})}'><div class="date_switcher in">Date Archived</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(this.query)+"?sort=-date"}" onclick='${Nav.onclick_search({query:this.query, sort: "-date"})}'><div class="date_switcher">Date Published</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(this.query)+"?sort=-reviewdate"}" onclick='${Nav.onclick_search({query:this.query, sort: "-reviewdate"})}'><div class="date_switcher">Date Reviewed</div></a> `);
         archive_setup.push(function() {
             AJS.lists_v_tiles_setup('search');  //TODO-DETAILS this line should for example be 'account' for Account
@@ -220,10 +220,10 @@ export default class Search extends ArchiveBase {
     }
 
     banner() { // On Search "banner" is a search form  OVERRIDDEN in Collection.js subclass
-        let query=this.query;
+        const query=this.query;
         // We are using advancedsearch so this link isn't needed
         // let searchURL=`https://archive.org/advancedsearch.php?q={query}`;
-        let addBookmarkURL=`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=search&amp;identifier={encodeURIComponent(query)}&amp;title={encodeURIComponent(query)}`;  //TODO figure out decentralized bookmark submission
+        const addBookmarkURL=`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=search&amp;identifier={encodeURIComponent(query)}&amp;title={encodeURIComponent(query)}`;  //TODO figure out decentralized bookmark submission
         return (
         <div class="container container-ia width-max"
              style="background-color:#d8d8d8; padding-top:60px; border:1px solid #979797; padding-bottom:25px;">

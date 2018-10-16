@@ -77,8 +77,8 @@ export default class Details extends ArchiveBase {
 
     embedWordpress() {
         // THis appeared on image and movie examples
-        let item = this.item;
-        let itemid = item.metadata.identifier; // Shortcut as used a lot
+        const item = this.item;
+        const itemid = item.metadata.identifier; // Shortcut as used a lot
         return (
             <div>
                 <form className="form" role="form">
@@ -93,8 +93,8 @@ export default class Details extends ArchiveBase {
     }
     embedAdvanced(type) {
         // From text, video, image
-        let item = this.item;
-        let itemid = item.metadata.identifier; // Shortcut as used a lot
+        const item = this.item;
+        const itemid = item.metadata.identifier; // Shortcut as used a lot
         return(
             <div>
                 Want more?
@@ -106,7 +106,7 @@ export default class Details extends ArchiveBase {
     embed() {
         // Same on text, video, image
         // Note this shortEmbedURL is just displayed in a form used to explain how to embed, its not actually called from dweb code.
-        let shortEmbedURL = `https://archive.org/stream/${this.itemid}?ui=embed`;    //Note on archive.org/details this is different from iframeURL and not clear if that is intentional
+        const shortEmbedURL = `https://archive.org/stream/${this.itemid}?ui=embed`;    //Note on archive.org/details this is different from iframeURL and not clear if that is intentional
         return(
             <div>
                 <form class="form" role="form">
@@ -126,26 +126,26 @@ export default class Details extends ArchiveBase {
 
     itemDetailsAboutJSX() {
         /* This builds a JSX tht sits underneth theatre-ia-wrap DIV that is built by theatreIaWrap */
-        let itemid = this.itemid;
-        let item = this.item;
-        let metadata = item.metadata;
-        let title = metadata.title;
-        let creator = metadata.creator;
-        let datePublished = metadata.date;
-        let publisher=metadata.publisher;
-        let keywords = metadata.subject ? Array.isArray(metadata.subject) ? metadata.subject : metadata.subject.split(';') : undefined ;
-        let licence = metadata.licenseurl; //TODO - handle other licenses - hardwired for CC currently
-        let languageAbbrev = metadata.language;
-        let languageLong = {eng: "English", dut: "Dutch"}[languageAbbrev]; //TODO-other languages
-        let description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
-        let metadataListPossible = { color: "Color", coverage: "Location", director: "Director", identifier: "Identifier",
+        const itemid = this.itemid;
+        const item = this.item;
+        const metadata = item.metadata;
+        const title = metadata.title;
+        const creator = metadata.creator;
+        const datePublished = metadata.date;
+        const publisher=metadata.publisher;
+        const keywords = metadata.subject ? Array.isArray(metadata.subject) ? metadata.subject : metadata.subject.split(';') : undefined ;
+        const licence = metadata.licenseurl; //TODO - handle other licenses - hardwired for CC currently
+        const languageAbbrev = metadata.language;
+        const languageLong = {eng: "English", dut: "Dutch"}[languageAbbrev]; //TODO-other languages
+        const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
+        const metadataListPossible = { color: "Color", coverage: "Location", director: "Director", identifier: "Identifier",
             "identifier-ark": "Identifier-ark", ocr: "Ocr", runtime: "Run time", ppi: "Ppi", sound: "Sound", year: "Year" }; /*TODO expand to longer list*/
-        let metadataListFound = Object.keys(metadataListPossible).filter((k) => metadata[k]);    // List of keys in the metadata
+        const metadataListFound = Object.keys(metadataListPossible).filter((k) => metadata[k]);    // List of keys in the metadata
 
-        let downloadableFilesDict = this._list.reduce( (res, af) => {
-                let metadata = af.metadata;
+        const downloadableFilesDict = this._list.reduce( (res, af) => {
+                const metadata = af.metadata;
                 if (af.downloadable()) {  // Note on image it EXCLUDED JPEG Thumb, but included JPEG*Thumb
-                    let format = metadata.format;
+                    const format = metadata.format;
                     if (!res[format]) { res[format] = []; }
                     res[format].push(af);
                 }
@@ -155,21 +155,21 @@ export default class Details extends ArchiveBase {
 
 
             //TODO  Replace "a" with onclicks to download function on f
-        let filesCount = item.files_count;
-        let originalFilesCount = item.files.filter((f)=>f.source === "original").length+1; // Adds in Archive Bittorrent
-        let downloadURL = `https://dweb.archive.org/download/${itemid}`;
-        let compressURL = `https://archive.org/compress/${itemid}`; // leave as direct link, else need to zip and store each item in IPFS
-        let compressAllURL = `https://archive.org/compress/${itemid}/formats=JSON,METADATA,JPEG,ARCHIVE BITTORRENT,MUSICBRAINZ METADATA`; // As above leave as direct
-        let collections = Array.isArray(metadata.collection) ? metadata.collection : [ metadata.collection ];
-        let collectionTitles = item.collection_titles;   // Dictionary mapping collection itemid to title
-        let mediatype = metadata.mediatype;
-        let iconochiveIcon="iconochive-"+mediatype; //obscure mediatypes are supported
-        let contributor = metadata.contributor;
-        let reviews = item.reviews;
-        let writeReviewsURL = `https://archive.org/write-review.php?identifier=${itemid}`;  //TODO need an indirect way to submit a review
-        let loginURL = "https://archive.org/account/login.php"; //TODO - its a Direct link as dont support authentication in DWeb version
-        let bookmarksAddURL = `https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=image&amp;identifier=${itemid}&amp;title=${title}`; //TODO find way to submit distributed
-        let credits = metadata.credits;
+        const filesCount = item.files_count;
+        const originalFilesCount = item.files.filter((f)=>f.source === "original").length+1; // Adds in Archive Bittorrent
+        const downloadURL = `https://dweb.archive.org/download/${itemid}`;
+        const compressURL = `https://archive.org/compress/${itemid}`; // leave as direct link, else need to zip and store each item in IPFS
+        const compressAllURL = `https://archive.org/compress/${itemid}/formats=JSON,METADATA,JPEG,ARCHIVE BITTORRENT,MUSICBRAINZ METADATA`; // As above leave as direct
+        const collections = Array.isArray(metadata.collection) ? metadata.collection : [ metadata.collection ];
+        const collectionTitles = item.collection_titles;   // Dictionary mapping collection itemid to title
+        const mediatype = metadata.mediatype;
+        const iconochiveIcon="iconochive-"+mediatype; //obscure mediatypes are supported
+        const contributor = metadata.contributor;
+        const reviews = item.reviews;
+        const writeReviewsURL = `https://archive.org/write-review.php?identifier=${itemid}`;  //TODO need an indirect way to submit a review
+        const loginURL = "https://archive.org/account/login.php"; //TODO - its a Direct link as dont support authentication in DWeb version
+        const bookmarksAddURL = `https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=image&amp;identifier=${itemid}&amp;title=${title}`; //TODO find way to submit distributed
+        const credits = metadata.credits;
         //TODO-DETAILS much of below doesn't work (yet)
         //TODO-DETAILS note the structure of this has changed - see the difference in originals between multitrackaudio and mbid for example
         return (
@@ -401,8 +401,8 @@ export default class Details extends ArchiveBase {
 
     itemDetailsAlsoFound() {
         if (!this.itemid) return undefined; // No related to home page, TODO maybe other places dont have also found = e.g. collections
-        let relatedUrl = ( DwebArchive.mirror ? (Util.gatewayServer()+Util.gateway.url_related_local) : Util.gateway.url_related)+this.itemid;
-        let el = (
+        const relatedUrl = ( DwebArchive.mirror ? (Util.gatewayServer()+Util.gateway.url_related_local) : Util.gateway.url_related)+this.itemid;
+        const el = (
             <div id="also-found" className="container container-ia width-max" data-identifier={this.itemid} ></div>
             );
         Util.fetch_json(relatedUrl, (err, data) => {
@@ -430,7 +430,7 @@ export default class Details extends ArchiveBase {
         ) )
     }
     alsoFoundTile(i) { //TODO catch the /details and /serices urls in ReactFake
-        let foo = (
+        const foo = (
             <div className="results" style="visibility: visible;">
                 <div className="item-ia" data-id={i._id} data-mediatype={i._source.mediatype[0]} data-year=""><a
                         className="stealth" tabIndex="-1" href={`/details/${i._id}`}>
