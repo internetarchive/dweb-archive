@@ -2,7 +2,7 @@
 
 // noinspection JSUnresolvedFunction
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
-const stringify = require('canonical-json');
+const canonicaljson = require('@stratumn/canonicaljson');
 
 // https://ponyfoo.com/articles/universal-react-babel
 // noinspection JSUnresolvedFunction
@@ -200,7 +200,7 @@ export default class Nav {
     }
     static onclick_search(q) {
         // Build the onclick part of a search, q can be a string or an object e.g. {creator: "Foo bar", sort: "-date"}
-        return `Nav.nav_search(${stringify(q)}); return false;`;
+        return `Nav.nav_search(${canonicaljson.stringify(q)}); return false;`;
     }
 
     // noinspection JSUnusedGlobalSymbols

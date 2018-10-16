@@ -1,5 +1,6 @@
 const ArchiveFile = require("./ArchiveFile");
 const Util = require("./Util");
+const canonicaljson = require('@stratumn/canonicaljson');
 
 //require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 const debug = require('debug')('dweb-archive');

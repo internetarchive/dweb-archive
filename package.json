@@ -9,9 +9,10 @@
   },
   "description": "Archive UI to run in Browser",
   "dependencies": {
+    "@babel/core": "^7.1.2",
     "@internetarchive/dweb-objects": "^0.1.10",
     "@internetarchive/dweb-transports": "^0.1.18",
-    "canonical-json": "^0.0.4",
+    "@stratumn/canonicaljson": "^1.0.2",
     "debug": "^3.2.5",
     "es2015": "latest",
     "from2": "^2.3.0",
