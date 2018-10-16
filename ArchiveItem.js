@@ -39,7 +39,7 @@ class ArchiveItem {
             : [];   // Default to empty, so usage simpler.
     }
 
-    async fetch({append = false}={}) {
+    async fetch() {
         /* Fetch what we can about this item, it might be an item or something we have to search for.
             Fetch item metadata as JSON by talking to Metadata API
             Fetch collection info by an advanced search.
@@ -50,7 +50,7 @@ class ArchiveItem {
             resolves to: this
          */
         await this.fetch_metadata();
-        await this.fetch_query({append});
+        await this.fetch_query();
 
         return this;
     }
@@ -114,7 +114,7 @@ class ArchiveItem {
         // Note this does NOT support sort, there isnt enough info in members.json to do that
         return newitems;
     }
-    fetch_query({append=false}={}, cb) {
+    fetch_query(opts={}, cb) { // No opts currently,
         // Returns a promise or calls cb(err, json);
         if (cb) { return f.call(this, cb) } else { return new Promise((resolve, reject) => f.call(this, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
         function f(cb) {
@@ -142,7 +142,7 @@ class ArchiveItem {
                     //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
                     debug("Searching with %s", url);
                     Util.fetch_json(url, (err, j) => {
-                        this.items = (append && this.items) ? this.items.concat(j.response.docs) : j.response.docs;
+                        this.items = (this.items) ? this.items.concat(j.response.docs) : j.response.docs;
                         this.start = j.response.start;
                         this.numFound = j.response.numFound;
                         cb(null, j.response.docs);
