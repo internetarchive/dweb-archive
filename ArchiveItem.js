@@ -17,7 +17,7 @@ class ArchiveItem {
     itemid: Archive.org reference for object
     item:   Metadata decoded from JSON from metadata search.
     items:  Array of data from a search.
-    _list:  Will hold a list of files when its a single item, TODO-REFACTOR maybe this holds a array of ArchiveItem when its a search BUT only have partial metadata info
+    _list:  Will hold a list of files when its a single item
 
     Once subclass SmartDict
     _urls:  Will be list of places to retrieve this data (not quite a metadata call)
@@ -77,79 +77,98 @@ class ArchiveItem {
         return m;
     }
 
-    fetch_metadata(cb) {
+    fetch_metadata(opts={}, cb) {
         /*
         Fetch the metadata for this item if it hasn't already been.
-        cb(err, this) or if none, returns a promise resolving to this
+
+        This function is intended to be monkey-patched in dweb-mirror to define caching.
+        Its monkeypatched because of all the places inside dweb-archive that call fetch_query
+        cb(err, this) or if undefined, returns a promise resolving to 'this'
          */
+        if (typeof opts === "function") { cb = opts; opts = {}; } // Allow opts parameter to be skipped
         if (cb) { return f.call(this, cb) } else { return new Promise((resolve, reject) => f.call(this, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}        //NOTE this is PROMISIFY pattern used elsewhere
         function f(cb) {
             if (this.itemid && !this.item) {
-                debug('getting metadata for %s', this.itemid);
-                // Fetch via Domain record - the dweb:/arc/archive.org/metadata resolves into a table that is dynamic on gateway.dweb.me
-                const name = `dweb:/arc/archive.org/metadata/${this.itemid}`;
-                // Fetch using Transports as its multiurl and might not be HTTP urls
-                const prom = DwebTransports.p_rawfetch([name], {timeoutMS: 5000})    //TransportError if all urls fail (e.g. bad itemid)
-                    .then((m) => {
-                        m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
-                        console.assert(m.metadata.identifier === this.itemid);
-
-                        this.item = this.processMetadataFjords(m);
-                        this._listLoad();   // Load _list with ArchiveFile
-                        debug("metadata for %s fetched successfully", this.itemid);
-                        cb(null, this);
-                    }).catch(err => cb(err));
+                this._fetch_metadata(cb)
             } else {
                 cb(null, this);
             }
         }
     }
+    _fetch_metadata(cb) {
+        /*
+        Fetch the metadata for this item - dont use directly, use fetch_metadata.
+         */
+        debug('getting metadata for %s', this.itemid);
+        // Fetch via Domain record - the dweb:/arc/archive.org/metadata resolves into a table that is dynamic on gateway.dweb.me
+        const name = `dweb:/arc/archive.org/metadata/${this.itemid}`;
+        // Fetch using Transports as its multiurl and might not be HTTP urls
+        const prom = DwebTransports.p_rawfetch([name], {timeoutMS: 5000})    //TransportError if all urls fail (e.g. bad itemid)
+            .then((m) => {
+                m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
+                console.assert(m.metadata.identifier === this.itemid);
+
+                this.item = this.processMetadataFjords(m);
+                this._listLoad();   // Load _list with ArchiveFile
+                debug("metadata for %s fetched successfully", this.itemid);
+                cb(null, this);
+            }).catch(err => cb(err));
+    }
 
     fetch_query(opts={}, cb) { // No opts currently,
-        // Returns a promise or calls cb(err, json);
-        if (cb) { return f.call(this, cb) } else { return new Promise((resolve, reject) => f.call(this, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
-        function f(cb) {
-            /*  Action a query, return the array of docs found.
-                Subclassed in Account.js since dont know the query till the metadata is fetched
-                */
-            // noinspection JSUnresolvedVariable
-            // rejects: TransportError or CodingError if no urls
-            if (this.query) {   // This is for Search, Collection and Home.
-                if (!this._list) this._listLoad();
-                // First we look for the fav-xyz type collection, where there is an explicit JSON of the members
-                const memberFileName = `${this.itemid}_members.json`;
-                const membersAF = this._list.find(af => af.metadata.name === memberFileName);   // af || undefined
-                if (membersAF) {
-                    membersAF.data((err, jsonstring) => {
-                        const newitems = canonicaljson.parse(jsonstring).slice((this.page - 1) * this.limit, this.page * this.limit); // See copy of some of this logic in dweb-mirror.MirrorCollection.fetch_query
-                        this.items = this.items ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
-                        // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveItems
-                        // Note this does NOT support sort, there isnt enough info in members.json to do that
-                        cb(null, newitems)
-                    });
-                } else {
-                    if (this.item && this.item.metadata.search_collection) {
-                        this.query = this.item.metadata.search_collection.replace('\"', '"')
-                    }
-                    const sort = (this.item && this.item.collection_sort_order) || this.sort;
-                    // noinspection JSUnresolvedVariable
-                    const url =
-                        //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
-                        `${Util.gatewayServer()}${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
-                    //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
-                    debug("Searching with %s", url);
-                    Util.fetch_json(url, (err, j) => {
-                        this.items = (this.items) ? this.items.concat(j.response.docs) : j.response.docs;
-                        this.start = j.response.start;
-                        this.numFound = j.response.numFound;
-                        cb(null, j.response.docs);
-                    });
-                }
-            } else {
+        /*  Action a query, return the array of docs found and store the accumulated search on .items
+            Subclassed in Account.js since dont know the query till the metadata is fetched
+
+            This function is intended to be monkey-patched in dweb-mirror to define caching.
+            Its monkeypatched because of all the places inside dweb-archive that call fetch_query
+            Patch will call _fetch_query
+            Returns a promise or calls cb(err, json);
+        */
+        if (cb) { return this._fetch_query(opts, cb) } else { return new Promise((resolve, reject) => _fetch_query(opts, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
+    }
+
+    _fetch_query(opts={}, cb) { // No opts currently,
+        // noinspection JSUnresolvedVariable
+        // rejects: TransportError or CodingError if no urls
+        if (!this._list) this._listLoad();  // Will be empty if search and so no itemid so no files
+        // First we look for the fav-xyz type collection, where there is an explicit JSON of the members
+        let membersAF;
+        if (this.itemid) {
+            const memberFileName = `${this.itemid}_members.json`;
+            membersAF = this._list.find(af => af.metadata.name === memberFileName);   // af || undefined
+        }
+        if (membersAF) {
+            membersAF.data((err, jsonstring) => {
+                const newitems = canonicaljson.parse(jsonstring).slice((this.page - 1) * this.limit, this.page * this.limit); // See copy of some of this logic in dweb-mirror.MirrorCollection.fetch_query
+                this.items = this.items ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
+                // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveItems
+                // Note this does NOT support sort, there isnt enough info in members.json to do that
+                cb(null, newitems)
+            });
+        } else {
+            if (this.item && this.item.metadata.search_collection) { // Search will have !this.item
+                this.query = this.item.metadata.search_collection.replace('\"', '"')
+            }
+            if (this.query) {   // If this is a "Search" then will come here.
+                const sort = (this.item && this.item.collection_sort_order) || this.sort;
+                // noinspection JSUnresolvedVariable
+                const url =
+                    //`https://archive.org/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; // Archive (CORS fail)
+                    `${Util.gatewayServer()}${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
+                //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
+                debug("Searching with %s", url);
+                Util.fetch_json(url, (err, j) => {
+                    this.items = (this.items) ? this.items.concat(j.response.docs) : j.response.docs;
+                    this.start = j.response.start;
+                    this.numFound = j.response.numFound;
+                    cb(null, j.response.docs);
+                });
+            } else { // Neither query, nor metadata.search_collection nor file/ITEMID_members.json so not really a collection
                 cb(null, undefined);
             }
         }
     }
+
     async thumbnaillinks() {
         await this.fetch_metadata();
         return this.item.metadata.thumbnaillinks; // Short cut since metadata changes may move this

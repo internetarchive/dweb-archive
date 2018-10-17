@@ -9,7 +9,7 @@ import ArchiveItem from './ArchiveItem';
 
 export default class ArchiveBase extends ArchiveItem {
     /*
-    Base class for Archive application - base of Details = which includes single element items and Search which includes both searches and collections (which are actually items).
+    Base class for Archive UI application - base of Details = which includes single element items and Search which includes both searches and collections (which are actually items).
     ArchiveBase
     - Details
     - - AV
