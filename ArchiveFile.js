@@ -41,14 +41,17 @@ class ArchiveFile {
         Throws: Error if fetch_json doesn't succeed, or retrieves something other than JSON
          */
         try {
-            if (!this.metadata.ipfs && (await DwebTransports.p_connectedNames()).includes("IPFS")) {   // Connected to IPFS but dont have IPFS URL yet (not included by default because IPFS caching is slow)
+            if (!this.metadata.magnetlink   // Wont be file based metadata for example for __ia_thumb.jpg constructed from search
+                || !this.metadata.contenthash
+                || (!this.metadata.ipfs && (await DwebTransports.p_connectedNames()).includes("IPFS"))
+            ) {   // Connected to IPFS but dont have IPFS URL yet (not included by default because IPFS caching is slow)
                 // Fjords: 17BananasIGotThis/17 Bananas? I Got This!.mp3  has a '?' in it
                 let name = this.metadata.name.replace('?','%3F');
                 this.metadata = await Util.fetch_json(`${Util.gatewayServer()}${Util.gateway.url_metadata}${this.itemid}/${name}`);
             }
         } catch(err) {
             console.warn("Error from Util.fetch_json meant ArchiveFile failed to retrieve metadata for", this.itemid, this.metadata.name);
-            if (cb) { cb(null, []) } else { return []} // Empty array as nowhere to fetch
+            return []; // Empty array as nowhere to fetch
         }
         // Includes both ipfs and ipfs via gateway link as the latter can prime the IPFS DHT so the former works for the next user
         // noinspection JSUnresolvedFunction
