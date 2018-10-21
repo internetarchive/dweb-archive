@@ -285,7 +285,7 @@ Util._formatarr = [
     {format: undefined, ext: '.jpeg', type: 'image', mimetype: 'image/jpeg', playable: undefined, downloaable: undefined },
     {format: undefined, ext: '.jpg', type: 'image', mimetype: 'image/jpeg', playable: undefined, downloaable: undefined },
     {format: undefined, ext: '.js', type: 'application', mimetype: 'application/x-javascript', playable: undefined, downloaable: undefined },
-    {format: undefined, ext: '.json', type: 'application', mimetype: 'application/json', playable: undefined, downloaable: undefined },
+    {format: "JSON",    ext: '.json', type: 'application', mimetype: 'application/json', playable: undefined, downloaable: undefined },
     {format: undefined, ext: '.kar', type: 'audio', mimetype: 'audio/midi', playable: undefined, downloaable: undefined },
     {format: undefined, ext: '.log', type: 'text', mimetype: 'text/plain', playable: undefined, downloaable: undefined },
     {format: undefined, ext: '.mid', type: 'audio', mimetype: 'audio/midi', playable: undefined, downloaable: undefined },

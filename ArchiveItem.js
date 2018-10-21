@@ -86,7 +86,8 @@ class ArchiveItem {
         cb(err, this) or if undefined, returns a promise resolving to 'this'
          */
         if (typeof opts === "function") { cb = opts; opts = {}; } // Allow opts parameter to be skipped
-        if (cb) { return f.call(this, cb) } else { return new Promise((resolve, reject) => f.call(this, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}        //NOTE this is PROMISIFY pattern used elsewhere
+        if (cb) { return f.call(this, cb) }
+        else { return new Promise((resolve, reject) => f.call(this, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}        //NOTE this is PROMISIFY pattern used elsewhere
         function f(cb) {
             if (this.itemid && !this.item) {
                 this._fetch_metadata(cb)
@@ -124,7 +125,7 @@ class ArchiveItem {
             Patch will call _fetch_query
             Returns a promise or calls cb(err, json);
         */
-        if (cb) { return this._fetch_query(opts, cb) } else { return new Promise((resolve, reject) => _fetch_query(opts, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
+        if (cb) { return this._fetch_query(opts, cb) } else { return new Promise((resolve, reject) => this._fetch_query(opts, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
     }
 
     _fetch_query(opts={}, cb) { // No opts currently,
@@ -139,11 +140,16 @@ class ArchiveItem {
         }
         if (membersAF) {
             membersAF.data((err, jsonstring) => {
-                const newitems = canonicaljson.parse(jsonstring).slice((this.page - 1) * this.limit, this.page * this.limit); // See copy of some of this logic in dweb-mirror.MirrorCollection.fetch_query
-                this.items = this.items ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
-                // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveItems
-                // Note this does NOT support sort, there isnt enough info in members.json to do that
-                cb(null, newitems)
+                if (err) {
+                    debug("Unable to read member data from %s/%s",this.itemid,membersAF);
+                    cb(err);
+                } else {
+                    const newitems = canonicaljson.parse(jsonstring).slice((this.page - 1) * this.limit, this.page * this.limit); // See copy of some of this logic in dweb-mirror.MirrorCollection.fetch_query
+                    this.items = this.items ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
+                    // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveItems
+                    // Note this does NOT support sort, there isnt enough info in members.json to do that
+                    cb(null, newitems)
+                }
             });
         } else {
             if (this.item && this.item.metadata.search_collection) { // Search will have !this.item
@@ -164,8 +170,27 @@ class ArchiveItem {
                     cb(null, j.response.docs);
                 });
             } else { // Neither query, nor metadata.search_collection nor file/ITEMID_members.json so not really a collection
-                cb(null, undefined);
+                cb(null, undefined); // No results return undefined (which is also what the patch in dweb-mirror does if no collection instead of empty array)
             }
+        }
+    }
+
+    relatedItems(opts = {}, cb) {
+        if (typeof opts === "function") { cb = opts; opts = {}; } // Allow opts parameter to be skipped
+        if (cb) { return this._relatedItems(opts, cb) } else { return new Promise((resolve, reject) => this._relatedItems(opts, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
+
+
+    }
+    _relatedItems({wantStream=false} = {}, cb) {
+        /*
+        cb(err, obj)  Callback on completion with related items object
+        TODO-REFACTOR-CACHE add hook in dweb-archive and use in dweb-archive.itemDetailsAlsoFound
+        */
+        const relatedUrl = ( DwebArchive.mirror ? (Util.gatewayServer()+Util.gateway.url_related_local) : Util.gateway.url_related)+this.itemid;
+        if (wantStream) { // Stream doesnt really make sense unless caching to file
+            DwebTransports.createReadStream(relatedUrl, {}, cb);
+        } else {
+            Util.fetch_json(relatedUrl, cb);
         }
     }
 
@@ -286,7 +311,6 @@ class ArchiveItem {
         );
         this.playlist = Object.values(pl).filter(p => p.sources.length);
     }
-
 
 
 }

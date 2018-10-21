@@ -24,7 +24,7 @@ class ArchiveFile {
         return this.metadata.name;
     }
 
-    static urls(cb) {
+    urls(cb) {
         //TODO-PROMISIFY this is a temp patch between cb and promise till p_urls handles cb which depends on p_connectdNames (fetch_json already does)
         if (cb) {
             this.p_urls().then(urls => cb(null, urls)).catch(err => cb(err));
@@ -76,7 +76,7 @@ class ArchiveFile {
         return this.p_urls()
             .then(urls => DwebTransports.p_rawfetch(urls))
             .then(res => { if (cb) { cb(null, res); return undefined; } else {return res; } })
-            .catch(err => { if (cb) { cb(null, res); return undefined; } else { throw(err); } } )
+            .catch(err => { if (cb) { cb(err); return undefined; } else { throw(err); } } )
     }
     async blob() { // Not timedout currently as only used in .blobUrl which could be slow on big files
         return new Blob([await this.data()], {type: this.mimetype()} );

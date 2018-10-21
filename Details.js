@@ -401,15 +401,14 @@ export default class Details extends ArchiveBase {
 
     itemDetailsAlsoFound() {
         if (!this.itemid) return undefined; // No related to home page, TODO maybe other places dont have also found = e.g. collections
-        const relatedUrl = ( DwebArchive.mirror ? (Util.gatewayServer()+Util.gateway.url_related_local) : Util.gateway.url_related)+this.itemid;
         const el = (
             <div id="also-found" className="container container-ia width-max" data-identifier={this.itemid} ></div>
             );
-        Util.fetch_json(relatedUrl, (err, data) => {
+        this.relatedItems({wantStream:false}, (err, data) => {
             if (!err) { // If there is an error then fetch_json will have reported it, and can just ignore it here and not display
-                this.loadDetailsAlsoFound(el, this.itemid, data.hits.hits);  // Asynchronous TODO move to gateway ?
+                this.loadDetailsAlsoFound(el, this.itemid, data.hits.hits);  // Asynchronous
             }
-        })
+        });
         return el;
     }
     loadDetailsAlsoFound(el, itemid, results) {
