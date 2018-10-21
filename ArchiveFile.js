@@ -65,8 +65,13 @@ class ArchiveFile {
         // This will typically be dweb.me, but may be overridden un URL with mirror=localhost:4244
         return `${Util.gatewayServer()}${Util.gateway.url_download}${this.itemid}/${this.metadata.name}`;
     }
-    async mimetype() {
-        return Util.formats("format", this.metadata.format).mimetype;
+    mimetype() {
+        let f =  Util.formats("format", this.metadata.format)
+        if (typeof f === "undefined") {
+            const ext = this.metadata.name.split('.').pop();
+            f =  Util.formats("ext", "."+ext)
+        }
+        return  (typeof f === "undefined") ? undefined : f.mimetype;
     }
     data(cb) { // Not timedout currently as only used in .blob which could be slow on big files
         // Fetch data, normally you shoud probably be streaming instead.
