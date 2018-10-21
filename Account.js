@@ -136,7 +136,7 @@ export default class Account extends Search {
         let itemid = this.itemid;
         let item = this.item
         let title = item.metadata.title; // Example from @tracey_pooh
-        let imageurls = item.metadata.thumbnaillinks;  // TODO-ACCOUNT Tracey is adding a service to get a better image (larger scale
+        let imagesrc = this.thumbnailFile();  // TODO-ACCOUNT Tracey is adding a service to get a better image (larger scale
         let name = this.name();
         return (
             <div class="welcome container container-ia width-max account-uniform">
@@ -145,7 +145,7 @@ export default class Account extends Search {
                                 <div class="col-xs-11 col-sm-2 welcome-left" style="text-align:center;">
                                     <div id="file-dropper-wrap">
                                         <div id="file-dropper"></div>
-                                        <img id="file-dropper-img" src={imageurls} style="max-width:300px"/>
+                                        <img id="file-dropper-img" src={imagesrc} style="max-width:300px"/>
                                     </div>
                                 </div>{/*--/.col-xs-11--*/}
                                 <div class="col-xs-1 col-sm-2 col-sm-push-8 welcome-right">
