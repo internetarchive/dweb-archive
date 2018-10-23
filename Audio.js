@@ -48,7 +48,8 @@ export default class Audio extends AV {
         this.setupPlaylist();
         const af0 = this.playlist[0] && this.playlist[0].sources[0] && this.playlist[0].sources[0].urls;
         const initialPlay = 1;
-        const trackCount = 1;
+        const imgsrc = this.thumbnailFile();
+        let trackCount = 1;
         return (
             <div id="theatre-ia-wrap" class="container container-ia width-max ">
                 <link itemprop="url" href={detailsurl}/>{/*Link to archive.org directly*/}
@@ -90,8 +91,7 @@ export default class Audio extends AV {
                             <div class="row">
                                 <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4 audio-image-carousel-wrapper">
                                     <center>{/*--TODO-AUDIO replace image - see https://github.com/internetarchive/dweb-archive/issues/23--*/}
-                                        <img src={item.metadata.thumbnaillinks}
-                                            class="img-responsive"/>
+                                        <img src={imgsrc} class="img-responsive"/>
                                     </center>
                                 </div>
                                 <div class="col-xs-12 col-sm-6 col-md-7 col-lg-8">
