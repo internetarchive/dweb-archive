@@ -43,7 +43,7 @@ class ArchiveFile {
         try {
             if (!this.metadata.magnetlink   // Wont be file based metadata for example for __ia_thumb.jpg constructed from search
                 || !this.metadata.contenthash
-                || (!this.metadata.ipfs && (await DwebTransports.p_connectedNames()).includes("IPFS"))
+                || ((!this.metadata.ipfs && (await DwebTransports.p_connectedNames()).includes("IPFS")))
             ) {   // Connected to IPFS but dont have IPFS URL yet (not included by default because IPFS caching is slow)
                 // Fjords: 17BananasIGotThis/17 Bananas? I Got This!.mp3  has a '?' in it
                 let name = this.metadata.name.replace('?','%3F');
