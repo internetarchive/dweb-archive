@@ -47,7 +47,7 @@ class ArchiveFile {
             ) {   // Connected to IPFS but dont have IPFS URL yet (not included by default because IPFS caching is slow)
                 // Fjords: 17BananasIGotThis/17 Bananas? I Got This!.mp3  has a '?' in it
                 let name = this.metadata.name.replace('?','%3F');
-                this.metadata = await Util.fetch_json(`${Util.gatewayServer()}${Util.gateway.url_metadata}${this.itemid}/${name}`);
+                this.metadata = await Util.fetch_json(`${Util.gatewayServer()}${Util.gateway.url_metadata}${this.itemid}/${encodeURIComponent(name)}`);
             }
         } catch(err) {
             console.warn("Error from Util.fetch_json meant ArchiveFile failed to retrieve metadata for", this.itemid, this.metadata.name);
@@ -116,7 +116,7 @@ class ArchiveFile {
     istype(type) {
         // True if specify a type and it matches, or don't specify a type BUT fails if type unrecognized
         let format = Util.formats("format", this.metadata.format);
-        if (!format) console.warn("Format", this.metadata.format, "unrecognized");
+        //if (!format) console.warn("Format", this.metadata.format, "unrecognized");
         return format && (!type || (format.type === type));
     }
     // noinspection JSUnusedGlobalSymbols
