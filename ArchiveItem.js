@@ -49,10 +49,13 @@ class ArchiveItem {
             throws: TypeError or Error if fails esp Unable to resolve name
             resolves to: this
          */
-        await this.fetch_metadata();
-        await this.fetch_query();
-
-        return this;
+        try {
+            await this.fetch_metadata();
+            await this.fetch_query(); // Should throw error if fails to fetch
+            return this;
+        } catch(err) {
+            throw(err); // Typically a failure to fetch
+        }
     }
 
     processMetadataFjords(m) { // TODO-FJORDS move code tagged TODO-FJORDS to this routine where possible
@@ -124,6 +127,7 @@ class ArchiveItem {
             Its monkeypatched because of all the places inside dweb-archive that call fetch_query
             Patch will call _fetch_query
             Returns a promise or calls cb(err, json);
+            Errs include if failed to fetch
         */
         if (cb) { return this._fetch_query(opts, cb) } else { return new Promise((resolve, reject) => this._fetch_query(opts, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
     }
@@ -163,11 +167,14 @@ class ArchiveItem {
                     `${Util.gatewayServer()}${Util.gateway.url_advancedsearch}?output=json&q=${encodeURIComponent(this.query)}&rows=${this.limit}&page=${this.page}&sort[]=${sort}&and[]=${this.and}&save=yes`;
                 //`http://localhost:4244/metadata/advancedsearch?output=json&q=${this.query}&rows=${this.limit}&sort[]=${sort}`; //Testing
                 debug("Searching with %s", url);
-                Util.fetch_json(url, (err, j) => {
-                    this.items = (this.items) ? this.items.concat(j.response.docs) : j.response.docs;
-                    this.start = j.response.start;
-                    this.numFound = j.response.numFound;
-                    cb(null, j.response.docs);
+                Util.fetch_json(url, (err, j) => { // Will get error "failed to fetch" if fails
+                    if (err) { cb(err) } // Failed to fetch
+                    else {
+                        this.items = (this.items) ? this.items.concat(j.response.docs) : j.response.docs;
+                        this.start = j.response.start;
+                        this.numFound = j.response.numFound;
+                        cb(null, j.response.docs);
+                    }
                 });
             } else { // Neither query, nor metadata.search_collection nor file/ITEMID_members.json so not really a collection
                 cb(null, undefined); // No results return undefined (which is also what the patch in dweb-mirror does if no collection instead of empty array)

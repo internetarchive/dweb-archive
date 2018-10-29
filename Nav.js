@@ -263,33 +263,37 @@ export default class Nav {
             if (!(item && item.metadata)) {
                 new DetailsError(itemid, item, `item ${itemid} cannot be found or does not have metadata`).render(res);
             } else {
-                if (downloaddirectory) {
-                    new DownloadDirectory(itemid, item).render(res);
-                } else {
-                    switch (item.metadata.mediatype) {
-                        case "collection":
-                            (await new Collection(itemid, item).fetch()).render(res);   //fetch will do search
-                            break;
-                        case "texts":
-                            new Texts(itemid, item).render(res);
-                            break;
-                        case "image":
-                            new Image(itemid, item).render(res);
-                            break;
-                        case "audio": // Intentionally drop thru to movies
-                        case "etree": // Concerts uploaded
-                            new Audio(itemid, item).render(res);
-                            break;
-                        case "movies":
-                            new Video(itemid, item).render(res);
-                            break;
-                        case "account":
-                            return (await new Account({itemid, item}).fetch()).render(res);
-                        default:
-                            //TODO Not yet supporting software, zotero (0 items); data; web
-                            new DetailsError(itemid, item, `Unsupported mediatype: ${item.metadata.mediatype}`).render(res);
-                        //    return new Nav(")
+                try {
+                    if (downloaddirectory) {
+                        new DownloadDirectory(itemid, item).render(res);
+                    } else {
+                        switch (item.metadata.mediatype) {
+                            case "collection":
+                                (await new Collection(itemid, item).fetch()).render(res);   //fetch will do search
+                                break;
+                            case "texts":
+                                new Texts(itemid, item).render(res);
+                                break;
+                            case "image":
+                                new Image(itemid, item).render(res);
+                                break;
+                            case "audio": // Intentionally drop thru to movies
+                            case "etree": // Concerts uploaded
+                                new Audio(itemid, item).render(res);
+                                break;
+                            case "movies":
+                                new Video(itemid, item).render(res);
+                                break;
+                            case "account":
+                                return (await new Account({itemid, item}).fetch()).render(res);
+                            default:
+                                //TODO Not yet supporting software, zotero (0 items); data; web
+                                new DetailsError(itemid, item, `Unsupported mediatype: ${item.metadata.mediatype}`).render(res);
+                            //    return new Nav(")
+                        }
                     }
+                } catch(err) {
+                    new DetailsError(itemid, item, err.message).render(res);
                 }
             }
         }
