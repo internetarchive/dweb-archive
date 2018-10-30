@@ -160,7 +160,7 @@ export default class Details extends ArchiveBase {
         const downloadURL = `https://dweb.archive.org/download/${itemid}`;
         const compressURL = `https://archive.org/compress/${itemid}`; // leave as direct link, else need to zip and store each item in IPFS
         const compressAllURL = `https://archive.org/compress/${itemid}/formats=JSON,METADATA,JPEG,ARCHIVE BITTORRENT,MUSICBRAINZ METADATA`; // As above leave as direct
-        const collections = Array.isArray(metadata.collection) ? metadata.collection : [ metadata.collection ];
+        const collections = metadata.collection; // [str*]
         const collectionTitles = item.collection_titles;   // Dictionary mapping collection itemid to title
         const mediatype = metadata.mediatype;
         const iconochiveIcon="iconochive-"+mediatype; //obscure mediatypes are supported
@@ -448,29 +448,10 @@ export default class Details extends ArchiveBase {
                                     </div>
                                 </div>*/}
                     </div>
-                    <div className="statbar ">
-                        <div className="mt-icon C C5"><span className={`iconochive-{i._source.mediatype[0]}`}
-                                                            aria-hidden="true">&nbsp;</span><span
-                            className="sr-only">{i._source.mediatype[0]}</span></div>
-                        {i._source.downloads ? (
-                            <h6 className="stat"><span className="iconochive-eye"
-                                                       aria-hidden="true">&nbsp;</span><span
-                                className="sr-only">eye</span><span>{i._source.downloads[0]}</span></h6>
-                        ) : undefined }
-                        {i._source.collection ? (
-                            <h6 className="stat"><span className="iconochive-favorite"
-                                                            aria-hidden="true">&nbsp;</span><span
-                            className="sr-only">favorite</span>{i._source.collection.filter(c => c.startsWith('fav-')).length}</h6>
-                        ) : undefined }
-                        {/*<h6
-                        className="stat"><span className="iconochive-comment"
-                                               aria-hidden="true">&nbsp;</span><span
-                        className="sr-only">comment</span><!-- react-text: 38 -->1<!-- /react-text --></h6>*/}
-                    </div>
+                    {(i._source.mediatype === "collection") ? Tile.div_collectionstats(i._source) : Tile.div_statbar(i._source) }
                 </div>
             </div>
         );
-        return foo;
     }
 
 }

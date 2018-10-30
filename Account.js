@@ -21,11 +21,11 @@ export default class Account extends Search {
     name() {
         return this.itemid.replace(/_/g,' ').replace('@',''); // Canonical name from id, may have better ways to get this - see @tracey_pooh for case needing this one.
     }
-    async fetch_query() {
+    async fetch_query(opts) {
         // Subclass ArchiveItem.fetch_query
         this.query = `uploader:"${this.item.metadata.uploader}"`;
         this.sort = '-publicdate';
-        await super.fetch_query();
+        return await super.fetch_query(opts); // Unclear if return or opts used, but should send it.
     }
     wrap() {
         /*

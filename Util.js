@@ -44,7 +44,7 @@ class Util {
             "ad": "tv-commercial"
         };
 
-        const icon = ICONS[mediatype];
+        let icon = ICONS[mediatype];
         if (!icon)
             icon = 'question';
 
@@ -167,6 +167,20 @@ class Util {
         // Has to be a function rather than constant because searchparams is defined after this library is loaded
         // Note that for example where Util.js is included from dweb-mirror that currently (this may change) DwebArchive is not defined
         return (typeof DwebArchive != "undefined") && DwebArchive.mirror || "https://dweb.me";
+    static processMetadataFjords(meta) { // TODO-FJORDS move code tagged TODO-FJORDS to this routine where possible
+        // The Archive is nothing but edge cases, handle some of them here so the code doesnt have to !
+        // Note this called by ArchiveMember and ArchiveItem and will probably be called by ArchiveFiles so keep it generic and put class-specifics in Archive*.processMetadataFjords
+        Object.keys(Util.metadata.arrays).forEach(f => { // Turn these into array, no matter what parsed JSON contains
+            meta[f] = (Array.isArray(meta[f]) ? meta[f] : (typeof(meta[f]) === 'string' ? [meta[f]] : [])); // [str*]
+        });
+        Object.keys(Util.metadata.singletons).forEach(f => {
+            if (typeof meta[f] === "undefined") meta[f] = "";
+            if (Array.isArray(meta[f])) {
+                meta[f] = meta[f].join(Util.metadata.singletons[f]); //e.g. biographyofbanan0000eage
+                debug("Metadata Fjords - concatenting multi-line description on %s", meta.identifier);
+            }
+        });
+        return meta;
     }
 }
 
@@ -1094,8 +1108,9 @@ Util.languageMapping = {
 Util.metadata = {
     "singletons": {    // Fields that should be single entry.
         "description": "<br/>"
-    }
-}
+    },
+    "arrays": ["collection" ]
+};
 Util.config = {
     preferredAVtransports: [ "WEBTORRENT", "IPFS"], // Current reliability issues with IPFS streams accompanied by lack of negative feedback on fail
 }

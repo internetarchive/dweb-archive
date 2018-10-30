@@ -58,8 +58,8 @@ export default class Search extends ArchiveBase {
         AJS.more_searching = true;
         this.page++;
         const el = document.getElementById("appendTiles"); // Get the el, before the search in case user clicks away we add to right place
-        const items = await this.fetch_query({});   // Appends to this.items but returns just the new one
-        items.forEach(item => el.appendChild(new Tile().render(item)));
+        const members = await this.fetch_query({});   // Appends to this.members but returns just the new ones
+        members.forEach(member => el.appendChild(new Tile().render(member)));
         AJS.tiler();
         AJS.more_searching = false;
     }
@@ -183,8 +183,8 @@ export default class Search extends ArchiveBase {
                                             </div>
                                             <div class="C C5"></div>
                                         </div>
-                                        {this.items.map(function(item, n){ // Note rendering tiles is quick, its the fetch of the img (async) which is slow.
-                                            return new Tile().render(item);
+                                        {this.members.map(function(member, n){ // Note rendering tiles is quick, its the fetch of the img (async) which is slow.
+                                            return new Tile().render(member);
                                         })}
                                     </div>{/*--/.results--*/}
                                     <center class="more_search">

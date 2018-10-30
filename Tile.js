@@ -3,29 +3,27 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 //import React from 'react';
 import React from './ReactFake';
 import Util from './Util';
-import ArchiveItem from './ArchiveItem';
+import ArchiveMember from './ArchiveMember';
 
 
 export default class Tile {
-  render(searchresult){
-    // Searchresult will be a collection of metadata similar to that of an item,
-    // its close enough to fake it, BUT if that causes issues, try "new ArchiveItem({itemid: searchresult.identifier} but that will usually force a fetch_metadata somewhere)
-    const archiveitem = new ArchiveItem({itemid: searchresult.identifier, item:searchresult})
+  render(member){
+    // member is an ArchiveMember a pre-munged collection of metadata returned by a Search, AdvancedSearch or in members.json
+    const thumbnailfile = member.mediatype === "search" ? "/images/search-saved.png" : member.thumbnailFile();
     //xxx shorten/safify certain title usages (compared to Lists.inc)
-    const collections = (Array.isArray(searchresult.collection) ? searchresult.collection : (typeof(searchresult.collection) === 'string' ? [searchresult.collection] : []));
-    const collection0 = collections[0];
-    const nFavorites = collections.filter(e => e.startsWith('fav-')).length;
-    const is_collection = (searchresult.mediatype === 'collection');
+    const collection0 = member.collection[0]; // maybe undefined
+    const is_collection = (member.mediatype === 'collection');
     const classes = 'item-ia' + (is_collection ? ' collection-ia' : '');
     // If dont have collection0 data then probably came from minimal metadata in fav-xxx and then ArchiveItem metadata
       // Should really do this async, but that would mean rewriting a lot of code, sofor now, chea
-    const collection0thumbnaillinks = searchresult.collection0thumbnaillinks || `dweb:/arc/archive.org/services/img/${collection0}`; //ReactFake will handle async
-    const collection0title = searchresult.collection0title || collection0; // Wrong but acceptable for now
-    const imgname = searchresult.identifier + ".PNG"; // Required since rendermedia doesnt know the filetype otherwise
+    const collection0thumbnaillinks = member.collection0thumbnaillinks || `dweb:/arc/archive.org/services/img/${collection0}`; //ReactFake will handle async //TODO-REFACTOR-MEMBER move into ArchiveMember
+    const collection0title = member.collection0title || collection0; // Wrong but acceptable for now
+    const imgname = member.identifier + ".PNG"; // Required since rendermedia doesnt know the filetype otherwise
+    const creatorTitle = Array.isArray(member.creator) ? member.creator.join(',') : member.creator;
     //ARCHIVE-BROWSER on browser, want to load links locally (via APIs) rather than rebuilding HTML page
       // ARCHIVE-BROWSER added key= to keep react happy (I hope)
       return (
-      <div className={classes} data-id={searchresult.identifier}  key={searchresult.identifier}>
+      <div className={classes} data-id={member.identifier}  key={member.identifier}>
       { (collection0) ?
         <a className="stealth" tabIndex="-1" onClick={`Nav.nav_details("${collection0}");`}>
           <div className="item-parent">
@@ -36,19 +34,19 @@ export default class Tile {
         </a>
        : undefined }
         <div className="hidden-tiles views C C1">
-          <nobr className="hidden-xs">{Util.number_format(searchresult.downloads)}</nobr>
-          <nobr className="hidden-sm hidden-md hidden-lg">{Util.number_format(searchresult.downloads)}</nobr>
+          <nobr className="hidden-xs">{Util.number_format(member.downloads)}</nobr>
+          <nobr className="hidden-sm hidden-md hidden-lg">{Util.number_format(member.downloads)}</nobr>
         </div>
 
 
         <div className="C234">
           <div className="item-ttl C C2">
-            <a onClick={`Nav.nav_details("${searchresult.identifier}");`} title={searchresult.title}>
+            <a onClick={`Nav.nav_details("${member.identifier}");`} title={member.title}>
               <div className="tile-img">
-                <img className="item-img clipW clipH" imgname={imgname} src={archiveitem.thumbnailFile()}/>
+                <img className="item-img clipW clipH" imgname={imgname} src={thumbnailfile}/>
               </div>{/*.tile-img*/}
               <div className="ttl">
-                {searchresult.title}
+                {member.title}
               </div>
             </a>
           </div>
@@ -59,55 +57,53 @@ export default class Tile {
           </div>
 
           <div className="by C C4">
-            <span className="hidden-lists">{searchresult.creator && 'by '}</span>
-            <span title={Array.isArray(searchresult.creator) ? searchresult.creator.join(',') : searchresult.creator}>{searchresult.creator}</span>
+            <span className="hidden-lists">{member.creator && 'by '}</span>
+            <span title={creatorTitle}>{member.creator}</span>
           </div>{/*.C4*/}
         </div>{/*.C234*/}
-
-
-        <div className="mt-icon C C5">
-          {Tile.glyph(Util.mediatype_canonical(searchresult.mediatype))}
-        </div>
-        <h6 className="stat ">
-          <span className="iconochive-eye" aria-hidden="true"></span><span className="sr-only">eye</span>
-          <nobr>{Util.number_format(searchresult.downloads)}</nobr>
-        </h6>
-        <h6 className="stat">
-          <span className="iconochive-favorite" aria-hidden="true"></span><span className="sr-only">favorite</span>
-          {nFavorites}
-        </h6>
-        <h6 className="stat">
-          <span className="iconochive-comment" aria-hidden="true"></span><span className="sr-only">comment</span>
-          {searchresult.num_reviews || "0"}
-        </h6>
+        {(member.mediatype === "collection") ? Tile.div_collectionstats(member) : Tile.div_statbar(member) }
       </div>
     );
   }
 
-  collection_stats(item){
+  static div_collectionstats(member){
+      //TODO-REFACTOR-MEMBER fix 000 in num_items
     return (
       <div className="collection-stats">
-        {Tile.glyph({name:'collection', classes:'topinblock hidden-lists'})}
+            <div className="iconochive-collection topinblock hidden-lists" aria-hidden="true"></div>
+            <span className="sr-only">collection</span>
         <div className="num-items topinblock">
-          0
-          <div className="micro-label">ITEMS</div>
+                000 <div className="micro-label">ITEMS</div>
         </div>
         <div className="num-items hidden-tiles">
-          {Util.number_format(item.downloads)}
+                {Util.number_format(member.downloads)}
           <div className="micro-label">VIEWS</div>
         </div>
       </div>
     );
   }
 
-  static glyph({name = 'question', classes = ''} = {}) {
+  static div_statbar(member) { // <div class=statbar>
+      const nFavorites = member.collection.filter(e => e.startsWith('fav-')).length;
+      const iconnameClass = "iconochive-"+Util.mediatype_canonical(member.mediatype);
       return (
-          <span className={classes}>
-              <span className={'iconochive-'+name} aria-hidden="true"></span>
-              <span className="sr-only">{name}</span>
-          </span>
-      );
-  }
+      <div className="statbar ">
+          <div className="mt-icon C C5">
+              <span className={iconnameClass} aria-hidden="true"></span><span className="sr-only">{name}</span></div>
+          <h6 className="stat ">
+              <span className="iconochive-eye" aria-hidden="true"></span><span className="sr-only">eye</span>
+              <nobr>{Util.number_format(member.downloads)}</nobr>
+          </h6>
 
+          <h6 className="stat">
+              <span className="iconochive-favorite" aria-hidden="true"></span><span
+              className="sr-only">favorite</span> {nFavorites} </h6>
+
+          <h6 className="stat">
+              <span className="iconochive-comment" aria-hidden="true"></span><span className="sr-only">comment</span> {member.num_reviews || "0"}
+          </h6>
+      </div>
+    )
+  }
 
 }

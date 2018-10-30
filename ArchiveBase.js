@@ -21,7 +21,7 @@ export default class ArchiveBase extends ArchiveItem {
     - - Collection
     Nav - knows about all the classes (includes factory() but doesnt subclass them
     Util - just some utility functions
-    Tile - elements on a Search - each is a ArchiveItem
+    Tile - elements on a Search - each is a ArchiveMember
     ReactFake - spoofs methods of React as otherwise hard to do onclick etc if use real React (note archive.min still uses react a little)
 
     Fields:

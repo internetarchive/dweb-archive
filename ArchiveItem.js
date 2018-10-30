@@ -1,4 +1,5 @@
 const ArchiveFile = require("./ArchiveFile");
+const ArchiveMember = require("./ArchiveMember");
 const Util = require("./Util");
 const canonicaljson = require('@stratumn/canonicaljson');
 
@@ -16,7 +17,7 @@ class ArchiveItem {
     Fields:
     itemid: Archive.org reference for object
     item:   Metadata decoded from JSON from metadata search.
-    items:  Array of data from a search.
+    members:  Array of data from a search.
     _list:  Will hold a list of files when its a single item
 
     Once subclass SmartDict
@@ -58,26 +59,20 @@ class ArchiveItem {
         }
     }
 
-    processMetadataFjords(m) { // TODO-FJORDS move code tagged TODO-FJORDS to this routine where possible
-        // The Archive is nothing but edge cases, handle some of them here so the code doesnt have to !
-        Object.keys(Util.metadata.singletons).forEach(f => {
-            if (typeof m.metadata[f] === "undefined") m.metadata[f] = "";
-            if (Array.isArray(m.metadata[f])) {
-                m.metadata[f] = m.metadata[f].join(Util.metadata.singletons[f]); //e.g. biographyofbanan0000eage
-                debug("Metadata Fjords - concatenting multi-line description on %s", m.identifier);
-            }
-        });
-        if (m.mediatype === "education") {
+    static processMetadataFjords(m) {
+        const meta = m.metadata;
+        Util.processMetadataFjords(meta);
+        if (meta.mediatype === "education") {
             // Typically miscategorized, have a guess !
-            if (item._list.find(af => af.playable("video")))
-                m.mediatype = "movies";
-            else if (item._list.find(af => af.playable("text")))
-                m.mediatype = "texts";
-            else if (item._list.find(af => af.playable("image")))
-                m.mediatype = "image";
-            debug('Metadata Fjords - switched mediatype on %s from "education" to %s', m.identifier, m.mediatype);
+            if (m._list.find(af => af.playable("video")))
+                meta.mediatype = "movies";
+            else if (m._list.find(af => af.playable("text")))
+                meta.mediatype = "texts";
+            else if (m._list.find(af => af.playable("image")))
+                meta.mediatype = "image";
+            debug('Metadata Fjords - switched mediatype on %s from "education" to %s', meta.identifier, meta.mediatype);
         }
-        return m;
+        return meta
     }
 
     fetch_metadata(opts={}, cb) {
@@ -111,8 +106,8 @@ class ArchiveItem {
             .then((m) => {
                 m = DwebObjects.utils.objectfrom(m); // Handle Buffer or Uint8Array
                 console.assert(m.metadata.identifier === this.itemid);
-
-                this.item = this.processMetadataFjords(m);
+                ArchiveItem.processMetadataFjords(m); // Edits in place
+                this.item = m;
                 this._listLoad();   // Load _list with ArchiveFile
                 debug("metadata for %s fetched successfully", this.itemid);
                 cb(null, this);
@@ -120,23 +115,26 @@ class ArchiveItem {
     }
 
     fetch_query(opts={}, cb) { // opts = {wantFullResp=false}
-        /*  Action a query, return the array of docs found and store the accumulated search on .items
+        /*  Action a query, return the array of docs found and store the accumulated search on .members
             Subclassed in Account.js since dont know the query till the metadata is fetched
 
             This function is intended to be monkey-patched in dweb-mirror to define caching.
             Its monkeypatched because of all the places inside dweb-archive that call fetch_query
             Patch will call _fetch_query
-            Returns a promise or calls cb(err, json);
+            Returns a promise or calls cb(err, [ArchiveMember*]);
             Errs include if failed to fetch
             wantFullResp set to true if want to get the result of the search query (because proxying) rather than just the docs
         */
         if (cb) { return this._fetch_query(opts, cb) } else { return new Promise((resolve, reject) => this._fetch_query(opts, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
     }
 
+    _appendMembers(newmembers) {
+        this.members = this.members ? this.members.concat(newmembers) : newmembers;
+    }
     _wrapMembersInResponse(members) {
         return { response: { numFound: undefined, start: this.start, docs: members }}
     }
-    _fetch_query({wantFullResp=false}={}, cb) { // No opts currently,
+    _fetch_query({wantFullResp=false}={}, cb) { // No opts currently
         // noinspection JSUnresolvedVariable
         // rejects: TransportError or CodingError if no urls
         if (!this._list) this._listLoad();  // Will be empty if search and so no itemid so no files
@@ -153,12 +151,11 @@ class ArchiveItem {
                     cb(err);
                 } else {
                     this.start = (this.page - 1) * this.limit;
-                    const newitems = canonicaljson.parse(jsonstring).slice(this.start, this.page * this.limit); // See copy of some of this logic in dweb-mirror.MirrorCollection.fetch_query
-                    this.items = this.items ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
-                    // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveItems
+                    const newmembers = canonicaljson.parse(jsonstring).slice(this.start, this.page * this.limit).map(o => new ArchiveMember(o)); // See copy of some of this logic in dweb-mirror.MirrorCollection.fetch_query
+                    this._appendMembers(newmembers); // Note these are ArchiveMembers, not ArchiveItems
                     // Note this does NOT support sort, there isnt enough info in members.json to do that
                     // Also that numFound isnt defined since we dont know the total number, only the number previously cached.
-                    cb(null, wantFullResp ? this._wrapMembersInResponse(newitems) : newitems); // Skipping responseHeader, can add if anything requires it
+                    cb(null, wantFullResp ? this._wrapMembersInResponse(newmembers) : newmembers); // Skipping responseHeader, can add if anything requires it
                 }
             });
         } else {
@@ -176,10 +173,11 @@ class ArchiveItem {
                 Util.fetch_json(url, (err, j) => { // Will get error "failed to fetch" if fails
                     if (err) { cb(err) } // Failed to fetch
                     else {
-                        this.items = (this.items) ? this.items.concat(j.response.docs) : j.response.docs;
+                        const newmembers = j.response.docs.map(o=>new ArchiveMember(o))
+                        this._appendMembers(newmembers);
                         this.start = j.response.start;
                         this.numFound = j.response.numFound;
-                        cb(null, wantFullResp ? j : j.response.docs);
+                        cb(null, wantFullResp ? j : newmembers);  // wantFullResp is used when proxying unmodified result
                     }
                 });
             } else { // Neither query, nor metadata.search_collection nor file/ITEMID_members.json so not really a collection
@@ -188,13 +186,13 @@ class ArchiveItem {
         }
     }
 
-    relatedItems(opts = {}, cb) {
+    relatedItems(opts = {}, cb) { //TODO-REFACTOR-MEMBERS probably make these members
         if (typeof opts === "function") { cb = opts; opts = {}; } // Allow opts parameter to be skipped
         if (cb) { return this._relatedItems(opts, cb) } else { return new Promise((resolve, reject) => this._relatedItems(opts, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
 
 
     }
-    _relatedItems({wantStream=false} = {}, cb) {
+    _relatedItems({wantStream=false} = {}, cb) {  //TODO-REFACTOR-MEMBERS probably make these members
         /*
         cb(err, obj)  Callback on completion with related items object
         TODO-REFACTOR-CACHE add hook in dweb-archive and use in dweb-archive.itemDetailsAlsoFound
@@ -217,7 +215,7 @@ class ArchiveItem {
         Return the thumbnailfile for an item, this should handle the case of whether the item has had metadata fetched or not, and must be synchronous as stored in <img src=> (the resolution is asyncronous)
          */
         //console.assert(this._list, "Should have loaded metadata which loads _list before calling thumbnailFile"); // Could also do here
-        // Ne items should have __ia_thumb.jpg but older ones dont
+        // New items should have __ia_thumb.jpg but older ones dont
         let af = this._list && this._list.find(af => af.metadata.name === "__ia_thumb.jpg"
             || af.metadata.name.endsWith("_itemimage.jpg"))
         if (!af) {
