@@ -119,7 +119,7 @@ class ArchiveItem {
             }).catch(err => cb(err));
     }
 
-    fetch_query(opts={}, cb) { // No opts currently,
+    fetch_query(opts={}, cb) { // opts = {wantFullResp=false}
         /*  Action a query, return the array of docs found and store the accumulated search on .items
             Subclassed in Account.js since dont know the query till the metadata is fetched
 
@@ -128,11 +128,15 @@ class ArchiveItem {
             Patch will call _fetch_query
             Returns a promise or calls cb(err, json);
             Errs include if failed to fetch
+            wantFullResp set to true if want to get the result of the search query (because proxying) rather than just the docs
         */
         if (cb) { return this._fetch_query(opts, cb) } else { return new Promise((resolve, reject) => this._fetch_query(opts, (err, res) => { if (err) {reject(err)} else {resolve(res)} }))}
     }
 
-    _fetch_query(opts={}, cb) { // No opts currently,
+    _wrapMembersInResponse(members) {
+        return { response: { numFound: undefined, start: this.start, docs: members }}
+    }
+    _fetch_query({wantFullResp=false}={}, cb) { // No opts currently,
         // noinspection JSUnresolvedVariable
         // rejects: TransportError or CodingError if no urls
         if (!this._list) this._listLoad();  // Will be empty if search and so no itemid so no files
@@ -148,11 +152,13 @@ class ArchiveItem {
                     debug("Unable to read member data from %s/%s",this.itemid,membersAF);
                     cb(err);
                 } else {
-                    const newitems = canonicaljson.parse(jsonstring).slice((this.page - 1) * this.limit, this.page * this.limit); // See copy of some of this logic in dweb-mirror.MirrorCollection.fetch_query
+                    this.start = (this.page - 1) * this.limit;
+                    const newitems = canonicaljson.parse(jsonstring).slice(this.start, this.page * this.limit); // See copy of some of this logic in dweb-mirror.MirrorCollection.fetch_query
                     this.items = this.items ? this.items.concat(newitems) : newitems; // Note these are just objects, not ArchiveItems
                     // Note that the info in _member.json is less than in Search, so may break some code unless turn into ArchiveItems
                     // Note this does NOT support sort, there isnt enough info in members.json to do that
-                    cb(null, newitems)
+                    // Also that numFound isnt defined since we dont know the total number, only the number previously cached.
+                    cb(null, wantFullResp ? this._wrapMembersInResponse(newitems) : newitems); // Skipping responseHeader, can add if anything requires it
                 }
             });
         } else {
@@ -173,7 +179,7 @@ class ArchiveItem {
                         this.items = (this.items) ? this.items.concat(j.response.docs) : j.response.docs;
                         this.start = j.response.start;
                         this.numFound = j.response.numFound;
-                        cb(null, j.response.docs);
+                        cb(null, wantFullResp ? j : j.response.docs);
                     }
                 });
             } else { // Neither query, nor metadata.search_collection nor file/ITEMID_members.json so not really a collection
