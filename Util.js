@@ -166,7 +166,9 @@ class Util {
         // Return location for http calls to a gateway server that understands canonical addresses like /arc/archive.. or /ipfs/Q...
         // Has to be a function rather than constant because searchparams is defined after this library is loaded
         // Note that for example where Util.js is included from dweb-mirror that currently (this may change) DwebArchive is not defined
-        return (typeof DwebArchive != "undefined") && DwebArchive.mirror || "https://dweb.me";
+        return (typeof DwebArchive !== "undefined") && DwebArchive.mirror || "https://dweb.me";
+    }
+
     static processMetadataFjords(meta) { // TODO-FJORDS move code tagged TODO-FJORDS to this routine where possible
         // The Archive is nothing but edge cases, handle some of them here so the code doesnt have to !
         // Note this called by ArchiveMember and ArchiveItem and will probably be called by ArchiveFiles so keep it generic and put class-specifics in Archive*.processMetadataFjords
@@ -732,7 +734,7 @@ Util._formatarr = [
     {format: undefined, ext:'.xwd', type: 'image', mimetype: 'image/x-xwindowdump', playable: undefined, downloadable: undefined },
     {format: undefined, ext:'.xyz', type: 'chemical', mimetype: 'chemical/x-xyz', playable: undefined, downloadable: undefined },
     {format: undefined, ext:'.zmt', type: 'chemical', mimetype: 'chemical/x-mopac-input', playable: undefined, downloadable: undefined },
-]
+];
 
 /* petabox/www/common/FormatGetter.inc has these items, not sure if useful
     '3gpp'      => '3GP',
@@ -758,9 +760,12 @@ Util.gateway = {
     "url_advancedsearch": "/arc/archive.org/advancedsearch", //TODO-MIRROR support this
     "url_related": "https://be-api.us.archive.org/mds/v1/get_related/all/",   // Direct, no CORS issues //TODO-MIRROR fix this
     "url_related_local": "/arc/archive.org/mds/v1/get_related/all/"   // Direct, no CORS issues //TODO-MIRROR fix this
-}
+};
 // minified FROM http://sourcefrog.net/projects/natsort/natcompare.js
-function isWhitespaceChar(B){var A;A=B.charCodeAt(0);if(A<=32){return true;}else{return false;}}function isDigitChar(B){var A;A=B.charCodeAt(0);if(A>=48&&A<=57){return true;}else{return false;}}function compareRight(E,B){var G=0;var F=0;var D=0;var C;var A;for(;;F++,D++){C=E.charAt(F);A=B.charAt(D);if(!isDigitChar(C)&&!isDigitChar(A)){return G;}else{if(!isDigitChar(C)){return -1;}else{if(!isDigitChar(A)){return +1;}else{if(C<A){if(G==0){G=-1;}}else{if(C>A){if(G==0){G=+1;}}else{if(C==0&&A==0){return G;}}}}}}}}function natcompare(I,H){var C=0,A=0;var D=0,B=0;var F,E;var G;while(true){D=B=0;F=I.charAt(C);E=H.charAt(A);while(isWhitespaceChar(F)||F=="0"){if(F=="0"){D++;}else{D=0;}F=I.charAt(++C);}while(isWhitespaceChar(E)||E=="0"){if(E=="0"){B++;}else{B=0;}E=H.charAt(++A);}if(isDigitChar(F)&&isDigitChar(E)){if((G=compareRight(I.substring(C),H.substring(A)))!=0){return G;}}if(F==0&&E==0){return D-B;}if(F<E){return -1;}else{if(F>E){return +1;}}++C;++A;}};
+function isWhitespaceChar(B){const A=B.charCodeAt(0);if(A<=32){return true;}else{return false;}}
+function isDigitChar(B){const A=B.charCodeAt(0);if(A>=48&&A<=57){return true;}else{return false;}}
+function compareRight(E,B){let G=0;let F=0;let D=0;for(;;F++,D++){const C=E.charAt(F);const A=B.charAt(D);if(!isDigitChar(C)&&!isDigitChar(A)){return G;}else{if(!isDigitChar(C)){return -1;}else{if(!isDigitChar(A)){return +1;}else{if(C<A){if(G==0){G=-1;}}else{if(C>A){if(G==0){G=+1;}}else{if(C==0&&A==0){return G;}}}}}}}}
+function natcompare(I,H){let C=0,A=0;let D=0,B=0;let F,E;let G;while(true){D=B=0;F=I.charAt(C);E=H.charAt(A);while(isWhitespaceChar(F)||F=="0"){if(F=="0"){D++;}else{D=0;}F=I.charAt(++C);}while(isWhitespaceChar(E)||E=="0"){if(E=="0"){B++;}else{B=0;}E=H.charAt(++A);}if(isDigitChar(F)&&isDigitChar(E)){if((G=compareRight(I.substring(C),H.substring(A)))!=0){return G;}}if(F==0&&E==0){return D-B;}if(F<E){return -1;}else{if(F>E){return +1;}}++C;++A;}}
 
 
 // NOTE: copied _verbatim_ from  Details::$langList & Languages.inc until @hank and @ximm weigh in.. 8-)
@@ -927,7 +932,7 @@ Util.languageMapping = {
     'kik': 'Kikuyu',
     'kin': 'Kinyarwanda',
     'kir': 'Kirgiz',
-    'kir': 'Kyrgyz',
+    //'kir': 'Kyrgyz',
     'kon': 'Kongo',
     'kor': 'Korean',
     'kpe': 'Kpelle',
@@ -1103,7 +1108,7 @@ Util.languageMapping = {
     'zul': 'Zulu',
     'zun': 'Zuni',
     'zxx': 'No linguistic content'
-}
+};
 
 Util.metadata = {
     "singletons": {    // Fields that should be single entry.
@@ -1113,5 +1118,5 @@ Util.metadata = {
 };
 Util.config = {
     preferredAVtransports: [ "WEBTORRENT", "IPFS"], // Current reliability issues with IPFS streams accompanied by lack of negative feedback on fail
-}
+};
 exports = module.exports = Util;

@@ -3,7 +3,6 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 //import React from 'react';
 import React from './ReactFake';
 import Util from './Util';
-import ArchiveMember from './ArchiveMember';
 
 
 export default class Tile {
@@ -16,8 +15,10 @@ export default class Tile {
     const classes = 'item-ia' + (is_collection ? ' collection-ia' : '');
     // If dont have collection0 data then probably came from minimal metadata in fav-xxx and then ArchiveItem metadata
       // Should really do this async, but that would mean rewriting a lot of code, sofor now, chea
-    const collection0thumbnaillinks = member.collection0thumbnaillinks || `dweb:/arc/archive.org/services/img/${collection0}`; //ReactFake will handle async //TODO-REFACTOR-MEMBER move into ArchiveMember
-    const collection0title = member.collection0title || collection0; // Wrong but acceptable for now
+    // noinspection JSUnresolvedVariable
+      const collection0thumbnaillinks = member.collection0thumbnaillinks || `dweb:/arc/archive.org/services/img/${collection0}`; //ReactFake will handle async //TODO-REFACTOR-MEMBER move into ArchiveMember
+    // noinspection JSUnresolvedVariable
+      const collection0title = member.collection0title || collection0; // Wrong but acceptable for now
     const imgname = member.identifier + ".PNG"; // Required since rendermedia doesnt know the filetype otherwise
     const creatorTitle = Array.isArray(member.creator) ? member.creator.join(',') : member.creator;
     //ARCHIVE-BROWSER on browser, want to load links locally (via APIs) rather than rebuilding HTML page
@@ -69,17 +70,17 @@ export default class Tile {
   static div_collectionstats(member){
       //TODO-REFACTOR-MEMBER fix 000 in num_items
     return (
-      <div className="collection-stats">
+        <div className="collection-stats">
             <div className="iconochive-collection topinblock hidden-lists" aria-hidden="true"></div>
             <span className="sr-only">collection</span>
-        <div className="num-items topinblock">
+            <div className="num-items topinblock">
                 000 <div className="micro-label">ITEMS</div>
-        </div>
-        <div className="num-items hidden-tiles">
+            </div>
+            <div className="num-items hidden-tiles">
                 {Util.number_format(member.downloads)}
-          <div className="micro-label">VIEWS</div>
+                <div className="micro-label">VIEWS</div>
+            </div>
         </div>
-      </div>
     );
   }
 

@@ -16,7 +16,6 @@ import React from './ReactFake';
 
 import Util from './Util';
 import ArchiveBase from './ArchiveBase'
-import ArchiveFile from "./ArchiveFile";
 
 
 export default class Details extends ArchiveBase {
@@ -54,7 +53,7 @@ export default class Details extends ArchiveBase {
         archive_setup.push(function(){  // This is common to Text, AV and image - though some have stuff before this and some a
             AJS.tilebars(); // page load
             $(window).on('resize  orientationchange', function(evt){
-                clearTimeout(AJS.also_found_throttler)
+                clearTimeout(AJS.also_found_throttler);
                 AJS.also_found_throttler = setTimeout(AJS.tilebars, 250)
             });
         });
@@ -134,6 +133,7 @@ export default class Details extends ArchiveBase {
         const datePublished = metadata.date;
         const publisher=metadata.publisher;
         const keywords = metadata.subject ? Array.isArray(metadata.subject) ? metadata.subject : metadata.subject.split(';') : undefined ;
+        // noinspection JSUnresolvedVariable
         const licence = metadata.licenseurl; //TODO - handle other licenses - hardwired for CC currently
         const languageAbbrev = metadata.language;
         const languageLong = {eng: "English", dut: "Dutch"}[languageAbbrev]; //TODO-other languages
@@ -155,20 +155,25 @@ export default class Details extends ArchiveBase {
 
 
             //TODO  Replace "a" with onclicks to download function on f
+        // noinspection JSUnresolvedVariable
         const filesCount = item.files_count;
         const originalFilesCount = item.files.filter((f)=>f.source === "original").length+1; // Adds in Archive Bittorrent
         const downloadURL = `https://dweb.archive.org/download/${itemid}`;
         const compressURL = `https://archive.org/compress/${itemid}`; // leave as direct link, else need to zip and store each item in IPFS
         const compressAllURL = `https://archive.org/compress/${itemid}/formats=JSON,METADATA,JPEG,ARCHIVE BITTORRENT,MUSICBRAINZ METADATA`; // As above leave as direct
         const collections = metadata.collection; // [str*]
+        // noinspection JSUnresolvedVariable
         const collectionTitles = item.collection_titles;   // Dictionary mapping collection itemid to title
         const mediatype = metadata.mediatype;
         const iconochiveIcon="iconochive-"+mediatype; //obscure mediatypes are supported
+        // noinspection JSUnresolvedVariable
         const contributor = metadata.contributor;
+        // noinspection JSUnresolvedVariable
         const reviews = item.reviews;
         const writeReviewsURL = `https://archive.org/write-review.php?identifier=${itemid}`;  //TODO need an indirect way to submit a review
         const loginURL = "https://archive.org/account/login.php"; //TODO - its a Direct link as dont support authentication in DWeb version
         const bookmarksAddURL = `https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=image&amp;identifier=${itemid}&amp;title=${title}`; //TODO find way to submit distributed
+        // noinspection JSUnresolvedVariable
         const credits = metadata.credits;
         //TODO-DETAILS much of below doesn't work (yet)
         //TODO-DETAILS note the structure of this has changed - see the difference in originals between multitrackaudio and mbid for example
@@ -406,6 +411,7 @@ export default class Details extends ArchiveBase {
             );
         this.relatedItems({wantStream:false}, (err, data) => {
             if (!err) { // If there is an error then fetch_json will have reported it, and can just ignore it here and not display
+                // noinspection JSUnresolvedVariable
                 this.loadDetailsAlsoFound(el, this.itemid, data.hits.hits);  // Asynchronous
             }
         });
@@ -428,8 +434,8 @@ export default class Details extends ArchiveBase {
             </div>
         ) )
     }
-    alsoFoundTile(i) { //TODO catch the /details and /serices urls in ReactFake
-        const foo = (
+    alsoFoundTile(i) { //TODO catch the /details and /serices urls in ReactFake //TODO - see if this differs from regular tiles in Tile.js
+        return (
             <div className="results" style="visibility: visible;">
                 <div className="item-ia" data-id={i._id} data-mediatype={i._source.mediatype[0]} data-year=""><a
                         className="stealth" tabIndex="-1" href={`/details/${i._id}`}>

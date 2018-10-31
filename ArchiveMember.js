@@ -23,7 +23,7 @@ class ArchiveMember {
     thumbnailFile() {
         /*
         Return the thumbnailfile for a member, via its item,
-        this should handle the case of whether the item has had metadata fetched or not, and must be synchronous as stored in <img src=> (the resolution is asyncronous)
+        this should handle the case of whether the item has had metadata fetched or not, and must be synchronous as stored in <img src=> (the resolution is asyncHronous)
          */
         //console.assert(this._list, "Should have loaded metadata which loads _list before calling thumbnailFile"); // Could also do here
         // New items should have __ia_thumb.jpg but older ones dont
@@ -37,10 +37,11 @@ class ArchiveMember {
             name:   "__ia_thumb.jpg",
             // Could also set source:"original",rotation:"0",
         };
+        // noinspection JSUnresolvedVariable
         const ipfs = this.thumbnaillinks && this.thumbnaillinks.find(f=>f.startsWith("ipfs:")); // Will be empty if no thumbnaillinks
         if (ipfs) metadata.ipfs = ipfs;
-        const af = new ArchiveFile({itemid: this.identifier, metadata });
-        return af;
+        // noinspection JSUnresolvedVariable
+        return new ArchiveFile({itemid: this.identifier, metadata });
     }
 
 }
