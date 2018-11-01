@@ -12,6 +12,7 @@
     "@babel/core": "^7.1.2",
     "@internetarchive/dweb-objects": "^0.1.10",
     "@internetarchive/dweb-transports": "^0.1.18",
+    "@internetarchive/dweb-archivecontroller": "git+https://git@github.com/internetarchive/dweb-archivecontroller.git",
     "@stratumn/canonicaljson": "^1.0.2",
     "debug": "^3.2.5",
     "es2015": "latest",

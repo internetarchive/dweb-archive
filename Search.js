@@ -4,7 +4,6 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 
 const canonicaljson = require('@stratumn/canonicaljson');
 
-import Util from './Util';
 import ArchiveBase from './ArchiveBase';
 import Tile from './Tile';
 

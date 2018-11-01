@@ -5,7 +5,7 @@ import React from './ReactFake';
 //Next line is for client, not needed on server but doesnt hurt
 //import ReactDOM from 'react-dom';
 import Util from './Util';
-import ArchiveItem from './ArchiveItem';
+import ArchiveItem from '@internetarchive/dweb-archivecontroller/ArchiveItem';
 
 export default class ArchiveBase extends ArchiveItem {
     /*

@@ -32,8 +32,7 @@ Split out UI and Functional components
 Note tasks at each level should be done from inside out and bottom up.
 
 * Split Repo
-  * archive.html should use dweb-archiveui instead of dweb-archive
-  * Create new repo dweb-archiveui
+  * edit Util.json and also include from dweb-archive
 * Refactor data
   * Reviews
     * See where UI uses reviews

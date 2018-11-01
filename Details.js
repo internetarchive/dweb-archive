@@ -14,7 +14,7 @@ import React from './ReactFake';
 // React requires style={{display: none}} ReactFake can also handle quoted style="display: none"
 // React requires className= rather than class=, ReactFake supports both
 
-import Util from './Util';
+import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
 import ArchiveBase from './ArchiveBase';
 import Tile from './Tile';
 
@@ -361,7 +361,7 @@ export default class Details extends ArchiveBase {
                                         onclick="Nav.nav_download(this)"
                                         title={k}
                                         data-toggle="tooltip" data-placement="auto left" data-container="body" target="_blank">{/*--new window to persist dweb--*/}
-                                        {Util.formats("format", k).downloadable} <span class="iconochive-download" aria-hidden="true"></span><span class="sr-only">download</span>
+                                        {AICUtil.formats("format", k).downloadable} <span class="iconochive-download" aria-hidden="true"></span><span class="sr-only">download</span>
                                     </a>
                                 </div>
 

@@ -12,9 +12,9 @@ import from2 from "from2";
 import prettierBytes from "prettier-bytes";
 const Url = require('url');
 const debug = require('debug')('dweb-archive');
-import ArchiveItem from "./ArchiveItem";
-import ArchiveFile from "./ArchiveFile";
-import Util from "./Util";
+import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";
+import ArchiveFile from "@internetarchive/dweb-archivecontroller/ArchiveFile";
+import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
 
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
@@ -425,9 +425,9 @@ export default class React  {
                 const af = attrs[name];
                 const videoname = af.metadata.name;
                 //Dont need mimetype currently
-                //const mimetype = Util.formats("format", af.metadata.format).mimetype; // Might be undefined for many formats still
+                //const mimetype = AICUtil.formats("format", af.metadata.format).mimetype; // Might be undefined for many formats still
                 //if (!mimetype) console.warning("Unknown mimetype for ",af.metadata.format, "on",af.metadata.name);
-                this.loadStream(element, af, {name: videoname, preferredTransports: Util.config.preferredAVtransports});  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
+                this.loadStream(element, af, {name: videoname, preferredTransports: AICUtil.config.preferredAVtransports});  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
             } else if (["a.source"].includes(tag + "." + name) && attrs[name] instanceof Object) {
                 element[name] = attrs[name];      // Store the ArchiveFile or Track in the DOM, function e.g. onClick will access it.
             } else if (name && attrs.hasOwnProperty(name)) {
