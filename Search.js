@@ -37,10 +37,10 @@ export default class Search extends ArchiveBase {
     Inherited from ArchiveBase: item
     items   List of items found
      */
-    constructor({query='*:*', sort='', and='', limit=searchConfig.limitperpage, page=1, item=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
-        super(itemid, {item: item});
+    constructor({query='*:*', sort='', and='', limit=searchConfig.limitperpage, page=1, metaapi=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
+        super({itemid, metaapi});
         if (typeof(query) === "object") { // form { creator: "Foo bar" ... }
-            // This next line uses JSON.stringify instead of toString() because we want  '"abc"' and '1' i.e. quotes if its a string
+            // This next line uses stringify instead of toString() because we want  '"abc"' and '1' i.e. quotes if its a string
             query = Object.keys(query).map(k => `${k}:${canonicaljson.stringify(query[k])}`).join(' AND ');
         }
         this.query = query; // Note this should be an UNENCODED query  or an object
@@ -58,8 +58,8 @@ export default class Search extends ArchiveBase {
         AJS.more_searching = true;
         this.page++;
         const el = document.getElementById("appendTiles"); // Get the el, before the search in case user clicks away we add to right place
-        const members = await this.fetch_query({});   // Appends to this.members but returns just the new ones
-        members.forEach(member => el.appendChild(new Tile().render(member)));
+        const newmembers = await this.fetch_query({});   // Appends to this.members but returns just the new ones
+        newmembers.forEach(member => el.appendChild(new Tile().render(member)));
         AJS.tiler();
         AJS.more_searching = false;
     }

@@ -4,8 +4,8 @@ import React from './ReactFake';
 import Details from './Details'
 
 export default class Texts extends Details {
-    constructor(itemid, item) {
-        super(itemid, item);
+    constructor({itemid=undefined, metaapi=undefined}={}) {
+        super({ itemid, metaapi});
         this.itemtype="http://schema.org/TextDigitalDocument"
     }
     archive_setup_push() {
@@ -13,8 +13,7 @@ export default class Texts extends Details {
         archive_setup.push(function(){ AJS.booksize(); });
     }
     theatreIaWrap() {
-        let item = this.item;
-        let metadata = item.metadata;
+        let metadata = this.metadata;
         let detailsURL = `https://archive.org/details/${this.itemid}`;  // Probably correct as archive.org/details since used as itemProp
         let imageURL = `https://archive.org/services/img/${this.itemid}`;  // itemprop so ok to leave
         //TODO-DETAILS-DWEB use alternative URLS via IPFS

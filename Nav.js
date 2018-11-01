@@ -142,7 +142,7 @@ export default class Nav {
     static clear(destn) {
         // Clear the screen to give confidence that action under way
         // Leaves Nav, clears rest
-        React.domrender(new DetailsError(undefined, undefined, < span >Loading - note this can take a while if no-one else has accessed this item yet</span>).wrap(), destn)
+        React.domrender(new DetailsError({message: < span >Loading - note this can take a while if no-one else has accessed this item yet</span>}).wrap(), destn)
     }
     static async nav_home(wanthistory=true) {
         debug("Going home");
@@ -258,42 +258,43 @@ export default class Nav {
         if (!itemid) {
             (await new Home().fetch()).render(res);
         } else {
-            let obj = await new Details(itemid).fetch();
-            let item = obj.item;
-            if (!(item && item.metadata)) {
-                new DetailsError(itemid, item, `item ${itemid} cannot be found or does not have metadata`).render(res);
+            let d = await new Details({itemid}).fetch();
+            let metaapi = d.exportMetadataAPI(); // Cant pass Details to the constructors below
+            if (!d.metadata) {
+                new DetailsError({itemid, message: `item ${itemid} cannot be found or does not have metadata`}).render(res);
             } else {
                 try {
                     if (downloaddirectory) {
-                        new DownloadDirectory(itemid, item).render(res);
+                        new DownloadDirectory({itemid, metaapi}).render(res);
                     } else {
-                        switch (item.metadata.mediatype) {
+                        switch (d.metadata.mediatype) {
                             case "collection":
-                                (await new Collection(itemid, item).fetch()).render(res);   //fetch will do search
+                                (await new Collection({itemid, metaapi}).fetch()).render(res);   //fetch will do search
                                 break;
                             case "texts":
-                                new Texts(itemid, item).render(res);
+                                new Texts({itemid, metaapi}).render(res);
                                 break;
                             case "image":
-                                new Image(itemid, item).render(res);
+                                new Image({itemid, metaapi}).render(res);
                                 break;
                             case "audio": // Intentionally drop thru to movies
                             case "etree": // Concerts uploaded
-                                new Audio(itemid, item).render(res);
+                                new Audio({itemid, metaapi}).render(res);
                                 break;
                             case "movies":
-                                new Video(itemid, item).render(res);
+                                new Video({itemid, metaapi}).render(res);
                                 break;
                             case "account":
-                                return (await new Account({itemid, item}).fetch()).render(res);
+                                return (await new Account({itemid, metaapi}).fetch()).render(res);
                             default:
                                 //TODO Not yet supporting software, zotero (0 items); data; web
-                                new DetailsError(itemid, item, `Unsupported mediatype: ${item.metadata.mediatype}`).render(res);
+                                new DetailsError({itemid, message: `Unsupported mediatype: ${obj.metadata.mediatype}`}).render(res);
                             //    return new Nav(")
                         }
                     }
                 } catch(err) {
-                    new DetailsError(itemid, item, err.message).render(res);
+                    console.error(err);
+                    new DetailsError({itemid, message: err.message}).render(res);
                 }
             }
         }

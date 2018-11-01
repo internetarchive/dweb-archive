@@ -27,7 +27,7 @@ export default class DownloadDirectory extends Details {
                                     <td></td>
                                 </tr>
                                 {/*-- TODO-DIR next loop needs doing --*/}
-                                { this._list.map(f => (
+                                { this.files.map(f => (
                                     <tr>
                                     <td><a source={f}
                                            onClick="Nav.nav_download(this)"

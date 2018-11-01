@@ -6,8 +6,8 @@ import Util from './Util'
 
 
 export default class Video extends AV {
-    constructor(itemid, item) {
-        super(itemid, item);
+    constructor({itemid=undefined, metaapi=undefined}={}) {
+        super({ itemid, metaapi});
         this.itemtype = "http://schema.org/VideoObject";
     }
     setupPlaylist() {
@@ -15,10 +15,9 @@ export default class Video extends AV {
     }
 
     theatreIaWrap() {
-        const item = this.item;
         const itemid = this.itemid;
         const detailsurl = `https://archive.org/details/${itemid}`; // OK to be direct url since its an itemprop
-        const title = item.title;
+        const title = this.metadata.title;
         // The videothumbnailurl is intentionally a direct Http link as its intended only for search engines etc
         // Preference is 2nd thumbnail (first is usually black-sreen) in .thumbs/ directory (e.g. for "commute"); if only one (e.g. stairs) use that.
         const videothumbnailurl = this.videoThumbnailFile().httpUrl();
@@ -26,7 +25,7 @@ export default class Video extends AV {
         const cfg =    {"start":0,"embed":null,"so":false,"autoplay":false,"width":0,"height":0,"list_height":0,"audio":false,
             "responsive":true,"flash":false, "hide_list":true,
             "identifier": this.itemid,
-            "collection": this.item.metadata.collection[0],
+            "collection": this.metadata.collection[0],
         };
         /*
         [{"title":"commute","orig":"commute.avi","image":"/download/commute/commute.thumbs%2Fcommute_000005.jpg",

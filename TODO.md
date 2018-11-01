@@ -12,7 +12,7 @@ New field|Old field|API/field|Note
 ---------|---------|---------|----
 .metadata|item.metadata|METADATA/metadata
 .files|??|METADATA/files|should be [ArchiveFile]
-.members|??|METADATA/members of members.json or result of query|[ArchiveMember]
+.members \[ArchiveMember*\]|.items \[{}*\]|METADATA/members of members.json or result of query|[ArchiveMember]
 .extra|item.*|METADATA/collection_order etc|TODO check matches Jim's proposal
 .reviews|item.reviews|METADATA/reviews|[ArchiveReview]
 .related|??|RELATED/??|[ArchiveMember]
@@ -40,17 +40,10 @@ Note tasks at each level should be done from inside out and bottom up.
     * Hang AR on AI.reviews
     * Build ArchiveReview obj
   * Related
-    * See //TODO-REFACTOR-MEMBERS 
+    * See //TODO-REFACTOR-RELATED 
     * Make UI use AI.related
     * Hang AM on AI.related
     * Check if Related returns data like search -> Members
-  * Files
-    * find all use cases of old .files
-    * Look at when turned into AI._list/AI.files, 
-    * AI._list rename AI.files
-  * Members
-    * Check dweb-mirror crawl
-    * Check dweb-mirror/MirrorHTTP/advancedsearch
-    * check Search.js and Collection.js
-    * Check where UI - especially Tiling - uses query results
-    * Result of query - stored in AI.members as ArchiveMember
+  * Item: - DONE - Obsolete AI.item
+  * Files: - DONE - Obsolete AI.item.files; Rename AI._list to AI.files; 
+  * Members - DONE - Checked: dweb-mirror crawl; dweb-mirror/MirrorHTTP/advancedsearch; Search.js and Collection.js; Check where UI - especially Tiling - uses query results; Result of query - stored in AI.members as ArchiveMember

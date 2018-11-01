@@ -3,12 +3,10 @@ import React from './ReactFake';
 import Search from "./Search";
 
 export default class Collection extends Search {
-    constructor(itemid, item) {
-        super({
+    constructor({itemid=undefined, metaapi=undefined}={}) {
+        super({ itemid, metaapi,
             query:  'collection:'+itemid,
             sort:   '-downloads',   // This will be overridden based on collection_sort_order
-            itemid: itemid,
-            item:   item,
         });
     }
 
@@ -18,7 +16,7 @@ export default class Collection extends Search {
          */
         //Note both description & rights need dangerousHTML and \n -> <br/>
         const reviewlink = `/details/${this.itemid}&sort=-reviewdate`; //TODO The use of this is sr-only, and may not be correct
-        const metadata = this.item.metadata;
+        const metadata = this.metadata;
         const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const rights = this.preprocessDescription(metadata.rights); // Contains HTML (supposedly safe) inserted via innerHTML thing
 
@@ -129,15 +127,14 @@ export default class Collection extends Search {
     }
 
     banner() {
-        const item = this.item;
-        //TODO-DETAILS probably move this to the Search class and trigger based on presence of "item" (which is missing for Searches.)
-        const creator = (item.metadata.creator  &&  (item.metadata.creator != item.metadata.title) ? item.metadata.creator : '');
+        //TODO-DETAILS probably move this to the Search class and trigger based on presence of "metadata.identifier" (which is missing for Searches.)
+        const metadata = this.metadata;
+        const creator = (this.metadata.creator  &&  (metadata.creator != this.metadata.title) ? metadata.creator : '');
         //ARCHIVE-BROWSER note the elements below were converted to HTML 3 times in original version
         //TODO-DETAILS on prelinger, banner description is getting truncated.
-        const description = this.preprocessDescription(item.metadata.description).replace(/(..\/)+..\//g, "../"); // Contains HTML (supposedly safe) inserted via innerHTML thing
+        const description = this.preprocessDescription(this.metadata.description).replace(/(..\/)+..\//g, "../"); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const imgsrc = this.thumbnailFile();
         const imgname = this.itemid + ".PNG";   // Required or rendermedia has difficulty knowing what to render since it doesnt take a mimetype
-
         return (
             <div className="welcome container container-ia width-max" style={{'backgroundColor':'white'}}>
                 <div className="container">
@@ -147,7 +144,7 @@ export default class Collection extends Search {
                                 <div id="file-dropper"></div>
                                 <img id="file-dropper-img" className="img-responsive" style={{'maxWidth':"350px", margin:'0 10px 5px 0'}} imgname={imgname} src={imgsrc}/>
                             </div>
-                            <h1>{item.metadata.title}</h1>
+                            <h1>{metadata.title}</h1>
                             <h4>{creator}</h4>
                             <div id="descript" style={{maxHeight:"43px", cursor:'pointer'}} dangerouslySetInnerHTML={{__html: description}}>
                             </div>

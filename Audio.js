@@ -13,8 +13,8 @@ import Util from './Util'
  */
 
 export default class Audio extends AV {
-    constructor(itemid, item) {
-        super(itemid, item);
+    constructor({itemid=undefined, metaapi=undefined}={}) {
+        super({ itemid, metaapi});
         this.itemtype = "http://schema.org/AudioObject";
     }
 
@@ -40,10 +40,10 @@ export default class Audio extends AV {
             wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | TODO-ALSOFOUND  | TODO-ANALYTICS )
             item-details-about looks empty on the example chosen but that is a change in structure and maybe related to presence absence of forum etc
         */
-        const item = this.item;
         const itemid = this.itemid;
         const detailsurl = `https://archive.org/details/${itemid}`;  //OK as absolute URL as only used as itemprop
-        const title = item.metadata.title
+        const metadata = this.metadata;
+        const title = metadata.title;
         const imgurl = `https://archive.org/services/img/${itemid}`; //OK as absolute URL as only used as itemprop
         this.setupPlaylist();
         const af0 = this.playlist[0] && this.playlist[0].sources[0] && this.playlist[0].sources[0].urls;

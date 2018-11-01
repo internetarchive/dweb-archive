@@ -9,12 +9,10 @@ export default class Account extends Search {
 
      */
 
-    constructor({itemid=undefined, item=undefined}={}) {
-        super({
+    constructor({itemid=undefined, metaapi=undefined}={}) {
+        super({ itemid, metaapi,
             query:  'uploader:'+itemid,
             sort:   '-publicdate',   // This will be overridden based on collection_sort_order
-            itemid: itemid,
-            item:   item,
         });
     }
 
@@ -23,7 +21,7 @@ export default class Account extends Search {
     }
     async fetch_query(opts) {
         // Subclass ArchiveItem.fetch_query
-        this.query = `uploader:"${this.item.metadata.uploader}"`;
+        this.query = `uploader:"${this.metadata.uploader}"`;
         this.sort = '-publicdate';
         return await super.fetch_query(opts); // Unclear if return or opts used, but should send it.
     }
@@ -134,8 +132,7 @@ export default class Account extends Search {
 
     welcome() {
         let itemid = this.itemid;
-        let item = this.item
-        let title = item.metadata.title; // Example from @tracey_pooh
+        let title = this.metadata.title; // Example from @tracey_pooh
         let imagesrc = this.thumbnailFile();  // TODO-ACCOUNT Tracey is adding a service to get a better image (larger scale
         let name = this.name();
         return (

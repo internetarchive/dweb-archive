@@ -30,8 +30,8 @@ export default class ArchiveBase extends ArchiveItem {
     itemtype    Schema.org for this eg. "http://schema.org/TextDigitalDocument"
     query   query part of search to run (Search|Collection|Home only)
      */
-    constructor(itemid,  {item = undefined}={}) {
-        super({itemid: itemid, item: item});
+    constructor({itemid = undefined, metaapi = undefined}={}) {
+        super({itemid, metaapi});
     }
     theatreIaWrap() {
     }
@@ -87,9 +87,8 @@ export default class ArchiveBase extends ArchiveItem {
 
     sharing() {
         //Common text across Image and Text and possibly other subclasses
-        let item = this.item;
-        let itemid = item.metadata.identifier; // Shortcut as used a lot
-        let metadata = item.metadata; // Shortcut as used a lot
+        let metadata = this.metadata; // Shortcut as used a lot
+        let itemid = metadata.identifier; // Shortcut as used a lot
         let detailsURL = `https://archive.org/details/${itemid}`; // Note this should remain as pointing at details/itemid since its only used in sharing - FB, Twitter etc
         let sharingText =   `${metadata.title} : ${metadata.creator}`; //String used
         let sharingTextUriEncoded = encodeURIComponent(sharingText);
@@ -122,7 +121,7 @@ export default class ArchiveBase extends ArchiveItem {
                                  data-placement="bottom" title=""
                                  data-original-title="Share to Reddit"></div>
                         </a>
-                        <a href={`https://www.tumblr.com/share/video?embed=%3Ciframe+width%3D%22640%22+height%3D%22480%22+frameborder%3D%220%22+allowfullscreen+src%3D%22https%3A%2F%2Farchive.org%2Fembed%2F%22+webkitallowfullscreen%3D%22true%22+mozallowfullscreen%3D%22true%22%26gt%3B%26lt%3B%2Fiframe%3E&;name=${itemid}+%3A+${item.metadata.creator}+%3A+Free+Download+%26amp%3B+Streaming+%3A+Internet+Archive`}
+                        <a href={`https://www.tumblr.com/share/video?embed=%3Ciframe+width%3D%22640%22+height%3D%22480%22+frameborder%3D%220%22+allowfullscreen+src%3D%22https%3A%2F%2Farchive.org%2Fembed%2F%22+webkitallowfullscreen%3D%22true%22+mozallowfullscreen%3D%22true%22%26gt%3B%26lt%3B%2Fiframe%3E&;name=${itemid}+%3A+${metadata.creator}+%3A+Free+Download+%26amp%3B+Streaming+%3A+Internet+Archive`}
                            target="_blank">
                             <div className="sharee iconochive-tumblr" data-toggle="tooltip"
                                  data-placement="bottom" title=""

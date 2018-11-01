@@ -108,9 +108,9 @@ The general route to load a single Details item (TODO - writeup for Search) is .
 
 * Nav.nav_details(itemid)   - load and display a details page
     * Nav.factory
-        * new Details(itemid) - to get metadata
+        * new Details({itemid}) - to get metadata
         * determine class of item e.g. Texts, video
-        * new Video(itemid).render => ArchiveBase.render
+        * new Video({itemid}).render => ArchiveBase.render
             * Details.wrap - build the elements
                 * Nav.navwrap - the global navigation elements, menus etc
                 * theatreIaWrap - wrap the main content in controls (e.g. play etc)

@@ -16,7 +16,7 @@ export default class Tile {
     // If dont have collection0 data then probably came from minimal metadata in fav-xxx and then ArchiveItem metadata
       // Should really do this async, but that would mean rewriting a lot of code, sofor now, chea
     // noinspection JSUnresolvedVariable
-      const collection0thumbnaillinks = member.collection0thumbnaillinks || `dweb:/arc/archive.org/services/img/${collection0}`; //ReactFake will handle async //TODO-REFACTOR-MEMBER move into ArchiveMember
+      const collection0thumbnaillinks = member.collection0thumbnaillinks || `dweb:/arc/archive.org/services/img/${collection0}`; //ReactFake will handle async //TODO move into ArchiveMember
     // noinspection JSUnresolvedVariable
       const collection0title = member.collection0title || collection0; // Wrong but acceptable for now
     const imgname = member.identifier + ".PNG"; // Required since rendermedia doesnt know the filetype otherwise
@@ -68,7 +68,7 @@ export default class Tile {
   }
 
   static div_collectionstats(member){
-      //TODO-REFACTOR-MEMBER fix 000 in num_items
+      //TODO fix 000 in num_items
     return (
         <div className="collection-stats">
             <div className="iconochive-collection topinblock hidden-lists" aria-hidden="true"></div>

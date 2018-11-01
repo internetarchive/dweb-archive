@@ -15,14 +15,13 @@ import React from './ReactFake';
 // React requires className= rather than class=, ReactFake supports both
 
 import Util from './Util';
-import ArchiveBase from './ArchiveBase'
+import ArchiveBase from './ArchiveBase';
+import Tile from './Tile';
 
 
 export default class Details extends ArchiveBase {
-    constructor(id, item = undefined) {
-        super(id);
-        this.item = item;
-        this._listLoad();
+    constructor({itemid = undefined, metaapi = undefined}={}) {
+        super({itemid, metaapi});
     }
 
     wrap() {
@@ -76,8 +75,8 @@ export default class Details extends ArchiveBase {
 
     embedWordpress() {
         // THis appeared on image and movie examples
-        const item = this.item;
-        const itemid = item.metadata.identifier; // Shortcut as used a lot
+        const metadata = this.metadata;
+        const itemid = metadata.identifier; // Shortcut as used a lot
         return (
             <div>
                 <form className="form" role="form">
@@ -92,8 +91,8 @@ export default class Details extends ArchiveBase {
     }
     embedAdvanced(type) {
         // From text, video, image
-        const item = this.item;
-        const itemid = item.metadata.identifier; // Shortcut as used a lot
+        const metadata = this.metadata;
+        const itemid = metadata.identifier; // Shortcut as used a lot
         return(
             <div>
                 Want more?
@@ -126,8 +125,7 @@ export default class Details extends ArchiveBase {
     itemDetailsAboutJSX() {
         /* This builds a JSX tht sits underneth theatre-ia-wrap DIV that is built by theatreIaWrap */
         const itemid = this.itemid;
-        const item = this.item;
-        const metadata = item.metadata;
+        const metadata = this.metadata;
         const title = metadata.title;
         const creator = metadata.creator;
         const datePublished = metadata.date;
@@ -142,7 +140,7 @@ export default class Details extends ArchiveBase {
             "identifier-ark": "Identifier-ark", ocr: "Ocr", runtime: "Run time", ppi: "Ppi", sound: "Sound", year: "Year" }; /*TODO expand to longer list*/
         const metadataListFound = Object.keys(metadataListPossible).filter((k) => metadata[k]);    // List of keys in the metadata
 
-        const downloadableFilesDict = this._list.reduce( (res, af) => {
+        const downloadableFilesDict = this.files.reduce( (res, af) => {
                 const metadata = af.metadata;
                 if (af.downloadable()) {  // Note on image it EXCLUDED JPEG Thumb, but included JPEG*Thumb
                     const format = metadata.format;
@@ -156,20 +154,20 @@ export default class Details extends ArchiveBase {
 
             //TODO  Replace "a" with onclicks to download function on f
         // noinspection JSUnresolvedVariable
-        const filesCount = item.files_count;
-        const originalFilesCount = item.files.filter((f)=>f.source === "original").length+1; // Adds in Archive Bittorrent
+        const filesCount = this.files_count;
+        const originalFilesCount = this.files.filter((f)=>f.metadata.source === "original").length+1; // Adds in Archive Bittorrent
         const downloadURL = `https://dweb.archive.org/download/${itemid}`;
         const compressURL = `https://archive.org/compress/${itemid}`; // leave as direct link, else need to zip and store each item in IPFS
         const compressAllURL = `https://archive.org/compress/${itemid}/formats=JSON,METADATA,JPEG,ARCHIVE BITTORRENT,MUSICBRAINZ METADATA`; // As above leave as direct
         const collections = metadata.collection; // [str*]
         // noinspection JSUnresolvedVariable
-        const collectionTitles = item.collection_titles;   // Dictionary mapping collection itemid to title
+        const collectionTitles = this.collection_titles;   // Dictionary mapping collection itemid to title
         const mediatype = metadata.mediatype;
         const iconochiveIcon="iconochive-"+mediatype; //obscure mediatypes are supported
         // noinspection JSUnresolvedVariable
         const contributor = metadata.contributor;
         // noinspection JSUnresolvedVariable
-        const reviews = item.reviews;
+        const reviews = this.reviews;
         const writeReviewsURL = `https://archive.org/write-review.php?identifier=${itemid}`;  //TODO need an indirect way to submit a review
         const loginURL = "https://archive.org/account/login.php"; //TODO - its a Direct link as dont support authentication in DWeb version
         const bookmarksAddURL = `https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=image&amp;identifier=${itemid}&amp;title=${title}`; //TODO find way to submit distributed

@@ -3,8 +3,8 @@ import React from './ReactFake';
 import Details from './Details'
 
 export default class DetailsError extends Details {
-    constructor(itemid, item, message) {
-        super(itemid, item);
+    constructor({itemid=undefined, metaapi=undefined, message="Undefined error message"}={}) {
+        super({ itemid, metaapi});
         this.message = message;
     }
     theatreIaWrap() {

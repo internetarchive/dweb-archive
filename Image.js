@@ -1,3 +1,5 @@
+import Search from "./Search";
+
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 import React from './ReactFake';
 
@@ -5,12 +7,12 @@ import Details from './Details'
 import Util from './Util'
 
 export default class Image extends Details {
-    constructor(itemid, item) {
+    constructor({itemid=undefined, metaapi=undefined}={}) {
         /*
         Construct an Image object before rendering it to a HTML page
         item = metadata from a metadata fetch
          */
-        super(itemid, item);
+        super({ itemid, metaapi});
         this.itemtype = "http://schema.org/VisualArtwork";
     }
     archive_setup_push() {
@@ -22,9 +24,9 @@ export default class Image extends Details {
     }
 
     theatreIaWrap() {
-        const item = this.item;
-        const itemid = item.metadata.identifier; // Shortcut as used a lot
-        const mainArchiveFile = this._list.find(fi => fi.playable("image")); // Can be undefined if none included
+        const metadata = this.metadata;
+        const itemid = metadata.identifier; // Shortcut as used a lot
+        const mainArchiveFile = this.playableFile("image"); // Can be undefined if none included
         const detailsURL = `https://archive.org/details/${itemid}`; //This is probably correct to remain pointed at archive.org since used as an itemprop
         const embedurl = `https://archive.org/embed/${itemid}`; //This is probably correct to remain pointed at archive.org since passed to social media
         return (
@@ -33,11 +35,11 @@ export default class Image extends Details {
 
                 <link itemProp="thumbnailUrl" href="https://archive.org/services/img/{itemid}"/>{/*OK for direct link since itemprop*/}
 
-                { item.files.filter((fi)=> fi.source !== "metadata").map((fi) => ( //TODO-DETAILS-LIST Maybe use _list instead of .files - OK for direct link since itemprop
-                    <link itemProp="associatedMedia" href={`https://archive.org/download/${itemid}/${fi.name}`} key={`${itemid}/${fi.name}`}/>
+                { this.files.filter((af)=> af.metadata.source !== "metadata").map((af) => ( //OK for direct link since itemprop
+                    <link itemProp="associatedMedia" href={`https://archive.org/download/${itemid}/${af.metadata.name}`} key={`${itemid}/${af.metadata.name}`}/>
                 )) }
 
-                <h1 className="sr-only">{item.metadata.title}</h1>
+                <h1 className="sr-only">{metadata.title}</h1>
                 <h2 className="sr-only">Item Preview</h2>
 
                 <div id="theatre-ia" className="container">

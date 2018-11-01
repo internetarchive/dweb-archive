@@ -25,9 +25,7 @@ class ArchiveMember {
         Return the thumbnailfile for a member, via its item,
         this should handle the case of whether the item has had metadata fetched or not, and must be synchronous as stored in <img src=> (the resolution is asyncHronous)
          */
-        //console.assert(this._list, "Should have loaded metadata which loads _list before calling thumbnailFile"); // Could also do here
         // New items should have __ia_thumb.jpg but older ones dont
-        //TODO-REFACTOR-MEMBER there is no way this is going to work, its a placeholder for interactive debugging
         // noinspection JSUnresolvedVariable
         if (this.mediatype === "search") {
             throw new Error("Coding error - Saved searches dont have a thumbnail");
