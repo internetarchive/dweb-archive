@@ -99,7 +99,6 @@ class Util {
 
         }
     }
-    /*
     static listperson(uu) {
         // Note - might need to tighten up layout to avoid extra spaces/breaks
         return (
@@ -118,10 +117,8 @@ class Util {
             </div>
         );
     }
-    */
 
-
-/* === Configuration info ==== */
+}
 
 // minified FROM http://sourcefrog.net/projects/natsort/natcompare.js
 function isWhitespaceChar(B){const A=B.charCodeAt(0);if(A<=32){return true;}else{return false;}}

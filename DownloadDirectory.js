@@ -1,5 +1,3 @@
-import prettierBytes from "prettier-bytes";
-
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 import React from './ReactFake';
 import Details from './Details'

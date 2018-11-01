@@ -9,7 +9,6 @@ This expanded in use to make it easier to use HTML in as unchanged form from exi
 import RenderMedia from 'render-media';
 import throttle from "throttleit";
 import from2 from "from2";
-import prettierBytes from "prettier-bytes";
 const Url = require('url');
 const debug = require('debug')('dweb-archive');
 import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";
