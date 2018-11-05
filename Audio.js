@@ -2,7 +2,7 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 import React from './ReactFake';
 
 import AV from './AV';
-import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
+import Util from './Util';
 
 /* Notes on Audio
     - see also https://github.com/internetarchive/dweb-archive/issues/18
@@ -30,7 +30,7 @@ export default class Audio extends AV {
             .forEach(el => el.classList.remove("playing"));
         elAnchor.querySelectorAll(".jwrowV2").forEach(el => el.classList.add("playing"));
         const elAudio = document.getElementById("streamContainer");
-        React.loadStream(elAudio, af, {name: af.metadata.name, preferredTransports: AICUtil.config.preferredAVtransports});
+        React.loadStream(elAudio, af, {name: af.metadata.name, preferredTransports: Util.config.preferredAVtransports});
         return false;
     }
 
