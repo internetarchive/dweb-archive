@@ -124,7 +124,13 @@ export default class React  {
         /services/img/foo with rel=["dweb:/arc/archive.org/"] > "dweb:/arc/archive.org/services/img/  special case > metadata>thumbnailimg
          */
         debug("Loading Image %s from %o", name, urls);
+        if (urls instanceof ArchiveFile && urls.name() === "__ia_thumb.jpg") {
             urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
+            // Dont use magnet urls on __ia_thumb.jpg as opens many webtorrents and fails when tiling TODO this could be a parameter to p_loadImg
+            urls = urls.filter(u=> !u.includes("magnet:"));
+        } else {
+            urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
+        }
         for (i in urls) {
             if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
                 urls[i] = await this.thumbnailUrlsFrom(urls[i].slice(35));
