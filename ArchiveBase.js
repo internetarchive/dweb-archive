@@ -90,7 +90,7 @@ export default class ArchiveBase extends ArchiveItem {
         let metadata = this.metadata; // Shortcut as used a lot
         let itemid = metadata.identifier; // Shortcut as used a lot
         let detailsURL = `https://archive.org/details/${itemid}`; // Note this should remain as pointing at details/itemid since its only used in sharing - FB, Twitter etc
-        let sharingText =   `${metadata.title} : ${metadata.creator}`; //String used
+        let sharingText =   `${metadata.title} : ${metadata.creator.join(', ')}`; //String used
         let sharingTextUriEncoded = encodeURIComponent(sharingText);
 
         return (

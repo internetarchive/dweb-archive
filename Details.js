@@ -127,14 +127,15 @@ export default class Details extends ArchiveBase {
         const itemid = this.itemid;
         const metadata = this.metadata;
         const title = metadata.title;
-        const creator = metadata.creator;
+        const querycreator = metadata.creator.join('|');
         const datePublished = metadata.date;
         const publisher=metadata.publisher;
-        const keywords = metadata.subject ? Array.isArray(metadata.subject) ? metadata.subject : metadata.subject.split(';') : undefined ;
+        const keywords = metadata.subject;
         // noinspection JSUnresolvedVariable
         const licence = metadata.licenseurl; //TODO - handle other licenses - hardwired for CC currently
-        const languageAbbrev = metadata.language;
-        const languageLong = {eng: "English", dut: "Dutch"}[languageAbbrev]; //TODO-other languages
+        const queryLanguage=metadata.language.map(l => `language:${l} OR language:"{AICUtil.languageMapping[l]"`).join(' OR ');
+        const queryLanguageEnc= encodeURIComponent(queryLanguage);
+        const languageLong = metadata.language.map(l => AICUtil.languageMapping[l]).join(',');
         const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const metadataListPossible = { color: "Color", coverage: "Location", director: "Director", identifier: "Identifier",
             "identifier-ark": "Identifier-ark", ocr: "Ocr", runtime: "Run time", ppi: "Ppi", sound: "Sound", year: "Year" }; /*TODO expand to longer list*/
@@ -242,7 +243,7 @@ export default class Details extends ArchiveBase {
                         <div class="key-val-big">
                             <div>
                                 <span class="key">by</span>{' '}
-                                <span class="value"><span><a href={`/search.php?query=creator%3A%22${creator}%22`} onclick={Nav.onclick_search({query: {creator: creator}})}>{creator}</a></span></span>
+                                <span class="value"><span><a href={`/search.php?query=creator%3A%22${querycreator}%22`} onclick={Nav.onclick_search({query: {creator: creator}})}>{creator}</a></span></span>
                             </div>
                         </div>
 
@@ -281,13 +282,13 @@ export default class Details extends ArchiveBase {
 
                         {/*-- contributor (also does usage rights, if specified for the contributor) --*/}
                         { contributor ? ( <div><span class="key">Contributor</span>{' '}<span class="value">{contributor}</span></div> ) : ( undefined ) }
-                        { languageAbbrev ? (
+                        { queryLanguage ? (
                             <div class="key-val-big">
                                 <div>
                                     <span class="key">Language</span>{' '}
 
-                                    <span class="value"><span><a href={`/search.php?query=%28language%3A{languageAbbrev}+OR+language%3A%22${languageLong}%22%29`}
-                                        onclick={Nav.onclick_search({query: `(language:${languageAbbrev} OR language:"{languageLong}")`})}>{languageLong}</a></span></span>
+                                    <span class="value"><span><a href={`/search.php?query=%28{queryLanguageEnc}%29`}
+                                        onclick={Nav.onclick_search({query: `(${queryLanguage})`})}>{languageLong}</a></span></span>
                                 </div>
                             </div>
                         ) : ( undefined ) }

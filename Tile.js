@@ -20,7 +20,7 @@ export default class Tile {
     // noinspection JSUnresolvedVariable
       const collection0title = member.collection0title || collection0; // Wrong but acceptable for now
     const imgname = member.identifier + ".PNG"; // Required since rendermedia doesnt know the filetype otherwise
-    const creatorTitle = Array.isArray(member.creator) ? member.creator.join(',') : member.creator;
+    const creatorTitle = member.creator.join(',');
     //ARCHIVE-BROWSER on browser, want to load links locally (via APIs) rather than rebuilding HTML page
       // ARCHIVE-BROWSER added key= to keep react happy (I hope)
       return (
@@ -58,8 +58,8 @@ export default class Tile {
           </div>
 
           <div className="by C C4">
-            <span className="hidden-lists">{member.creator && 'by '}</span>
-            <span title={creatorTitle}>{member.creator}</span>
+            <span className="hidden-lists">{member.creator.length && 'by '}</span>
+            <span title={creatorTitle}>{member.creator.join(",")}</span>
           </div>{/*.C4*/}
         </div>{/*.C234*/}
         {(member.mediatype === "collection") ? Tile.div_collectionstats(member) : Tile.div_statbar(member) }

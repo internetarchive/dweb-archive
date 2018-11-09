@@ -68,7 +68,6 @@ export default class Search extends ArchiveBase {
         TODO-DETAILS need stuff before nav-wrap1 and after detailsabout and need to check this against Search and Collection examples
         returns:      JSX elements tree suitable for adding into another render
          */
-        //TODO-DETAILS is putting the description (in 'htm' in as raw html which would be a nasty security hole since that comes from user !
         return (
             <div id="wrap">
                 { new Nav().navwrap() }

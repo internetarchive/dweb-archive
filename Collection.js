@@ -129,7 +129,7 @@ export default class Collection extends Search {
     banner() {
         //TODO-DETAILS probably move this to the Search class and trigger based on presence of "metadata.identifier" (which is missing for Searches.)
         const metadata = this.metadata;
-        const creator = (this.metadata.creator  &&  (metadata.creator != this.metadata.title) ? metadata.creator : '');
+        const creator = (this.metadata.creator  &&  (metadata.creator.join(', ') != this.metadata.title) ? metadata.creator : '');
         //ARCHIVE-BROWSER note the elements below were converted to HTML 3 times in original version
         //TODO-DETAILS on prelinger, banner description is getting truncated.
         const description = this.preprocessDescription(this.metadata.description).replace(/(..\/)+..\//g, "../"); // Contains HTML (supposedly safe) inserted via innerHTML thing
