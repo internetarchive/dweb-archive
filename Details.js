@@ -127,7 +127,9 @@ export default class Details extends ArchiveBase {
         const itemid = this.itemid;
         const metadata = this.metadata;
         const title = metadata.title;
-        const querycreator = metadata.creator.join('|');
+        const creator = metadata.creator.join(',');
+        const queryCreator=metadata.creator.map(c => `creator:"${c}"`).join(' OR ');
+        const queryCreatorEnc= encodeURIComponent(queryCreator);
         const datePublished = metadata.date;
         const publisher=metadata.publisher;
         const keywords = metadata.subject;
@@ -243,7 +245,7 @@ export default class Details extends ArchiveBase {
                         <div class="key-val-big">
                             <div>
                                 <span class="key">by</span>{' '}
-                                <span class="value"><span><a href={`/search.php?query=creator%3A%22${querycreator}%22`} onclick={Nav.onclick_search({query: {creator: creator}})}>{creator}</a></span></span>
+                                <span class="value"><span><a href={`/search.php?query=%28${queryCreatorEnc}%29`} onclick={Nav.onclick_search({query: {creator: queryCreator}})}>{creator}</a></span></span>
                             </div>
                         </div>
 
@@ -287,7 +289,7 @@ export default class Details extends ArchiveBase {
                                 <div>
                                     <span class="key">Language</span>{' '}
 
-                                    <span class="value"><span><a href={`/search.php?query=%28{queryLanguageEnc}%29`}
+                                    <span class="value"><span><a href={`/search.php?query=%28${queryLanguageEnc}%29`}
                                         onclick={Nav.onclick_search({query: `(${queryLanguage})`})}>{languageLong}</a></span></span>
                                 </div>
                             </div>
