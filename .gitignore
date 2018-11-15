@@ -4,3 +4,4 @@ dist/dweb-objects-bundle.js
 *.swp
 /package-lock.json
 /includes/package-lock.json
+yarn.lock
