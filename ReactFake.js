@@ -67,7 +67,7 @@ export default class React  {
         } else if (url.startsWith("//")) {
             return "https:"+url;    // Ick - a reference to href="//foo.bar" rather than href="https://foo.bar"
         } else if (url.startsWith("/")) {
-            if (!url.startsWith("/search.php")) {
+            if (!(url.startsWith("/search.php") || url.startsWith("/services"))) {
                 console.warn("Probably not a good idea to use root-relative URL", url); //could genericise to use options.rel instead of config but might not catch cases e.g. of /images
             }
             if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
@@ -130,7 +130,7 @@ export default class React  {
             urls = urls.filter(u=> !u.includes("magnet:"));
         } else {
             urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
-        }
+        }  //Examples: [dweb:/arc/archive.org/service/foo]
         for (i in urls) {
             if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
                 urls[i] = await this.thumbnailUrlsFrom(urls[i].slice(35));
@@ -156,7 +156,7 @@ export default class React  {
             RenderMedia.append(file, el, cb);  // Render into supplied element - have to use append, as render doesnt work, the cb will set attributes and/or add children.
         } else {
             // Otherwise fetch the file, and pass via rendermedia and from2
-            //TODO-MULTI-GATEwAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
+            //TODO-MULTI-GATEWAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
             try {
                 const buff = await  DwebTransports.p_rawfetch(urls, {timeoutMS: 5000, relay: false});  //Maybe should not time out since streams will almost always get used, and in this case could be a large file and last resort to use a download url.
                 // Logged by Transports
@@ -178,7 +178,8 @@ export default class React  {
         //asynchronously loads file from one of metadata, turns into blob, and stuffs into element
         // urls can be a array of URLs of an ArchiveFile (which is passed as an ArchiveFile because ArchiveFile.p_urls() is async as may require expanding metadata
         // Usage like  {this.loadImg(<img width=10>))
-        console.assert(!DwebArchive.mirror); // This should never get called in mirror case
+        //UNSURE WHY MADE THS ASSERTION - ASYNC UNDER MIRROR SHOULD BE FINE - SEE CALL in createElement
+        // console.assert(!DwebArchive.mirror); // This should never get called in mirror case
         const element = document.createElement("span");
         // noinspection JSIgnoredPromiseFromCall
         this.p_loadImg(element, name, urls, cb);
@@ -331,6 +332,7 @@ export default class React  {
 
         const kids = Array.prototype.slice.call(arguments).slice(2);
         if (tag === "img" && !DwebArchive.mirror) { // We'll build a span, and set a async process to rewrite it as an img connected to a stream
+            console.assert(Object.keys(attrs).includes("src")); // TODO can remove this and next line - I added this test because a) code below fails if !src, and b can't see why wouldnt have src
             if (Object.keys(attrs).includes("src")) {
                 const src = attrs.src;
                 const name = attrs["imgname"]       ? attrs["imgname"]
