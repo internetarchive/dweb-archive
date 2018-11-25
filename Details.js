@@ -139,9 +139,16 @@ export default class Details extends ArchiveBase {
         const queryLanguageEnc= encodeURIComponent(queryLanguage);
         const languageLong = metadata.language.map(l => AICUtil.languageMapping[l]).join(',');
         const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
-        const metadataListPossible = { color: "Color", coverage: "Location", director: "Director", identifier: "Identifier",
-            "identifier-ark": "Identifier-ark", ocr: "Ocr", runtime: "Run time", ppi: "Ppi", sound: "Sound", year: "Year" }; /*TODO expand to longer list*/
-        const metadataListFound = Object.keys(metadataListPossible).filter((k) => metadata[k]);    // List of keys in the metadata
+        const metadataListKeyStrings = {ocr: "OCR", runtime: "Run time", ppi: "PPI"}; /*Metadata with something other than capitalize first letter*/
+        const metadataListExclude = [
+            // This list has metadata that should not be listed in a table because it is handled in some other way
+            //"added-date", "adder",          // TODO see note below about "adder" and uncomment here when box added
+            "backup_location", "collection", "creator", "credits", "curation", "date", "description", "licenseurl", "magnetlink", "mediatype",
+            "public", "publicdate", "publisher", "subject", "thumbnaillinks", "title", "updatedate", "updater", "uploader",
+        ];
+
+        const metadataListFound = Object.keys(metadata)
+            .filter( (k) => (!metadataListExclude.includes(k)) && metadata[k] && metadata[k].length);   // List of keys in the metadata that are not empty strings or empty arrays
 
         const downloadableFilesDict = this.files.reduce( (res, af) => {
                 const metadata = af.metadata;
@@ -304,7 +311,7 @@ export default class Details extends ArchiveBase {
                         <div class="metadata-expandable-list" role="list">
                             { metadataListFound.map((k) =>
                                 <div role="listitem">
-                                    <span class="key">{metadataListPossible[k]}</span>{' '}
+                                    <span class="key">{metadataListKeyStrings[k] || (k.charAt(0).toUpperCase() + k.substr(1))}</span>{' '}
                                     <span class="value">{metadata[k]}</span>
                                 </div>
                             ) }
