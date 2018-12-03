@@ -145,7 +145,8 @@ export default class React  {
         // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
         let fileurl = urls.find(u => u.startsWith("file"));
         let magneturl = urls.find(u => u.includes('magnet:'));
-        const streamUrls = await DwebTransports.p_urlsValidFor(urls, "createReadStream");
+        let streamUrls = await DwebTransports.p_urlsValidFor(urls, "createReadStream");
+        streamUrls = streamUrls.filter(u => !u.href.startsWith("ipfs:")); // IPFS too unreliable (losing data, no errors) to use for streams esp for thumbnails
         if (fileurl) {
             this._loadImgSrc(el, fileurl, cb);
         } else if ((DwebTransports.type === "ServiceWorker") && magneturl) { //TODO-MIRROR could possible pick up here as well
