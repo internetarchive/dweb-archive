@@ -8,7 +8,7 @@ import Util from './Util';
 export default class Tile {
   render(member){
     // member is an ArchiveMember a pre-munged collection of metadata returned by a Search, AdvancedSearch or in members.json
-    const thumbnailfile = member.mediatype === "search" ? "/images/search-saved.png" : member.thumbnailFile();
+    //const thumbnailfile = member.mediatype === "search" ? "/images/search-saved.png" : member.thumbnailFile();
     //xxx shorten/safify certain title usages (compared to Lists.inc)
     const collection0 = member.collection[0]; // maybe undefined
     const is_collection = (member.mediatype === 'collection');
@@ -44,7 +44,7 @@ export default class Tile {
           <div className="item-ttl C C2">
             <a onClick={`Nav.nav_details("${member.identifier}");`} title={member.title}>
               <div className="tile-img">
-                <img className="item-img clipW clipH" imgname={imgname} src={thumbnailfile}/>
+                <img className="item-img clipW clipH" imgname={imgname} src={member}/>
               </div>{/*.tile-img*/}
               <div className="ttl">
                 {member.title}
