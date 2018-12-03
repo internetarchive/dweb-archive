@@ -57,7 +57,9 @@ export default class ArchiveBase extends ArchiveItem {
         return  !description ? description
                 : (Array.isArray(description) ? description.join('<br/>') : description)
                 .replace('\n','<br/>')
-                .replace(/src=(['"])\//gi, 'src=$1'+ (DwebArchive.mirror ? (DwebArchive.mirror + "/arc/archive.org") : React._config.root)+'/');
+                .replace(/src=(['"])http:\/\/www.archive.org\//gi, 'src=$1'+ (DwebArchive.mirror ? (DwebArchive.mirror + "/arc/archive.org") : React._config.root)+'/') // src="/  absolute urls
+                .replace(/src=(['"])\//gi, 'src=$1'+ (DwebArchive.mirror ? (DwebArchive.mirror + "/arc/archive.org") : React._config.root)+'/'); // src="/  absolute urls
+
     }
 
     cherModal(type) {
