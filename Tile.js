@@ -10,7 +10,7 @@ export default class Tile {
     // member is an ArchiveMember a pre-munged collection of metadata returned by a Search, AdvancedSearch or in members.json
     //const thumbnailfile = member.mediatype === "search" ? "/images/search-saved.png" : member.thumbnailFile();
     //xxx shorten/safify certain title usages (compared to Lists.inc)
-    const collection0 = member.collection[0]; // maybe undefined
+    const collection0 = member.collection0(); // maybe undefined
     const is_collection = (member.mediatype === 'collection');
     const classes = 'item-ia' + (is_collection ? ' collection-ia' : '');
     // If dont have collection0 data then probably came from minimal metadata in fav-xxx and then ArchiveItem metadata
@@ -20,7 +20,7 @@ export default class Tile {
     // noinspection JSUnresolvedVariable
       const collection0title = member.collection0title || collection0; // Wrong but acceptable for now
     const imgname = member.identifier + ".PNG"; // Required since rendermedia doesnt know the filetype otherwise
-    const creatorTitle = member.creator.join(',');
+    const creatorTitle = member.creator ? member.creator.join(',') : undefined;
     //ARCHIVE-BROWSER on browser, want to load links locally (via APIs) rather than rebuilding HTML page
       // ARCHIVE-BROWSER added key= to keep react happy (I hope)
       return (
@@ -57,10 +57,12 @@ export default class Tile {
             <nobr className="hidden-sm hidden-md hidden-lg">12/12</nobr>
           </div>
 
+            {member.creator && member.creator.length ?
           <div className="by C C4">
-            <span className="hidden-lists">{member.creator.length && 'by '}</span>
-            <span title={creatorTitle}>{member.creator.join(",")}</span>
-          </div>{/*.C4*/}
+            <span className="hidden-lists">by </span>
+            <span title={creatorTitle}>{creatorTitle}</span>
+          </div>
+                : undefined }
         </div>{/*.C234*/}
         {(member.mediatype === "collection") ? Tile.div_collectionstats(member) : Tile.div_statbar(member) }
       </div>
@@ -85,7 +87,7 @@ export default class Tile {
   }
 
   static div_statbar(member) { // <div class=statbar>
-      const nFavorites = member.collection.filter(e => e.startsWith('fav-')).length;
+      const nFavorites = member.collection ? member.collection.filter(e => e.startsWith('fav-')).length : undefined;
       const iconnameClass = "iconochive-"+Util.mediatype_canonical(member.mediatype);
       return (
       <div className="statbar ">
@@ -96,10 +98,11 @@ export default class Tile {
               <nobr>{Util.number_format(member.downloads)}</nobr>
           </h6>
 
+          { typeof nFavorites === "undefined" ? undefined :
           <h6 className="stat">
               <span className="iconochive-favorite" aria-hidden="true"></span><span
               className="sr-only">favorite</span> {nFavorites} </h6>
-
+          }
           <h6 className="stat">
               <span className="iconochive-comment" aria-hidden="true"></span><span className="sr-only">comment</span> {member.num_reviews || "0"}
           </h6>

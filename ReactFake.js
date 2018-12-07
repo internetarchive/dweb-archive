@@ -431,6 +431,8 @@ export default class React  {
             if (DwebArchive.mirror && ["img.src", "video.src", "audio.src"].includes(tag + "." + name)) {
                 if (attrs[name] instanceof ArchiveFile ) {
                     element[name] = attrs[name].httpUrl();
+                } else if (attrs[name] instanceof ArchiveMember ) {
+                    element[name] = attrs[name].urls();
                 } else {
                     element[name] = DwebTransports.gatewayUrl(this.resolveUrls(attrs[name])[0]); // Will always be singular url
                 }
