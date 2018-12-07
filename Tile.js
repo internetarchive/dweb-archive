@@ -3,7 +3,17 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 //import React from 'react';
 import React from './ReactFake';
 import Util from './Util';
+import ReactFakeComponent from './ReactFakeComponent';
 
+
+class ParentTileImg extends ReactFakeComponent {
+    // XXX Experimental hack to try looking like React does for <ParentTileImage>
+    constructor(props)
+    {
+        console.log("XXX@ParentTileImage.constructor")
+        super(props);
+    }
+}
 
 export default class Tile {
   render(member){
@@ -29,6 +39,8 @@ export default class Tile {
         <a className="stealth" tabIndex="-1" onClick={`Nav.nav_details("${collection0}");`}>
           <div className="item-parent">
               {/*collection0thumbnaillinks wont be there for the metadata req on items in fav-xyz so use the URL and let ReactFake expand it*/}
+            <ParentTileImg member={member}/>
+
             <div className="item-parent-img"><img src={collection0thumbnaillinks}/></div>
             <div className="item-parent-ttl">{collection0title}</div>
           </div>{/*.item-parent*/}
@@ -99,7 +111,7 @@ export default class Tile {
           </h6>
 
           { typeof nFavorites === "undefined" ? undefined :
-          <h6 className="stat">
+              <h6 className="stat">
               <span className="iconochive-favorite" aria-hidden="true"></span><span
               className="sr-only">favorite</span> {nFavorites} </h6>
           }

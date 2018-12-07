@@ -6,16 +6,20 @@ This expanded in use to make it easier to use HTML in as unchanged form from exi
 - URLs in image tags are re-rooted, i.e. <img src="/foo"> => <img src="https://bar.com/foo">
 - look at onClick's especially if set window.location
  */
+// Modules from NPM
 import RenderMedia from 'render-media';
 import throttle from "throttleit";
 import from2 from "from2";
 import prettierBytes from "prettier-bytes";
 const Url = require('url');
+// other Internet Archive modules
 const debug = require('debug')('dweb-archive');
 import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";
 import ArchiveFile from "@internetarchive/dweb-archivecontroller/ArchiveFile";
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
+// Other parts of dweb-archive
 import Util from './Util';
+import ReactFakeComponent from './ReactFakeComponent';
 
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
@@ -336,6 +340,10 @@ export default class React  {
         /* First we handle cases where we dont actually build the tag requested */
 
         const kids = Array.prototype.slice.call(arguments).slice(2);
+        if (typeof tag === "function") {  // Assume its a React class for now TODO-IAUX just testing
+            const foo = RealReact.createElement(tag, attrs, ...kids); // Returns a React Element which will be rendered into DOM by addKids on el its being included into
+            return foo
+        }
         if (tag === "img" && !DwebArchive.mirror) { // We'll build a span, and set a async process to rewrite it as an img connected to a stream
             console.assert(Object.keys(attrs).includes("src")); // TODO can remove this and next line - I added this test because a) code below fails if !src, and b can't see why wouldnt have src
             if (Object.keys(attrs).includes("src")) {
@@ -467,17 +475,37 @@ export default class React  {
         for (let i = 0; i < kids.length; i++) {
             const child = kids[i];
             if (typeof child === "undefined") { // This was !child, but that skips the integer 0.
-            } else if (Array.isArray(child)) {
+            } else if (Array.isArray(child)) {  //TODO-IAUX this should could a common function like below that adds a single kid
                 child.map((c) => element.appendChild(c.nodeType == null ?
                     document.createTextNode(c.toString()) : c))
             }
-            else {
-                element.appendChild(
-                    child.nodeType == null ?
-                        document.createTextNode(child.toString()) : child);
+            else { // Single child to add - this next bit is fairly heuristic, should be double checked if things change.
+                // Essentially three kinds of things here.
+                // * React Elements which are objects with no accessable class - and need rendering by React (Only when integrated with IAUX
+                // * FakeReactComponent subclasses which need rendering
+                // * Literal strings
+                // * HTML Elements (created with createElement)
+                // * There may be a fourth type - of things that can be converted to strings, but if so I need an example
+                const addable =
+                    (typeof child === "string")      ? document.createTextNode(child.toString())
+                        : (child instanceof FakeReactComponent) ? child.render()
+                        : !(child instanceof HTMLElement) ? document.createElement("span")  // React Elements
+                        :                                  child;
+                element.appendChild(addable); //
+                if (! ((typeof child === "string") || (child instanceof HTMLElement) || (child instanceof FakeReactComponent))) {
+                    this.renderRealReact(child, addable);
+                }
             }
         }
         return element;
+    }
+    static renderRealReact(child, parent) {
+        // This is also used in iaux.IAReactComponent to re-render when state changes
+        if ((typeof child.renderFakeElement) !== "undefined") {
+            ReactDOM.unmountComponentAtNode(parent)
+            //child.renderFakeElement.parentElement.removeChild(child.renderFakeElement);
+        }
+        const el = ReactDOM.render(child, parent); // Have to render after already in the DOM, although it might not be above ?
     }
     static domrender(els, node) { // Four cases - have/dont old/new
         let navdweb = document.getElementById('nav-dweb'); // Find the navbar element TODO-STATUS this might move
