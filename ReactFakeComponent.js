@@ -1,7 +1,7 @@
 export default class ReactFakeComponent {
     // This - for now - is copied from iaux.IAReactComponent
     constructor(props) {
-        Object.entries(props).forEach(pv => this[pv[0]] =pv[1] ); // Shallow copy
+        this.props = props;
         this._isMounted = false;
         this.state = {};
     }

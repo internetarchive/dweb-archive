@@ -341,8 +341,14 @@ export default class React  {
 
         const kids = Array.prototype.slice.call(arguments).slice(2);
         if (typeof tag === "function") {  // Assume its a React class for now TODO-IAUX just testing
-            const foo = RealReact.createElement(tag, attrs, ...kids); // Returns a React Element which will be rendered into DOM by addKids on el its being included into
-            return foo
+            if (tag.prototype instanceof ReactFakeComponent) {
+                const element = new tag(attrs);
+                React.addKids(element, kids); // This is FakeReact
+                return element;
+            } else { // Real React
+                const element = RealReact.createElement(tag, attrs, ...kids); // Returns a React Element which will be rendered into DOM by addKids on el its being included into
+                return element
+            }
         }
         if (tag === "img" && !DwebArchive.mirror) { // We'll build a span, and set a async process to rewrite it as an img connected to a stream
             console.assert(Object.keys(attrs).includes("src")); // TODO can remove this and next line - I added this test because a) code below fails if !src, and b can't see why wouldnt have src
@@ -358,7 +364,7 @@ export default class React  {
                 return this.loadImg(name, src, cb);   //Creates a <span></span>, asynchronously creates an <img> under it and calls cb on that IMG. The <div> is returned immediately.
             }
         } else {
-            let element = document.createElement(tag);
+            const element = document.createElement(tag);
             React.setAttributes(element, tag, attrs);   // Note many more special cases in setAttributes
             React.addKids(element, kids);
             return element;
@@ -440,7 +446,7 @@ export default class React  {
                 if (attrs[name] instanceof ArchiveFile ) {
                     element[name] = attrs[name].httpUrl();
                 } else if (attrs[name] instanceof ArchiveMember ) {
-                    element[name] = attrs[name].urls();
+                    element[name] = attrs[name].httpUrl();
                 } else {
                     element[name] = DwebTransports.gatewayUrl(this.resolveUrls(attrs[name])[0]); // Will always be singular url
                 }
@@ -461,6 +467,8 @@ export default class React  {
                     for (let k in value) {
                         element[attrname][k] = value[k];
                     }
+                } else if (typeof value === "function" && attrname === "ref") { // Has to match code in addKids
+                    element[attrname] = value;
                 } else if (value !== false && value != null) {
                     element.setAttribute(attrname, value.toString());
                 }
@@ -488,11 +496,15 @@ export default class React  {
                 // * There may be a fourth type - of things that can be converted to strings, but if so I need an example
                 const addable =
                     (typeof child === "string")      ? document.createTextNode(child.toString())
-                        : (child instanceof FakeReactComponent) ? child.render()
+                        : (child instanceof ReactFakeComponent) ? child.render()
                         : !(child instanceof HTMLElement) ? document.createElement("span")  // React Elements
                         :                                  child;
                 element.appendChild(addable); //
-                if (! ((typeof child === "string") || (child instanceof HTMLElement) || (child instanceof FakeReactComponent))) {
+                if ((addable instanceof HTMLElement) && (typeof addable.ref === "function")) {
+                    addable.ref.call(child, addable);
+                }
+                //TODO-IAUX Retest this, as triggers if child=0 for example, should find way to trigger positively on either child or addable
+                if (! ((typeof child === "string") || (typeof child === "number") || (child instanceof HTMLElement) || (child instanceof ReactFakeComponent))) {
                     this.renderRealReact(child, addable);
                 }
             }
