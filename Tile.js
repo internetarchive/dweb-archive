@@ -3,7 +3,7 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 //import React from 'react';
 import React from './ReactFake';
 import Util from './Util';
-import ParentTileImg from './ParentTileImg';
+import ParentTileImg from './components/ParentTileImg';
 
 
 export default class Tile {

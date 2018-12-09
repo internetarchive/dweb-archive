@@ -19,7 +19,7 @@ import ArchiveFile from "@internetarchive/dweb-archivecontroller/ArchiveFile";
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 // Other parts of dweb-archive
 import Util from './Util';
-import IAReactComponent from './IAReactComponent';
+import IAReactComponent from './components/IAReactComponent';
 
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 

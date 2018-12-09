@@ -1,10 +1,11 @@
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
+//This has been tested on IAUX & should be moveable to IAUX just by switching the commented headers below -
 //IAUX version
 //import React from 'react'
 //import IAReactComponent from 'iacomponents/experimental/IAReactComponent';
 //import PropTypes from 'prop-types'
 //!IAUX version
-import React from "./ReactFake";
+import React from "../ReactFake";
 import IAReactComponent from './IAReactComponent';
 
 export default class ParentTileImg extends IAReactComponent {
