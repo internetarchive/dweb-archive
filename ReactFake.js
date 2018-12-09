@@ -19,7 +19,7 @@ import ArchiveFile from "@internetarchive/dweb-archivecontroller/ArchiveFile";
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 // Other parts of dweb-archive
 import Util from './Util';
-import ReactFakeComponent from './ReactFakeComponent';
+import IAReactComponent from './IAReactComponent';
 
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
@@ -341,7 +341,7 @@ export default class React  {
 
         const kids = Array.prototype.slice.call(arguments).slice(2);
         if (typeof tag === "function") {  // Assume its a React class for now TODO-IAUX just testing
-            if (tag.prototype instanceof ReactFakeComponent) {
+            if (tag.prototype instanceof IAReactComponent) {
                 const element = new tag(attrs);
                 React.addKids(element, kids); // This is FakeReact
                 return element;
@@ -496,7 +496,7 @@ export default class React  {
                 // * There may be a fourth type - of things that can be converted to strings, but if so I need an example
                 const addable =
                     (typeof child === "string")      ? document.createTextNode(child.toString())
-                        : (child instanceof ReactFakeComponent) ? child.render()
+                        : (child instanceof IAReactComponent) ? child.render()
                         : !(child instanceof HTMLElement) ? document.createElement("span")  // React Elements
                         :                                  child;
                 element.appendChild(addable); //
@@ -504,7 +504,7 @@ export default class React  {
                     addable.ref.call(child, addable);
                 }
                 //TODO-IAUX Retest this, as triggers if child=0 for example, should find way to trigger positively on either child or addable
-                if (! ((typeof child === "string") || (typeof child === "number") || (child instanceof HTMLElement) || (child instanceof ReactFakeComponent))) {
+                if (! ((typeof child === "string") || (typeof child === "number") || (child instanceof HTMLElement) || (child instanceof IAReactComponent))) {
                     this.renderRealReact(child, addable);
                 }
             }

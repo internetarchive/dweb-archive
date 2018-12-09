@@ -1,12 +1,13 @@
-export default class ReactFakeComponent {
+export default class IAReactComponent {
     // This - for now - is copied from iaux.IAReactComponent
+    // Both this version, used with ReactFake and iaux.IAReactComponent used with React should work the same. (e.g. ParentTileImg works with both)
     constructor(props) {
         this.props = props;
         this._isMounted = false;
         this.state = {};
     }
     setState(res) {
-        console.log("XX --- ReactFakeComponent unexpectedly getting called");
+        console.log("XX --- IAReactComponent unexpectedly getting called");
         if (this._isMounted) {
             super.setState(res);
         } else {

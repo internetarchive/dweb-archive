@@ -1,12 +1,13 @@
-import React from "./ReactFake";
-
 require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
+//IAUX version
+//import React from 'react'
+//import IAReactComponent from 'iacomponents/experimental/IAReactComponent';
+//import PropTypes from 'prop-types'
+//!IAUX version
+import React from "./ReactFake";
+import IAReactComponent from './IAReactComponent';
 
-import ReactFakeComponent from './ReactFakeComponent';
-
-
-export default class ParentTileImg extends ReactFakeComponent {
-    // XXX Experimental hack to try looking like React does for <ParentTileImage>
+export default class ParentTileImg extends IAReactComponent {
     /* -- Not used with ReactFake yet
     static propTypes = {
         identifier: PropTypes.string,
