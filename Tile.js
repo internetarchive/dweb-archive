@@ -4,6 +4,7 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 import React from './ReactFake';
 import Util from './Util';
 import ParentTileImg from './components/ParentTileImg';
+import TileImage from './components/TileImage';
 
 
 export default class Tile {
@@ -29,7 +30,6 @@ export default class Tile {
       { (collection0) ?
         <a className="stealth" tabIndex="-1" onClick={`Nav.nav_details("${collection0}");`}>
           <div className="item-parent">
-              {/*collection0thumbnaillinks wont be there for the metadata req on items in fav-xyz so use the URL and let ReactFake expand it*/}
             <div className="item-parent-img">
               <ParentTileImg member={member}/>
             </div>
@@ -47,7 +47,8 @@ export default class Tile {
           <div className="item-ttl C C2">
             <a onClick={`Nav.nav_details("${member.identifier}");`} title={member.title}>
               <div className="tile-img">
-                <img className="item-img clipW clipH" imgname={imgname} src={member}/>
+                  <TileImage className="item-img clipW clipH" imgname={imgname} member={member} identifier={member.identifier} />
+                  {/*<img className="item-img clipW clipH" imgname={imgname} src={member}/>*/}
               </div>{/*.tile-img*/}
               <div className="ttl">
                 {member.title}
