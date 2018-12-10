@@ -5,8 +5,8 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 const canonicaljson = require('@stratumn/canonicaljson');
 
 import ArchiveBase from './ArchiveBase';
-import Tile from './Tile';
-
+//import Tile from './Tile';
+import TileComponent from './components/TileComponent';
 
 /* Section to ensure node and browser able to use Headers, Request and Fetch */
 /*
@@ -181,9 +181,10 @@ export default class Search extends ArchiveBase {
                                             </div>
                                             <div class="C C5"></div>
                                         </div>
-                                        {this.members.map(function(member, n){ // Note rendering tiles is quick, its the fetch of the img (async) which is slow.
-                                            return new Tile().render(member);
-                                        })}
+                                        {this.members.map( member=> // Note rendering tiles is quick, its the fetch of the img (async) which is slow.
+                                            // function(member, n){ return new Tile().render(member);}
+                                            <TileComponent member={member}/>
+                                        )}
                                     </div>{/*--/.results--*/}
                                     <center class="more_search">
                                     {/*--TODO-DETAILS check what is happening in AJS.more_search with this URL and can use page: this.page+1--*/}

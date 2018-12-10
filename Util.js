@@ -1,6 +1,11 @@
 //require('babel-core/register')({presets: ['env', 'react']}); // ES6 JS below!
 
 class Util {
+    static dateFormat(n) {
+        // This could be turned into an alternative if anyone can figure out how to get toLocaleString to output dd mmm yy in UK and mmm dd, yy in US !
+        return n.toISOString().substr(0,10); //YYYY-MM-DD
+    }
+
     static number_format(nStr)//this is just addCommas now
     {
         //http://www.mredkj.com/javascript/numberFormat.html
