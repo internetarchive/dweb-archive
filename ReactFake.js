@@ -23,6 +23,25 @@ import IAReactComponent from './components/IAReactComponent';
 
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
+
+/*
+Handling of FakeReact IAReactComponents
+* createElement(tag=IAReactComponent) spots the tag is a function and calls new(attrs), lets call this NEWIAREACTOBJ
+* createElement then adds the kids (which possibly doesnt work, and we dont have a current use case)
+* when NEWIAREACTOBJ is added into its parent,
+    * PARENT.addKids calls NEWIAREACTOBJ.render()
+      * NEWIAREACTOBJ.render typically builds more FakeReact from the elements that would be displayed,
+        * the top element built may contain a ref=f(el). this will be stored as a function in setAttributes (its untested if a sub-element contains ref=f()
+    * addKids(parent) adds the rendered elements to the parent
+    * addKids(parent) calls "ref", passing the element created to the IAReactObject,
+      * The ref call will typically fetch state and add more sub-elements e.g. via ReactFake.loadImg
+    * addKids(parent) calls NEWIAREACTOBJ.componentDidMount()
+*/
+//TODO write up handling of Real React components in here
+
+
+
+
 function deletechildren(el, keeptemplate) { //Note same function in htmlutils
     /*
     Remove all children from a node
@@ -72,7 +91,7 @@ export default class React  {
         } else if (url.startsWith("//")) {
             return "https:"+url;    // Ick - a reference to href="//foo.bar" rather than href="https://foo.bar"
         } else if (url.startsWith("/")) {
-            if (!(url.startsWith("/search.php") || url.startsWith("/services"))) {
+            if (!(url.startsWith("/search.php") || url.startsWith("/services") || url.startsWith("/details"))) {
                 console.warn("Probably not a good idea to use root-relative URL", url); //could genericise to use options.rel instead of config but might not catch cases e.g. of /images
             }
             if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
@@ -343,7 +362,7 @@ export default class React  {
         if (typeof tag === "function") {  // Assume its a React class for now TODO-IAUX just testing
             if (tag.prototype instanceof IAReactComponent) {
                 const element = new tag(attrs);
-                React.addKids(element, kids); // This is FakeReact
+                React.addKids(element, kids); // This is FakeReact.addKids, and may not work inside of a Fake IAReactComponent
                 return element;
             } else { // Real React
                 const element = RealReact.createElement(tag, attrs, ...kids); // Returns a React Element which will be rendered into DOM by addKids on el its being included into
@@ -496,11 +515,11 @@ export default class React  {
                 // * There may be a fourth type - of things that can be converted to strings, but if so I need an example
                 const addable =
                     (typeof child === "string")      ? document.createTextNode(child.toString())
-                        : (child instanceof IAReactComponent) ? child.render()
+                        : (child instanceof IAReactComponent) ? child.render()  // Fake only, (will cause any ref= at top level to be a function)
                         : !(child instanceof HTMLElement) ? document.createElement("span")  // React Elements
                         :                                  child;
-                element.appendChild(addable); //
-                if ((addable instanceof HTMLElement) && (typeof addable.ref === "function")) {
+                element.appendChild(addable);
+                if ((addable instanceof HTMLElement) && (typeof addable.ref === "function")) { // Call the ref attribute of real or fake IAReactComponent
                     addable.ref.call(child, addable);
                 }
                 //TODO-IAUX Retest this, as triggers if child=0 for example, should find way to trigger positively on either child or addable

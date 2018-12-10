@@ -20,8 +20,12 @@ export default class TileImage extends IAReactComponent { //TODO-DWEB this shoul
     {
         super(props);
         this.state = { }
+        // loadImg is only called in the ReactFake case, not in the "real" React.
         this.loadImg = (enclosingspan) => // Defined as a closure so that can access identifier
-            DwebArchive.ReactFake.p_loadImg(enclosingspan, "__ia_thumb.jpg", `/services/img/${props.identifier}`) ////Intentionally no host so ReactFake will process
+            DwebArchive.ReactFake.p_loadImg(enclosingspan, "__ia_thumb.jpg", `/services/img/${props.identifier}`, (err, el) => {
+                React.setAttributes(el, "img", { className: this.props.className, imgname: this.props.imgname});
+                AJS.tiler(); // Make it redraw after img size known
+            }) ////Intentionally no host so ReactFake will process
     }
 
 
@@ -29,7 +33,7 @@ export default class TileImage extends IAReactComponent { //TODO-DWEB this shoul
         if (typeof DwebArchive !== "undefined") {
             //TODO-DWEB build img processing from ReactFake into tile-tile-image and ParentTileImg but wait till have non-tile images as well
             const self = this;
-            return <span className={this.props.className} imgname={this.props.imgname} ref={this.loadImg}></span>
+            return <span ref={this.loadImg}></span>
         } else {
             return <img src={`https://archive.org/services/img/${this.identifier}`}/>;
         }
