@@ -503,8 +503,9 @@ export default class React  {
             const child = kids[i];
             if (typeof child === "undefined") { // This was !child, but that skips the integer 0.
             } else if (Array.isArray(child)) {  //TODO-IAUX this should could a common function like below that adds a single kid
-                child.map((c) => element.appendChild(c.nodeType == null ?
-                    document.createTextNode(c.toString()) : c))
+                this.addKids(element, child);
+                //child.map((c) => element.appendChild(c.nodeType == null ?
+                //    document.createTextNode(c.toString()) : c))
             }
             else { // Single child to add - this next bit is fairly heuristic, should be double checked if things change.
                 // Essentially three kinds of things here.
@@ -521,6 +522,9 @@ export default class React  {
                 element.appendChild(addable);
                 if ((addable instanceof HTMLElement) && (typeof addable.ref === "function")) { // Call the ref attribute of real or fake IAReactComponent
                     addable.ref.call(child, addable);
+                }
+                if (child instanceof IAReactComponent) {
+                    child.componentDidMount(); // Tell fake IAReactComponent it mounted
                 }
                 //TODO-IAUX Retest this, as triggers if child=0 for example, should find way to trigger positively on either child or addable
                 if (! ((typeof child === "string") || (typeof child === "number") || (child instanceof HTMLElement) || (child instanceof IAReactComponent))) {
