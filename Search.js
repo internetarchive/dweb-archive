@@ -5,7 +5,6 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 const canonicaljson = require('@stratumn/canonicaljson');
 
 import ArchiveBase from './ArchiveBase';
-//import Tile from './Tile';
 import TileComponent from './components/TileComponent';
 
 /* Section to ensure node and browser able to use Headers, Request and Fetch */
@@ -58,7 +57,7 @@ export default class Search extends ArchiveBase {
         this.page++;
         const el = document.getElementById("appendTiles"); // Get the el, before the search in case user clicks away we add to right place
         const newmembers = await this.fetch_query({});   // Appends to this.members but returns just the new ones
-        newmembers.forEach(member => el.appendChild(new Tile().render(member)));
+        newmembers.forEach(el.addKids(<TileComponent member={member}/>));
         AJS.tiler();
         AJS.more_searching = false;
     }
@@ -182,7 +181,6 @@ export default class Search extends ArchiveBase {
                                             <div class="C C5"></div>
                                         </div>
                                         {this.members.map( member=> // Note rendering tiles is quick, its the fetch of the img (async) which is slow.
-                                            // function(member, n){ return new Tile().render(member);}
                                             <TileComponent member={member}/>
                                         )}
                                     </div>{/*--/.results--*/}

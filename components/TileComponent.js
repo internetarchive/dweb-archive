@@ -33,7 +33,7 @@ export default class TileComponent extends IAReactComponent {
         try {
             console.assert(this.props.member, "If using loadAndSync should have a member with at least mediatype to work with");
             // We need some data for tiles, if its not found then have to fetch item metadata and then render
-            if (!this.props.member.creator) { // This may not be best test
+            if (!(this.props.member.creator && this.props.member.creator.length)) { // This may not be best test
                 if (!this.props.item) this.props.item = new ArchiveItem({itemid: this.props.identifier});
                 if (!this.props.item.metadata) {
                     this.props.item.fetch_metadata((err, ai) => {

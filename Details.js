@@ -15,6 +15,8 @@ import React from './ReactFake';
 // React requires className= rather than class=, ReactFake supports both
 
 import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
+import ArchiveMemberRelated from '@internetarchive/dweb-archivecontroller/ArchiveMemberRelated';
+import TileComponent from './components/TileComponent';
 import ArchiveBase from './ArchiveBase';
 import Tile from './Tile';
 
@@ -435,37 +437,18 @@ export default class Details extends ArchiveBase {
                         className="hidden-xs-span"> Play All</span><br></a></span>*/}</h5>
                     <div id="also-found-result">
                         <section data-reactroot="" aria-label="Related Items">
-                            { results.map(i => this.alsoFoundTile(i)) }
+
+                                { results.map(o => new ArchiveMemberRelated(o)).map(member => // Note this is odd - results normally encloses all teh tasks, but AJS.tiler doesnt seem to work without this
+                                    <div className="results" style={{visibility: "visible"}}>
+                                        <TileComponent member={member}/>
+                                    </div>
+                                    ) }
                         </section>
                     </div>
                 </div>
             </div>
         ) )
     }
-    alsoFoundTile(i) { //TODO catch the /details and /serices urls in ReactFake //TODO - see if this differs from regular tiles in Tile.js
-        return (
-            <div className="results" style="visibility: visible;">
-                <div className="item-ia" data-id={i._id} data-mediatype={i._source.mediatype[0]} data-year=""><a
-                        className="stealth" tabIndex="-1" href={`/details/${i._id}`}>
-                    </a>
-                    <div className="C234">
-                        <div className="item-ttl C C2"><a href={`/details/${i._id}`}
-                                                           title={i._source.title}
-                                                           data-event-click-tracking="GenericNonCollection|ItemTile">
-                            <div className="tile-img"><img className="item-img" alt=""
-                                                           src={`/services/img/${i._id}`}/></div>
-                            <div className="ttl">{i._source.title}</div>
-                        </a></div>
-                        {/*NEEDS METADATA <div className="by C C4">
-                                    <div><span className="hidden-lists">by </span><span className="byv"
-                                                                                        title="Terebilov K.a ">Terebilov K.a </span>
-                                    </div>
-                                </div>*/}
-                    </div>
-                    {(i._source.mediatype === "collection") ? Tile.div_collectionstats(i._source) : Tile.div_statbar(i._source) }
-                </div>
-            </div>
-        );
-    }
+
 
 }
