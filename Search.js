@@ -57,7 +57,7 @@ export default class Search extends ArchiveBase {
         this.page++;
         const el = document.getElementById("appendTiles"); // Get the el, before the search in case user clicks away we add to right place
         const newmembers = await this.fetch_query({});   // Appends to this.members but returns just the new ones
-        newmembers.forEach(el.addKids(<TileComponent member={member}/>));
+        newmembers.forEach(member => React.addKids(el, <TileComponent member={member}/>));
         AJS.tiler();
         AJS.more_searching = false;
     }

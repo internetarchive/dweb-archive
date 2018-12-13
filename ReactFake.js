@@ -12,6 +12,7 @@ import throttle from "throttleit";
 import from2 from "from2";
 import prettierBytes from "prettier-bytes";
 const Url = require('url');
+import ReactDOM from 'react-dom';
 // other Internet Archive modules
 const debug = require('debug')('dweb-archive');
 import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";

@@ -7,7 +7,7 @@ export default class IAReactComponent {
         this.state = {};
     }
     setState(res) {
-        console.log("XX --- IAReactComponent unexpectedly getting called");
+        //Make sense in Real-React where its a subclass, but not here
         //if (this._isMounted) {
         //    super.setState(res);
         //} else {
