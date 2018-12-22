@@ -7,7 +7,7 @@
 import React from "../ReactFake";
 import IAReactComponent from './IAReactComponent';
 
-export default class TileImage extends IAReactComponent { //TODO-DWEB this should probably be extens IAReactComponent
+export default class TileImage extends IAReactComponent {
     /* Used in IAUX, but not in ReactFake
     static propTypes = {
         identifier: PropTypes.string.isRequired,
@@ -19,7 +19,7 @@ export default class TileImage extends IAReactComponent { //TODO-DWEB this shoul
     constructor(props)
     {
         super(props);
-        this.state = { }
+        this.state = { };
         // loadImg is only called in the ReactFake case, not in the "real" React.
         this.loadImg = (enclosingspan) => // Defined as a closure so that can access identifier
             DwebArchive.ReactFake.p_loadImg(enclosingspan, "__ia_thumb.jpg", `/services/img/${props.identifier}`, (err, el) => {
@@ -32,10 +32,9 @@ export default class TileImage extends IAReactComponent { //TODO-DWEB this shoul
     render() {
         if (typeof DwebArchive !== "undefined") {
             //TODO-DWEB build img processing from ReactFake into tile-tile-image and ParentTileImg but wait till have non-tile images as well
-            const self = this;
             return <span ref={this.loadImg}></span>
         } else {
-            return <img src={`https://archive.org/services/img/${this.identifier}`}/>;
+            return <img src={`https://archive.org/services/img/${this.identifier}`} alt={this.identifier}/>;
         }
     }
 }
