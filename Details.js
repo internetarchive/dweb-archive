@@ -17,8 +17,9 @@ import React from './ReactFake';
 import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
 import ArchiveMemberRelated from '@internetarchive/dweb-archivecontroller/ArchiveMemberRelated';
 import TileComponent from './components/TileComponent';
+import CollectionList from './components/CollectionList';
 import ArchiveBase from './ArchiveBase';
-import Tile from './Tile';
+//OBSOLETE import Tile from './Tile';
 
 
 export default class Details extends ArchiveBase {
@@ -392,20 +393,7 @@ export default class Details extends ArchiveBase {
                                 <br clear="all" class="clearfix"/>
                             </div>
                         </section>
-            
-                        <div class="boxy collection-list">
-                            <section class="quick-down collection-list">
-                                <h5 class="collection-title">IN COLLECTIONS</h5>
-                                { collections.map((collection) => (
-                                    <div class="collection-item">
-                                        <a
-                                                onClick={`Nav.nav_details("${collection}")`}
-                                                data-event-click-tracking={`CollectionList|${collection}`}
-                                        >{collectionTitles[collection]}</a>
-                                    </div>
-                                ) ) }
-                            </section>
-                        </div>
+                        <CollectionList collections={collections} collectionTitles={collectionTitles}/>
                         {/*TODO need boxy item-upload-info - its not obvious, on commute its the adder field, on mbid its derivation
                         of uploader which is email, on text its ___ */}
                     </div>{/*--/.col-md-2--*/}
