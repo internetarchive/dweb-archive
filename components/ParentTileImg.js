@@ -22,7 +22,7 @@ export default class ParentTileImg extends IAReactComponent {
         super(props);
         this.loadImg = enclosingspan => { // Defined as a closure so that can access identifier (in real React), in ReactFake its called with ref.call(this,enclosingspan)
             let urls;
-            if (this.props.member && this.props.member.collection0thumbnaillinks) {
+            if (this.props.member && this.props.member.collection0thumbnaillinks && (this.props.member.collection0thumbnaillinks.length > 0) ) {
                 urls = this.props.member.collection0thumbnaillinks;
             } else {
                 if (!this.props.parentidentifier) {

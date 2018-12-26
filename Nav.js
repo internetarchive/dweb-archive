@@ -255,15 +255,15 @@ export default class Nav {
             }
             history.pushState(historystate, `Internet Archive item ${itemid ? itemid : ""}`, historyloc);
         }
-        if (!itemid) {
-            (await new Home().fetch()).render(res);
-        } else {
-            let d = await new Details({itemid}).fetch();
-            let metaapi = d.exportMetadataAPI(); // Cant pass Details to the constructors below
-            if (!d.metadata) {
-                new DetailsError({itemid, message: `item ${itemid} cannot be found or does not have metadata`}).render(res);
+        try {
+            if (!itemid) {
+                (await new Home().fetch()).render(res);
             } else {
-                try {
+                let d = await new Details({itemid}).fetch();
+                let metaapi = d.exportMetadataAPI(); // Cant pass Details to the constructors below
+                if (!d.metadata) {
+                    new DetailsError({itemid, message: `item ${itemid} cannot be found or does not have metadata`}).render(res);
+                } else {
                     if (downloaddirectory) {
                         new DownloadDirectory({itemid, metaapi}).render(res);
                     } else {
@@ -292,11 +292,11 @@ export default class Nav {
                             //    return new Nav(")
                         }
                     }
-                } catch(err) {
-                    console.error(err);
-                    new DetailsError({itemid, message: err.message}).render(res);
                 }
             }
+        } catch(err) {
+            console.error(err);
+            new DetailsError({itemid, message: err.message}).render(res);
         }
     }
 

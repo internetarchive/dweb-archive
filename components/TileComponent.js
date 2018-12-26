@@ -54,7 +54,7 @@ export default class TileComponent extends IAReactComponent {
             const by = member.creator || member.creatorSorter || (item && item.metadata.creator);
             const collection = member.collection || (item && item.metadata.collection); // Should be array
             const nFavorites = collection.filter(e => e.startsWith('fav-')).length;  // Jira added since cant get this any more
-            const collectionSize = 0; //TODO really hard to get https://github.com/internetarchive/dweb-archive/issues/91
+            const collectionSize = member.item_count; //TODO really hard to get https://github.com/internetarchive/dweb-archive/issues/91
             this.setState({
                 isCollection, collection0, by, nFavorites, collectionSize,
                 mediatype: member.mediatype,

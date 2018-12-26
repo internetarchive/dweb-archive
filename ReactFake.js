@@ -151,55 +151,59 @@ export default class React  {
         Some cases of interest
         /services/img/foo with rel=["dweb:/arc/archive.org/"] > "dweb:/arc/archive.org/services/img/  special case > metadata>thumbnailimg
          */
-        debug("Loading Image %s from %o", name, urls);
-        if (urls instanceof ArchiveFile && urls.name() === "__ia_thumb.jpg") {
-            urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
-            // Dont use magnet urls on __ia_thumb.jpg as opens many webtorrents and fails when tiling TODO this could be a parameter to p_loadImg
-            urls = urls.filter(u=> !u.includes("magnet:"));
-        } else { // This includes ArchiveMember
-            urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
-        }  //Examples: [dweb:/arc/archive.org/service/foo]
-        for (i in urls) { // Its unclear if this is used except in odd cases, should really push upstream as does an unneeded metadata call
-            if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
-                urls[i] = await this.thumbnailUrlsFrom(urls[i].slice(35));
+        try {
+            debug("Loading Image %s from %o", name, urls);
+            if (urls instanceof ArchiveFile && urls.name() === "__ia_thumb.jpg") {
+                urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
+                // Dont use magnet urls on __ia_thumb.jpg as opens many webtorrents and fails when tiling TODO this could be a parameter to p_loadImg
+                urls = urls.filter(u => !u.includes("magnet:"));
+            } else { // This includes ArchiveMember
+                urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
+            }  //Examples: [dweb:/arc/archive.org/service/foo]
+            for (i in urls) { // Its unclear if this is used except in odd cases, should really push upstream as does an unneeded metadata call
+                if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
+                    urls[i] = await this.thumbnailUrlsFrom(urls[i].slice(35));
+                }
             }
-        }
-        urls = [].concat(...urls); // Flatten any urls expanded above
-        urls = await DwebTransports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
-        // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
-        let fileurl = urls.find(u => u.startsWith("file"));
-        let magneturl = urls.find(u => u.includes('magnet:'));
-        let streamUrls = await DwebTransports.p_urlsValidFor(urls, "createReadStream");
-        streamUrls = streamUrls.filter(u => !u.href.startsWith("ipfs:")); // IPFS too unreliable (losing data, no errors) to use for streams esp for thumbnails
-        if (fileurl) {
-            this._loadImgSrc(el, fileurl, cb);
-        } else if ((DwebTransports.type === "ServiceWorker") && magneturl) { //TODO-MIRROR could possible pick up here as well
-            this._loadImgSrc(el, magneturl.replace('magnet:',`${window.origin}/magnet/`), cb);
-        } else if (streamUrls.length) {
-            const file = {
-                name: name,
-                createReadStream: await DwebTransports.p_f_createReadStream(streamUrls)
-                // Initiate a stream, & return a f({start, end}) => readstream
-                // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
-            };
-            RenderMedia.append(file, el, cb);  // Render into supplied element - have to use append, as render doesnt work, the cb will set attributes and/or add children.
-        } else {
-            // Otherwise fetch the file, and pass via rendermedia and from2
-            //TODO-MULTI-GATEWAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
-            try {
-                const buff = await  DwebTransports.p_rawfetch(urls, {timeoutMS: 5000, relay: false});  //Maybe should not time out since streams will almost always get used, and in this case could be a large file and last resort to use a download url.
-                // Logged by Transports
+            urls = [].concat(...urls); // Flatten any urls expanded above
+            urls = await DwebTransports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
+            // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
+            let fileurl = urls.find(u => u.startsWith("file"));
+            let magneturl = urls.find(u => u.includes('magnet:'));
+            let streamUrls = await DwebTransports.p_urlsValidFor(urls, "createReadStream");
+            streamUrls = streamUrls.filter(u => !u.href.startsWith("ipfs:")); // IPFS too unreliable (losing data, no errors) to use for streams esp for thumbnails
+            if (fileurl) {
+                this._loadImgSrc(el, fileurl, cb);
+            } else if ((DwebTransports.type === "ServiceWorker") && magneturl) { //TODO-MIRROR could possible pick up here as well
+                this._loadImgSrc(el, magneturl.replace('magnet:', `${window.origin}/magnet/`), cb);
+            } else if (streamUrls.length) {
                 const file = {
                     name: name,
-                    createReadStream: function (opts) {
-                        if (!opts) opts = {};
-                        return from2([buff.slice(opts.start || 0, opts.end || (buff.length - 1))])
-                    }
+                    createReadStream: await DwebTransports.p_f_createReadStream(streamUrls)
+                    // Initiate a stream, & return a f({start, end}) => readstream
+                    // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
                 };
                 RenderMedia.append(file, el, cb);  // Render into supplied element - have to use append, as render doesnt work, the cb will set attributes and/or add children.
-            } catch (err) {
-                console.error("Unable to p_loadImg",name,urls,err.message);
+            } else {
+                // Otherwise fetch the file, and pass via rendermedia and from2
+                //TODO-MULTI-GATEWAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
+                try {
+                    const buff = await DwebTransports.p_rawfetch(urls, {timeoutMS: 5000, relay: false});  //Maybe should not time out since streams will almost always get used, and in this case could be a large file and last resort to use a download url.
+                    // Logged by Transports
+                    const file = {
+                        name: name,
+                        createReadStream: function (opts) {
+                            if (!opts) opts = {};
+                            return from2([buff.slice(opts.start || 0, opts.end || (buff.length - 1))])
+                        }
+                    };
+                    RenderMedia.append(file, el, cb);  // Render into supplied element - have to use append, as render doesnt work, the cb will set attributes and/or add children.
+                } catch (err) {
+                }
             }
+        } catch(err) {
+            console.error("Unable to p_loadImg", name, urls, err.message);
+            this._loadImgSrc(el, "/images/Broken_document.png", cb);
         }
     }
 
