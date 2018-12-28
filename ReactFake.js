@@ -12,6 +12,7 @@ import throttle from "throttleit";
 import from2 from "from2";
 import prettierBytes from "prettier-bytes";
 const Url = require('url');
+const asyncMap = require('async/map');
 import ReactDOM from 'react-dom';
 // other Internet Archive modules
 const debug = require('debug')('dweb-archive');
@@ -79,7 +80,7 @@ export default class React  {
     static resolveUrls(url, options={}) {
         /* Synchronous part of p_resolveUrls, handle subset of cases that don't require network access (asyncronicity)
         url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
-        resolves:   Array of URLs suitable for passing to Transports - may be "dweb: or ipfs: etc, i.e. not canonical or gateway yet
+        returns:   Array of URLs suitable for passing to Transports - may be "dweb: or ipfs: etc, i.e. not canonical or gateway yet
          */
         if (Array.isArray(url)) {
             let urls = url.map(u => this.resolveUrls(u, options));    // Recurse urls is now array of arrays (most of which will probably be single value
@@ -106,26 +107,25 @@ export default class React  {
             return [url]; // Not relative, just pass it back
         }
     }
-    static async p_resolveUrls(url) {
+    static p_resolveUrls(url, cb) { //TODO check callers can now use cb
         /*
         url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
-        resolves:   Array of URLs suitable for passing to Transports
+        cb or resolves: Array of URLs suitable for passing to Transports
          */
-        let urls;
-        if (Array.isArray(url)) {
-            const urlarrs = await Promise.all(url.map(u => this.p_resolveUrls(u)));    // Recurse urls is now array of arrays (most of which will probably be single value
-            urls = [].concat(...urlarrs);  // Flatten, for now accept there might be dupes
+        if (cb) { try { f.call(this, url, cb) } catch(err) { cb(err)}} else { return new Promise((resolve, reject) => { try { f.call(this, url, (err, res) => { if (err) {reject(err)} else {resolve(res)} })} catch(err) {reject(err)}})} // Promisify pattern v2
+        function f(url, cb) {
+            if (Array.isArray(url)) {  // Recurse urls is now array of arrays (most of which will probably be single value
+                asyncMap(url, (url, cb) => f.call(this, url, cb), (err, res) => {
+                    if (err) { cb(err) } else { cb(null, [].concat(...res)) }; // Flatten, for now accept there might be dupes
+                });
+            } else if (url instanceof ArchiveMember) {  // Its a member, we want the urls of the images
+                url.urls(cb);                           // This will be fast - just thumbnaillinks or service, wont try and ask gateway for metadata and IPFS ima
+            } else if (url instanceof ArchiveFile) {
+                url.urls(cb);                           // This could be slow, may have to get the gateway to cache the file in IPFS
+            } else {
+                cb(null, this.resolveUrls(url));        // Synchronous code will work
+            }
         }
-        // Its now a singular URL
-        if (url instanceof ArchiveMember) {
-            // Its a member, we want the urls of the images
-            urls = await url.p_urls(); // This will be fast - just thumbnaillinks or service, wont try and ask gateway for metadata and IPFS image
-        } else if (url instanceof ArchiveFile) {
-            urls = await url.p_urls();  // This could be slow, may have to get the gateway to cache the file in IPFS
-        } else {
-            urls = this.resolveUrls(url);  // Synchronous code will work
-        }
-        return urls;
     }
 
     static _loadImgSrc(el, url, cb) {
@@ -209,7 +209,7 @@ export default class React  {
 
     static loadImg(name, urls, cb) {
         //asynchronously loads file from one of metadata, turns into blob, and stuffs into element
-        // urls can be a array of URLs of an ArchiveFile (which is passed as an ArchiveFile because ArchiveFile.p_urls() is async as may require expanding metadata
+        // urls can be a array of URLs of an ArchiveFile (which is passed as an ArchiveFile because ArchiveFile.urls() is async as may require expanding metadata
         // Usage like  {this.loadImg(<img width=10>))
         //UNSURE WHY MADE THS ASSERTION - ASYNC UNDER MIRROR SHOULD BE FINE - SEE CALL in createElement
         // console.assert(!DwebArchive.mirror); // This should never get called in mirror case
