@@ -63,7 +63,7 @@ module.exports = {
                 { from: 'includes/archive.*js', to: './'},
                 { from: 'includes/archive.*js.map', to: './'},
                 { from: 'includes/bootstrap.*js', to: './'},
-                { from: 'includes/jquery.*js', to: './'},
+                { from: 'includes/jquery*', to: './'},
                 { from: 'includes/node_modules_dist', to: 'includes/node_modules'} // Note in node_modules need react/dist/react.js
             ],
             { }
