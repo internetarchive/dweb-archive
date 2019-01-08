@@ -12,7 +12,7 @@
     "@babel/core": "^7.2.2",
     "@internetarchive/dweb-archivecontroller": "git+https://git@github.com/internetarchive/dweb-archivecontroller.git",
     "@internetarchive/dweb-objects": "^0.1.20",
-    "@internetarchive/dweb-transports": "^0.1.30",
+    "@internetarchive/dweb-transports": "^0.1.32",
     "@stratumn/canonicaljson": "^1.0.2",
     "debug": "^3.2.5",
     "es2015": "latest",
@@ -33,8 +33,8 @@
     "http-server": "latest",
     "react": "^16.7.0",
     "uglifyjs-webpack-plugin": "^1.3.0",
-    "webpack": "^4.28.2",
-    "webpack-cli": "latest",
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.1",
     "webpack-dev-server": "^3.1.14"
   },
   "homepage": "https://github.com/internetarchive/dweb-archive#readme",
@@ -51,5 +51,5 @@
     "server": "http-server",
     "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist; ln -s ../node_modules/@internetarchive/dweb-objects/dist/dweb-objects-bundle.js dist;"
   },
-  "version": "0.1.40"
+  "version": "0.1.42"
 }
