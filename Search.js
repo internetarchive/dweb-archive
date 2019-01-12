@@ -25,7 +25,7 @@ if (typeof(Window) === "undefined") {
 */
 
 const searchConfig = {
-    limitperpage: 30,  // How many to retrieve per page, smaller numbers load quicker, but then scroll down will have to get next page
+    rows: 30,  // How many to retrieve per page, smaller numbers load quicker, but then scroll down will have to get next page
 }
 export default class Search extends ArchiveBase {
     /*
@@ -35,14 +35,14 @@ export default class Search extends ArchiveBase {
     Inherited from ArchiveBase: item
     items   List of items found
      */
-    constructor({query='*:*', sort='', and='', limit=searchConfig.limitperpage, page=1, metaapi=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
+    constructor({query='*:*', sort='', and='', rows=searchConfig.rows, page=1, metaapi=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
         super({itemid, metaapi});
         if (typeof(query) === "object") { // form { creator: "Foo bar" ... }
             // This next line uses stringify instead of toString() because we want  '"abc"' and '1' i.e. quotes if its a string
             query = Object.keys(query).map(k => `${k}:${canonicaljson.stringify(query[k])}`).join(' AND ');
         }
         this.query = query; // Note this should be an UNENCODED query  or an object
-        this.limit= limit;
+        this.rows= rows;
         this.sort = sort || ''; // In some cases sort=null is passed, when want default (e.g. when url query=foo passed to archive.html) and null is not false.
         this.and = and;
         this.page = page;
