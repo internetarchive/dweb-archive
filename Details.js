@@ -407,10 +407,10 @@ export default class Details extends ArchiveBase {
         const el = (
             <div id="also-found" className="container container-ia width-max" data-identifier={this.itemid} ></div>
             );
-        this.relatedItems({wantStream:false}, (err, data) => {
+        this.relatedItems({wantStream:false, wantMembers:true}, (err, searchmembers) => {
             if (!err) { // If there is an error then fetch_json will have reported it, and can just ignore it here and not display
                 // noinspection JSUnresolvedVariable
-                this.loadDetailsAlsoFound(el, this.itemid, data.hits.hits);  // Asynchronous
+                this.loadDetailsAlsoFound(el, this.itemid, searchmembers);  // Asynchronous
             }
         });
         return el;

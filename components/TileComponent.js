@@ -34,6 +34,8 @@ export default class TileComponent extends IAReactComponent {
             console.assert(this.props.member, "If using loadAndSync should have a member with at least mediatype to work with");
             // We need some data for tiles, if its not found then have to fetch item metadata and then render
             //TODO = catch cases where this is triggered (maybe related, maybe fav-brewster) and see if can use expansion instead
+            console.assert(this.props.member.creator && this.props.member.creator.length, "next code shouldnt be needed as expand");
+            /*
             if (!(this.props.member.creator && this.props.member.creator.length)) { // This may not be best test
                 if (!this.props.item) this.props.item = new ArchiveItem({itemid: this.props.identifier});
                 if (!this.props.item.metadata) {
@@ -48,6 +50,7 @@ export default class TileComponent extends IAReactComponent {
                     return;
                 } // If metadata drop through
             }
+            */
             const member = this.props.member;
             const item = this.props.item;
             const isCollection = (member.mediatype === 'collection');
