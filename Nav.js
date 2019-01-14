@@ -19,7 +19,7 @@ import Account from './Account'
 import DetailsError from './DetailsError'
 import DownloadDirectory from './DownloadDirectory'
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
-const debug = require('debug')('dweb-archive');
+const debug = require('debug')('dweb-archive:Nav');
 
 const TRANSPORT_STATUS_PAUSED = 4;  // Cheat to avoid having to import Transport here, which would make service worker much more complex
 
@@ -259,7 +259,7 @@ export default class Nav {
             if (!itemid) {
                 (await new Home().fetch()).render(res);
             } else {
-                let d = await new Details({itemid}).fetch();
+                let d = await new Details({itemid}).fetch_metadata(); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
                 let metaapi = d.exportMetadataAPI(); // Cant pass Details to the constructors below
                 if (!d.metadata) {
                     new DetailsError({itemid, message: `item ${itemid} cannot be found or does not have metadata`}).render(res);

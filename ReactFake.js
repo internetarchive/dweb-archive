@@ -15,7 +15,7 @@ const Url = require('url');
 const asyncMap = require('async/map');
 import ReactDOM from 'react-dom';
 // other Internet Archive modules
-const debug = require('debug')('dweb-archive');
+const debug = require('debug')('dweb-archive:ReactFake');
 import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";
 import ArchiveFile from "@internetarchive/dweb-archivecontroller/ArchiveFile";
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";

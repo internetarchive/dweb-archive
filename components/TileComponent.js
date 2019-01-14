@@ -7,10 +7,11 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 //import IAReactComponent from 'iacomponents/experimental/IAReactComponent';
 //import PropTypes from 'prop-types'
 //!IAUX version
-const debug = require('debug')('TileComponent');
+const debug = require('debug')('dweb-archive:TileComponent');
 import React from "../ReactFake";
 import IAReactComponent from './IAReactComponent';
 import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";
+import ArchiveMemberSearch from "@internetarchive/dweb-archivecontroller/ArchiveMemberSearch";
 import Util from "../Util";
 import TileImage from "./TileImage";
 
@@ -34,7 +35,9 @@ export default class TileComponent extends IAReactComponent {
             console.assert(this.props.member, "If using loadAndSync should have a member with at least mediatype to work with");
             // We need some data for tiles, if its not found then have to fetch item metadata and then render
             //TODO = catch cases (if-any) where this is triggered (maybe related, maybe fav-brewster) and see if can use expansion instead
-            console.assert(this.props.member.creator && this.props.member.creator.length, "next code shouldnt be needed as expand");
+            // note test of creator is bad, as for example the "etree" entry in audio collection doesnt have a creator, publicdate or title would be better, but will try ArchiveMemberSearch
+            //console.assert(this.props.member.creator && this.props.member.creator.length, "next code shouldnt be needed as expand");
+            console.assert(this.props.member instanceof ArchiveMemberSearch, "next code shouldnt be needed as expand");
             /*
             if (!(this.props.member.creator && this.props.member.creator.length)) { // This may not be best test
                 if (!this.props.item) this.props.item = new ArchiveItem({itemid: this.props.identifier});
