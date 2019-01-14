@@ -5,6 +5,8 @@ import Details from './Details'
 /*
 Support directories of files,
 See https://github.com/internetarchive/dweb-archive/issues/10 for discussion - this is NOT complete yet, but works enough to use.
+
+TODO needs date in form probably like new Date().toLocaleDateString('en-GB',{day:'numeric', month:'short', year:'numeric',hour:'2-digit',minute:'2-digit'})
  */
 
 export default class DownloadDirectory extends Details {

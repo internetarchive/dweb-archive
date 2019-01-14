@@ -19,8 +19,6 @@ import ArchiveMemberRelated from '@internetarchive/dweb-archivecontroller/Archiv
 import TileComponent from './components/TileComponent';
 import CollectionList from './components/CollectionList';
 import ArchiveBase from './ArchiveBase';
-//OBSOLETE import Tile from './Tile';
-
 
 export default class Details extends ArchiveBase {
     constructor({itemid = undefined, metaapi = undefined}={}) {
