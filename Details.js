@@ -128,8 +128,8 @@ export default class Details extends ArchiveBase {
         const itemid = this.itemid;
         const metadata = this.metadata;
         const title = metadata.title;
-        const creator = metadata.creator.join(',');
-        const queryCreator=metadata.creator.map(c => `creator:"${c}"`).join(' OR ');
+        const creator = (metadata.creator || []).join(',');
+        const queryCreator=(metadata.creator || []).map(c => `creator:"${c}"`).join(' OR ');
         const queryCreatorEnc= encodeURIComponent(queryCreator);
         const datePublished = metadata.date;
         const publisher=metadata.publisher;
