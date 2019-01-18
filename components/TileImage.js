@@ -20,19 +20,20 @@ export default class TileImage extends IAReactComponent {
     {
         super(props);
         this.state = { };
-        // loadImg is only called in the ReactFake case, not in the "real" React.
-        this.loadImg = (enclosingspan) => // Defined as a closure so that can access identifier
-            DwebArchive.ReactFake.p_loadImg(enclosingspan, "__ia_thumb.jpg", `/services/img/${props.identifier}`, (err, el) => {
-                React.setAttributes(el, "img", { className: this.props.className, imgname: this.props.imgname});
-                AJS.tiler(); // Make it redraw after img size known
-            }) ////Intentionally no host so ReactFake will process
+        this.load = (el) => this.loadImg.call(this, el); // Setup so callable from the ref
     }
-
+    // loadImg is only called in the ReactFake case, not in the "real" React.
+    loadImg(enclosingspan) { // Defined as a closure so that can access identifier
+        DwebArchive.ReactFake.p_loadImg(enclosingspan, "__ia_thumb.jpg", `/services/img/${this.props.identifier}`, (err, el) => {
+            React.setAttributes(el, "img", {className: this.props.className, imgname: this.props.imgname});
+            AJS.tiler(); // Make it redraw after img size known
+        }) ////Intentionally no host so ReactFake will process
+    }
 
     render() {
         if (typeof DwebArchive !== "undefined") {
             //TODO-DWEB build img processing from ReactFake into tile-tile-image and ParentTileImg but wait till have non-tile images as well
-            return <span ref={this.loadImg}></span>
+            return <span ref={this.load}></span>
         } else {
             return <img src={`https://archive.org/services/img/${this.identifier}`} alt={this.identifier}/>;
         }

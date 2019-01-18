@@ -20,9 +20,9 @@ export default class CollectionList extends IAReactComponent {
         if (typeof this.props.collectionTitles === "undefined")
             this.props.collectionTitles = {};
         this.state = {};
-        this.load2 = (el) => this.load.call(this, el);
+        this.load = (el) => this.loadcallable.call(this, el);
     }
-    load(enclosingElement) { // Its possible RealReact will need this.load = (enclosingElement)=> {...} so that it can access "this"
+    loadcallable(enclosingElement) { // Its possible RealReact will need this.load = (enclosingElement)=> {...} so that it can access "this"
         //expand a list of collections into a list of titles either through collectionTitles if supplied (e.g. from dweb gateway) or via a new Search query
         ArchiveMemberSearch.expand(this.props.collections.filter(k => !this.props.collectionTitles[k]), (err, res) => { // res = { id: AS(id) }
             const collectionTitles = Object.assign(this.props.collectionTitles, Object.map(res, (k,v)=>[k,v.title]));
@@ -41,7 +41,7 @@ export default class CollectionList extends IAReactComponent {
 
     render() { return (
         <div className="boxy collection-list">
-            <section className="quick-down collection-list"  ref={this.load2}>
+            <section className="quick-down collection-list"  ref={this.load}>
                 <h5 className="collection-title">IN COLLECTIONS</h5>
             </section>
         </div>
