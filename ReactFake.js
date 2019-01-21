@@ -132,7 +132,7 @@ export default class React  {
         // This should only happen if the original script was loaded from local disk
         let elImg = document.createElement("img");
         elImg.setAttribute("src", url);
-        cb(undefined, elImg);  // Set attributes (shouldnt have kids)
+        if (cb) cb(undefined, elImg);  // Set attributes (shouldnt have kids)
         el.appendChild(elImg);
     }
 

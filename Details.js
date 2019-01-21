@@ -424,7 +424,7 @@ export default class Details extends ArchiveBase {
                     <div id="also-found-result">
                         <section data-reactroot="" aria-label="Related Items">
 
-                                { results.map(o => new ArchiveMemberRelated(o)).map(member => // Note this is odd - results normally encloses all teh tasks, but AJS.tiler doesnt seem to work without this
+                                { results.map(member => // Note this is odd - results normally encloses all teh tasks, but AJS.tiler doesnt seem to work without this
                                     <div className="results" style={{visibility: "visible"}}>
                                         <TileComponent member={member}/>
                                     </div>
