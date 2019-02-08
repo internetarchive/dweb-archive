@@ -132,13 +132,14 @@ export default class Details extends ArchiveBase {
         const queryCreator=(metadata.creator || []).map(c => `creator:"${c}"`).join(' OR ');
         const queryCreatorEnc= encodeURIComponent(queryCreator);
         const datePublished = metadata.date;
-        const publisher=metadata.publisher;
+        const publishers=metadata.publisher || [];
         const keywords = metadata.subject;
         // noinspection JSUnresolvedVariable
         const licence = metadata.licenseurl; //TODO - handle other licenses - hardwired for CC currently
-        const queryLanguage=metadata.language.map(l => `language:${l} OR language:"{AICUtil.languageMapping[l]"`).join(' OR ');
+        const languages = metadata.language || [];
+        const queryLanguage=languages.map(l => `language:${l} OR language:"{AICUtil.languageMapping[l]"`).join(' OR ');
         const queryLanguageEnc= encodeURIComponent(queryLanguage);
-        const languageLong = metadata.language.map(l => AICUtil.languageMapping[l]).join(',');
+        const languageLong = languages.map(l => AICUtil.languageMapping[l]).join(',');
         const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const metadataListKeyStrings = {ocr: "OCR", runtime: "Run time", ppi: "PPI"}; /*Metadata with something other than capitalize first letter*/
         const metadataListExclude = [
@@ -152,9 +153,8 @@ export default class Details extends ArchiveBase {
             .filter( (k) => (!metadataListExclude.includes(k)) && metadata[k] && metadata[k].length);   // List of keys in the metadata that are not empty strings or empty arrays
 
         const downloadableFilesDict = this.files.reduce( (res, af) => {
-                const metadata = af.metadata;
                 if (af.downloadable()) {  // Note on image it EXCLUDED JPEG Thumb, but included JPEG*Thumb
-                    const format = metadata.format;
+                    const format = af.metadata.format;
                     if (!res[format]) { res[format] = []; }
                     res[format].push(af);
                 }
@@ -176,14 +176,14 @@ export default class Details extends ArchiveBase {
         const mediatype = metadata.mediatype;
         const iconochiveIcon="iconochive-"+mediatype; //obscure mediatypes are supported
         // noinspection JSUnresolvedVariable
-        const contributor = metadata.contributor;
+        const contributors = metadata.contributor || [].join(', ');
         // noinspection JSUnresolvedVariable
         const reviews = this.reviews;
         const writeReviewsURL = `https://archive.org/write-review.php?identifier=${itemid}`;  //TODO need an indirect way to submit a review
         const loginURL = "https://archive.org/account/login.php"; //TODO - its a Direct link as dont support authentication in DWeb version
         const bookmarksAddURL = `https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=image&amp;identifier=${itemid}&amp;title=${title}`; //TODO find way to submit distributed
         // noinspection JSUnresolvedVariable
-        const credits = metadata.credits;
+        const credits = (metadata.credits || []).join(, );
         //TODO-DETAILS much of below doesn't work (yet)
         //TODO-DETAILS note the structure of this has changed - see the difference in originals between multitrackaudio and mbid for example
         return (
@@ -290,8 +290,8 @@ export default class Details extends ArchiveBase {
                         ) : ( undefined ) }
                         {/*-- sponsor (also does usage rights, if specified for the sponsor) --*/}
 
-                        {/*-- contributor (also does usage rights, if specified for the contributor) --*/}
-                        { contributor ? ( <div><span class="key">Contributor</span>{' '}<span class="value">{contributor}</span></div> ) : ( undefined ) }
+                        {/*-- contributors (also does usage rights, if specified for the contributors) --*/}
+                        { contributors ? ( <div><span class="key">Contributor</span>{' '}<span class="value">{contributors}</span></div> ) : ( undefined ) }
                         { queryLanguage ? (
                             <div class="key-val-big">
                                 <div>
