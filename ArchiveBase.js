@@ -123,7 +123,7 @@ export default class ArchiveBase extends ArchiveItem {
                                  data-placement="bottom" title=""
                                  data-original-title="Share to Reddit"></div>
                         </a>
-                        <a href={`https://www.tumblr.com/share/video?embed=%3Ciframe+width%3D%22640%22+height%3D%22480%22+frameborder%3D%220%22+allowfullscreen+src%3D%22https%3A%2F%2Farchive.org%2Fembed%2F%22+webkitallowfullscreen%3D%22true%22+mozallowfullscreen%3D%22true%22%26gt%3B%26lt%3B%2Fiframe%3E&;name=${itemid}+%3A+${(metadata.creator || []).join(, )}+%3A+Free+Download+%26amp%3B+Streaming+%3A+Internet+Archive`}
+                        <a href={`https://www.tumblr.com/share/video?embed=%3Ciframe+width%3D%22640%22+height%3D%22480%22+frameborder%3D%220%22+allowfullscreen+src%3D%22https%3A%2F%2Farchive.org%2Fembed%2F%22+webkitallowfullscreen%3D%22true%22+mozallowfullscreen%3D%22true%22%26gt%3B%26lt%3B%2Fiframe%3E&;name=${itemid}+%3A+${(metadata.creator || []).join(', ')}+%3A+Free+Download+%26amp%3B+Streaming+%3A+Internet+Archive`}
                            target="_blank">
                             <div className="sharee iconochive-tumblr" data-toggle="tooltip"
                                  data-placement="bottom" title=""

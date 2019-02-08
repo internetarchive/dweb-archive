@@ -183,7 +183,7 @@ export default class Details extends ArchiveBase {
         const loginURL = "https://archive.org/account/login.php"; //TODO - its a Direct link as dont support authentication in DWeb version
         const bookmarksAddURL = `https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=image&amp;identifier=${itemid}&amp;title=${title}`; //TODO find way to submit distributed
         // noinspection JSUnresolvedVariable
-        const credits = (metadata.credits || []).join(, );
+        const credits = (metadata.credits || []).join(', ');
         //TODO-DETAILS much of below doesn't work (yet)
         //TODO-DETAILS note the structure of this has changed - see the difference in originals between multitrackaudio and mbid for example
         return (
