@@ -279,13 +279,13 @@ export default class Details extends ArchiveBase {
                       </span> {/*TODO should really have , between each but join() not easy in JSX*/}
                         </div>
                         ) : ( undefined ) }
-                        { publisher ? (
+                        { publishers.length ? (
                         <div><span class="key">Publisher</span>{' '}
 
                             <span
                                     class="value"
-                            ><a href={`/search.php?query=publisher%3A%22${publisher}%22`} onclick={Nav.onclick_search({query: {publisher: publisher}})}><span
-                                    itemprop="publisher">{publisher}</span></a></span>
+                            ><a href={`/search.php?query=publisher%3A%22${publishers.join("%22%20OR%20%22")}%22`} onclick={Nav.onclick_search({query: {publisher: publishers.join("%22%20OR%20%22")}})}><span
+                                    itemprop="publisher">{publishers.join(', ')}</span></a></span>
                         </div>
                         ) : ( undefined ) }
                         {/*-- sponsor (also does usage rights, if specified for the sponsor) --*/}
