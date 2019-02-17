@@ -175,7 +175,7 @@ export default class Nav {
         const s = await new Search((typeof(q) === "object") ? q : (typeof(q) === "string") ? {query: q} : undefined).fetch();
         q = s.query;    // Flattened from object to string
         if (wanthistory) {
-            const supportsArc = ! (window.location.origin === "file://" || window.location.pathname.startsWith("/ipfs/")  || window.location.pathname.startsWith("/ipns/") )
+            const supportsArc = ! (window.location.origin === "file://" || window.location.pathname.startsWith("/ipfs/")  || window.location.pathname.startsWith("/ipns/") );
             const historystate = {query: q}; //TODO-HISTORY may want  to store transports, paused etc here
             let cnp = [];
             cnp.push(await this.pausedParm()); //WAS DwebTransports.p_connectedNamesParm(); but we want to exclude paused, not record current state of success/failed transport
@@ -240,7 +240,7 @@ export default class Nav {
             // See notes on async_factory about history.pushState
             let historyloc;
             // Ideally we'd like to be on a service that supports /arc but if it doesnt we've got an alternative.
-            let supportsArc = ! (window.location.origin === "file://" || window.location.pathname.startsWith("/ipfs/")  || window.location.pathname.startsWith("/ipns/"))
+            let supportsArc = ! (window.location.origin === "file://" || window.location.pathname.startsWith("/ipfs/")  || window.location.pathname.startsWith("/ipns/"));
             if (!supportsArc) {
                 if (itemid) cnp.push(`item=${itemid}`);   // Need item id parameter on local files
                 if (downloaddirectory) cnp.push('download=1');   // Need item id parameter on local files
@@ -288,7 +288,7 @@ export default class Nav {
                                 return (await new Account({itemid, metaapi}).fetch()).render(res);
                             default:
                                 //TODO Not yet supporting software, zotero (0 items); data; web
-                                new DetailsError({itemid, message: `Unsupported mediatype: ${obj.metadata.mediatype}`}).render(res);
+                                new DetailsError({itemid, message: `Unsupported mediatype: ${d.metadata.mediatype}`}).render(res);
                             //    return new Nav(")
                         }
                     }

@@ -59,7 +59,7 @@ export default class Audio extends AV {
                         <div itemprop="hasPart" itemscope itemtype="http://schema.org/AudioObject">
                             <meta itemprop="name" content={track.title}/>
                             <meta itemprop="duration" content={`PT0M${parseInt(track.duration)}S`}/>
-                            {   // Loop over the sources which can be multiple files for the same track.  Note this is limited to playable sources, could add unplayable to playlist if want as seperate field e.g. unplayablesources
+                            {   // Loop over the sources which can be multiple files for the same track.  Note this is limited to playable sources, could add unplayable to playlist if want as separate field e.g. unplayablesources
                                 track.sources.map((f) => (
                                     <link itemprop="associatedMedia" href={`https://archive.org/download/${itemid}/${f.name}`}/>
                                 ))
