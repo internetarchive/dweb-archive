@@ -54,6 +54,9 @@ body.navia .navbar #nav-dweb ul{margin-bottom: 0px; display: inline}
 #dweb-status {
     display: inline-block;
 }
+#dweb-mirrorconfig {
+    display: inline-block;
+}
 #dweb-status ul {
     padding-left:0;
 }

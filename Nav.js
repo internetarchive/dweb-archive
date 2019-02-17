@@ -18,6 +18,7 @@ import Video from './Video'
 import Account from './Account'
 import DetailsError from './DetailsError'
 import DownloadDirectory from './DownloadDirectory'
+import ConfigDetailsComponent from './components/ConfigDetailsComponent'
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 const debug = require('debug')('dweb-archive:Nav');
 
@@ -151,6 +152,14 @@ export default class Nav {
 
     static async nav_details(id, wanthistory=true) {
         debug("Navigating to Details %s", id);
+
+        if (DwebArchive.mirror) {
+            const mirrorStatusDiv = document.getElementById('dweb-mirrorconfig'); // Note this isnt a Component, cos its in the archive.html
+            const configDetailsElement = new ConfigDetailsComponent({identifier: id}).render(); // Will be loading asynchronously
+            while (mirrorStatusDiv.lastChild) { mirrorStatusDiv.removeChild(mirrorStatusDiv.lastChild);}
+            ReactFake.addKids(mirrorStatusDiv, configDetailsElement); // Using addKids to force the "ref" to be used
+            //mirrorStatusDiv.appendChild(configDetailsElement);
+        }
         const destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
         await Nav.factory(id, destn, {wanthistory}); // Not sure what returning ....
