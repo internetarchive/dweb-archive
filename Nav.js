@@ -154,11 +154,7 @@ export default class Nav {
         debug("Navigating to Details %s", id);
 
         if (DwebArchive.mirror) {
-            const mirrorStatusDiv = document.getElementById('dweb-mirrorconfig'); // Note this isnt a Component, cos its in the archive.html
-            const configDetailsElement = new ConfigDetailsComponent({identifier: id}).render(); // Will be loading asynchronously
-            while (mirrorStatusDiv.lastChild) { mirrorStatusDiv.removeChild(mirrorStatusDiv.lastChild);}
-            ReactFake.addKids(mirrorStatusDiv, configDetailsElement); // Using addKids to force the "ref" to be used
-            //mirrorStatusDiv.appendChild(configDetailsElement);
+            ConfigDetailsComponent.insertInside('dweb-mirrorconfig', {identifier: id})
         }
         const destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
