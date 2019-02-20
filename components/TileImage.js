@@ -19,11 +19,9 @@ export default class TileImage extends IAReactComponent {
     constructor(props)
     {
         super(props);
-        this.state = { };
-        this.load = (el) => this.loadImg.call(this, el); // Setup so callable from the ref
     }
     // loadImg is only called in the ReactFake case, not in the "real" React.
-    loadImg(enclosingspan) { // Defined as a closure so that can access identifier
+    loadcallable(enclosingspan) { // Defined as a closure so that can access identifier
         DwebArchive.ReactFake.p_loadImg(enclosingspan, "__ia_thumb.jpg", `/services/img/${this.props.identifier}`, (err, el) => {
             React.setAttributes(el, "img", {className: this.props.className, imgname: this.props.imgname});
             AJS.tiler(); // Make it redraw after img size known

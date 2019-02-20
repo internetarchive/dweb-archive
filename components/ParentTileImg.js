@@ -19,9 +19,8 @@ export default class ParentTileImg extends IAReactComponent {
     */
     constructor(props) {
         super(props);
-        this.load = (el) => this.loadImg.call(this, el); // Setup so callable from the ref
     }
-    loadImg(enclosingspan) { // Defined as a closure so that can access identifier (in real React), in ReactFake its called with ref.call(this,enclosingspan)
+    loadcallable(enclosingspan) { // Defined as a closure so that can access identifier (in real React), in ReactFake its called with ref.call(this,enclosingspan)
         let urls;
         if (this.props.member && this.props.member.collection0thumbnaillinks && (this.props.member.collection0thumbnaillinks.length > 0) ) {
             urls = this.props.member.collection0thumbnaillinks;

@@ -19,8 +19,6 @@ export default class CollectionList extends IAReactComponent {
         super(props);
         if (typeof this.props.collectionTitles === "undefined")
             this.props.collectionTitles = {};
-        this.state = {};
-        this.load = (el) => this.loadcallable.call(this, el);
     }
     loadcallable(enclosingElement) { // Its possible RealReact will need this.load = (enclosingElement)=> {...} so that it can access "this"
         //expand a list of collections into a list of titles either through collectionTitles if supplied (e.g. from dweb gateway) or via a new Search query

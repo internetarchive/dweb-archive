@@ -443,7 +443,9 @@ export default class React  {
             } // no need for else, setting href is sufficient
         }
         for (let name in attrs) {
-            const attrname = (name.toLowerCase() === "classname" ? "class" : name);
+            // React uses classname, we just set the original class that the browser expects
+            // React uses camelCase for events. thy are converted here to lowercase since we allow storage of a function as the value, and the browser allows that
+            const attrname = (name.toLowerCase() === "classname" ? "class" : ["onClick"].includes(name) ? name.toLowerCase(name) : name );
             if (name === "dangerouslySetInnerHTML") {
                 element.innerHTML = attrs[name]["__html"];
                 delete attrs.dangerouslySetInnerHTML;
@@ -487,11 +489,16 @@ export default class React  {
                 let value = attrs[name];
                 if (value === true) {
                     element.setAttribute(attrname, name);
-                } else if (typeof value === "object" && !Array.isArray(value)) { // e.g. style: {{fontSize: "124px"}}
-                    for (let k in value) {
-                        element[attrname][k] = value[k];
+                } else if (typeof value === "object" && !Array.isArray(value)) { // Passing an object
+                    if (typeof element[attrname] === "object") { // Could be a group of parameters e.g. style: {{fontSize: "124px"}}
+                        for (let k in value) {
+                            element[attrname][k] = value[k];
+                        }
+                    } else { // Otherwise it looks like intentionally setting attribute to an object so allow it
+                        element[attrname] = value;
                     }
-                } else if (typeof value === "function" && attrname === "ref") { // Has to match code in addKids
+//                } else if (typeof value === "function" && attrname === "ref") { // Has to match code in addKids
+                } else if (typeof value === "function" && ["ref","onclick"].includes(name.toLowerCase(attrname))) { // Has to match code in addKids
                     element[attrname] = value;
                 } else if (value !== false && value != null) {
                     element.setAttribute(attrname, value.toString());

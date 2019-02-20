@@ -30,7 +30,7 @@ export default class TileComponent extends IAReactComponent {
         if (props.member && !props.identifier) { this.props.identifier = props.member.identifier; }
     }
 
-    loadAndSync(enclosingdiv) {
+    loadcallable(enclosingdiv) {
         try {
             console.assert(this.props.member, "If using loadAndSync should have a member with at least mediatype to work with");
             // We need some data for tiles, if its not found then have to fetch item metadata and then render
@@ -87,7 +87,7 @@ export default class TileComponent extends IAReactComponent {
 
     render() {
         if (typeof DwebArchive !== "undefined") {
-            return <span ref={this.loadAndSync}>Loading ...</span>
+            return <span ref={this.load}>Loading ...</span>
         } else { // Pure IAUX
             //TODO-IAUX need pure IAUX version
         }
