@@ -201,6 +201,7 @@ export default class Nav {
             //debug("Writing history:", historyloc);
             history.pushState(historystate, `Internet Archive search ${q}`, historyloc);
         }
+        document.title = `${q} : Decentralized Internet Archive`;
         s.render(destn);
     }
     static onclick_search(q) {
@@ -269,6 +270,11 @@ export default class Nav {
                 if (!d.metadata) {
                     new DetailsError({itemid, message: `item ${itemid} cannot be found or does not have metadata`}).render(res);
                 } else {
+                    if (d.metadata.title) {
+                        document.title = `${d.metadata.title} : Decentralized Internet Archive`;
+                    } else {
+                        debug(`XXX Writing title but dont have one, look at %O`, d);
+                    }
                     if (downloaddirectory) {
                         new DownloadDirectory({itemid, metaapi}).render(res);
                     } else {
