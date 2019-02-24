@@ -1,25 +1,31 @@
-// Code as cut and paste from https://archive.org/details/unitednov65unit/page/n5 on 2019-02-24
-<div id="IABookReaderWrapper">
-    <div id="IABookReaderMessageWrapper" style="display:none;"></div>
-    <div id="BookReader" className="BookReader"></div>
-</div>
+//This has NOT been tested on IAUX but should be moveable to IAUX just by switching the commented headers below -
+//IAUX version
+//import React from 'react'
+//import IAReactComponent from 'iacomponents/experimental/IAReactComponent';
+//import PropTypes from 'prop-types'
+//!IAUX version
+import React from "../ReactFake";
+import IAReactComponent from './IAReactComponent';
+require('../BookReaderJSIA.js'); const BookReaderJSIA = window.BookReaderJSIA; // copied BookReaderJSIA puts it at "window" level (TODO-BOOK confirm)
+require('@internetarchive/bookreader'); // Also appears to set as global variable (TODO-BOOK confirm)
 
-// Load Bookreader data async
-$(function () {
-    $.ajax({
-        url: '//ia801600.us.archive.org/BookReader/BookReaderJSIA.php?id=unitednov65unit&itemPath=/27/items/unitednov65unit&server=ia801600.us.archive.org&format=jsonp&subPrefix=unitednov65unit&requestUri=/details/unitednov65unit',
-        type: 'GET',
-        dataType: 'json',
-        xhrFields: {
-            withCredentials: true
-        },
-        crossDomain: true
-    }).then(function (response) {
-        var options = {
+export default class BookReaderWrap extends IAReactComponent {
+    /* Used in IAUX, but not in ReactFake
+    static propTypes = { //TODO-BOOK check this after call
+        identifier: PropTypes.string.isRequired,
+        item: PropTypes.object.isRequired, //ArchiveItem
+    };
+    */
+    constructor(props) { //TODO-BOOK maybe pass in ArchiveItem
+        super(props);
+        if (this.props.item) this.props.identifier = this.props.item.itemid;
+    }
+    loadcallable(enclosingElement) {
+        var options = { //TODO-BOOK edit these
             el: '#BookReader',
             mobileNavFullscreenOnly: true,
-            urlHistoryBasePath: "\/details\/unitednov65unit\/",
-            resumeCookiePath: "\/details\/unitednov65unit",
+            urlHistoryBasePath: `\/details\/${this.props.identifier}\/`,
+            resumeCookiePath: `\/details\/${this.props.identifier}`,
             urlMode: 'history',
             // Only reflect page onto the URL
             urlTrackedParams: ['page'],
@@ -28,11 +34,28 @@ $(function () {
             initialSearchTerm: null,
             onePage: {autofit: "auto"}
         };
-        BookReaderJSIAinit(response.data, options);
-        // Usage stats
-        window.archive_analytics.values['bookreader'] = 'open';
-    });
-});
+        const item = this.props.item;
+        const identifier = this.props.identifier;
+        //TODO-BOOK this line will evolve as work thru steps
+        const url='https://${item.server}/BookReader/BookReaderJSIA.php?id=${identifier}&itemPath=${item.dir}&server=${item.server}&format=jsonp&subPrefix=${identifier}&requestUri=/details/${identifier}',
+        DwebTransports.httptools.p_GET(url, {}, (err, res) {
+            // Load Bookreader data async
+            BookReaderJSIAinit(res, options);
+            // Usage stats
+            window.archive_analytics.values['bookreader'] = 'open';
+        }
+    }
+
+    render() { return (
+        // Code as cut and paste from https://archive.org/details/unitednov65unit/page/n5 on 2019-02-24
+        //TODO-BOOK put loading into one of these and see which overwritten
+        <div id="IABookReaderWrapper" ref={this.load}>
+            <div id="IABookReaderMessageWrapper" style="display:none;"></div>
+            <div id="BookReader" className="BookReader"></div>
+        </div> )
+    }
+}
+
 
 /*
 
@@ -40,10 +63,13 @@ $(function () {
     * --- next step ---
       * Trivial component
           * Call regular server
-            * Edit url to use d1,d2,dir
-          * Pass to BookReaderJSIAinit
-          * Probably needs BookReaderJSIAinit and Bookreader in globals as thats what (unmodified) code does
-      * Call from Texts.js
+            * [DONE] Edit url to use server,dir
+          * [DONE] Pass to BookReaderJSIAinit
+          * [DONE] Probably needs BookReaderJSIAinit and Bookreader in globals as thats what (unmodified) code does
+      * [DONE] Call from Texts.js
+      * [ ] Test
+*/
+/*
     * --- following step ---
     * In Text.js
        * if usesBookReader

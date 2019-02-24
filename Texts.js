@@ -33,6 +33,9 @@ export default class Texts extends Details {
                 <h1 class="sr-only">{metadata.title}</h1>
                 <h2 class="sr-only">Item Preview</h2>
 
+
+                <BookReaderWrap item={this}> //TODO-BOOK check what wraps this when online
+
                 <div id="theatre-ia" class="container">
                     <div class="row">
                         <div class="xs-col-12">
