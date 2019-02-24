@@ -13,6 +13,7 @@
     "@internetarchive/dweb-archivecontroller": "git+https://git@github.com/internetarchive/dweb-archivecontroller.git",
     "@internetarchive/dweb-objects": "^0.1.21",
     "@internetarchive/dweb-transports": "^0.1.34",
+    "@internetarchive/bookreader": "git+https://github.com/internetarchive/bookreader.git",
     "@stratumn/canonicaljson": "^1.0.2",
     "debug": "^3.2.5",
     "es2015": "latest",
