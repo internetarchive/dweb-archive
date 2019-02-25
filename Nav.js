@@ -283,7 +283,11 @@ export default class Nav {
                                 (await new Collection({itemid, metaapi}).fetch()).render(res);   //fetch will do search
                                 break;
                             case "texts":
-                                new Texts({itemid, metaapi}).render(res);
+                                if d.useBookReader() {
+                                    new Texts({itemid, metaapi}).render(res);
+                                } else {
+                                    new DetailsError({itemid, message: 'Cant be displayed in bookreader, code needs to use a carousel'}).render(res); //TODO-BOOK see thetaleofpeterra14304gut (I think) and alicesadventures19033gut (I think)
+                                }
                                 break;
                             case "image":
                                 new Image({itemid, metaapi}).render(res);

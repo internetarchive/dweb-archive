@@ -73,8 +73,7 @@ export default class BookReaderWrap extends IAReactComponent {
     * --- following step ---
     * In Text.js
        * if usesBookReader
-            fetch_bookdata
-            load component
+            load component - fetches bookdata
     * In component
         * fetch_metadata
         * Then fetch bookdata (url ?)

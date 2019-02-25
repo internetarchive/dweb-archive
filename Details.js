@@ -436,5 +436,8 @@ export default class Details extends ArchiveBase {
         ) )
     }
 
-
+    useBookReader() {
+        // True if should use the BookReader, otherwise its images
+        return true; //TODO-BOOK2 check for pdf and abby
+    }
 }
