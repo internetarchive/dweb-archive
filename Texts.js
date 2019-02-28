@@ -2,6 +2,7 @@ require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 import React from './ReactFake';
 
 import Details from './Details'
+import TheatreControls from './components/TheatreControls';
 
 export default class Texts extends Details {
     constructor({itemid=undefined, metaapi=undefined}={}) {
@@ -40,22 +41,7 @@ export default class Texts extends Details {
                     <div id="theatre-ia" class="container">
                         <div class="row">
                             <div class="xs-col-12">
-
-                                <div id="theatre-controls">
-                                    <a href={streamURL}>
-                                        <div title="fullscreen view" data-toggle="tooltip" data-container="body"
-                                             data-placement="left"
-                                             class="iconochive-fullscreen"></div>
-                                    </a>
-                                    <a href={streamURL}>
-                                        <div title="search inside" data-toggle="tooltip" data-container="body"
-                                             data-placement="left"
-                                             class="iconochive-search"></div>
-                                    </a>
-                                </div>
-                                {/*--#theatre-controls--*/}
-
-
+                                <TheatreControls identifier={this.itemid} />
                                 <div id="texty" style="font-size:0px" class="">
                                     <iframe src={iframeURL}
                                             width="100%" height="480" frameborder="0" webkitallowfullscreen="true"
