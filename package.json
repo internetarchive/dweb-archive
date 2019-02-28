@@ -10,14 +10,15 @@
   "description": "Archive UI to run in Browser",
   "dependencies": {
     "@babel/core": "^7.2.2",
+    "@internetarchive/bookreader": "git+https://github.com/internetarchive/bookreader.git",
     "@internetarchive/dweb-archivecontroller": "git+https://git@github.com/internetarchive/dweb-archivecontroller.git",
     "@internetarchive/dweb-objects": "^0.1.21",
     "@internetarchive/dweb-transports": "^0.1.34",
-    "@internetarchive/bookreader": "git+https://github.com/internetarchive/bookreader.git",
     "@stratumn/canonicaljson": "^1.0.2",
     "debug": "^3.2.5",
     "es2015": "latest",
     "from2": "^2.3.0",
+    "jquery": "^3.3.1",
     "prettier-bytes": "^1.0.4",
     "react-dom": "^16.8.1",
     "render-media": "^3.1.3",
@@ -50,7 +51,8 @@
   "scripts": {
     "build": "webpack --mode development",
     "server": "http-server",
-    "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist; ln -s ../node_modules/@internetarchive/dweb-objects/dist/dweb-objects-bundle.js dist;"
+    "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist; ln -s ../node_modules/@internetarchive/dweb-objects/dist/dweb-objects-bundle.js dist;",
+    "getbookreader": "for i in BookReaderHelpers.js BookReaderJSIA.js LendingFlow.js; do curl -o bookreader/$i https://archive.org/bookreader/$i; done"
   },
   "version": "0.1.49"
 }

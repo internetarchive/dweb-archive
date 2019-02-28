@@ -6,22 +6,61 @@
 //!IAUX version
 import React from "../ReactFake";
 import IAReactComponent from './IAReactComponent';
-require('../BookReaderJSIA.js'); const BookReaderJSIA = window.BookReaderJSIA; // copied BookReaderJSIA puts it at "window" level (TODO-BOOK confirm)
-require('@internetarchive/bookreader'); // Also appears to set as global variable (TODO-BOOK confirm)
 
-export default class BookReaderWrap extends IAReactComponent {
+//These files are already in archive.html:
+// /includes/bootstrap.min.js
+// /includes/build/js/archive.min.js?v=891b5f7" type="text/javascript"></script>
+/* These files are in a.o/details when processing "texts" but not in archive.html and probably not needed:
+    /includes/node_modules/react/umd/react.production.min.js // Note we have react/dist/react
+    /includes/node_modules/react-dom/umd/react-dom.production.min.js
+    /includes/build/js/playset.min.js?v=891b5f7" type="text/javascript"></script>
+    /includes/build/js/polyfill.min.js?v=891b5f7" type="text/javascript"></script>
+*/
+/* TODO-BOOK Not sure which of this CSS is is needed
+    <link href="/bookreader/BookReader/mmenu/dist/css/jquery.mmenu.css" rel="stylesheet" type="text/css"/>
+    <link href="/bookreader/BookReader/mmenu/dist/addons/navbars/jquery.mmenu.navbars.css" rel="stylesheet" type="text/css"/>
+    <link href="/bookreader/BookReader/BookReader.css" rel="stylesheet" type="text/css"/>
+    <link href="/bookreader/BookReader-ia.css" rel="stylesheet" type="text/css"/>
+ */
+/* It not clear which of these are needed, possibly all of them for different cases. Note they mostly seem to set global variables as a
+way to refer to each other since on archive.org they are usually included with <script> tags in details page -*/
+
+const jquery = require('jquery'); // Needed by jquery.ui
+require('@internetarchive/bookreader/BookReader/jquery-ui-1.12.0.min.js');
+require('@internetarchive/bookreader/BookReader/jquery.ui.touch-punch.min.js');
+require('@internetarchive/bookreader/BookReader/jquery.browser.min.js');
+require('@internetarchive/bookreader/BookReader/dragscrollable-br.js');
+require('@internetarchive/bookreader/BookReader/jquery.colorbox-min.js');
+require('@internetarchive/bookreader/BookReader/jquery.bt.min.js');
+require('@internetarchive/bookreader/BookReader/soundmanager/script/soundmanager2-jsmin.js');
+require('@internetarchive/bookreader/BookReader/mmenu/dist/js/jquery.mmenu.min.js?');
+require('@internetarchive/bookreader/BookReader/mmenu/dist/addons/navbars/jquery.mmenu.navbars.min.js');
+require('@internetarchive/bookreader/BookReader/BookReader.js');
+require('@internetarchive/bookreader/BookReader/plugins/plugin.mobile_nav.js');
+require('@internetarchive/bookreader/BookReader/plugins/plugin.search.js');
+require('@internetarchive/bookreader/BookReader/plugins/plugin.chapters.js');
+require('@internetarchive/bookreader/BookReader/plugins/plugin.tts.js');
+require('@internetarchive/bookreader/BookReader/plugins/plugin.url.js');
+require('@internetarchive/bookreader/BookReader/plugins/plugin.resume.js');
+require('@internetarchive/bookreader/BookReader/plugins/plugin.archive_analytics.js');
+Object.entries(require('../bookreader/BookReaderHelpers.js').default).forEach(kv => global[kv[0]] = kv[1]);
+//const LendingFlow = require('../bookreader/LendingFlow.js');
+import LendingFlow from '../bookreader/LendingFlow.js'; // Modified to "export default LendingFlow"
+global.LendingFlow = LendingFlow; // Used deep in other bookreader modues
+require('../bookreader/BookReaderJSIA.js'); // Sets up global BookReaderJSIAinit
+
+export default class BookReaderWrapper extends IAReactComponent {
     /* Used in IAUX, but not in ReactFake
-    static propTypes = { //TODO-BOOK check this after call
-        identifier: PropTypes.string.isRequired,
+    static propTypes = {
         item: PropTypes.object.isRequired, //ArchiveItem
     };
     */
-    constructor(props) { //TODO-BOOK maybe pass in ArchiveItem
+    constructor(props) {
         super(props);
         if (this.props.item) this.props.identifier = this.props.item.itemid;
     }
     loadcallable(enclosingElement) {
-        var options = { //TODO-BOOK edit these
+        var options = {
             el: '#BookReader',
             mobileNavFullscreenOnly: true,
             urlHistoryBasePath: `\/details\/${this.props.identifier}\/`,
@@ -36,19 +75,18 @@ export default class BookReaderWrap extends IAReactComponent {
         };
         const item = this.props.item;
         const identifier = this.props.identifier;
-        //TODO-BOOK this line will evolve as work thru steps
-        const url='https://${item.server}/BookReader/BookReaderJSIA.php?id=${identifier}&itemPath=${item.dir}&server=${item.server}&format=jsonp&subPrefix=${identifier}&requestUri=/details/${identifier}',
-        DwebTransports.httptools.p_GET(url, {}, (err, res) {
+        //TODO-BOOK this line will evolve as work thru steps to use local server and cached metadata etc
+        const url=`https://${item.server}/BookReader/BookReaderJSIA.php?id=${identifier}&itemPath=${item.dir}&server=${item.server}&format=jsonp&subPrefix=${identifier}&requestUri=/details/${identifier}`;
+        DwebTransports.httptools.p_GET(url, {}, (err, res) => {
             // Load Bookreader data async
-            BookReaderJSIAinit(res, options);
+            BookReaderJSIAinit(res.data, options);
             // Usage stats
             window.archive_analytics.values['bookreader'] = 'open';
-        }
+        });
     }
 
     render() { return (
         // Code as cut and paste from https://archive.org/details/unitednov65unit/page/n5 on 2019-02-24
-        //TODO-BOOK put loading into one of these and see which overwritten
         <div id="IABookReaderWrapper" ref={this.load}>
             <div id="IABookReaderMessageWrapper" style="display:none;"></div>
             <div id="BookReader" className="BookReader"></div>
