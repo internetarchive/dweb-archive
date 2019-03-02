@@ -4,10 +4,14 @@ export default class IAReactComponent {
     // This - for now - is copied from iaux.IAReactComponent
     // Both this version, used with ReactFake and iaux.IAReactComponent used with React should work the same. (e.g. ParentTileImg works with both)
     constructor(props) {
+        // Let the super class store the props, you can manipulate them in subclasses
         this.props = props;
+        // In both React & ReactFake, _isMounted is set to true on loading
         this._isMounted = false;
+        // Initialize the state, again the subclasses can add to it
         this.state = {};
-        this.load = (el) => this.loadcallable.call(this, el);  // If use ref=this.load then will call loadcallable with this set to the component and parameter of the element
+        // In both React & ReactFake If you give a HTML tag ref={this.load} then it will call loadcallable with 'this' set to the component and pass the element as the only parameter
+        this.load = (el) => this.loadcallable.call(this, el);
     }
     setState(res) {
         //Make sense in Real-React where its a subclass, but not here

@@ -30,7 +30,7 @@ export default class ConfigDetailsComponent extends IAReactComponent {
     constructor(props)
     {
         super(props);
-        this.clicked = () => this.clickedCallable();
+        this.clicked = () => this.clickedCallable();    // Maybe move this to IAReactComponent if it gets used a lot
     }
 
     static insertInside(elementId, props) {
