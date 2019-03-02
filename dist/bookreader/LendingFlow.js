@@ -99,7 +99,7 @@ NullTokenPoller.prototype.init = function(lendingFlow, callback) {
 /**
  * LendingFlow handles the UI for lending
  */
-export default function LendingFlow(br, lendingInfo, tokenPoller, downloadUrls, isRestricted) {
+function LendingFlow(br, lendingInfo, tokenPoller, downloadUrls, isRestricted) {
   this.br = br;
   this.lendingInfo = lendingInfo;
   this.tokenPoller = tokenPoller;

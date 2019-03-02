@@ -250,5 +250,3 @@ function intializeEpubLendingFlow(options) {
 
   lendingFlow.init();
 }
-export default {setupRaven, logError, deleteLoanCookies, get_query_param, add_query_param, urlencodePath, buildDialogHtml,
-  buildActionButton, showDialog, intializeEpubLendingFlow }
