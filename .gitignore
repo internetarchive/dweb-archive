@@ -6,3 +6,4 @@ dist/dweb-objects-bundle.js
 /package-lock.json
 /includes/package-lock.json
 yarn.lock
+yarn-error.log
