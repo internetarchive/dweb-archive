@@ -135,4 +135,6 @@ For a *Search/Colletion/Home* the structure is slightly different
 See [Dweb document index](https://github.com/internetarchive/dweb-transports/blob/master/DOCUMENTINDEX.md) for a list of the repos that make up the Internet Archive's Dweb project, and an index of other documents. 
 
 ## Release notes
-* unrelease: Set title on window from item title, or query.
+* 0.1.48: Repeatable metadata; 
+* 0.1.49: config button; IAReactComponent; 
+* 0.1.50: Set title on window from item title, or query.
