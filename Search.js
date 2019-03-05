@@ -92,7 +92,7 @@ export default class Search extends ArchiveBase {
     rowColumnsItems() {
         /* Output the columns-items, wrapped in a row - this will then be wrapped differently for Collections (tabbed) and Search (not) */
         const encodedQuery = encodeURIComponent(this.query);
-        return (
+        return ( !(this.members && this.members.length) ? undefined :  /* If no members, probably a query failed so dont display */
                     <div class="row">{/*--DONT NEED TILL HAVE FACETS --*/}
                         {/*TODO-DETAILS Facets not available over advancedsearch*/}
                         {/*--<div class="columns-facets"></div> TODO-DETAILS-FACETS column goes here--*/}
