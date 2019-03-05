@@ -306,7 +306,7 @@ export default class Nav {
                 }
             }
         } catch(err) {
-            console.error(err);
+            console.error("Nav.factory detected error",err);
             new DetailsError({itemid, message: err.message}).render(res);
         }
     }
