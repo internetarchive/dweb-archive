@@ -11,6 +11,9 @@ const ACUtil = require('@internetarchive/dweb-archivecontroller/Util'); // For g
 //TODO-BOOK note all the <script> tags added to archive.html for this, some may be able to be moved here
 
 export default class BookReaderWrapper extends IAReactComponent {
+    // Note assumption is that item has  .bookreader { data, brOptions, lendingInfo }
+
+
     /* Used in IAUX, but not in ReactFake
     static propTypes = {
         item: PropTypes.object.isRequired, //ArchiveItem
@@ -61,38 +64,28 @@ export default class BookReaderWrapper extends IAReactComponent {
 /*
 
 * Strategy
-    * --- next step ---
-      * Trivial component
-          * Call regular server
-            * [DONE] Edit url to use server,dir
-          * [DONE] Pass to BookReaderJSIAinit
-          * [DONE] Probably needs BookReaderJSIAinit and Bookreader in globals as thats what (unmodified) code does
-      * [DONE] Call from Texts.js
-      * [ ] Test
-*/
-/*
-    * --- following step ---
-    * In Text.js
-       * if usesBookReader
-         * [DONE] load component - fetches bookdata
-    * In component
-        * fetch_metadata
-        * Then fetch bookdata (url ?)
-        * Pass to BookReaderJSIAinit
+    * Trivial component:
+        * calls IA backgroun server via server field. and BookReaderJSIAinit using BookReaderJSIAinit and Bookreader in globals (as unmodifed code does)
+        * Called from Texts.js
+        * [DONE] Tested - works on code downloaded from localhost, running against archive.org
+    * Component to fetch BookReaderJSIA via fetch_bookreader so caches it.
+        * [DONE] Local server handles /BookReader/BookReaderJSIA
+        * [] BookReaderWrapper to go via localhost
+ */
+    * ==== Next  step ====
     * Fetch bookdata (assumes done fetch_metadata)
-        * THEN fetch_bookdata(metadata) from dweb.me or localhost
-    * localhost/xxxx
-        * if have locally
-            * add metadata back into datastructure and return
-        * else
-            * forward to dweb.me
-            * cache result minus the metadata field
-            * edit result to turn https://dweb.me into http://localhost:4244/
-            * OR find code fetching dweb.me and intercept there (better as allows IPFS intercept as well)
+        * [Waiting on Tracey] to confirm if can forward from archive.org
+        * [ ] THEN fetch dweb.me
+        * [ ] THEN fetch via transports (including dweb.me)
+    * localhost/BookReader/BookReaderJSIA.php
+        * [ ] edit result to turn https://dweb.me into http://localhost:4244/ - maybe handlable at original call
+        * [ ] explore changing call that gets returned before passing to br.init
     * dweb.me/xxxxx
+        * Currently goes direct to datanode, will go to dweb.me once archive.org/BookReader/ works
         * construct url from metadata d1,d2,dir
           * set server=dweb.me
           * edit result to turn https://dweb.me into http://localhost:4244/
+        * THEN Make localhost/BookReader/BookReaderJSIA.php forward to dweb.me
     * Intercept https://ia801600.us.archive.org/BookReader/BookReaderImages.php?zip=/27/items/unitednov65unit/unitednov65unit_jp2.zip&file=unitednov65unit_jp2/unitednov65unit_0001.jp2&scale=4&rotate=0
       * Mirror:/Bookreader/BookReaderImages.php
         * If have file then return
@@ -105,9 +98,11 @@ export default class BookReaderWrapper extends IAReactComponent {
         * Details gets the zip
         * All gets all files (as now)
     * function usesBookreader(metadata)
-    * = true if mediatype=texts && has abby and pdf files
+      * = true if mediatype=texts && has abby and pdf files
     * put bookreader/BookReader/images/* into app ?
   * Future:
     * dweb.me add ipfs etc to urls in brOptions/data as push into IPFS.
     * bookreader code to see that url when sees the dweb.me one (maybe not that hard)
+    * Add URLs like /details/unitednov65unit/page/2?transport=HTTP&mirror=localhost:4244 (see where come from and should be /arc/archive.org/details...
+    * Fetch /BookReader/ etc via Transports rather than direct to service node or dweb.me so will use IPFS
 */
