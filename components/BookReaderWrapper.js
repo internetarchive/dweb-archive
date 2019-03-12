@@ -59,7 +59,7 @@ export default class BookReaderWrapper extends IAReactComponent {
             enableBookTitleLink: false,
             bookUrlText: null,
             initialSearchTerm: null,
-            imagesBaseURL: (DwebArchive.mirror ? protocolServer+"/archive/" : "https://archive.org/") + "/bookreader/BookReader/images/", //TODO-BOOK support /archive/bookreader/BookReader/images on dweb.me
+            imagesBaseURL: (DwebArchive.mirror ? protocolServer+"/archive/" : "https://archive.org/") + "bookreader/BookReader/images/", //TODO-BOOK support /archive/bookreader/BookReader/images on dweb.me
             onePage: {autofit: "auto"},
             thumbnail:  (DwebArchive.mirror ? `//${serverPort}/arc/archive.org/` : "https://archive.org") + `download/${identifier}/page/cover_t.jpg`   // Unfortunately bookread.js appends protocol so we cant control it here
             // Note archive.org/download/xx/page/cover_t.jpg redirects to e.g.  https://ia601600.us.archive.org/BookReader/BookReaderPreview.php?id=xx&itemPath=%2F27%2Fitems%2Fxx&server=ia601600.us.archive.org&page=cover_t.jpg
@@ -94,10 +94,15 @@ export default class BookReaderWrapper extends IAReactComponent {
     * TESTING each step:
         * http://localhost:4244/arc/archive.org/details/unitednov65unit
         * http://localhost:4244/arc/archive.org/details/unitednov65unit?mirror=localhost:4244&transport=HTTP
+        * http://localhost:4244/arc/archive.org/details/unitednov65unit?mirror=localhost:4244&transport=HTTP WHEN DISCONNECTED (IIAB)
+        * http://192.168.88.1:4244/arc/archive.org/details/AboutBan1935?transport=HTTP&mirror=192.168.88.1:4244 WHEN DISCONNECTED (Rachel)
 * ==== Next  step ====
-* BUT ui needs to check for nearby sizes if doesnt have correct one and offline
-* Where does scale non-integer come from
+    * Failing tests
+        * When disconnected, fails to read names - need backstop and need in GUN
+        * https://dweb.me/arc/archive.org/details/ialerequestsummary?
+        * when IPFS not running keeps trying addIPFS - go thru transports and fail nicely if transport not connected
 * ==== AFTER next step ===
+    * BUT ui needs to check for nearby sizes if doesnt have correct one and offline
     * Fetch bookdata (assumes done fetch_metadata)
         * Work with isa on URL schemes
         * [ ] THEN fetch dweb.me
