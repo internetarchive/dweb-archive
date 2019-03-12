@@ -138,3 +138,4 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 * 0.1.48: Repeatable metadata; 
 * 0.1.49: config button; IAReactComponent; 
 * 0.1.50: Set title on window from item title, or query.
+* 0.1.51: Support bookreader (more work to do on this)

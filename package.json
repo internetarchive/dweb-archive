@@ -49,10 +49,10 @@
     "url": "git://github.com/internetarchive/dweb-archive.git"
   },
   "scripts": {
-    "build": "webpack --mode development",
+    "build": "webpack --mode production",
     "server": "http-server",
     "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist; ln -s ../node_modules/@internetarchive/dweb-objects/dist/dweb-objects-bundle.js dist;",
     "getbookreader": "for i in BookReaderHelpers.js BookReaderJSIA.js LendingFlow.js; do curl -o dist/bookreader/$i https://archive.org/bookreader/$i; done"
   },
-  "version": "0.1.50"
+  "version": "0.1.51"
 }
