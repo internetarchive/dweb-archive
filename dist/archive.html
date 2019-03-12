@@ -79,8 +79,9 @@
 <!--suppress HtmlUnknownAnchorTarget -->
 <a href="#maincontent" class="hidden-for-screen-readers">Skip to main content</a>
 <script>
+    //TODO - make this work if url is /arc/archive.org/details/foo
     $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
-    async function main({query=undefined, sort=undefined, item=undefined, download=false, mirror=undefined }={}) {
+    async function main({query=undefined, sort=undefined, item=undefined, download=false, page=undefined, mirror=undefined }={}) {
         if (mirror && !mirror.startsWith('http')) { mirror = "http://"+mirror; } // Allow abbreviation like mirror=localhost:4244, also allows mirror to specify https://xyz.org
         DwebArchive.mirror = mirror; // So DwebArchive can check it locally, must be before AICUtil.gatewayServer call below
         await DwebTransports.p_connect({
@@ -99,7 +100,7 @@
                 Nav.nav_downloaddirectory(item);
             } else {
                 // noinspection JSIgnoredPromiseFromCall
-                Nav.nav_details(item);
+                Nav.nav_details(item, {page});
             }
         } else {
             // noinspection JSIgnoredPromiseFromCall
@@ -118,6 +119,7 @@
         item: (i > -1) ? location.pathname.slice(i + 9) : searchparams.get("item"),
         query: searchparams.get("query"),
         sort: searchparams.get("sort"),
+        page: searchparams.get("page"),
         mirror: searchparams.get("mirror"),
         download: (location.pathname.indexOf("/download/") > -1) || searchparams.get("download") || false
     });

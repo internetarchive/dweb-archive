@@ -6,9 +6,10 @@ import TheatreControls from './components/TheatreControls';
 import BookReaderWrap from './components/BookReaderWrapper';
 
 export default class Texts extends Details {
-    constructor({itemid=undefined, metaapi=undefined}={}) {
+    constructor({itemid=undefined, metaapi=undefined, page=undefined}={}) {
         super({ itemid, metaapi});
-        this.itemtype="http://schema.org/TextDigitalDocument"
+        this.itemtype="http://schema.org/TextDigitalDocument";
+        this.page = page;
     }
     archive_setup_push() {
         super.archive_setup_push(); // On eample images the theatre & carosel came before the parts common to AV, Image and Text
@@ -47,7 +48,7 @@ export default class Texts extends Details {
                                             mozallowfullscreen="true" allowfullscreen></iframe>
                                     </div>
                                 :
-                                    <BookReaderWrap item={this} />
+                                    <BookReaderWrap item={this} page={this.page} />
                                 }
                                 {this.cherModal("audio")}
                                 <center style="color:white;margin-bottom:10px">

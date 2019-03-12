@@ -25,12 +25,18 @@ function getPage(index, reduce, rotate) {
     debug("gettingPage=%d scale=%d rotate=%O", index, reduce, rotate);
 }
 export default class BookReaderWrapper extends IAReactComponent {
-    // Note assumption is that item has  .bookreader { data, brOptions, lendingInfo }
+    /* Notes:
+     assumption is that item has  .bookreader { data, brOptions, lendingInfo }
+
+     The URL can include string like /page/4, this is pulled out of the window/document's URL deep in the code in BookReader.prototype.initParams
+     so we just have to ensure the url is not munged by anything else happening.
+     */
 
 
     /* Used in IAUX, but not in ReactFake
     static propTypes = {
         item: PropTypes.object.isRequired, //ArchiveItem
+        page: PropType.string, // e.g. 1 or n5
     };
     */
     constructor(props) {
@@ -38,25 +44,29 @@ export default class BookReaderWrapper extends IAReactComponent {
         if (this.props.item) this.props.identifier = this.props.item.itemid;
     }
     loadcallable(enclosingElement) {
+        const protocolServer = ACUtil.gatewayServer();
+        const [ protocol, unused, serverPort] = protocolServer.split('/');
+        const item = this.props.item;
+        const identifier = this.props.identifier;
         var options = {
             el: '#BookReader',
             mobileNavFullscreenOnly: true,
-            urlHistoryBasePath: `\/details\/${this.props.identifier}\/`,
-            resumeCookiePath: `\/details\/${this.props.identifier}`,
+            urlHistoryBasePath: `\/arc\/archive.org\/details\/${this.props.identifier}\/`,  // This is use when URL is rewritten to include page
+            resumeCookiePath: `\/arc\/archive.org\/details\/${this.props.identifier}`,
             urlMode: 'history',
             // Only reflect page onto the URL
-            urlTrackedParams: ['page'],
+            urlTrackedParams: ['page'],    //TODO-BOOK "x" added for debugging
             enableBookTitleLink: false,
             bookUrlText: null,
             initialSearchTerm: null,
-            imagesBaseURL: ACUtil.gatewayServer()+"/archive/bookreader/BookReader/images/",
+            imagesBaseURL: (DwebArchive.mirror ? protocolServer+"/archive/" : "https://archive.org/") + "/bookreader/BookReader/images/", //TODO-BOOK support /archive/bookreader/BookReader/images on dweb.me
             onePage: {autofit: "auto"},
+            thumbnail:  (DwebArchive.mirror ? `//${serverPort}/arc/archive.org/` : "https://archive.org") + `download/${identifier}/page/cover_t.jpg`   // Unfortunately bookread.js appends protocol so we cant control it here
+            // Note archive.org/download/xx/page/cover_t.jpg redirects to e.g.  https://ia601600.us.archive.org/BookReader/BookReaderPreview.php?id=xx&itemPath=%2F27%2Fitems%2Fxx&server=ia601600.us.archive.org&page=cover_t.jpg
             //getPageURI: xyzzy
         };
-        const item = this.props.item;
-        const identifier = this.props.identifier;
         //TODO-BOOK this line will evolve as work thru steps to use local server and cached metadata etc
-        item.fetch_bookreader({}, (err, ai) => {      // Load Bookreader data async
+        item.fetch_bookreader({page: this.props.page}, (err, ai) => {      // Load Bookreader data async
             const rawAPI = RawBookReaderResponse.fromArchiveItem(item);
             BookReaderJSIAinit(rawAPI.cooked(), options); // Note don't need to change during cooking as will be delivered by server (or cooked in mirror) as appropriate
         });
@@ -85,44 +95,33 @@ export default class BookReaderWrapper extends IAReactComponent {
         * http://localhost:4244/arc/archive.org/details/unitednov65unit
         * http://localhost:4244/arc/archive.org/details/unitednov65unit?mirror=localhost:4244&transport=HTTP
 * ==== Next  step ====
-
-
-* === PENDING BUGS ===
-    * Does an OL query: https://openlibrary.org/query.json?type=/type/edition&*=&ocaid=unitednov65unit&callback=jQuery1102030322806165558847_1552068906756&_=1552068906757
-    * Gets cover via https://archive.org/download/unitednov65unit/page/cover_t.jpg
-    * Goes to preview via: https://ia601600.us.archive.org/BookReader/BookReaderPreview.php?id=unitednov65unit&itemPath=%2F27%2Fitems%2Funitednov65unit&server=ia601600.us.archive.org&page=cover_t.jpg
-    * Rewrites URL to e.g. http://localhost:4244/details/unitednov65unit/page/n5?mirror=localhost:4244&transport=HTTP
+* BUT ui needs to check for nearby sizes if doesnt have correct one and offline
+* Where does scale non-integer come from
 * ==== AFTER next step ===
     * Fetch bookdata (assumes done fetch_metadata)
-        * [Waiting on Tracey] to confirm if can forward from archive.org
+        * Work with isa on URL schemes
         * [ ] THEN fetch dweb.me
         * [ ] THEN fetch via transports (including dweb.me)
-    * localhost/BookReader/BookReaderJSIA.php
-        * [ ] edit result to turn https://dweb.me into http://localhost:4244/ - maybe handlable at original call
     * dweb.me/xxxxx
         * Currently goes direct to datanode, will go to dweb.me once archive.org/BookReader/ works
         * construct url from metadata d1,d2,dir
           * set server=dweb.me
           * edit result to turn https://dweb.me into http://localhost:4244/
         * THEN Make localhost/BookReader/BookReaderJSIA.php forward to dweb.me
-    * Intercept https://ia801600.us.archive.org/BookReader/BookReaderImages.php?zip=/27/items/unitednov65unit/unitednov65unit_jp2.zip&file=unitednov65unit_jp2/unitednov65unit_0001.jp2&scale=4&rotate=0
-      * Mirror:/Bookreader/BookReaderImages.php
-        * If have file then return
-        * If have the .zip then extract file and return
-        * else forward request for file to dweb.me and cache
       * Dweb.me: /Bookreader/BookReaderImages.php
         * Call actual server for page (use metadata to find server), push url into ipfs to get from dweb.me
     * Crawl:
         * metadata gets the json (fetch_metadata)
-        * Details gets the zip
+        * Details gets each of the pages at a reasonable scale - e.g. 4 or 5
         * All gets all files (as now)
     * function usesBookreader(metadata)
       * = true if mediatype=texts && has abby and pdf files
-    * put bookreader/BookReader/images/* into app ?
+      * test on some image only files - like the peterrabbit one
   * Future:
     * dweb.me add ipfs etc to urls in brOptions/data as push into IPFS.
     * bookreader code to see that url when sees the dweb.me one (maybe not that hard)
     * Add URLs like /details/unitednov65unit/page/2?transport=HTTP&mirror=localhost:4244 (see where come from and should be /arc/archive.org/details...
     * Fetch /BookReader/ etc via Transports rather than direct to service node or dweb.me so will use IPFS
     * In JSIA json are download links that go to //archive.org, rewrite those.
+    * Does an OL query: https://openlibrary.org/query.json?type=/type/edition&*=&ocaid=unitednov65unit&callback=jQuery1102030322806165558847_1552068906756&_=1552068906757
 */

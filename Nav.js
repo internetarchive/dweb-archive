@@ -145,12 +145,12 @@ export default class Nav {
         // Leaves Nav, clears rest
         React.domrender(new DetailsError({message: < span >Loading - note this can take a while if no-one else has accessed this item yet</span>}).wrap(), destn)
     }
-    static async nav_home(wanthistory=true) {
+    static async nav_home({wanthistory=true}={}) {
         debug("Going home");
-        return await Nav.nav_details(undefined, wanthistory);
+        return await Nav.nav_details(undefined, {wanthistory});
     }
 
-    static async nav_details(id, wanthistory=true) {
+    static async nav_details(id, {wanthistory=true, page=undefined}={}) {
         debug("Navigating to Details %s", id);
 
         if (DwebArchive.mirror) {
@@ -158,7 +158,7 @@ export default class Nav {
         }
         const destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
-        await Nav.factory(id, destn, {wanthistory}); // Not sure what returning ....
+        await Nav.factory(id, destn, {wanthistory, page}); // Not sure what returning ....
         return false; // Dont follow anchor link - unfortunately React ignores this
     }
 
@@ -169,7 +169,7 @@ export default class Nav {
         .join('&')
     }
 
-    static async nav_search(q, wanthistory=true) {
+    static async nav_search(q, {wanthistory=true}={}) {
         /*
         Navigate to a search
         q = query (string to search for) or object e.g. {query; foo, sort: -date} as passed to new Search()
@@ -229,7 +229,7 @@ export default class Nav {
         return false; // Dont follow anchor link - unfortunately React ignores this
     }
 
-    static async factory(itemid, res, {wanthistory=true, downloaddirectory=false}={}) {
+    static async factory(itemid, res, {wanthistory=true, downloaddirectory=false, page=undefined}={}) {
       /* Fetch and render an ArchiveItem
       */
         //console.group("Nav.factory",itemid);
@@ -249,13 +249,14 @@ export default class Nav {
             let supportsArc = ! (window.location.origin === "file://" || window.location.pathname.startsWith("/ipfs/")  || window.location.pathname.startsWith("/ipns/"));
             if (!supportsArc) {
                 if (itemid) cnp.push(`item=${itemid}`);   // Need item id parameter on local files
+                if (page) cnp.push(`page=${page}`); // Unliked to be used, but probably ignored downstream.
                 if (downloaddirectory) cnp.push('download=1');   // Need item id parameter on local files
             }
             cnp = cnp.filter(p => !!p).join('&');
             // History is tricky .... take care of: SW (with Base set) \ !SW; file | http; cases
             // when loaded from file, non SW window.location.origin = document.location.origin = "file://" and document.baseURI is unset
             if (supportsArc) {
-                historyloc = `${window.location.origin}/arc/archive.org/${downloaddirectory ? "download" : "details"}${itemid ? "/"+itemid :""}?${cnp}`;
+                historyloc = `${window.location.origin}/arc/archive.org/${downloaddirectory ? "download" : "details"}${itemid ? "/"+itemid :""}${page ? "/page/"+page : ""}?${cnp}`;
             } else {
                 historyloc = `${window.location.origin}${window.location.pathname}?${cnp}`;
             }
@@ -284,7 +285,7 @@ export default class Nav {
                                 break;
                             case "texts":
                                 if (d.useBookReader()) {
-                                    new Texts({itemid, metaapi}).render(res);
+                                    new Texts({itemid, metaapi, page}).render(res);
                                 } else {
                                     new DetailsError({itemid, message: 'Cant be displayed in bookreader, code needs to use a carousel'}).render(res); //TODO-BOOK see thetaleofpeterra14304gut (I think) and alicesadventures19033gut (I think)
                                 }
@@ -333,13 +334,13 @@ window.onpopstate = function(event) {
     debug("Going back to: %s %o", document.location, event.state);
     if (event.state && event.state.query) {
         // noinspection JSIgnoredPromiseFromCall
-        Nav.nav_search(event.state.query, false);
+        Nav.nav_search(event.state.query, {wanthistory: false});
     } else if (event.state && event.state.itemid) {
         // noinspection JSIgnoredPromiseFromCall
-        Nav.nav_details(event.state.itemid, false);
+        Nav.nav_details(event.state.itemid, {wanthistory: false});
     } else {
         // noinspection JSIgnoredPromiseFromCall
-        Nav.nav_home(false);
+        Nav.nav_home({wanthistory: false});
     }
 
 };
