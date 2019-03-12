@@ -414,6 +414,7 @@ export default class Details extends ArchiveBase {
         return el;
     }
     loadDetailsAlsoFound(el, itemid, results) {
+        //TODO-IAUX move this to IAUX components
         el.appendChild( (
             <div className="row">
                 <div className="col-xs-12 tilebars" style="display: block;">
