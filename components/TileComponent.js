@@ -1,6 +1,5 @@
 import ParentTileImg from "./ParentTileImg";
 
-require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 //This has been tested on IAUX & should be moveable to IAUX just by switching the commented headers below -
 //IAUX version
 //import React from 'react'
@@ -14,6 +13,10 @@ import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";
 import ArchiveMemberSearch from "@internetarchive/dweb-archivecontroller/ArchiveMemberSearch";
 import Util from "../Util";
 import TileImage from "./TileImage";
+//Both these fail - not compiling the JSX
+//import TileImage from "@internetarchive/ia-components/sandbox/tiles/TileImage";
+//import TileImage from "../../iaux/packages/ia-components/sandbox/tiles/TileImage";
+
 
 export default class TileComponent extends IAReactComponent {
     /* -- Not used with ReactFake yet

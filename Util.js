@@ -1,4 +1,3 @@
-//require('babel-core/register')({presets: ['env', 'react']}); // ES6 JS below!
 
 class Util {
     static dateFormat(n) {

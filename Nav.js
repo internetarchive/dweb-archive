@@ -1,7 +1,6 @@
 //import ReactDOM from "react-dom";
 
 // noinspection JSUnresolvedFunction
-require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 const canonicaljson = require('@stratumn/canonicaljson');
 
 // https://ponyfoo.com/articles/universal-react-babel

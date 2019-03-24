@@ -1,6 +1,5 @@
 import React from './ReactFake';
 
-require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 
 const canonicaljson = require('@stratumn/canonicaljson');
 

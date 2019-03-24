@@ -1,4 +1,4 @@
-require('babel-core/register')({presets: ['env', 'react']}); // ES6 JS below!
+
 import React from './ReactFake';
 //Not needed on client - kept so script can run in both cases
 //import ReactDOMServer from 'react-dom/server';

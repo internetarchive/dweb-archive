@@ -1,4 +1,3 @@
-require('babel-core/register')({ presets: ['env', 'react']}); // ES6 JS below!
 //This has been tested on IAUX & should be moveable to IAUX just by switching the commented headers below -
 //IAUX version
 //import React from 'react'
