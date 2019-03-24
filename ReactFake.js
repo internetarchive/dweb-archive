@@ -13,7 +13,9 @@ import from2 from "from2";
 import prettierBytes from "prettier-bytes";
 const Url = require('url');
 const asyncMap = require('async/map');
+//These are needed to mingle real-react with Fake-react during transition.
 import ReactDOM from 'react-dom';
+import RealReact from 'react';
 // other Internet Archive modules
 const debug = require('debug')('dweb-archive:ReactFake');
 import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";

@@ -6,12 +6,13 @@ module.exports = {
             rules: [
                 {
                     test: /\.js$/,
-                    exclude: /(node_modules|bower_components)/,
+                    exclude: /(node_modules\/[a-z]|bower_components)/, //TODO-IAUX make this exclusion more precise
                     use: {
-                        loader: 'babel-loader'
-                        //options: {
-                        //    presets: ['@babel/preset-env']
-                        //}
+                        loader: 'babel-loader',
+                        options: {
+                            ignore: [],
+                            presets: ['@babel/preset-env', '@babel/preset-react']
+                        }
                     }
                 }
             ]
@@ -68,5 +69,8 @@ module.exports = {
             ],
             { }
         )
-    ]
+    ],
+    resolve: {
+        extensions: ['.js', '.jsx']
+    }
 };
