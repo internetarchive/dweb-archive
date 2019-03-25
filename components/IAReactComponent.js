@@ -2,7 +2,7 @@
 
 // Should hopefully be only pair of line needed to change between dweb-archive using ReactFake and IAUX using React
 //import React from 'react'
-import React from './ReactFake';
+import React from '../ReactFake';
 
 import PropTypes from 'prop-types'
 

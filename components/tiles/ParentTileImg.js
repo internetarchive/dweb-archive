@@ -4,6 +4,7 @@
 //import IAReactComponent from 'iacomponents/experimental/IAReactComponent';
 //import PropTypes from 'prop-types'
 //!IAUX version
+import React from '../../ReactFake';
 import IAReactComponent from '../IAReactComponent';
 
 export default class ParentTileImg extends IAReactComponent {

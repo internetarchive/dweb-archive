@@ -1,3 +1,4 @@
+import React from '../ReactFake';
 import IAReactComponent from './IAReactComponent';
 //import PropTypes from 'prop-types'
 import ArchiveMemberSearch from "@internetarchive/dweb-archivecontroller/ArchiveMemberSearch";
