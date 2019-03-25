@@ -1,18 +1,11 @@
-import ParentTileImg from "./ParentTileImg";
-
-//This has been tested on IAUX & should be moveable to IAUX just by switching the commented headers below -
-//IAUX version
-//import React from 'react'
-//import IAReactComponent from 'iacomponents/experimental/IAReactComponent';
-//import PropTypes from 'prop-types'
-//!IAUX version
 const debug = require('debug')('dweb-archive:TileComponent');
-import React from "../ReactFake";
-import IAReactComponent from './IAReactComponent';
-import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";
-import ArchiveMemberSearch from "@internetarchive/dweb-archivecontroller/ArchiveMemberSearch";
-import Util from "../Util";
+import IAReactComponent from '../IAReactComponent'; // Encapsulates differences between dweb-archive/ReactFake and iaux/React
+//import PropTypes from 'prop-types'
+//TODO-IAUX need to standardise API as this uses the "ArchiveMemberSearch" class to provide necessary details for the Tile.
+//import ArchiveMemberSearch from "@internetarchive/dweb-archivecontroller/ArchiveMemberSearch";
+import Util from "../../Util"; //TODO-IAUX for mediatype_canonical and number_format which need porting to some kind of common libary between IAUX and dweb-archive
 import TileImage from "./TileImage";
+import ParentTileImg from "./ParentTileImg";
 //Both these fail - not compiling the JSX
 //import TileImage from "@internetarchive/ia-components/sandbox/tiles/TileImage";
 //import TileImage from "../../iaux/packages/ia-components/sandbox/tiles/TileImage";
@@ -40,7 +33,7 @@ export default class TileComponent extends IAReactComponent {
             //TODO = catch cases (if-any) where this is triggered (maybe related, maybe fav-brewster) and see if can use expansion instead
             // note test of creator is bad, as for example the "etree" entry in audio collection doesnt have a creator, publicdate or title would be better, but will try ArchiveMemberSearch
             //console.assert(this.props.member.creator && this.props.member.creator.length, "next code shouldnt be needed as expand");
-            console.assert(this.props.member instanceof ArchiveMemberSearch, "next code shouldnt be needed as expand");
+            //console.assert(this.props.member instanceof ArchiveMemberSearch, "next code shouldnt be needed as expand");
             /*
             if (!(this.props.member.creator && this.props.member.creator.length)) { // This may not be best test
                 if (!this.props.item) this.props.item = new ArchiveItem({itemid: this.props.identifier});
@@ -74,6 +67,8 @@ export default class TileComponent extends IAReactComponent {
                 downloads: member.downloads, // Often undefined
                 title: member.title || (item && item.metadata.title),
                 date: (member.publicdate || member.updateddate || (item && item.metadata.publicdate)).substr(0, 10), // No current cases where none of these dates exist
+                // Convert the mediatype into a canonical one (text, image etc)
+                // TODO-IAUX this is in Util - needs porting to the IAUX repo
                 iconnameClass: "iconochive-"+Util.mediatype_canonical(member.mediatype),
                 numReviews: member.num_reviews || (item && item.reviews && item.reviews.length) || 0
             })

@@ -4,7 +4,7 @@ import React from './ReactFake';
 const canonicaljson = require('@stratumn/canonicaljson');
 
 import ArchiveBase from './ArchiveBase';
-import TileComponent from './components/TileComponent';
+import TileComponent from './components/tiles/TileComponent';
 
 /* Section to ensure node and browser able to use Headers, Request and Fetch */
 /*

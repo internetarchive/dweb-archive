@@ -16,7 +16,7 @@ import React from './ReactFake';
 
 import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
 import ArchiveMemberRelated from '@internetarchive/dweb-archivecontroller/ArchiveMemberRelated';
-import TileComponent from './components/TileComponent';
+import TileComponent from './components/tiles/TileComponent';
 import CollectionList from './components/CollectionList';
 import ArchiveBase from './ArchiveBase';
 

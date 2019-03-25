@@ -575,6 +575,24 @@ export default class React  {
     }
 };
 
+React.Component = class {
+    // Fake the methods of React.Component that IAReactComponent calls.
+    constructor(props) {
+        // Let the super class store the props, you can manipulate them in subclasses
+        this.props = props;
+        // Initialize the state, again the subclasses can add to it
+        this.state = {};
+    }
+    setState(o) {
+        Object.keys(res).forEach(k => this.state[k] = res[k]);
+        // renderFakeElement is set in ReactFake to the element created (on mounting), so it can be removed from React and then updated
+        // it causes the item to be rerendered when setState is called e.g. after data is retrieved
+        if (typeof DwebArchive !== "undefined" && typeof this.renderFakeElement !== "undefined") {
+            DwebArchive.ReactFake.renderRealReact(this, this.renderFakeElement.parentNode);
+        }
+    }
+}
+
 //Default configuration
 React._config = {
 //    root: "https://archive.org",

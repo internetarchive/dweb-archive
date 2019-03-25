@@ -4,9 +4,7 @@
 //import IAReactComponent from 'iacomponents/experimental/IAReactComponent';
 //import PropTypes from 'prop-types'
 //!IAUX version
-import React from "../ReactFake";
-import IAReactComponent from './IAReactComponent';
-import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";
+import IAReactComponent from '../IAReactComponent';
 
 export default class ParentTileImg extends IAReactComponent {
     /* -- Not used with ReactFake yet
@@ -19,6 +17,7 @@ export default class ParentTileImg extends IAReactComponent {
     constructor(props) {
         super(props);
     }
+    // Note this is only called in the dweb-archive/ReactFake case
     loadcallable(enclosingspan) { // Defined as a closure so that can access identifier (in real React), in ReactFake its called with ref.call(this,enclosingspan)
         let urls;
         if (this.props.member && this.props.member.collection0thumbnaillinks && (this.props.member.collection0thumbnaillinks.length > 0) ) {

@@ -1,11 +1,5 @@
-//This has been tested on IAUX & should be moveable to IAUX just by switching the commented headers below -
-//IAUX version
-//import React from 'react'
-//import IAReactComponent from 'iacomponents/experimental/IAReactComponent';
-//import PropTypes from 'prop-types'
-//!IAUX version
-import React from "../ReactFake";
 import IAReactComponent from './IAReactComponent';
+//import PropTypes from 'prop-types'
 import ArchiveMemberSearch from "@internetarchive/dweb-archivecontroller/ArchiveMemberSearch";
 
 export default class CollectionList extends IAReactComponent {
