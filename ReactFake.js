@@ -524,12 +524,24 @@ export default class React  {
             // * There may be a fourth type - of things that can be converted to strings, but if so I need an example
             const addable =
                 (typeof child === "string")      ? document.createTextNode(child.toString())
-                    : (child instanceof this.Component) ? child.render()  // Fake only, (will cause any ref= at top level to be a function)
-                    : !(child instanceof HTMLElement) ? document.createElement("span")  // React Elements
-                        :                                  child;
-            element.appendChild(addable);
+                    : (child instanceof this.Component)
+                    ? child.render()  // Fake only, (will cause any ref= at top level to be a function)
+                    : !(child instanceof HTMLElement)
+                    ? document.createElement("span")  // React Elements
+                    :                                  child; //XX
+
+            try {
+                element.appendChild(addable);
+            } catch(err) {
+                debug("ERROR addKids failed to add kid:%s %O", err.message, addable)
+                return element; // Skip rest
+            }
             if ((addable instanceof HTMLElement) && (typeof addable.ref === "function")) { // Call the ref attribute of real or fake IAReactComponent
-                addable.ref.call(child, addable);
+                try {
+                    addable.ref.call(child, addable);
+                } catch(err) {
+                    debug("ERROR addKids caught error in call to ref: ", err.message);
+                }
             }
             if (child instanceof this.Component) {
                 child.componentDidMount(); // Tell fake IAReactComponent it mounted
