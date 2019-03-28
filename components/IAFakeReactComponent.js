@@ -4,7 +4,7 @@
 //import React from 'react'
 import React from '../ReactFake';
 
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 const debug = require('debug')('dweb-archive:ConfigDetailsComponent');
 

@@ -1,7 +1,7 @@
-import React from 'react'
-import IAReactComponent from '../IAReactComponent';
+import React from '../../ReactFake';
+import IAFakeReactComponent from '../IAFakeReactComponent';
 
-export default class ParentTileImg extends IAReactComponent {
+export default class ParentTileImg extends IAFakeReactComponent {
     /* -- Not used with ReactFake yet
     static propTypes = {
         identifier: PropTypes.string,

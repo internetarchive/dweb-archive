@@ -1,19 +1,12 @@
 const debug = require('debug')('dweb-archive:TileComponent');
-//import React from '../../ReactFake';
-import React from 'react';
-import IAReactComponent from '../IAReactComponent'; // Encapsulates differences between dweb-archive/ReactFake and iaux/React
-//import PropTypes from 'prop-types'
-//TODO-IAUX need to standardise API as this uses the "ArchiveMemberSearch" class to provide necessary details for the Tile.
-//import ArchiveMemberSearch from "@internetarchive/dweb-archivecontroller/ArchiveMemberSearch";
+import React from '../../ReactFake';
+import IAFakeReactComponent from '../IAFakeReactComponent';
 import Util from "../../Util"; //TODO-IAUX for mediatype_canonical and number_format which need porting to some kind of common libary between IAUX and dweb-archive
 import TileImage from "./TileImage";
 import ParentTileImg from "./ParentTileImg";
-//Both these fail - not compiling the JSX
-//import TileImage from "@internetarchive/ia-components/sandbox/tiles/TileImage";
-//import TileImage from "../../iaux/packages/ia-components/sandbox/tiles/TileImage";
 
 
-export default class TileComponent extends IAReactComponent {
+export default class TileComponent extends IAFakeReactComponent {
     /* -- Not used with ReactFake yet
     static propTypes = {
         identifier: PropTypes.string,
@@ -30,7 +23,7 @@ export default class TileComponent extends IAReactComponent {
 
     render() {
         try {
-            console.assert(this.props.member, "If using loadAndSync should have a member with at least mediatype to work with");
+            console.assert(this.props.member, "If using TileComponent.render should have a member with at least mediatype to work with");
             // We need some data for tiles, if its not found then have to fetch item metadata and then render
             //TODO = catch cases (if-any) where this is triggered (maybe related, maybe fav-brewster) and see if can use expansion instead
             // note test of creator is bad, as for example the "etree" entry in audio collection doesnt have a creator, publicdate or title would be better, but will try ArchiveMemberSearch
@@ -75,7 +68,7 @@ export default class TileComponent extends IAReactComponent {
                 numReviews: member.num_reviews || (item && item.reviews && item.reviews.length) || 0
             })
         } catch(err) { // Catch error here as not generating debugging info at caller level for some reason
-            debug("ERROR in TileComponent.loadAndSync for %s:", this.state.identifier, err.message);
+            debug("ERROR in TileComponent.render for %s:", this.state.identifier, err.message);
             enclosingdiv.parentNode.removeChild(enclosingdiv);
         }
         return (
