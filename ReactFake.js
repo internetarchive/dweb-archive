@@ -592,7 +592,8 @@ React.Component = class {
         // Let the super class store the props, you can manipulate them in subclasses
         this.props = props;
         // Initialize the state, again the subclasses can add to it
-        this.state = {};
+        // Now moved to IAReactComponent
+        //this.state = {};
     }
     setState(o) {
         Object.keys(res).forEach(k => this.state[k] = res[k]);

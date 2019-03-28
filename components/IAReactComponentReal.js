@@ -13,6 +13,7 @@ export default class IAReactComponent extends React.Component {
     // Both dweb-archive.IAReactComponent used with ReactFake and iaux.IAReactComponent used with React should work the same. (e.g. ParentTileImg works with both)
     constructor(props) {
         super(props);
+        this.state = {}; // React doesnt do this
         // In both React & ReactFake, _isMounted is set to true on loading
         this._isMounted = false;
         // In both React & ReactFake If you give a HTML tag ref={this.load} then it will call loadcallable with 'this' set to the component and pass the element as the only parameter

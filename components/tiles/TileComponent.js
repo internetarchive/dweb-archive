@@ -25,10 +25,10 @@ export default class TileComponent extends IAReactComponent {
     constructor(props)
     {
         super(props);
-        if (props.member && !props.identifier) { this.props.identifier = props.member.identifier; }
+        this.state.identifier = props.identifier || props.member.identifier;
     }
 
-    loadcallable(enclosingdiv) {
+    render() {
         try {
             console.assert(this.props.member, "If using loadAndSync should have a member with at least mediatype to work with");
             // We need some data for tiles, if its not found then have to fetch item metadata and then render
@@ -38,11 +38,11 @@ export default class TileComponent extends IAReactComponent {
             //console.assert(this.props.member instanceof ArchiveMemberSearch, "next code shouldnt be needed as expand");
             /*
             if (!(this.props.member.creator && this.props.member.creator.length)) { // This may not be best test
-                if (!this.props.item) this.props.item = new ArchiveItem({itemid: this.props.identifier});
+                if (!this.props.item) this.props.item = new ArchiveItem({itemid: this.state.identifier});
                 if (!this.props.item.metadata) {
                     this.props.item.fetch_metadata((err, ai) => {
                         if (err) {
-                            debug("Failed to read metadata for %s", this.props.identifier);
+                            debug("Failed to read metadata for %s", this.state.identifier);
                             enclosingdiv.parentNode.removeChild(enclosingdiv);
                         } else {
                             this.loadAndSync(enclosingdiv);
@@ -74,33 +74,17 @@ export default class TileComponent extends IAReactComponent {
                 iconnameClass: "iconochive-"+Util.mediatype_canonical(member.mediatype),
                 numReviews: member.num_reviews || (item && item.reviews && item.reviews.length) || 0
             })
-            const innerElement = this.renderInnerElement();
-            while (enclosingdiv.lastChild) {
-                enclosingdiv.removeChild(enclosingdiv.lastChild)
-            }
-            enclosingdiv.appendChild(innerElement)
         } catch(err) { // Catch error here as not generating debugging info at caller level for some reason
-            debug("ERROR in TileComponent.loadAndSync for %s:", this.props.identifier, err.message);
+            debug("ERROR in TileComponent.loadAndSync for %s:", this.state.identifier, err.message);
             enclosingdiv.parentNode.removeChild(enclosingdiv);
         }
-    }
-
-    render() {
-        if (typeof DwebArchive !== "undefined") {
-            return <span ref={this.load}>Loading ...</span>
-        } else { // Pure IAUX
-            //TODO-IAUX need pure IAUX version
-        }
-    }
-
-    renderInnerElement() {
         return (
-        <div className={this.state.classes} data-id={this.props.identifier}  key={this.props.identifier}>
+        <div className={this.state.classes} data-id={this.state.identifier}  key={this.state.identifier}>
             { (this.state.collection0) ? //TODO make it work for ParentTileImage in new TileComponent then remove this condition
                 <a className="stealth" tabIndex="-1" href={`/details/${this.state.collection0}`} onClick={`Nav.nav_details("${this.state.collection0}");`}>
                     <div className="item-parent">
                         <div className="item-parent-img">
-                            <ParentTileImg member={this.props.member} identifier={this.props.identifier} parentidentifier={this.state.collection0} />
+                            <ParentTileImg member={this.props.member} identifier={this.state.identifier} parentidentifier={this.state.collection0} />
                         </div>
                         <div className="item-parent-ttl">{this.state.collection0title}</div>
                     </div>{/*.item-parent*/}
@@ -114,9 +98,9 @@ export default class TileComponent extends IAReactComponent {
 
             <div className="C234">
                 <div className="item-ttl C C2">
-                    <a onClick={`Nav.nav_details("${this.props.identifier}");`} title={this.state.title}>
+                    <a onClick={`Nav.nav_details("${this.state.identifier}");`} title={this.state.title}>
                         <div className="tile-img">
-                            <TileImage className="item-img clipW clipH" imgname={"__ia_thumb.jpg"} member={this.props.member} identifier={this.props.identifier} />
+                            <TileImage className="item-img clipW clipH" imgname={"__ia_thumb.jpg"} member={this.props.member} identifier={this.state.identifier} />
                             {/*<img className="item-img clipW clipH" imgname={imgname} src={member}/>*/}
                         </div>{/*.tile-img*/}
                         <div className="ttl">
@@ -139,7 +123,7 @@ export default class TileComponent extends IAReactComponent {
             </div>{/*.C234*/}
             {this.state.isCollection ? this.renderDivCollectionStats() : this.renderDivStatbar() }
         </div>
-    );
+        );
     }
 
 

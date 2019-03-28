@@ -4,10 +4,11 @@
 //import IAReactComponent from 'iacomponents/experimental/IAReactComponent';
 //import PropTypes from 'prop-types'
 //!IAUX version
-import React from '../../ReactFake';
-import IAReactComponent from '../IAReactComponent';
+//import React from '../../ReactFake';
+//import React from '../../React';
+import IAReactComponentReal from '../IAReactComponentReal';
 
-export default class ParentTileImg extends IAReactComponent {
+export default class ParentTileImg extends IAReactComponentReal {
     /* -- Not used with ReactFake yet
     static propTypes = {
         identifier: PropTypes.string,
