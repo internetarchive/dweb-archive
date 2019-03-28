@@ -1,8 +1,8 @@
 //import React from '../../ReactFake';
 import React from 'react';
-import IAReactComponentReal from '../IAReactComponentReal';
+import IAReactComponent from '../IAReactComponent';
 
-export default class TileImage extends IAReactComponentReal {
+export default class TileImage extends IAReactComponent {
     /* Used in IAUX, but not in ReactFake
     static propTypes = {
         identifier: PropTypes.string.isRequired,

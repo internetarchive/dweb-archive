@@ -1,12 +1,6 @@
-//This has NOT been tested on IAUX but should be moveable to IAUX just by switching the commented headers below -
-//IAUX version
-//import React from 'react'
-//import IAReactComponent from 'iacomponents/experimental/IAReactComponent';
-//import PropTypes from 'prop-types'
-//!IAUX version
 const debug = require('debug')("BookReaderWrapper");
 import React from "../ReactFake";
-import IAReactComponent from './IAReactComponent';
+import IAFakeReactComponent from './IAFakeReactComponent';
 import RawBookReaderResponse from '@internetarchive/dweb-archivecontroller/RawBookReaderResponse';
 const ACUtil = require('@internetarchive/dweb-archivecontroller/Util'); // For gatewayServr
 
@@ -24,7 +18,7 @@ https://docs.google.com/presentation/d/1dhDAUjob6oSVWJsuShviW7qkiEou2RlJOsO5QIaE
 function getPage(index, reduce, rotate) {
     debug("gettingPage=%d scale=%d rotate=%O", index, reduce, rotate);
 }
-export default class BookReaderWrapper extends IAReactComponent {
+export default class BookReaderWrapper extends IAFakeReactComponent {
     /* Notes:
      assumption is that item has  .bookreader { data, brOptions, lendingInfo }
 

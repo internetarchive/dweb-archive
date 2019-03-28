@@ -1,18 +1,12 @@
-//This has (not yet) been tested on IAUX & should be moveable to IAUX just by switching the commented headers below -
-//IAUX version
-//import React from 'react'
-//import IAReactComponent from 'iacomponents/experimental/IAReactComponent';
-//import PropTypes from 'prop-types'
-//!IAUX version
 const debug = require('debug')('dweb-archive:ConfigDetailsComponent');
 const canonicaljson = require('@stratumn/canonicaljson');
 import React from "../ReactFake";
-import IAReactComponent from './IAReactComponent';
+import IAFakeReactComponent from './IAFakeReactComponent';
 const ACUtil = require('@internetarchive/dweb-archivecontroller/Util'); // For Object.deeperAssign
 //DwebTransports is not needed, its a global
 //TODO-CONFIG make it be empty if not on mirror
 
-export default class ConfigDetailsComponent extends IAReactComponent {
+export default class ConfigDetailsComponent extends IAFakeReactComponent {
     /* -- Not used with ReactFake yet
     static propTypes = {
         identifier: PropTypes.string,
@@ -29,7 +23,7 @@ export default class ConfigDetailsComponent extends IAReactComponent {
     constructor(props)
     {
         super(props);
-        this.clicked = () => this.clickedCallable();    // Maybe move this to IAReactComponent if it gets used a lot
+        this.clicked = () => this.clickedCallable();    // Maybe move this to IAFakeReactComponent if it gets used a lot
     }
 
     static insertInside(elementId, props) {
@@ -42,7 +36,7 @@ export default class ConfigDetailsComponent extends IAReactComponent {
         React.addKids(parentElement, el); // Using addKids to force the "ref" to be used //TODO-IAUX probably doesnt have addKids ?
     }
 
-    render() { //TODO move into IAReactComponent.js
+    render() { //TODO move into IAFakeReactComponent.js
         if (typeof DwebArchive !== "undefined") {
             return <span ref={this.load}>Loading ...</span>
         } else { // Pure IAUX

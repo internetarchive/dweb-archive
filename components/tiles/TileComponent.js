@@ -1,6 +1,6 @@
 const debug = require('debug')('dweb-archive:TileComponent');
-import React from '../../ReactFake';
-//import React from 'react';
+//import React from '../../ReactFake';
+import React from 'react';
 import IAReactComponent from '../IAReactComponent'; // Encapsulates differences between dweb-archive/ReactFake and iaux/React
 //import PropTypes from 'prop-types'
 //TODO-IAUX need to standardise API as this uses the "ArchiveMemberSearch" class to provide necessary details for the Tile.

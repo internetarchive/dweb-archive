@@ -1,15 +1,9 @@
-//This has NOT been tested on IAUX but should be moveable to IAUX just by switching the commented headers below -
-//IAUX version
-//import React from 'react'
-//import IAReactComponent from 'iacomponents/experimental/IAReactComponent';
-//import PropTypes from 'prop-types'
-//!IAUX version
 import React from "../ReactFake";
-import IAReactComponent from './IAReactComponent';
+import IAFakeReactComponent from './IAFakeReactComponent';
 
 //TODO - check this is same for things other than Texts.BookReader and if so use in those files, if not then parameterize or subclass
 
-export default class TheatreControls extends IAReactComponent {
+export default class TheatreControls extends IAFakeReactComponent {
     /* Used in IAUX, but not in ReactFake
     static propTypes = {
         identifier: PropTypes.string.isRequired,

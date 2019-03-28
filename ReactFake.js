@@ -28,8 +28,8 @@ import Util from './Util';
 
 
 /*
-Handling of FakeReact IAReactComponents
-* createElement(tag=IAReactComponent) spots the tag is a function and calls new(attrs), lets call this NEWIAREACTOBJ
+Handling of FakeReact IAFakeReactComponents
+* createElement(tag=IAFakeReactComponent) spots the tag is a function and calls new(attrs), lets call this NEWIAREACTOBJ
 * createElement then adds the kids (which possibly doesnt work, and we dont have a current use case)
 * when NEWIAREACTOBJ is added into its parent,
     * addKids(parent) calls NEWIAREACTOBJ.render()
@@ -368,7 +368,7 @@ export default class React  {
         if (typeof tag === "function") {  // Assume its a React class for now TODO-IAUX just testing
             if (tag.prototype instanceof this.Component) {
                 const element = new tag(attrs);
-                React.addKids(element, kids); // This is FakeReact.addKids, and may not work inside of a Fake IAReactComponent
+                React.addKids(element, kids); // This is FakeReact.addKids, and may not work inside of a Real IAReactComponent
                 return element;
             } else { // Real React
                 const element = RealReact.createElement(tag, attrs, ...kids); // Returns a React Element which will be rendered into DOM by addKids on el its being included into
@@ -536,7 +536,7 @@ export default class React  {
                 debug("ERROR addKids failed to add kid:%s %O", err.message, addable)
                 return element; // Skip rest
             }
-            if ((addable instanceof HTMLElement) && (typeof addable.ref === "function")) { // Call the ref attribute of real or fake IAReactComponent
+            if ((addable instanceof HTMLElement) && (typeof addable.ref === "function")) { // Call the ref attribute of IAReactComponent or IAFakeReactComponent
                 try {
                     addable.ref.call(child, addable);
                 } catch(err) {
@@ -544,7 +544,7 @@ export default class React  {
                 }
             }
             if (child instanceof this.Component) {
-                child.componentDidMount(); // Tell fake IAReactComponent it mounted
+                child.componentDidMount(); // Tell IAFakeReactComponent it mounted
             }
             //TODO-IAUX Retest this, as triggers if child=0 for example, should find way to trigger positively on either child or addable
             if (! ((typeof child === "string") || (typeof child === "number") || (child instanceof HTMLElement) || (child instanceof this.Component))) {
@@ -587,12 +587,12 @@ export default class React  {
 };
 
 React.Component = class {
-    // Fake the methods of React.Component that IAReactComponent calls.
+    // Fake the methods of React.Component that IAFakeReactComponent calls.
     constructor(props) {
         // Let the super class store the props, you can manipulate them in subclasses
         this.props = props;
         // Initialize the state, again the subclasses can add to it
-        // Now moved to IAReactComponent
+        // Now moved to IAFakeReactComponent
         //this.state = {};
     }
     setState(o) {

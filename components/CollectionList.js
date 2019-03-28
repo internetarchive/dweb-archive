@@ -1,10 +1,10 @@
 import React from '../ReactFake';
 //import React from 'react';
-import IAReactComponent from './IAReactComponent';
+import IAFakeReactComponent from './IAFakeReactComponent';
 //import PropTypes from 'prop-types'
 import ArchiveMemberSearch from "@internetarchive/dweb-archivecontroller/ArchiveMemberSearch";
 
-export default class CollectionList extends IAReactComponent {
+export default class CollectionList extends IAFakeReactComponent {
     /* Used in IAUX, but not in ReactFake
     static propTypes = {
         collections: PropTypes.array.isRequired,
