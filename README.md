@@ -139,3 +139,5 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 * 0.1.49: config button; IAReactComponent; 
 * 0.1.50: Set title on window from item title, or query.
 * 0.1.51: Support bookreader (more work to do on this)
+* 0.1.52: Bug fix
+* 0.1.53: Refactor components for IAUX; Incorporate dweb-archivecontroller fix to relateditems; 
