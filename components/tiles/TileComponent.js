@@ -1,6 +1,8 @@
 const debug = require('debug')('dweb-archive:TileComponent');
-import React from '../../ReactFake';
-import IAFakeReactComponent from '../IAFakeReactComponent';
+//import React from '../../ReactFake';
+//import IAFakeReactComponent from '../IAFakeReactComponent';
+import React from 'react';
+import IAReactComponent from '../IAReactComponent';
 import TileImage from "./TileImage";
 import ParentTileImg from "./ParentTileImg";
 
@@ -20,7 +22,7 @@ function number_format(nStr) //this is just addCommas now
 
 
 
-export default class TileComponent extends IAFakeReactComponent {
+export default class TileComponent extends IAReactComponent {
     /* -- Not used with ReactFake or current IAUX yet
     static propTypes = {
         identifier: PropTypes.string,
