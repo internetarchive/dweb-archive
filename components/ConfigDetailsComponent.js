@@ -125,7 +125,7 @@ export default class ConfigDetailsComponent extends IAFakeReactComponent {
             this.state.task.level = "details";
         }
         //TODO handle case of clicking back ot empty - remove task
-        const urlSetConfig = [ACUtil.gatewayServer(), "setconfig"].join('/');
+        const urlSetConfig = [ACUtil.gatewayServer(), "admin/setconfig"].join('/');
         DwebTransports.httptools.p_POST(urlSetConfig,
             {data: canonicaljson.stringify(this.state.configuser), contenttype: "application/json"},
             (err, info) => {

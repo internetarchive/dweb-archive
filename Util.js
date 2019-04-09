@@ -131,7 +131,7 @@ function compareRight(E,B){let G=0;let F=0;let D=0;for(;;F++,D++){const C=E.char
 function natcompare(I,H){let C=0,A=0;let D=0,B=0;let F,E;let G;while(true){D=B=0;F=I.charAt(C);E=H.charAt(A);while(isWhitespaceChar(F)||F=="0"){if(F=="0"){D++;}else{D=0;}F=I.charAt(++C);}while(isWhitespaceChar(E)||E=="0"){if(E=="0"){B++;}else{B=0;}E=H.charAt(++A);}if(isDigitChar(F)&&isDigitChar(E)){if((G=compareRight(I.substring(C),H.substring(A)))!=0){return G;}}if(F==0&&E==0){return D-B;}if(F<E){return -1;}else{if(F>E){return +1;}}++C;++A;}}
 
 Util.config = { //SEE-OTHER-ADDTRANSPORT add a transport in here if its prefered for Video
-    preferredAVtransports: [ "WEBTORRENT", "IPFS"], // Current reliability issues with IPFS streams accompanied by lack of negative feedback on fail
+    preferredAVtransports: [ "WEBTORRENT", "IPFS"], // Current reliability issues with IPFS streams accompanied by lack of negative feedback on fail, HTTP is worst case
 };
 
 exports = module.exports = Util;
