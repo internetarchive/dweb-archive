@@ -5,19 +5,7 @@ class Util {
         return n.toISOString().substr(0,10); //YYYY-MM-DD
     }
 
-    static number_format(nStr)//this is just addCommas now
-    {
-        //http://www.mredkj.com/javascript/numberFormat.html
-        nStr += '';
-
-        const x = nStr.split('.');
-        let x1 = x[0];
-        const x2 = x.length > 1 ? '.' + x[1] : '';
-        const rgx = /(\d+)(\d{3})/;
-        while (rgx.test(x1))
-            x1 = x1.replace(rgx, '$1' + ',' + '$2');
-        return x1 + x2;
-    }
+    /* Seems to be obsolete - used once in TileComponent and simplified version put there)
 
     // pass in a <mediatype> value
     static mediatype_canonical(mediatype) {
@@ -54,6 +42,7 @@ class Util {
 
         return icon;
     }
+   */
 
     static natcompare(a, b) {
         return natcompare(a, b);
