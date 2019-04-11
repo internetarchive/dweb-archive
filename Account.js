@@ -175,7 +175,7 @@ export default class Account extends Search {
                            href={`/details/${itemid}&tab=uploads`}
                            onclick="return AJS.tabby(this,'tabby-uploads')">
                             <span class="tabby-text">UPLOADS</span>
-                        </a>
+                        </a> {/*TODO-IAUX move this and 6 others below to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent*/}
                     </div>
                 </div>
                 <div class="tabby">

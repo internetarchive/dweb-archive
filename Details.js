@@ -336,7 +336,7 @@ export default class Details extends ArchiveBase {
                                 <div class="aReview">
                                     <b>Reviewer:</b>{' '}
                                     <a onClick={`Nav.nav_details('@${review.reviewer}')`}
-                                       data-event-click-tracking="ItemReviews|ReviewerLink">{review.reviewer}</a>
+                                       data-event-click-tracking="ItemReviews|ReviewerLink">{review.reviewer}</a> {/*TODO-IAUX move to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent*/}
                                     -
                                     <span alt={`${review.stars} out of 5 stars`} title={`${review.stars} out of 5 stars`}>
                                         { ['*','*','*','*','*'].slice(0,review.stars).map(x =>

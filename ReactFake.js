@@ -365,7 +365,7 @@ export default class React  {
         /* First we handle cases where we dont actually build the tag requested */
 
         const kids = Array.prototype.slice.call(arguments).slice(2);
-        if (typeof tag === "function") {  // Assume its a React class for now TODO-IAUX just testing
+        if (typeof tag === "function") {  // Assume its a component (React or FakeReact)
             if (tag.prototype instanceof this.Component) { // Its Fake React
                 if (kids && kids.length) { attrs.children = kids}; // Copy way Real React passes children to component
                 const element = new tag(attrs);
@@ -429,7 +429,7 @@ export default class React  {
                 // Don't set possibleOnClock, we want it explicitly
             } else if (href.startsWith("dweb:/arc/archive.org/details/")) { // E.g <a href="/details/foo">
                 let itemid = href.slice(30);
-                possibleOnclick = `Nav.nav_details("${itemid}"); return false;`;
+                possibleOnclick = `Nav.nav_details("${itemid}"); return false;`; //TODO-IAUX move to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent
             } else if (href.startsWith("dweb:")) {
                 possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href); return false;';
             } else if (href.indexOf("/download/") >= 0) {
@@ -510,7 +510,7 @@ export default class React  {
         return element;
     }
     static addKids(element, child) {
-        /* add kids to a created element
+        /* add kids to a created element, note this is NOT called when children are added from a component into the render of the component.
         kids:   Array of children
         /* This is called back by loadImg after creating the tag. */
         if (Array.isArray(child)) {

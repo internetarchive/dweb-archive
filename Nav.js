@@ -76,7 +76,7 @@ export default class Nav {
                      <li key={'mikey'+n} className="dropdown dropdown-ia pull-left">
                        <a title={mt} className={'navia-link '+mt}
                           onClick={`Nav.nav_details("${mt}")`}
-                          >{/*--disabled till top hat worked on dweb-archive issue#70 -- data-top-kind={mt} data-toggle="tooltip" target="_top" data-placement="bottom"--*/}
+                          >{/*--disabled till top hat worked on dweb-archive issue#70 -- data-top-kind={mt} data-toggle="tooltip" target="_top" data-placement="bottom"--*/}  {/*TODO-IAUX move to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent*/}
                          <span className={'iconochive-'+mt} aria-hidden="true"></span>
                          <span className="sr-only">{mt}</span>
                        </a>

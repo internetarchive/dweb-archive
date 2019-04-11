@@ -14,7 +14,7 @@ export default class Collection extends Search {
         returns:      elements tree suitable for adding into another render
          */
         //Note both description & rights need dangerousHTML and \n -> <br/>
-        const reviewlink = `/details/${this.itemid}&sort=-reviewdate`; //TODO The use of this is sr-only, and may not be correct
+        const reviewlink = `/details/${this.itemid}&sort=-reviewdate`; //TODO The use of this is sr-only, and may not be correct //TODO-IAUX move to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent
         const metadata = this.metadata;
         const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const rights = this.preprocessDescription(metadata.rights); // Contains HTML (supposedly safe) inserted via innerHTML thing
@@ -172,7 +172,7 @@ export default class Collection extends Search {
                                    href={`/details/${this.itemid}&tab=about`}
                                    onclick="return AJS.tabby(this,'tabby-about')">
                                     <span class="tabby-text">ABOUT</span>
-                                </a>
+                                </a>{/*TODO-IAUX move this and 3 more tabs below to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent*/}
                             </div>
                         </div>
                         <div class="tabby in">

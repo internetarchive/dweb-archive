@@ -87,7 +87,7 @@ class Util {
             updater: u,
             name: u,
             id: id,
-            detailslink: `/details/@${id}`,
+            detailslink: `/details/@${id}`, //TODO-IAUX move callers to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent*/}
             title: "Member", // TODO can sometimes be Archivist etc figure out how to look this up
 
         }

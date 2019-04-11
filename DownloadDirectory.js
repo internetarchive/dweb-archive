@@ -21,7 +21,7 @@ export default class DownloadDirectory extends Details {
                             <thead><th>Name</th>{/*--<th>Last modified</th>--*/}<th>Size</th></thead>
                             <tbody>
                                 <tr>
-                                    <td><a href="/details/commute">{/*TODO-DIR check this link*/}<span class="iconochive-Uplevel" title="Parent Directory" aria-hidden="true"></span> Go to parent directory</a></td>
+                                    <td><a href="/details/commute">{/*TODO-DIR check this link*/}<span class="iconochive-Uplevel" title="Parent Directory" aria-hidden="true"></span> Go to parent directory</a></td>{/*TODO-IAUX move to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent*/}
                                     <td></td>
                                     <td></td>
                                 </tr>

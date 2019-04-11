@@ -27,7 +27,7 @@ export default class CollectionList extends IAFakeReactComponent {
                         <a
                             href={`/details/${collection}`}
                             data-event-click-tracking={`CollectionList|${collection}`}
-                        >{collectionTitles[collection] || collection}</a>
+                        >{collectionTitles[collection] || collection}</a>{/*TODO-IAUX move to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent*/}
                     </div> )
             )
         })

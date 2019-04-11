@@ -1,10 +1,13 @@
 const debug = require('debug')('dweb-archive:TileComponent');
 //import React from '../../ReactFake';
-//import IAFakeReactComponent from '../IAFakeReactComponent';
 import React from 'react';
-import IAReactComponent from '../IAReactComponent';
+import IAReactComponent from '../IAReactComponent'; // Encapsulates differences between dweb-archive/ReactFake and iaux/React
+//import PropTypes from 'prop-types'
+//TODO-IAUX need to standardise API as this uses the "ArchiveMemberSearch" class to provide necessary details for the Tile.
+//import ArchiveMemberSearch from "@internetarchive/dweb-archivecontroller/ArchiveMemberSearch";
 import TileImage from "./TileImage";
 import ParentTileImg from "./ParentTileImg";
+import AnchorDetails from "../AnchorDetails";
 
 
 function number_format(nStr) //this is just addCommas now
@@ -19,7 +22,6 @@ function number_format(nStr) //this is just addCommas now
         x1 = x1.replace(rgx, '$1' + ',' + '$2');
     return x1 + x2;
 }
-
 
 
 export default class TileComponent extends IAReactComponent {
@@ -71,49 +73,49 @@ export default class TileComponent extends IAReactComponent {
             enclosingdiv.parentNode.removeChild(enclosingdiv);
         }
         return (
-        <div className={this.state.classes} data-id={this.state.identifier}  key={this.state.identifier}>
-            { (this.state.collection0) ? // Believe, but not certain, that there is always going to be a collection0
-                <a className="stealth" tabIndex="-1" href={`/details/${this.state.collection0}`} onClick={`Nav.nav_details("${this.state.collection0}");`}> {/*TODO-IAUX*/}
-                    <div className="item-parent">
-                        <div className="item-parent-img">
-                            <ParentTileImg member={this.props.member} identifier={this.state.identifier} parentidentifier={this.state.collection0} />
-                        </div>
-                        <div className="item-parent-ttl">{this.state.collection0title}</div>
-                    </div>{/*.item-parent*/}
-                </a>
-                : undefined }
-            <div className="hidden-tiles views C C1">
-                <nobr className="hidden-xs">{number_format(this.state.downloads)}</nobr>
-                <nobr className="hidden-sm hidden-md hidden-lg">{number_format(this.state.downloads)}</nobr>
-            </div>
-
-
-            <div className="C234">
-                <div className="item-ttl C C2">
-                    <a onClick={`Nav.nav_details("${this.state.identifier}");`} title={this.state.title}> {/*TODO-IAUX*/}
-                        <div className="tile-img">
-                            <TileImage className="item-img clipW clipH" imgname={"__ia_thumb.jpg"} member={this.props.member} identifier={this.state.identifier} />
-                        </div>
-                        <div className="ttl">
-                            {this.state.title}
-                        </div>
-                    </a>
-                </div>
-
-                <div className="hidden-tiles pubdate C C3">
-                    <nobr className="hidden-xs">{this.state.date}</nobr>
-                    <nobr className="hidden-sm hidden-md hidden-lg">{this.state.date}</nobr>
-                </div>
-
-                {this.state.by && this.state.by.length ?
-                    <div className="by C C4">
-                        <span className="hidden-lists">by </span>
-                        <span title={this.state.byTitle}>{this.state.byTitle}</span>
-                    </div>
+            <div className={this.state.classes} data-id={this.state.identifier}  key={this.state.identifier}>
+                { (this.state.collection0) ? // Believe, but not certain, that there is always going to be a collection0
+                    <AnchorDetails className="stealth" tabIndex="-1" identifier={this.state.collection0}>
+                        <div className="item-parent">
+                            <div className="item-parent-img">
+                                <ParentTileImg member={this.props.member} identifier={this.state.identifier} parentidentifier={this.state.collection0} />
+                            </div>
+                            <div className="item-parent-ttl">{this.state.collection0title}</div>
+                        </div>{/*.item-parent*/}
+                    </AnchorDetails>
                     : undefined }
-            </div>{/*.C234*/}
-            {this.state.isCollection ? this.renderDivCollectionStats() : this.renderDivStatbar() }
-        </div>
+                <div className="hidden-tiles views C C1">
+                    <nobr className="hidden-xs">{number_format(this.state.downloads)}</nobr>
+                    <nobr className="hidden-sm hidden-md hidden-lg">{number_format(this.state.downloads)}</nobr>
+                </div>
+
+
+                <div className="C234">
+                    <div className="item-ttl C C2">
+                        <AnchorDetails identifier={this.state.identifier} title={this.state.title}>
+                            <div className="tile-img">
+                                <TileImage className="item-img clipW clipH" imgname={"__ia_thumb.jpg"} member={this.props.member} identifier={this.state.identifier} />
+                            </div>
+                            <div className="ttl">
+                                {this.state.title}
+                            </div>
+                        </AnchorDetails>
+                    </div>
+
+                    <div className="hidden-tiles pubdate C C3">
+                        <nobr className="hidden-xs">{this.state.date}</nobr>
+                        <nobr className="hidden-sm hidden-md hidden-lg">{this.state.date}</nobr>
+                    </div>
+
+                    {this.state.by && this.state.by.length ?
+                        <div className="by C C4">
+                            <span className="hidden-lists">by </span>
+                            <span title={this.state.byTitle}>{this.state.byTitle}</span>
+                        </div>
+                        : undefined }
+                </div>{/*.C234*/}
+                {this.state.isCollection ? this.renderDivCollectionStats() : this.renderDivStatbar() }
+            </div>
         );
     }
 
