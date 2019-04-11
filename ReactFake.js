@@ -366,9 +366,9 @@ export default class React  {
 
         const kids = Array.prototype.slice.call(arguments).slice(2);
         if (typeof tag === "function") {  // Assume its a React class for now TODO-IAUX just testing
-            if (tag.prototype instanceof this.Component) {
+            if (tag.prototype instanceof this.Component) { // Its Fake React
+                if (kids && kids.length) { attrs.children = kids}; // Copy way Real React passes children to component
                 const element = new tag(attrs);
-                React.addKids(element, kids); // This is FakeReact.addKids, and may not work inside of a Real IAReactComponent
                 return element;
             } else { // Real React
                 const element = RealReact.createElement(tag, attrs, ...kids); // Returns a React Element which will be rendered into DOM by addKids on el its being included into
@@ -408,6 +408,7 @@ export default class React  {
     }
     static setAttributes(element, tag, attrs) {
         /* Build out a created element adding Attributes and Children
+           Note this only applies to explicit HTML elements, not to components whose constructors are called directly.
         tag:    Lower case string of element e.g. "img"
         attrs:  Object {attr: value}
 
