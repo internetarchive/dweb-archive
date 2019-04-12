@@ -69,7 +69,7 @@ export default class TileComponent extends IAReactComponent {
                 numReviews: member.num_reviews || (item && item.reviews && item.reviews.length) || 0
             })
         } catch(err) { // Catch error here as not generating debugging info at caller level for some reason
-            debug("ERROR in TileComponent.render for %s:", this.state.identifier, err.message);
+            debug("ERROR in TileComponent.render for %s: %s", this.state.identifier, err.message);
             enclosingdiv.parentNode.removeChild(enclosingdiv);
         }
         return (

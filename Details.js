@@ -15,7 +15,6 @@ import React from './ReactFake';
 // React requires className= rather than class=, ReactFake supports both
 
 import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
-import ArchiveMemberRelated from '@internetarchive/dweb-archivecontroller/ArchiveMemberRelated';
 import TileComponent from './components/tiles/TileComponent';
 import CollectionList from './components/CollectionList';
 import ArchiveBase from './ArchiveBase';
