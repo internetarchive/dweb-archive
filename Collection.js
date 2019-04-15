@@ -1,5 +1,7 @@
 import React from './ReactFake';
 import Search from "./Search";
+import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
+import Tabby from "./components/Tabby";
 
 export default class Collection extends Search {
     constructor({itemid=undefined, metaapi=undefined}={}) {
@@ -14,7 +16,6 @@ export default class Collection extends Search {
         returns:      elements tree suitable for adding into another render
          */
         //Note both description & rights need dangerousHTML and \n -> <br/>
-        const reviewlink = `/details/${this.itemid}&sort=-reviewdate`; //TODO The use of this is sr-only, and may not be correct //TODO-IAUX move to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent
         const metadata = this.metadata;
         const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const rights = this.preprocessDescription(metadata.rights); // Contains HTML (supposedly safe) inserted via innerHTML thing
@@ -54,8 +55,10 @@ export default class Collection extends Search {
                                     <div class="micro-label">ACTIVITY</div>
                                     <div class="activity-box">
                                         <h2 style="font-weight:100">
-                                            <a class="stealth" href={reviewlink}><span class="iconochive-comment"  aria-hidden="true"></span><span class="sr-only">comment</span> <span
-                                                    id="activity-reviewsN"></span></a>
+                                            <AnchorDetails className="stealth" identifier={this.itemid} sort="-reviewdate"><span
+                                            className="iconochive-comment" aria-hidden="true"></span><span
+                                            className="sr-only">comment</span> <span
+                                            id="activity-reviewsN"></span></AnchorDetails>
                                         </h2>
                                     </div>
                                     <div class="activity-box">
@@ -165,36 +168,9 @@ export default class Collection extends Search {
                         </div>
                     </div>
                     <div class="tabbys">
-                        <div class="tabby">
-                            <div>
-                                <a id="tabby-about-finder"
-                                   class="stealth"
-                                   href={`/details/${this.itemid}&tab=about`}
-                                   onclick="return AJS.tabby(this,'tabby-about')">
-                                    <span class="tabby-text">ABOUT</span>
-                                </a>{/*TODO-IAUX move this and 3 more tabs below to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent*/}
-                            </div>
-                        </div>
-                        <div class="tabby in">
-                            <div>
-                                <a id="tabby-collection-finder"
-                                   class="stealth tabby-default-finder"
-                                   href={`/details/${this.itemid}&tab=collection`}
-                                   onclick="return AJS.tabby(this,'tabby-collection')">
-                                    <span class="tabby-text">COLLECTION</span>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="tabby">
-                            <div>
-                                <a id="tabby-forum-finder"
-                                   class="stealth"
-                                   href={`http://archive.org/details/${this.itemid}&tab=forum`}
-                                   onclick="return AJS.tabby(this,'tabby-forum')">
-                                    <span class="tabby-text">FORUM</span>
-                                </a>
-                            </div>
-                        </div>
+                        <Tabby id="about" identifier={this.itemid} text="ABOUT"/>
+                        <Tabby id="collection" identifier={this.itemid} text="COLLECTION" default/>
+                        <Tabby id="forum" identifier={this.itemid} text="FORUM"/>
                         <div class="clearfix"> </div>
                     </div>
                 {/*container*/}</div>

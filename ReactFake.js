@@ -428,6 +428,7 @@ export default class React  {
                 }
                 // Don't set possibleOnClock, we want it explicitly
             } else if (href.startsWith("dweb:/arc/archive.org/details/")) { // E.g <a href="/details/foo">
+                //console.assert(false,"IAUX FLAG - LOOK AT CALL STACK HERE");
                 let itemid = href.slice(30);
                 possibleOnclick = `Nav.nav_details("${itemid}"); return false;`; //TODO-IAUX move to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent
             } else if (href.startsWith("dweb:")) {

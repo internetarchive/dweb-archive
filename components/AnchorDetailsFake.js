@@ -1,14 +1,14 @@
-//import React from '../ReactFake';
-//import IAFakeReactComponent from './IAFakeReactComponent';
-import React from 'react';
-import IAReactComponent from './IAReactComponent';
-const debug = require('debug')('dweb-archive:AnchorDetails');
+// We need a FakeReact version of AnchorDetails as the React version cant be embedded in FakeReact parents because of the children
+// This should track AnchorDetails except for the imports and extends
+import React from '../ReactFake';
+import IAFakeReactComponent from './IAFakeReactComponent';
+const debug = require('debug')('dweb-archive:AnchorDetailsFake');
 
 // Utility functions, I (Mitra) like to put these on Object, but maybe better here.
 function ObjectFromEntries(arr) { arr.reduce((res,kv)=>(res[kv[0]]=kv[1],res),{});} // [[ k0, v0],[k1,v1] => {k0:v0, k1:v1}
 function ObjectFilter(obj, f) { ObjectFromEntries( Object.entries(obj).filter(kv=>f(kv[0], kv[1]))); }
 
-export default class AnchorDetails extends IAReactComponent {
+export default class AnchorDetails extends IAFakeReactComponent {
     // Component that encapsulates the difference between four options: Dweb||IAUX, React||FakeReact for links.
     // NOTE the one impossible combination is using React:AnchorDetails inside FakeReact element as will be passed wrong kind of children
 
@@ -50,10 +50,10 @@ export default class AnchorDetails extends IAReactComponent {
         return ( // Note there is intentionally no spacing in case JSX adds a unwanted line break
             (typeof DwebArchive === "undefined") ?
                 <a href={url.href} {...anchorProps}>{this.props.children}</a>
-            :
+                :
                 // This is the Dweb version for React|!React
                 <a href={url.href} onClick={this.onClick}  {...anchorProps}>{this.props.children}</a>
-            );
+        );
     }
 }
 AnchorDetails.urlparms=['sort']; // Properties that go in the URL to details

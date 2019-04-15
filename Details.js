@@ -18,6 +18,7 @@ import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
 import TileComponent from './components/tiles/TileComponent';
 import CollectionList from './components/CollectionList';
 import ArchiveBase from './ArchiveBase';
+import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
 
 export default class Details extends ArchiveBase {
     constructor({itemid = undefined, metaapi = undefined}={}) {
@@ -334,8 +335,7 @@ export default class Details extends ArchiveBase {
                             { reviews && reviews.length ? reviews.map((review) => (
                                 <div class="aReview">
                                     <b>Reviewer:</b>{' '}
-                                    <a onClick={`Nav.nav_details('@${review.reviewer}')`}
-                                       data-event-click-tracking="ItemReviews|ReviewerLink">{review.reviewer}</a> {/*TODO-IAUX move to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent*/}
+                                    <AnchorDetails identifier={`@${review.reviewer}`} data-event-click-tracking="ItemReviews|ReviewerLink">{review.reviewer}</AnchorDetails>
                                     -
                                     <span alt={`${review.stars} out of 5 stars`} title={`${review.stars} out of 5 stars`}>
                                         { ['*','*','*','*','*'].slice(0,review.stars).map(x =>

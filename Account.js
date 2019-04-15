@@ -1,5 +1,6 @@
 import React from './ReactFake';
 import Search from './Search';
+import Tabby from "./components/Tabby";
 
 export default class Account extends Search {
     /*
@@ -159,78 +160,18 @@ export default class Account extends Search {
                                     <h5 class="account-description">{title}</h5>
                                 </div>{/*--/.col-xs-12--*/}
                     </div>{/*--/.row--*/}
-                    {this.tabbys()}
+                    <div className="tabbys tabbys-dynamic">
+                        <Tabby identifier={itemid} id="uploads" text="UPLOADS" default/>
+                        <Tabby identifier={itemid} id="posts" text="POSTS"/>
+                        <Tabby identifier={itemid} id="reviews" text="REVIEWS"/>
+                        <Tabby identifier={itemid} id="collections" text="COLLECTIONS"/>
+                        <Tabby identifier={itemid} id="loans" text="LOANS"/>
+                        <Tabby identifier={itemid} id="web-archives" text="WEB ARCHIVES" abbreviatedText="WEB"
+                               href={`/details/${itemid}/web-archive`}/>
+                        <div className="clearfix"></div>
+                    </div>
                 </div>{/*--/.container--*/}
             {/*--/.welcome--*/}</div>
-        );
-    }
-    tabbys() {
-        let itemid = this.itemid;
-        return(
-            <div class="tabbys tabbys-dynamic">
-                <div class="tabby in">
-                    <div>
-                        <a id="tabby-uploads-finder"
-                           class="stealth tabby-default-finder"
-                           href={`/details/${itemid}&tab=uploads`}
-                           onclick="return AJS.tabby(this,'tabby-uploads')">
-                            <span class="tabby-text">UPLOADS</span>
-                        </a>{/*Dont move to <ArchiveDetails> its the AJS.tabby which is significant*/}
-                    </div>
-                </div>
-                <div class="tabby">
-                    <div>
-                        <a id="tabby-posts-finder"
-                           class="stealth"
-                           href={`/details/${itemid}&tab=posts`}
-                           onclick="return AJS.tabby(this,'tabby-posts')">
-                            <span class="tabby-text">POSTS</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="tabby">
-                    <div>
-                        <a id="tabby-reviews-finder"
-                           class="stealth"
-                           href={`/details/${itemid}&tab=reviews`}
-                           onclick="return AJS.tabby(this,'tabby-reviews')">
-                            <span class="tabby-text">REVIEWS</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="tabby">
-                    <div>
-                        <a id="tabby-collections-finder"
-                           class="stealth"
-                           href={`/details/${itemid}&tab=collections`}
-                           onclick="return AJS.tabby(this,'tabby-collections')">
-                            <span class="tabby-text">COLLECTIONS</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="tabby">
-                    <div>
-                        <a id="tabby-loans-finder"
-                           class="stealth"
-                           href={`/details/${itemid}&tab=loans`}
-                           onclick="return AJS.tabby(this,'tabby-loans')">
-                            <span class="tabby-text">LOANS</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="tabby">
-                    <div>
-                        <a id="tabby-web-archives-finder"
-                           class="stealth"
-                           href={`/details/${itemid}/web-archive`}
-                           onclick="return AJS.tabby(this,'tabby-web archives')">
-                            <span class="tabby-text hidden-xs-span">WEB ARCHIVES</span>
-                            <span class="tabby-text visible-xs-span">WEB</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-            </div>
         );
     }
     uploads() {

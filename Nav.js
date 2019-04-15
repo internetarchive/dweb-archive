@@ -6,6 +6,7 @@ const canonicaljson = require('@stratumn/canonicaljson');
 // https://ponyfoo.com/articles/universal-react-babel
 // noinspection JSUnresolvedFunction
 import React from './ReactFake';
+import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
 import Search from './Search';
 import Details from './Details'
 import Home from './Home'
@@ -74,12 +75,11 @@ export default class Nav {
 
                 {this.mts.map((mt, n) => (
                      <li key={'mikey'+n} className="dropdown dropdown-ia pull-left">
-                       <a title={mt} className={'navia-link '+mt}
-                          onClick={`Nav.nav_details("${mt}")`}
-                          >{/*--disabled till top hat worked on dweb-archive issue#70 -- data-top-kind={mt} data-toggle="tooltip" target="_top" data-placement="bottom"--*/}  {/*TODO-IAUX move to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent*/}
-                         <span className={'iconochive-'+mt} aria-hidden="true"></span>
-                         <span className="sr-only">{mt}</span>
-                       </a>
+                         <AnchorDetails title={mt} className={'navia-link '+mt} identifier={mt}
+                         >{/*--disabled till top hat worked on dweb-archive issue#70 -- data-top-kind={mt} data-toggle="tooltip" target="_top" data-placement="bottom"--*/}
+                             <span className={'iconochive-'+mt} aria-hidden="true"></span>
+                             <span className="sr-only">{mt}</span>
+                         </AnchorDetails>
                      </li>
                 ) ) }
                 <li className="navbar-brand-li">
