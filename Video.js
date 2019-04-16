@@ -39,7 +39,7 @@ export default class Video extends AV {
         const source = playing.sources[0];
         const af = source.urls;     // An ArchiveFile
         const contenturl = `${AICUtil.gatewayServer()}${AICUtil.gateway.urlDownload}/${itemid}/${source.name}`;
-        const embedurl = `${AICUtil.gatewayServer()}${AICUtil.gateway.urlDownload}/${itemid}/${playing.original}`;
+        const embedurl = `${AICUtil.gatewayServer()}${AICUtil.gateway.urlDownload}/${itemid}/${playing.orig}`;
         const schemacontentlength = `PT0M${parseInt(playing.duration)}S`;
         return (
             <div id="theatre-ia-wrap" class="container container-ia width-max ">
