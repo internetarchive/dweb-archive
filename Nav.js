@@ -266,7 +266,7 @@ export default class Nav {
                 (await new Home().fetch()).render(res);
             } else {
                 let d = await new Details({itemid}).fetch_metadata(); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
-                let metaapi = d.exportMetadataAPI(); // Cant pass Details to the constructors below
+                let metaapi = d.exportMetadataAPI({wantPlaylist: true}); // Cant pass Details to the constructors below
                 if (!d.metadata) {
                     new DetailsError({itemid, message: `item ${itemid} cannot be found or does not have metadata`}).render(res);
                 } else {
