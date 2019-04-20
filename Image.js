@@ -43,9 +43,7 @@ export default class Image extends Details {
                 <div id="theatre-ia" className="container">
                     <div className="row">
                         <div className="xs-col-12">
-
-                            <div id="theatre-controls">
-                            </div> {/*#theatre-controls*/}
+                            <TheatreControls identifier={itemid} mediatype={this.metadata.mediatype}>
 
                 { mainArchiveFile ? (
                             <div className="details-carousel-wrapper">

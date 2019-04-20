@@ -17,6 +17,8 @@ static propTypes = {
 export default class Tabby extends IAReactComponent {
     /*
     This is for a single "tabby", usually there will be a set of them in a Tabbys
+
+    Note that it uses the tabby function in archive.js, a good ToDO might be to refactor that code into this component.
      */
     constructor(props)
     {
@@ -31,15 +33,15 @@ export default class Tabby extends IAReactComponent {
         this.state.href = `${(typeof DwebArchive !== "undefined") ? "/arc/archive.org" : ""}${this.props.href || ("/details/"+this.props.identifier)}?${urlParms.toString()}`
     }
     clickCallable(ev) {
-        //TODO in Dweb seeing issues in Firefox where clicking About and then back doesnt always work correctly but it probably doesnt in existing (non component) dweb code either
+        //TODO in Dweb seeing issues in Firefox where clicking About and then back doesnt always work correctly but it probably doesnt work correctly in existing (non component) dweb code either
         debug("Cicking on link to tab: %s %s",this.props.identifier, this.props.id);
         // this is this React/Fake React object
         // ev.currentTarget is the HTML Element on which the onClick sits
         // ev.target is the HTML element clicked on
         // .replace is because id="web-archive" but call to AJS.tabby is "tabby-web archive"
         const shouldFollow = AJS.tabby(ev.currentTarget,`tabby-${this.props.id.replace('-',' ')}`); // Returns true to follow link, false to skip
-        if (!shouldFollow) { ev.preventDefault();  }   // Prevent it going to the anchor (equivlent to "return false" in non-React
-        return false; // Stop the FakeReact version propogating
+        if (!shouldFollow) { ev.preventDefault();  }   // Stop React event propogating (not a problem in FakeReact)
+        return false; // Stop the FakeReact event propogating (not a problem in real React)
     }
 
     render() { return (

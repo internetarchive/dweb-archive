@@ -54,25 +54,7 @@ export default class Video extends AV {
                 <div id="theatre-ia" class="container">
                     <div class="row">
                         <div class="xs-col-12">
-
-                            <div id="theatre-controls">
-                                <a href="#" id="gofullscreen" onclick="">
-                                    <div data-toggle="tooltip" data-container="body" data-placement="left" class="iconochive-fullscreen"
-                                         title="fullscreen view"></div>
-                                </a>
-                                <a href="#" onclick="return AJS.flash_click(0)">
-                                    <div data-toggle="tooltip" data-container="body" data-placement="left" class="iconochive-flash"
-                                         title="Click to have player try flash first, then HTML5 second"></div>
-                                </a>
-                                <a href="#" onclick="return AJS.mute_click()">
-                                    <div data-toggle="tooltip" data-container="body" data-placement="left" class="iconochive-unmute"
-                                         title="sound is on.  click to mute sound."></div>
-                                </a>
-                                <a href="#" onclick="return AJS.mute_click()">
-                                    <div data-toggle="tooltip" data-container="body" data-placement="left" class="iconochive-mute"
-                                         style="display:none" title="sound is off.  click for sound."></div>
-                                </a>
-                            </div>{/*--/#theatre-controls--*/}
+                            <TheatreControls identifier={itemid} mediatype={this.metadata.mediatype}>
                             <div id="videoContainerX" style="text-align: center;">
                                 {/* This videothumbnailurl is http since if getting decentralized there is little value compared to loading video itself */}
                                 <video id="streamContainer" src={af} poster={videothumbnailurl} controls></video>

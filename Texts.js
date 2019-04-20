@@ -39,7 +39,7 @@ export default class Texts extends Details {
                     <div id="theatre-ia" class="container">
                         <div class="row">
                             <div class="xs-col-12">
-                                <TheatreControls identifier={this.itemid} />
+                                <TheatreControls identifier={this.itemid} mediatype={this.metadata.mediatype} />
                                 { useOldBookReader ? /*TODO Obsolete - delete when tested and deltee iframeURL from above */
                                     <div id="texty" style="font-size:0px" class="">
                                         <iframe src={iframeURL}
