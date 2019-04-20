@@ -15,7 +15,9 @@ Once other use's figure out how to handle this the interface might need tweaking
 */
 //TODO The pop up of the parent collection image doesnt work well, this is a CSS issue, present on dweb as well. Needs a CSS expert to look at it.
 
-import TileImage from "./TileImage";
+//import TileImage from "./TileImage";
+import TileImage from "@internetarchive/ia-components/sandbox/tiles/TileImage.js"; // Fails - because JSX not being transpiled
+//import TileImage from "@internetarchive/ia-components";
 import ParentTileImg from "./ParentTileImg";
 import AnchorDetails from "../AnchorDetails";
 
