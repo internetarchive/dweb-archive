@@ -15,9 +15,9 @@ import React from './ReactFake';
 // React requires className= rather than class=, ReactFake supports both
 
 import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
-import TileComponent from './components/tiles/TileComponent';
 import DetailsActionButtons from './components/details/DetailsActionButtons';
 import DetailsCollectionList from './components/details/DetailsCollectionList';
+import DetailsDownloadOptions from './components/details/DetailsDownloadOptions';
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
 import RelatedItems from './components/tiles/RelatedItems';
@@ -62,12 +62,12 @@ export default class Details extends ArchiveBase {
     }
     browserAfter() {
         // initialize_flag
-        // overlay related
+        // overlay related but might never be used as dont see toggle-flag-overlay appearing anywhere
         $(".toggle-flag-overlay").click(function (e) {
             e.preventDefault();
             $("#theatre-ia-wrap").removeClass("flagged");
         });
-        // overlay - checkboxes
+        // overlay - checkboxes - this may never get used as I cant find any flag-checkboxes or my-checkbox in any sample HTML files
         $("#flag-checkboxes a").on("click", function (e) {
             e.preventDefault();
             $(this).children(".my-checkbox").toggleClass("checked");
@@ -154,24 +154,10 @@ export default class Details extends ArchiveBase {
         const metadataListFound = Object.keys(metadata)
             .filter( (k) => (!metadataListExclude.includes(k)) && metadata[k] && metadata[k].length);   // List of keys in the metadata that are not empty strings or empty arrays
 
-        const downloadableFilesDict = this.files.reduce( (res, af) => {
-                if (af.downloadable()) {  // Note on image it EXCLUDED JPEG Thumb, but included JPEG*Thumb
-                    const format = af.metadata.format;
-                    if (!res[format]) { res[format] = []; }
-                    res[format].push(af);
-                }
-                return res;
-            }, {}
-        );
 
 
             //TODO  Replace "a" with onclicks to download function on f
         // noinspection JSUnresolvedVariable
-        const filesCount = this.files_count;
-        const originalFilesCount = this.files.filter((f)=>f.metadata.source === "original").length+1; // Adds in Archive Bittorrent
-        const downloadURL = `https://dweb.archive.org/download/${itemid}`;
-        const compressURL = `https://archive.org/compress/${itemid}`; // leave as direct link, else need to zip and store each item in IPFS
-        const compressAllURL = `https://archive.org/compress/${itemid}/formats=JSON,METADATA,JPEG,ARCHIVE BITTORRENT,MUSICBRAINZ METADATA`; // As above leave as direct
         const collections = metadata.collection; // [str*]
         // noinspection JSUnresolvedVariable
         const collectionTitles = this.collection_titles;   // Dictionary mapping collection itemid to title
@@ -190,52 +176,6 @@ export default class Details extends ArchiveBase {
             <div class="container container-ia item-details-about">
                 <div class="relative-row row">
                     <div class="thats-right" style="text-align:right;">
-                    <div class="action-buttons">
-                        <div class="topinblock">
-                            <a class="button " href={bookmarksAddURL} id="favorite-button" aria-haspopup="true"
-                               onclick="return AJS.modal_go(this,{{favorite:1}})" data-target="#confirm-modal" data-toggle="tooltip"
-                               data-container="body" data-placement="bottom" title="Favorite this item">
-                                <span class="iconochive-favorite" aria-hidden="true"></span><span class="sr-only">favorite</span>
-                            </a>
-                        </div>
-                        <div class="topinblock">
-                            <button id="share-button" class="button" type="button" aria-haspopup="true"
-                                    onclick="return AJS.modal_go(this,{{ignore_lnk:1,shown:AJS.embed_codes_adjust}})"
-                                    data-target="#cher-modal" data-toggle="tooltip" data-container="body" data-placement="bottom"
-                                    title="Share this item">
-                                <span class="iconochive-share" aria-hidden="true"></span><span class="sr-only">share</span></button>
-                        </div>
-                        <div
-                                id="flag-button-container" class="topinblock" data-toggle="tooltip" data-placement="bottom"
-                                data-container="body" title="Flag this item">
-                            <div class="dropup">
-                                <button id="flag-button" class=" button" type="button" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false"><span class="iconochive-Flag" aria-hidden="true"></span><span
-                                        class="sr-only">flag</span></button>
-                                <div id="flag-popover" class="dropdown-menu" aria-labelledby="flag-button">
-                                    <h3 class="dropdown-title">Flag this item for</h3>
-                                    <ul role="menu">
-                                        <li class="">
-                                            <a href={loginURL} role="menuitem">
-                                                Graphic Violence </a>
-                                        </li>
-                                        <li class="">
-                                            <a href={loginURL} role="menuitem">
-                                                Graphic Sexual Content </a>
-                                        </li>
-                                        <li class="">
-                                            <a href={loginURL} role="menuitem">
-                                                Spam, Scam or Fraud </a>
-                                        </li>
-                                        <li class="">
-                                            <a href={loginURL} role="menuitem" >
-                                            Broken or Empty Data                </a>
-                                        </li>
-                                    </ul>
-                                </div> {/*-- /#flag-popover --*/}
-                            </div> {/*--/.dropdown --*/}
-                        </div>
-                    </div>{/*--/.action-buttons--*/}
                         <DetailsActionButtons identifier={itemid} title={metadata.title}/>
                     </div>
                     {/*-- flag initialization moved to browserAfter() --*/}
@@ -357,40 +297,7 @@ export default class Details extends ArchiveBase {
                     </div>{/*--/.col-md-10--*/}
                     <div class="col-sm-4 thats-right item-details-archive-info">
                         {/*TODO need section class=boxy item-stats-summary- not obvious where data from, its not in metadata */}
-                        <section class="boxy item-download-options">
-                            <div class="download-button" role="heading" aria-level="5">DOWNLOAD OPTIONS</div>
-                            {Object.keys(downloadableFilesDict).map(k => (
-                                <div class="format-group">
-                                    <div class="summary-rite">
-                                        <a class="stealth" source={downloadableFilesDict[k]} onclick="Nav.nav_download(this)"
-                                           title={k}>
-                                            <span class="hover-badge-stealth"><span class="iconochive-download" aria-hidden="true"></span><span class="sr-only">download</span>{downloadableFilesDict[k].length} files</span>
-                                        </a>
-                                    </div>
-                                    <a class="format-summary download-pill"
-                                        source={downloadableFilesDict[k]}
-                                        onclick="Nav.nav_download(this)"
-                                        title={k}
-                                        data-toggle="tooltip" data-placement="auto left" data-container="body" target="_blank">{/*--new window to persist dweb--*/}
-                                        {AICUtil.formats("format", k).downloadable} <span class="iconochive-download" aria-hidden="true"></span><span class="sr-only">download</span>
-                                    </a>
-                                </div>
-
-                            ))}
-            
-                            <div class="show-all">
-                                <div class="pull-right">
-                                    <a class="boxy-ttl hover-badge" href={compressURL}><span class="iconochive-download"
-                                                                                             aria-hidden="true"></span><span
-                                            class="sr-only">download</span> {filesCount} Files</a><br/>
-                                    <a class="boxy-ttl hover-badge" href={compressAllURL}><span class="iconochive-download"
-                                                                                                aria-hidden="true"></span><span
-                                            class="sr-only">download</span> {originalFilesCount} Original</a><br/>
-                                </div>
-                                <a class="boxy-ttl" href={downloadURL}>SHOW ALL</a>{/*Link absolute, but will be captured by onclick*/}
-                                <br clear="all" class="clearfix"/>
-                            </div>
-                        </section>
+                        <DetailsDownloadOptions identifier={itemid} files={this.files}/>
                         <DetailsCollectionList collections={collections} collectionTitles={collectionTitles}/>
                         {/*TODO need boxy item-upload-info - its not obvious, on commute its the adder field, on mbid its derivation
                         of uploader which is email, on text its ___ */}
