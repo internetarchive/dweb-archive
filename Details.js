@@ -16,6 +16,7 @@ import React from './ReactFake';
 
 import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
 import TileComponent from './components/tiles/TileComponent';
+import DetailsActionButtons from './components/details/DetailsActionButtons';
 import DetailsCollectionList from './components/details/DetailsCollectionList';
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
@@ -181,8 +182,6 @@ export default class Details extends ArchiveBase {
         // noinspection JSUnresolvedVariable
         const reviews = this.reviews;
         const writeReviewsURL = `https://archive.org/write-review.php?identifier=${itemid}`;  //TODO need an indirect way to submit a review
-        const loginURL = "https://archive.org/account/login.php"; //TODO - its a Direct link as dont support authentication in DWeb version
-        const bookmarksAddURL = `https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=image&amp;identifier=${itemid}&amp;title=${title}`; //TODO find way to submit distributed
         // noinspection JSUnresolvedVariable
         const credits = (metadata.credits || []).join(', ');
         //TODO-DETAILS much of below doesn't work (yet)
@@ -237,6 +236,7 @@ export default class Details extends ArchiveBase {
                             </div> {/*--/.dropdown --*/}
                         </div>
                     </div>{/*--/.action-buttons--*/}
+                        <DetailsActionButtons identifier={itemid} title={metadata.title}/>
                     </div>
                     {/*-- flag initialization moved to browserAfter() --*/}
                     <div class="col-sm-8 thats-left item-details-metadata">
