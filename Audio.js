@@ -2,6 +2,7 @@ import React from './ReactFake';
 
 import AV from './AV';
 import Util from './Util';
+import TheatreControls from './components/TheatreControls';
 
 /* Notes on Audio
     - see also https://github.com/internetarchive/dweb-archive/issues/18
@@ -72,7 +73,7 @@ export default class Audio extends AV {
                 <div id="theatre-ia" class="container">
                     <div class="row">
                         <div class="xs-col-12">
-                            <TheatreControls identifier={itemid} mediatype={this.metadata.mediatype}>
+                            <TheatreControls identifier={itemid} mediatype={this.metadata.mediatype}/>
                             <div class="row">
                                 <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4 audio-image-carousel-wrapper">
                                     <center>{/*--TODO-AUDIO replace image - see https://github.com/internetarchive/dweb-archive/issues/23--*/}

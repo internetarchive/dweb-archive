@@ -3,6 +3,7 @@ import Search from "./Search";
 import React from './ReactFake';
 
 import Details from './Details';
+import TheatreControls from './components/TheatreControls';
 
 export default class Image extends Details {
     constructor({itemid=undefined, metaapi=undefined}={}) {
@@ -43,7 +44,7 @@ export default class Image extends Details {
                 <div id="theatre-ia" className="container">
                     <div className="row">
                         <div className="xs-col-12">
-                            <TheatreControls identifier={itemid} mediatype={this.metadata.mediatype}>
+                            <TheatreControls identifier={itemid} mediatype={this.metadata.mediatype}/>
 
                 { mainArchiveFile ? (
                             <div className="details-carousel-wrapper">

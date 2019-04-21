@@ -16,9 +16,10 @@ import React from './ReactFake';
 
 import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
 import TileComponent from './components/tiles/TileComponent';
-import CollectionList from './components/CollectionList';
+import DetailsCollectionList from './components/details/DetailsCollectionList';
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
+import RelatedItems from './components/tiles/RelatedItems';
 
 export default class Details extends ArchiveBase {
     constructor({itemid = undefined, metaapi = undefined}={}) {
@@ -41,7 +42,7 @@ export default class Details extends ArchiveBase {
                 </div>{/*--//.container-ia--*/}
                 {this.theatreIaWrap()} {/*This is the main-content*/}
                 {this.itemDetailsAboutJSX()}
-                {this.itemDetailsAlsoFound()}
+                <RelatedItems identifier={this.itemid} item={this}/>
                 {/* should have: alsoFound here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?) */}
                 {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
             {/*--wrap--*/}</div>
@@ -390,50 +391,13 @@ export default class Details extends ArchiveBase {
                                 <br clear="all" class="clearfix"/>
                             </div>
                         </section>
-                        <CollectionList collections={collections} collectionTitles={collectionTitles}/>
+                        <DetailsCollectionList collections={collections} collectionTitles={collectionTitles}/>
                         {/*TODO need boxy item-upload-info - its not obvious, on commute its the adder field, on mbid its derivation
                         of uploader which is email, on text its ___ */}
                     </div>{/*--/.col-md-2--*/}
                 </div>{/*--/.row--*/}
             {/*--//.container-ia--*/} </div>
         );
-    }
-
-    itemDetailsAlsoFound() {
-        if (!this.itemid) return undefined; // No related to home page, TODO maybe other places dont have also found = e.g. collections
-        const el = (
-            <div id="also-found" className="container container-ia width-max" data-identifier={this.itemid} ></div>
-            );
-        this.relatedItems({wantStream:false, wantMembers:true}, (err, searchmembers) => {
-            if (!err) { // If there is an error then fetch_json will have reported it, and can just ignore it here and not display
-                // noinspection JSUnresolvedVariable
-                this.loadDetailsAlsoFound(el, this.itemid, searchmembers);  // Asynchronous
-            }
-        });
-        return el;
-    }
-    loadDetailsAlsoFound(el, itemid, results) {
-        //TODO-IAUX move this to IAUX components
-        el.appendChild( (
-            <div className="row">
-                <div className="col-xs-12 tilebars" style="display: block;">
-                    <h5 className="small-label">SIMILAR ITEMS (based on metadata){/*<span id="playplayset">
-                        *<a data-reactroot="" className="stealth" href="#play-items" data-event-click-tracking="Playset|PlayAllLink"><span
-                        className="iconochive-play" aria-hidden="true"></span><span className="sr-only">play</span><span
-                        className="hidden-xs-span"> Play All</span><br></a></span>*/}</h5>
-                    <div id="also-found-result">
-                        <section data-reactroot="" aria-label="Related Items">
-
-                                { results.map(member => // Note this is odd - results normally encloses all teh tasks, but AJS.tiler doesnt seem to work without this
-                                    <div className="results" style={{visibility: "visible"}}>
-                                        <TileComponent member={member}/>
-                                    </div>
-                                    ) }
-                        </section>
-                    </div>
-                </div>
-            </div>
-        ) )
     }
 
     useBookReader() {

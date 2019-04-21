@@ -2,7 +2,7 @@ import React from './ReactFake';
 
 import AV from './AV'
 import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
-
+import TheatreControls from './components/TheatreControls';
 
 export default class Video extends AV {
     constructor({itemid=undefined, metaapi=undefined}={}) {
@@ -54,7 +54,7 @@ export default class Video extends AV {
                 <div id="theatre-ia" class="container">
                     <div class="row">
                         <div class="xs-col-12">
-                            <TheatreControls identifier={itemid} mediatype={this.metadata.mediatype}>
+                            <TheatreControls identifier={itemid} mediatype={this.metadata.mediatype}/>
                             <div id="videoContainerX" style="text-align: center;">
                                 {/* This videothumbnailurl is http since if getting decentralized there is little value compared to loading video itself */}
                                 <video id="streamContainer" src={af} poster={videothumbnailurl} controls></video>
