@@ -14,15 +14,13 @@ export default class AnchorDownload extends IAReactComponent {
     constructor(props)
     {
         super(props); // identifier, format, source=ArchiveFile, children and a range of other props
-        this.onClick = (ev) => { return this.clickCallable.call(this, ev); };
     }
-    clickCallable(ev) {
+    clickCallable(unused_ev) {
         // Note this is only called in dweb; !Dweb has a director href
-        debug("Cicking on link to download: %s",this.props.identifier);
+        debug("Clicking on link to download: %s",this.props.identifier);
+        // noinspection JSIgnoredPromiseFromCall
         Nav.nav_download(this.props.source);
-        ev.preventDefault();    // Prevent it going to the anchor (equivalent to "return false" in non-React
-        // ev.stopPropagation(); ev.nativeEvent.stopImmediatePropagation(); // Suggested alternatives which dont work
-        return false; // Stop the non-react version propogating
+        return false; // Stop event propagating
     }
     render() {
         // this.props passes identifier which is required for Dweb, but typically also passes tabIndex, class, title

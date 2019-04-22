@@ -20,16 +20,13 @@ export default class AnchorDetails extends IAReactComponent {
     */
     constructor(props)
     {
-x        super(props);
-        this.onClick = (ev) => { return this.clickCallable.call(this, ev); };
+        super(props);
     }
     clickCallable(ev) {
         // Note this is only called in dweb; !Dweb has a director href
         debug("Cicking on link to details: %s",this.props.identifier);
         Nav.nav_details(this.props.identifier);
-        ev.preventDefault();    // Prevent it going to the anchor (equivalent to "return false" in non-React
-        // ev.stopPropagation(); ev.nativeEvent.stopImmediatePropagation(); // Suggested alternatives which dont work
-        return false; // Stop the non-react version propogating
+        return false; // Dont propogate event
     }
     render() {
         // this.props passes identifier which is required for Dweb, but typically also passes tabIndex, class, title

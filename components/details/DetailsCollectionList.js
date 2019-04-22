@@ -6,11 +6,11 @@ import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember
 export default class DetailsCollectionList extends IAReactComponent {
 
     constructor(props) {
-        super(props);
+        super(props); //collections
         this.state.collectionTitles = (typeof this.props.collectionTitles === "undefined") ? {} : this.props.collectionTitles;
         this.state.expansionTried = false;
     }
-    loadcallable(enclosingElement) {
+    loadcallable(unused_enclosingElement) {
         //expand a list of collections into a list of titles either through collectionTitles if supplied (e.g. from dweb gateway) or via a new Search query
         if (!this.state.expansionTried) {
             this.state.expansionTried = true;
