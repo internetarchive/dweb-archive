@@ -1,4 +1,4 @@
-const debug = require('debug')('dweb-archive:DetailsFlags');
+//const debug = require('debug')('dweb-archive:DetailsFlags');
 import React from 'react';
 import IAReactComponent from '../IAReactComponent'; // Encapsulates differences between dweb-archive/ReactFake and iaux/React
 //import PropTypes from 'prop-types' // Not currently used by IAUX
@@ -7,7 +7,7 @@ import IAReactComponent from '../IAReactComponent'; // Encapsulates differences 
     Its currently used in dweb-archive/Details.js
  */
 
-class DetailsFlags extends IAReactComponent {
+export default class DetailsFlags extends IAReactComponent {
 
     constructor(props)
     {

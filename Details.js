@@ -297,7 +297,7 @@ export default class Details extends ArchiveBase {
                     </div>{/*--/.col-md-10--*/}
                     <div class="col-sm-4 thats-right item-details-archive-info">
                         {/*TODO need section class=boxy item-stats-summary- not obvious where data from, its not in metadata */}
-                        <DetailsDownloadOptions identifier={itemid} files={this.files}/>
+                        <DetailsDownloadOptions identifier={itemid} files={this.files} files_count={this.files_count}/>
                         <DetailsCollectionList collections={collections} collectionTitles={collectionTitles}/>
                         {/*TODO need boxy item-upload-info - its not obvious, on commute its the adder field, on mbid its derivation
                         of uploader which is email, on text its ___ */}

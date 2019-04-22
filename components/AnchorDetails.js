@@ -25,7 +25,7 @@ export default class AnchorDetails extends IAReactComponent {
     clickCallable(ev) {
         // Note this is only called in dweb; !Dweb has a director href
         debug("Cicking on link to details: %s",this.props.identifier);
-        Nav.nav_details(this.props.identifier);
+        DwebArchive.Nav.nav_details(this.props.identifier);
         return false; // Dont propogate event
     }
     render() {
@@ -34,7 +34,7 @@ export default class AnchorDetails extends IAReactComponent {
         const usp = new URLSearchParams;
         AnchorDetails.urlparms.forEach(k=> usp.append(k, this.props[k]))
         usp.search = usp; // Note this copies, not updatable
-        const anchorProps = ObjectFilter(this.props, (k,v)=>!AnchorDetails.urlparms.includes(k));
+        const anchorProps = ObjectFilter(this.props, (k,v)=>(!AnchorDetails.urlparms.includes(k) && !['chidren'].includes(k)));
         return ( // Note there is intentionally no spacing in case JSX adds a unwanted line break
             (typeof DwebArchive === "undefined") ?
                 <a href={url.href} {...anchorProps}>{this.props.children}</a>

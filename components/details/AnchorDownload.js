@@ -1,6 +1,5 @@
 import React from 'react';
-import IAReactComponent from './IAReactComponent';
-import AICUtil from "@internetarchive/dweb-archivecontroller/Util";
+import IAReactComponent from '../IAReactComponent';
 const debug = require('debug')('dweb-archive:AnchorDownload');
 
 // Utility functions, I (Mitra) like to put these on Object, but maybe better here.
@@ -19,22 +18,24 @@ export default class AnchorDownload extends IAReactComponent {
         // Note this is only called in dweb; !Dweb has a director href
         debug("Clicking on link to download: %s",this.props.identifier);
         // noinspection JSIgnoredPromiseFromCall
-        Nav.nav_download(this.props.source);
+        DwebArchive.Nav.nav_download(this.props.source);
         return false; // Stop event propagating
     }
     render() {
         // this.props passes identifier which is required for Dweb, but typically also passes tabIndex, class, title
-        const url = new URL( ( this.props.filename
-                ? `https://archive.org/download/${this.props.identifier}/{$this.props.filename}`
-                : this.props.format
+        const url = new URL( ( (this.props.filename && typeof this.props.filename === "string")                     // filename = foo.jpg
+                ? `https://archive.org/download/${this.props.identifier}/${this.props.filename}`
+                : (this.props.source && Array.isArray(this.props.source) && this.props.source.length === 1)         // source = [ArchiveFile]
+                ? `https://archive.org/download/${this.props.identifier}/${this.props.source[0].metadata.name}`
+                : this.props.format                                                                                 // source = [ArchiveFile]
                 ? `https://archive.org/compress/${this.props.identifier}/formats=${this.props.format}&file=/${this.props.identifier}.zip`
-                : (typeof DwebArchive === "undefined")
-                ? 'https://archive.org/download/${this.props.identifier'
-                : 'https://dweb.archive.org/download/${this.props.identifier'));
+                : (typeof DwebArchive === "undefined")                                                              // just identifier !dweb
+                ? 'https://archive.org/download/${this.props.identifier}'
+                : 'https://dweb.archive.org/download/${this.props.identifier'));                                    // just identifier dweb
         const usp = new URLSearchParams;
-        AnchorDownload.urlparms.forEach(k=> usp.append(k, this.props[k]))
+        AnchorDownload.urlparms.forEach(k=> usp.append(k, this.props[k]));
         usp.search = usp; // Note this copies, not updatable
-        const anchorProps = ObjectFilter(this.props, (k,v)=>!AnchorDownload.urlparms.includes(k));
+        const anchorProps = ObjectFilter(this.props, (k,unused_v)=>!AnchorDownload.urlparms.includes(k));
         return ( // Note there is intentionally no spacing in case JSX adds a unwanted line break
             (typeof DwebArchive === "undefined") ?
                 <a href={url.href} {...anchorProps} target="_blank">{this.props.children}</a>

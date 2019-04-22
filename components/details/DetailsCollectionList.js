@@ -25,8 +25,8 @@ export default class DetailsCollectionList extends IAReactComponent {
         <div className="boxy collection-list">
             <section className="quick-down collection-list" ref={this.load}>
                 <h5 className="collection-title">IN COLLECTIONS</h5>
-                {this.collections.map(collection =>
-                    <div className="collection-item">
+                {this.props.collections.map(collection =>
+                    <div className="collection-item" key={collection}>
                         <AnchorDetails identifier={collection} data-event-click-tracking={`CollectionList|${collection}`}
                         >{this.state.collectionTitles[collection] || collection}</AnchorDetails>
                     </div>
