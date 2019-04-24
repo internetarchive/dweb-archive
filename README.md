@@ -135,10 +135,11 @@ For a *Search/Colletion/Home* the structure is slightly different
 See [Dweb document index](https://github.com/internetarchive/dweb-transports/blob/master/DOCUMENTINDEX.md) for a list of the repos that make up the Internet Archive's Dweb project, and an index of other documents. 
 
 ## Release notes
-* 0.1.48: Repeatable metadata; 
-* 0.1.49: config button; IAReactComponent; 
-* 0.1.50: Set title on window from item title, or query.
-* 0.1.51: Support bookreader (more work to do on this)
-* 0.1.52: Bug fix
-* 0.1.53: Refactor components for IAUX; Incorporate dweb-archivecontroller fix to relateditems; 
+* 0.1.56: Component support reorganized and expanded for IAUX
 * 0.1.55: Move setconfig url; AnchorDetails & Tabby components; work with playlist API (in dweb-archivecontroller 0.1.52)
+* 0.1.53: Refactor components for IAUX; Incorporate dweb-archivecontroller fix to relateditems; 
+* 0.1.52: Bug fix
+* 0.1.51: Support bookreader (more work to do on this)
+* 0.1.50: Set title on window from item title, or query.
+* 0.1.49: config button; IAReactComponent; 
+* 0.1.48: Repeatable metadata; 
