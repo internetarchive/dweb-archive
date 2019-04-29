@@ -35,7 +35,7 @@ export default class ConfigDetailsComponent extends IAFakeReactComponent {
         React.addKids(parentElement, el); // Using addKids to force the "ref" to be used //TODO-IAUX probably doesnt have addKids ?
     }
 
-    render() { //TODO move into IAFakeReactComponent.js
+    render() {
         if (typeof DwebArchive !== "undefined") {
             return <span ref={this.load}>Loading ...</span>
         } else { // Pure IAUX
@@ -70,7 +70,7 @@ export default class ConfigDetailsComponent extends IAFakeReactComponent {
         const identifier = this.props.identifier;
         const config = info.config; // Mixed in with other info
         const configdefault = config[0];
-        const configuser = config[1];
+        const configuser = config[1] || {};
         const configmerged = Object.deeperAssign({}, configdefault, configuser); // Cheating, but assumes no arrays needing merging
         // noinspection JSUnresolvedVariable
         const task = configmerged.apps.crawl.tasks.find(t => t.identifier.includes(identifier));
