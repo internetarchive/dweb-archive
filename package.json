@@ -17,7 +17,7 @@
     "@internetarchive/dweb-objects": "^0.1.21",
     "@internetarchive/dweb-transports": "^0.1.34",
     "@stratumn/canonicaljson": "^1.0.2",
-    "debug": "^3.2.5",
+    "debug": "^4.1.1",
     "es2015": "^0.0.0",
     "from2": "^2.3.0",
     "jquery": "^3.3.1",
