@@ -264,6 +264,8 @@ export default class Nav {
         try {
             if (!itemid) {
                 (await new Home().fetch()).render(res);
+            } else if (itemid === "local") {
+                (await new Local()).render(res);  //TODO-UXLOCAL figure out how to get yaml to it
             } else {
                 let d = await new Details({itemid}).fetch_metadata(); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
                 let metaapi = d.exportMetadataAPI({wantPlaylist: true}); // Cant pass Details to the constructors below

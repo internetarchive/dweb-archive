@@ -5,6 +5,7 @@ const canonicaljson = require('@stratumn/canonicaljson');
 
 import ArchiveBase from './ArchiveBase';
 import TileComponent from './components/tiles/TileComponent';
+import TileGrid from './components/tiles/TileGrid';
 
 /* Section to ensure node and browser able to use Headers, Request and Fetch */
 /*
@@ -173,21 +174,7 @@ export default class Search extends ArchiveBase {
 
                             <div style="position:relative">
                                 <div id="ikind-search" class="ikind in">
-
-                                    <div class="results" id="appendTiles">
-                                        <div class="item-ia mobile-header hidden-tiles" data-id="__mobile_header__">
-                                            <div class="views C C1"> <span class="iconochive-eye" aria-hidden="true"></span><span class="sr-only">eye</span> </div>
-                                            <div class="C234">
-                                                <div class="C C2">Title</div>
-                                                <div class="pubdate C C3"> <div> <div>Date Archived</div> </div> </div>
-                                                <div class="by C C4">Creator</div>
-                                            </div>
-                                            <div class="C C5"></div>
-                                        </div>
-                                        {this.members.map( member=> // Note rendering tiles is quick, its the fetch of the img (async) which is slow.
-                                            <TileComponent member={member}/>
-                                        )}
-                                    </div>{/*--/.results--*/}
+                                    <TileGrid members={this.members}/>
                                     <center class="more_search">
                                     {/*--TODO-DETAILS check what is happening in AJS.more_search with this URL and can use page: this.page+1--*/}
                                     <a class="btn btn-info btn-sm" style="visibility:hidden" source={this} onclick="return Nav.searchMore(this)" href="#">MORE RESULTS</a><br/>
