@@ -1,7 +1,7 @@
 const debug = require('debug')('dweb-archive:ConfigDetailsComponent');
 const canonicaljson = require('@stratumn/canonicaljson');
-import React from "../ReactFake";
-import IAFakeReactComponent from './IAFakeReactComponent';
+import React from "../../ReactFake";
+import IAFakeReactComponent from '../IAFakeReactComponent';
 const ACUtil = require('@internetarchive/dweb-archivecontroller/Util'); // For Object.deeperAssign
 //DwebTransports is not needed, its a global
 //TODO-CONFIG make it be empty if not on mirror
