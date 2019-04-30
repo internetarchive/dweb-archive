@@ -78,6 +78,19 @@ export default class React  {
         }
         return undefined
     }
+    static _config() {
+        return DwebArchive.mirror ? {
+                root:       DwebArchive.mirror + "/arc/archive.org",    // Used for absolute URLs in descriptions e.g. /details/foo
+                relname:    DwebArchive.mirror + "/arc/archive.org/",   // Used for img.src=./
+                rootname:   DwebArchive.mirror + "/arc/archive.org/",   // Used for img.rc=/serve etc (see example in commute.description
+                tabbyrootinsert: "/arc/archive.org", // Insert before tabby links to gets to https://dweb.me/arc/archive.org/details/foo?bar in origin dweb.me with url /details/foo?bar
+            } : {
+                root:       "https://dweb.archive.org",   // Used for absolute URLs in descriptions e.g. /details/foo
+                relname:    "dweb:/arc/archive.org/",   // Used for img.src=./
+                rootname:   "dweb:/arc/archive.org/", // Used for img.rc=/serve etc (see example in commute.description
+                tabbyrootinsert: "/arc/archive.org", // Insert before tabby links to gets to https://dweb.me/arc/archive.org/details/foo?bar in origin dweb.me with url /details/foo?bar
+            };
+    }
     static resolveUrls(url, options={}) {
         /* Synchronous part of p_resolveUrls, handle subset of cases that don't require network access (asyncronicity)
         url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
@@ -97,13 +110,12 @@ export default class React  {
             if (!(url.startsWith("/search.php") || url.startsWith("/services") || url.startsWith("/details"))) {
                 console.warn("Probably not a good idea to use root-relative URL", url); //could genericise to use options.rel instead of config but might not catch cases e.g. of /images
             }
-            if (!React._config.root) console.error("Need to React.config({root: 'https://xyz.abc'");
-            return [this.relativeurl(React._config.rootname, url)].filter(u => !!u);  // e.g. /foo => [https://bar.com/foo]
+            return [this.relativeurl(React._config().rootname, url)].filter(u => !!u);  // e.g. /foo => [https://bar.com/foo]
         } else if (url.startsWith("./")) {
             if (!url.startsWith("./images")) {
                 console.warn("Relative URLs arent a great idea as what to be relative to is often unclear", url, options); //could genericise to use rel instead of config but might not catch cases e.g. of /images
             }
-            return [this.relativeurl(React._config.relname, url)].filter(u => !!u);
+            return [this.relativeurl(React._config().relname, url)].filter(u => !!u);
         } else {
             return [url]; // Not relative, just pass it back
         }
@@ -161,7 +173,7 @@ export default class React  {
             } else { // This includes ArchiveMember
                 urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
             }  //Examples: [dweb:/arc/archive.org/service/foo]
-            for (i in urls) { // Its unclear if this is used except in odd cases, should really push upstream as does an unneeded metadata call
+            for (i in urls) { // This can get used if /services/xx passed in here, then converted to dweb:/arc/archive.org/services
                 if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
                     urls[i] = await this.thumbnailUrlsFrom(urls[i].slice(35));
                 }
@@ -348,14 +360,6 @@ export default class React  {
     }
 
 
-    static config(options) {
-        /*
-            Configure ReactFake
-
-            root: protocol and host to insert before URLs (currently in img tags only) e.g. "https://archive.org"
-         */
-        for (x of options) React._config[x] = options[x];
-    }
     static createElement(tag, attrs, children) {        // Note arguments is set to tag, attrs, child1, child2 etc
         /* Replaces React's createElement - has a number of application specific special cases
             <img src=ArchiveFile(...)> replaced by <div><img x-=u>
@@ -457,7 +461,7 @@ export default class React  {
             if (["a.href"].includes(tag + "." + name) && (typeof attrs[name] === "string") ) { // <a href=<string>
                 if (attrs[name].startsWith('./') || attrs[name].startsWith('/')) {
                     if (attrs.id && attrs.id.startsWith('tabby-')) {  // There is some weird javascript in AJS.tabby which assumes this is root-relative, so dont change it
-                        attrs[name] = React._config.tabbyrootinsert + attrs[name]; // Rewrite value to store
+                        attrs[name] = React._config().tabbyrootinsert + attrs[name]; // Rewrite value to store
                     } else {
                         let hrefs = this.resolveUrls(attrs[name]); // Array of urls, but should be just one since href name will be singular as will rel
                         if (hrefs.length > 1) {
@@ -607,12 +611,3 @@ React.Component = class {
         }
     }
 }
-
-//Default configuration
-React._config = {
-//    root: "https://archive.org",
-    root: "https://dweb.archive.org",
-    relname: "dweb:/arc/archive.org/",   // Used for img.src=./
-    rootname: "dweb:/arc/archive.org/", // Used for img.rc=/serve etc (see example in commute.description
-    tabbyrootinsert: "/arc/archive.org", // Insert before tabby links to gets to https://dweb.me/arc/archive.org/details/foo?bar in origin dweb.me with url /details/foo?bar
-};

@@ -153,7 +153,7 @@ export default class Nav {
         debug("Navigating to Details %s", id);
 
         if (DwebArchive.mirror) {
-            ConfigDetailsComponent.insertInside('dweb-mirrorconfig', {identifier: id})
+            ConfigDetailsComponent.insertInside('dweb-mirrorconfig', {identifier: id || "/"})
         }
         const destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
