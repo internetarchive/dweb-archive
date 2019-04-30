@@ -6,7 +6,7 @@ import React from '../ReactFake';
 
 import PropTypes from 'prop-types';
 
-const debug = require('debug')('dweb-archive:ConfigDetailsComponent');
+const debug = require('debug')('dweb-archive:IAFakeReactComponent');
 
 export default class IAFakeReactComponent extends React.Component {
     // Both dweb-archive.IAFakeReactComponent used with ReactFake and iaux.IAReactComponent used with React should work the same. (e.g. ParentTileImg works with both)
