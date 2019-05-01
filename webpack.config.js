@@ -9,6 +9,9 @@ module.exports = {
                     exclude: /(node_modules\/[a-z]|bower_components)/, //TODO-IAUX make this exclusion more precise
                     use: {
                         loader: 'babel-loader',
+                        options: {
+                            presets: ['@babel/preset-react', '@babel/preset-env'],
+                        }
                     }
                 }
             ]
