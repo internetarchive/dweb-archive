@@ -1,7 +1,7 @@
 import React from './ReactFake';
 
 import AV from './AV'
-import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
+import ACUtil from '@internetarchive/dweb-archivecontroller/Util';
 import TheatreControls from './components/TheatreControls';
 
 export default class Video extends AV {
@@ -38,8 +38,8 @@ export default class Video extends AV {
         const playing = this.playlist[0];
         const source = playing.sources[0];
         const af = source.urls;     // An ArchiveFile
-        const contenturl = `${AICUtil.gatewayServer()}${AICUtil.gateway.urlDownload}/${itemid}/${source.name}`;
-        const embedurl = `${AICUtil.gatewayServer()}${AICUtil.gateway.urlDownload}/${itemid}/${playing.orig}`;
+        const contenturl = `${ACUtil.gatewayServer()}${ACUtil.gateway.urlDownload}/${itemid}/${source.name}`;
+        const embedurl = `${ACUtil.gatewayServer()}${ACUtil.gateway.urlDownload}/${itemid}/${playing.orig}`;
         const schemacontentlength = `PT0M${parseInt(playing.duration)}S`;
         return (
             <div id="theatre-ia-wrap" class="container container-ia width-max ">

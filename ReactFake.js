@@ -487,7 +487,7 @@ export default class React  {
                 const af = attrs[name];
                 const videoname = af.metadata.name;
                 //Dont need mimetype currently
-                //const mimetype = AICUtil.formats("format", af.metadata.format).mimetype; // Might be undefined for many formats still
+                //const mimetype = ACUtil.formats("format", af.metadata.format).mimetype; // Might be undefined for many formats still
                 //if (!mimetype) console.warning("Unknown mimetype for ",af.metadata.format, "on",af.metadata.name);
                 this.loadStream(element, af, {name: videoname, preferredTransports: Util.config.preferredAVtransports});  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
             } else if (["a.source"].includes(tag + "." + name) && attrs[name] instanceof Object) {

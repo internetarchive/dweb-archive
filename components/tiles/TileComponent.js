@@ -80,7 +80,7 @@ export default class TileComponent extends IAReactComponent {
             })
         } catch(err) { // Catch error here as not generating debugging info at caller level for some reason
             debug("ERROR in TileComponent.render for %s: %s", this.state.identifier, err.message);
-            enclosingdiv.parentNode.removeChild(enclosingdiv);
+            return null;
         }
         return (
             <div className={this.state.classes} data-id={this.state.identifier}  key={this.state.identifier}>

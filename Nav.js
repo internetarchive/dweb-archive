@@ -8,17 +8,17 @@ const canonicaljson = require('@stratumn/canonicaljson');
 import React from './ReactFake';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
 import Search from './Search';
-import Details from './Details'
-import Home from './Home'
-import Collection from './Collection'
-import Texts from './Texts'
-import Image from './Image'
-import Audio from './Audio'
-import Video from './Video'
-import Account from './Account'
-import DetailsError from './DetailsError'
-import DownloadDirectory from './DownloadDirectory'
-import ConfigDetailsComponent from './components/mirror/ConfigDetailsComponent'
+import Details from './Details';
+import Home from './Home';
+import Collection from './Collection';
+import Texts from './Texts';
+import Image from './Image';
+import Audio from './Audio';
+import Video from './Video';
+import Account from './Account';
+import DetailsError from './DetailsError';
+import DownloadDirectory from './DownloadDirectory';
+import ConfigDetailsComponent from './components/mirror/ConfigDetailsComponent';
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 const debug = require('debug')('dweb-archive:Nav');
 

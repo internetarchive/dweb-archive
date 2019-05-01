@@ -1,10 +1,10 @@
 /* This is a transition file, bridging between the model of everything subclassing Details, while moving to componentization */
 import AnchorDetails from "./components/AnchorDetailsFake";
 
-const AICUtil = require("@internetarchive/dweb-archivecontroller/Util.js");
 
 
 import LocalWelcomeComponent from "./LocalComponent";
+const ACUtil = require("@internetarchive/dweb-archivecontroller/Util.js");
 import React from "./ReactFake";
 import TileGrid from "./components/tiles/TileGrid";
 
@@ -14,10 +14,9 @@ export default class Local extends Collection {
         /* TODO-UXLOCAL add control buttons */
         return <LocalWelcomeComponent
                     title={"Resources"}
-                    byline={"downloaded to "+Util.gatewayServer()}
+                    byline={"downloaded to "+ ACUtil.gatewayServer()}
                     description={""}
                 />
-        );
     }
     wrap() {
         /* Wrap the content up: wrap ( TODO-aside; navwrap; #maincontent; welcome; cher-modal; container-tabby-collection-row (TODO-columns-facets; columns-items) (tabby-about; tabby-form)
