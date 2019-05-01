@@ -17,7 +17,7 @@ class TileGrid extends IAReactComponent {
     }
 
     render() {
-        return (
+        const res = (
             <div className="results" id="appendTiles">
                 <div className="item-ia mobile-header hidden-tiles" data-id="__mobile_header__">
                     <div className="views C C1"><span className="iconochive-eye" aria-hidden="true"></span><span
@@ -38,6 +38,8 @@ class TileGrid extends IAReactComponent {
                 )}
             </div>
         );
+        AJS.tiler();
+        return res;
     }
 }
 export {TileGrid}

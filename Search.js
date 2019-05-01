@@ -5,7 +5,7 @@ const canonicaljson = require('@stratumn/canonicaljson');
 
 import ArchiveBase from './ArchiveBase';
 import TileComponent from './components/tiles/TileComponent';
-import TileGrid from './components/tiles/TileGrid';
+import {TileGrid} from './components/tiles/TileGrid';
 
 /* Section to ensure node and browser able to use Headers, Request and Fetch */
 /*
@@ -90,6 +90,7 @@ export default class Search extends ArchiveBase {
     }
 
     rowColumnsItems() {
+        // Subclassed version in Local
         /* Output the columns-items, wrapped in a row - this will then be wrapped differently for Collections (tabbed) and Search (not) */
         const encodedQuery = encodeURIComponent(this.query);
         return ( !(this.members && this.members.length) ? undefined :  /* If no members, probably a query failed so dont display */

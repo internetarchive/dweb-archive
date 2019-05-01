@@ -1,12 +1,13 @@
 /* This is a transition file, bridging between the model of everything subclassing Details, while moving to componentization */
-import AnchorDetails from "./components/AnchorDetailsFake";
-
-
-
-import LocalWelcomeComponent from "./LocalComponent";
+//const debug = require('debug')('Local');
+// Other internetarchive repos
 const ACUtil = require("@internetarchive/dweb-archivecontroller/Util.js");
+// This repo
 import React from "./ReactFake";
-import TileGrid from "./components/tiles/TileGrid";
+import Collection from "./Collection";
+import {LocalWelcomeComponent, LocalGridRowComponent} from "./components/mirror/LocalComponent";
+import {TileGrid} from "./components/tiles/TileGrid";
+
 
 export default class Local extends Collection {
 
@@ -40,17 +41,7 @@ export default class Local extends Collection {
         );
     }
 
-    rowColumnsItems() {
-        return ( !(this.members && this.members.length) ? undefined :  /* If no members, probably a query failed so dont display */
-            <div class="row">
-                <div class="columns-items" style="margin-left: 0px;">
-                    <div style="position:relative">
-                        <div id="ikind-search" class="ikind in">
-                            <TileGrid members={this.members}/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+    rowColumnsItems() { // Subclass version in Collection
+        return <LocalGridRowComponent members={this.members} />;
     }
 }

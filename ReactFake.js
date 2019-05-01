@@ -520,7 +520,7 @@ export default class React  {
         /* This is called back by loadImg after creating the tag. */
         if (Array.isArray(child)) {
             child.forEach(k => this.addKids(element, k));
-        } else if (typeof child === "undefined") { // This was !child, but that skips the integer 0.
+        } else if ((typeof child === "undefined") || (child === null)) { // This was !child, but that skips the integer 0.
         } else { // Single child to add - this next bit is fairly heuristic, should be double checked if things change.
             // Essentially three kinds of things here.
             // * React Elements which are objects with no accessable class - and need rendering by React (Only when integrated with IAUX

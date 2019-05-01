@@ -11,6 +11,7 @@ import Search from './Search';
 import Details from './Details';
 import Home from './Home';
 import Collection from './Collection';
+import Local from './Local';
 import Texts from './Texts';
 import Image from './Image';
 import Audio from './Audio';
@@ -265,7 +266,7 @@ export default class Nav {
             if (!itemid) {
                 (await new Home().fetch()).render(res);
             } else if (itemid === "local") {
-                (await new Local()).render(res);  //TODO-UXLOCAL figure out how to get yaml to it
+                (await new Local({itemid, metaapi:{}})).render(res);  //TODO-UXLOCAL figure out how to get yaml to it
             } else {
                 let d = await new Details({itemid}).fetch_metadata(); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
                 let metaapi = d.exportMetadataAPI({wantPlaylist: true}); // Cant pass Details to the constructors below
