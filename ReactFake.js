@@ -487,7 +487,7 @@ export default class React  {
                 const af = attrs[name];
                 const videoname = af.metadata.name;
                 //Dont need mimetype currently
-                //const mimetype = AICUtil.formats("format", af.metadata.format).mimetype; // Might be undefined for many formats still
+                //const mimetype = ACUtil.formats("format", af.metadata.format).mimetype; // Might be undefined for many formats still
                 //if (!mimetype) console.warning("Unknown mimetype for ",af.metadata.format, "on",af.metadata.name);
                 this.loadStream(element, af, {name: videoname, preferredTransports: Util.config.preferredAVtransports});  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
             } else if (["a.source"].includes(tag + "." + name) && attrs[name] instanceof Object) {
@@ -520,7 +520,7 @@ export default class React  {
         /* This is called back by loadImg after creating the tag. */
         if (Array.isArray(child)) {
             child.forEach(k => this.addKids(element, k));
-        } else if (typeof child === "undefined") { // This was !child, but that skips the integer 0.
+        } else if ((typeof child === "undefined") || (child === null)) { // This was !child, but that skips the integer 0.
         } else { // Single child to add - this next bit is fairly heuristic, should be double checked if things change.
             // Essentially three kinds of things here.
             // * React Elements which are objects with no accessable class - and need rendering by React (Only when integrated with IAUX

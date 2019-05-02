@@ -83,13 +83,13 @@
     $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
     async function main({query=undefined, sort=undefined, item=undefined, download=false, page=undefined, mirror=undefined }={}) {
         if (mirror && !mirror.startsWith('http')) { mirror = "http://"+mirror; } // Allow abbreviation like mirror=localhost:4244, also allows mirror to specify https://xyz.org
-        DwebArchive.mirror = mirror; // So DwebArchive can check it locally, must be before AICUtil.gatewayServer call below
+        DwebArchive.mirror = mirror; // So DwebArchive can check it locally, must be before ACUtil.gatewayServer call below
         await DwebTransports.p_connect({
             statuselement: document.getElementById("dweb-status"),
-            http: {urlbase: DwebArchive.AICUtil.gatewayServer()},
+            http: {urlbase: DwebArchive.ACUtil.gatewayServer()},
             transports: searchparams.getAll("transport"),
             paused: searchparams.getAll("paused"),
-            mirror: mirror, // Careful with this, AICUtil.gatewayServer will return dweb.me if mirror undefined
+            mirror: mirror, // Careful with this, ACUtil.gatewayServer will return dweb.me if mirror undefined
         });
         if (query) {
             // noinspection JSIgnoredPromiseFromCall

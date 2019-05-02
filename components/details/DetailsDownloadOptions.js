@@ -1,6 +1,6 @@
 import React from 'react';
 import IAReactComponent from '../IAReactComponent';
-import AICUtil from "@internetarchive/dweb-archivecontroller/Util";
+import ACUtil from "@internetarchive/dweb-archivecontroller/Util";
 import AnchorDownload from "./AnchorDownload";
 
 export default class DetailsDownloadOptions extends IAReactComponent {
@@ -42,7 +42,7 @@ export default class DetailsDownloadOptions extends IAReactComponent {
                            title={k}
                            data-toggle="tooltip" data-placement="auto left" data-container="body"
                            target="_blank">
-                            {AICUtil.formats("format", k).downloadable} <span className="iconochive-download"
+                            {ACUtil.formats("format", k).downloadable} <span className="iconochive-download"
                                                                               aria-hidden="true"></span><span
                                 className="sr-only">download</span>
                         </AnchorDownload>

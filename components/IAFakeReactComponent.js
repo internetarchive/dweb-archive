@@ -27,6 +27,7 @@ export default class IAFakeReactComponent extends React.Component {
                 return false; // Stop the non-react version propogating
             }
         };
+        this.isFakeReact = true; // Test this if need to know if in FakeReact or RealReact
     }
 
     /* This was needed in the dweb because we don't know if the component was mounted, and had to set State in two different ways, for example

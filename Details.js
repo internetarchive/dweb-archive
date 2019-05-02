@@ -14,7 +14,7 @@ import React from './ReactFake';
 // React requires style={{display: none}} ReactFake can also handle quoted style="display: none"
 // React requires className= rather than class=, ReactFake supports both
 
-import AICUtil from '@internetarchive/dweb-archivecontroller/Util';
+import ACUtil from '@internetarchive/dweb-archivecontroller/Util';
 import DetailsActionButtons from './components/details/DetailsActionButtons';
 import DetailsCollectionList from './components/details/DetailsCollectionList';
 import DetailsDownloadOptions from './components/details/DetailsDownloadOptions';
@@ -139,9 +139,9 @@ export default class Details extends ArchiveBase {
         // noinspection JSUnresolvedVariable
         const licence = metadata.licenseurl; //TODO - handle other licenses - hardwired for CC currently
         const languages = metadata.language || [];
-        const queryLanguage=languages.map(l => `language:${l} OR language:"{AICUtil.languageMapping[l]"`).join(' OR ');
+        const queryLanguage=languages.map(l => `language:${l} OR language:"{ACUtil.languageMapping[l]"`).join(' OR ');
         const queryLanguageEnc= encodeURIComponent(queryLanguage);
-        const languageLong = languages.map(l => AICUtil.languageMapping[l]).join(',');
+        const languageLong = languages.map(l => ACUtil.languageMapping[l]).join(',');
         const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const metadataListKeyStrings = {ocr: "OCR", runtime: "Run time", ppi: "PPI"}; /*Metadata with something other than capitalize first letter*/
         const metadataListExclude = [

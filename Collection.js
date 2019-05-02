@@ -177,6 +177,7 @@ export default class Collection extends Search {
             {/*welcome*/}</div>
         );
     }
+    
     archive_setup_push() {
         // Note the archive_setup.push stuff is subtly different from that for 'search'
         const query = this.query;
@@ -185,13 +186,13 @@ export default class Collection extends Search {
             AJS.lists_v_tiles_setup('collection');
             $('div.ikind').css({visibility:'visible'});
             AJS.popState('');
-            AJS.tiler();      // Note Traceys code had AJS.tiler('#ikind-search') but Search and Collections examples have it with no args
+            //AJS.tiler();      // Note Traceys code had AJS.tiler('#ikind-search') but Search and Collections examples have it with no args - dont want it here anyway, as breaks per-image Tiler in at least Local.js
             $(window).on('resize  orientationchange', function(evt){
                 clearTimeout(AJS.tiles_wrap_throttler);
                 AJS.tiles_wrap_throttler = setTimeout(AJS.tiler, 250);
             });
             // register for scroll updates (for infinite search results)
-            $(window).scroll(AJS.scrolled);
+            //NOW in TILEGRID.js $(window).scroll(AJS.scrolled); TODO-UXLOCAL add to Search.js
         });
     }
 

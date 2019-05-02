@@ -8,17 +8,18 @@ const canonicaljson = require('@stratumn/canonicaljson');
 import React from './ReactFake';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
 import Search from './Search';
-import Details from './Details'
-import Home from './Home'
-import Collection from './Collection'
-import Texts from './Texts'
-import Image from './Image'
-import Audio from './Audio'
-import Video from './Video'
-import Account from './Account'
-import DetailsError from './DetailsError'
-import DownloadDirectory from './DownloadDirectory'
-import ConfigDetailsComponent from './components/ConfigDetailsComponent'
+import Details from './Details';
+import Home from './Home';
+import Collection from './Collection';
+import Local from './Local';
+import Texts from './Texts';
+import Image from './Image';
+import Audio from './Audio';
+import Video from './Video';
+import Account from './Account';
+import DetailsError from './DetailsError';
+import DownloadDirectory from './DownloadDirectory';
+import ConfigDetailsComponent from './components/mirror/ConfigDetailsComponent';
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 const debug = require('debug')('dweb-archive:Nav');
 
@@ -264,6 +265,8 @@ export default class Nav {
         try {
             if (!itemid) {
                 (await new Home().fetch()).render(res);
+            } else if (itemid === "local") {
+                (await new Local({itemid, metaapi:{}})).render(res);  //TODO-UXLOCAL figure out how to get yaml to it
             } else {
                 let d = await new Details({itemid}).fetch_metadata(); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
                 let metaapi = d.exportMetadataAPI({wantPlaylist: true}); // Cant pass Details to the constructors below
@@ -319,11 +322,6 @@ export default class Nav {
     static audioPlay(elAnchor) {
         // Used by Audio to play a track - since "Nav" is a global it can access
         Audio.play(elAnchor);
-        return false;
-    }
-    // noinspection JSUnusedGlobalSymbols
-    static searchMore(elAnchor) {
-        Search.searchMore(elAnchor); // Ignore promise returned
         return false;
     }
 }

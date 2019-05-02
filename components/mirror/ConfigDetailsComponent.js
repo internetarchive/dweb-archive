@@ -1,7 +1,7 @@
 const debug = require('debug')('dweb-archive:ConfigDetailsComponent');
 const canonicaljson = require('@stratumn/canonicaljson');
-import React from "../ReactFake";
-import IAFakeReactComponent from './IAFakeReactComponent';
+import React from "../../ReactFake";
+import IAFakeReactComponent from '../IAFakeReactComponent';
 const ACUtil = require('@internetarchive/dweb-archivecontroller/Util'); // For Object.deeperAssign
 //DwebTransports is not needed, its a global
 //TODO-CONFIG make it be empty if not on mirror
@@ -25,6 +25,9 @@ export default class ConfigDetailsComponent extends IAFakeReactComponent {
         super(props);
     }
 
+    loaded() {
+        return (typeof this.state.level !== "undefined");
+    }
     static insertInside(elementId, props) {
         // Called from nav_details to display the config info
         const parentElement = document.getElementById(elementId); // Note this isnt a Component, cos its in the archive.html
@@ -36,34 +39,37 @@ export default class ConfigDetailsComponent extends IAFakeReactComponent {
     }
 
     render() {
-        if (typeof DwebArchive !== "undefined") {
+        if (this.isFakeReact || !this.loaded()) {
             return <span ref={this.load}>Loading ...</span>
         } else { // Pure IAUX
-            //TODO-IAUX need pure IAUX version
+            return this.renderInnerElement(); // Will rerender when state changes
         }
     }
 
     loadcallable(enclosingEl) {
         // Called by React when the Loading... div is displayed
         const urlConfig = [ACUtil.gatewayServer(), "info"].join('/');
-        this.enclosingElement = enclosingEl;
+        this.enclosingElement = enclosingEl; // Tell it where to render inside when info found
         DwebTransports.httptools.p_GET(urlConfig, {}, (err, info) => {
             if (err) {
                 debug("Config Failed to get info");
             } else {
-                this.displayInfo(info);
+                this.stateFromInfo(info, (err, res) => this.setState(res));
             }
         });
     }
 
-    displayInfo(info) {
+    setState(infoAsState) {
         // Called when new info is available to display
-        this.setState(this.stateFromInfo(info))
-        const innerElement = this.renderInnerElement();
-        while (this.enclosingElement.lastChild) { // Remove "Loading..." or previous version
-            this.enclosingElement.removeChild(this.enclosingElement.lastChild);
+        super.setState(infoAsState);
+        // On FakeReact need to manually rerender
+        if (this.isFakeReact) {
+            const innerElement = this.renderInnerElement();
+            while (this.enclosingElement.lastChild) { // Remove "Loading..." or previous version
+                this.enclosingElement.removeChild(this.enclosingElement.lastChild);
+            }
+            this.enclosingElement.appendChild(innerElement);
         }
-        this.enclosingElement.appendChild(innerElement);
     }
 
     stateFromInfo(info, cb) {
@@ -78,13 +84,13 @@ export default class ConfigDetailsComponent extends IAFakeReactComponent {
         // noinspection JSUnresolvedVariable
         const search = task && ( task.search  || (isDetailsOrMore && configmerged.apps.crawl.opts.defaultDetailsSearch));
         // noinspection JSUnusedGlobalSymbols
-        return {
+        cb(null, {
             task, configdefault, configuser, configmerged,
             oldhash: info.hash,
             level: task && task.level,
             rows: search && search.rows,
             searchLevel: search && search.level
-        };
+        });
     }
     renderInnerElement() {
         //TODO-CONFIG make it hideable with red/yellow/green spider button or similar
@@ -95,7 +101,7 @@ export default class ConfigDetailsComponent extends IAFakeReactComponent {
                 <span onClick={this.onClick}>{this.state.level ? `Crawling ${this.state.level}` : "Not Crawling"}</span>
                 { this.state.search ?
                     <span>{`Search ${this.state.rows} rows at ${this.state.searchLevel}`}</span>
-                    : undefined }
+                    : null }
             </div>
         );
     }
@@ -129,7 +135,9 @@ export default class ConfigDetailsComponent extends IAFakeReactComponent {
             {data: canonicaljson.stringify(this.state.configuser), contenttype: "application/json"},
             (err, info) => {
                 debug("Configuration %s", err ? "Failed "+err.message : "set");
-                if (!err) this.displayInfo(info);
+                if (!err) {
+                    this.stateFromInfo(info, (err, res) => this.setState(res));
+                }
             }
         );
     }
