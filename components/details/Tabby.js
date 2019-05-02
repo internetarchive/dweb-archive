@@ -1,7 +1,7 @@
 //import React from '../ReactFake';
 //import IAFakeReactComponent from './IAFakeReactComponent';
 import React from 'react';
-import IAReactComponent from './IAReactComponent';
+import IAReactComponent from '../IAReactComponent';
 const debug = require('debug')('dweb-archive:Tabby');
 
 /* Maybe Used in IAUX in future, but not in ReactFake

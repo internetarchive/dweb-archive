@@ -1,6 +1,6 @@
 import React from './ReactFake';
 import Search from './Search';
-import Tabby from "./components/Tabby";
+import Tabby from "./components/details/Tabby";
 
 export default class Account extends Search {
     /*
