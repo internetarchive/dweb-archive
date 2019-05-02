@@ -35,7 +35,7 @@ export default class AnchorDetails extends IAFakeReactComponent {
     }
     clickCallable(ev) {
         debug("Cicking on link to details: %s",this.props.identifier);
-        Nav.nav_details(this.props.identifier);
+        DwebArchive.Nav.nav_details(this.props.identifier);
         ev.preventDefault();    // Prevent it going to the anchor (equivlent to "return false" in non-React
         // ev.stopPropagation(); ev.nativeEvent.stopImmediatePropagation(); // Suggested alternatives which dont work
         return false; // Stop the non-react version propogating

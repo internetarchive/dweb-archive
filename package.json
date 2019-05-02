@@ -19,8 +19,8 @@
     "@internetarchive/ia-components": "canary",
     "@stratumn/canonicaljson": "^1.0.2",
     "async": "^2.6.2",
-    "debug": "^3.2.5",
-    "es2015": "latest",
+    "debug": "^4.1.1",
+    "es2015": "^0.0.0",
     "from2": "^2.3.0",
     "jquery": "^3.3.1",
     "prettier-bytes": "^1.0.4",
@@ -37,7 +37,7 @@
     "babel-loader": "^8.0.5",
     "chai": "^4.2.0",
     "copy-webpack-plugin": "^4.5.2",
-    "http-server": "latest",
+    "http-server": "^0.11.1",
     "uglifyjs-webpack-plugin": "^1.3.0",
     "webpack": "^4.29.3",
     "webpack-cli": "^3.2.3",
@@ -58,5 +58,5 @@
     "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist; ln -s ../node_modules/@internetarchive/dweb-objects/dist/dweb-objects-bundle.js dist;",
     "getbookreader": "for i in BookReaderHelpers.js BookReaderJSIA.js LendingFlow.js; do curl -o dist/bookreader/$i https://archive.org/bookreader/$i; done"
   },
-  "version": "0.1.55"
+  "version": "0.1.57"
 }
