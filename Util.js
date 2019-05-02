@@ -1,5 +1,5 @@
 
-class Util {
+export default class Util {
     static dateFormat(n) {
         // This could be turned into an alternative if anyone can figure out how to get toLocaleString to output dd mmm yy in UK and mmm dd, yy in US !
         return n.toISOString().substr(0,10); //YYYY-MM-DD
@@ -123,4 +123,3 @@ Util.config = { //SEE-OTHER-ADDTRANSPORT add a transport in here if its prefered
     preferredAVtransports: [ "WEBTORRENT", "IPFS"], // Current reliability issues with IPFS streams accompanied by lack of negative feedback on fail, HTTP is worst case
 };
 
-exports = module.exports = Util;
