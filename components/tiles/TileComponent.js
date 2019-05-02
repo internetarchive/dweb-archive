@@ -47,15 +47,7 @@ export default class TileComponent extends IAReactComponent {
     {
         super(props);
         this.state.identifier = props.identifier || props.member.identifier;
-    }
 
-    iconnameClass(mediatype) {
-        // Get the class for the icon, has to handle some exceptions - there used to be many more obsolete mediatypes without iconochive's but these appear to have been cleaned up
-        const exceptions = { account: "person", video: "movies"}
-        return "iconochive-"+ (exceptions[mediatype] || mediatype)
-    }
-
-    render() {
         try {
             console.assert(this.props.member, "If using TileComponent.render should have a member with at least mediatype to work with");
             const member = this.props.member;
@@ -79,9 +71,18 @@ export default class TileComponent extends IAReactComponent {
                 numReviews: member.num_reviews || (item && item.reviews && item.reviews.length) || 0
             })
         } catch(err) { // Catch error here as not generating debugging info at caller level for some reason
-            debug("ERROR in TileComponent.render for %s: %s", this.state.identifier, err.message);
-            return null;
+            debug("ERROR in TileComponent.constructor for %s: %s", this.state.identifier, err.message);
         }
+
+    }
+
+    iconnameClass(mediatype) {
+        // Get the class for the icon, has to handle some exceptions - there used to be many more obsolete mediatypes without iconochive's but these appear to have been cleaned up
+        const exceptions = { account: "person", video: "movies"}
+        return "iconochive-"+ (exceptions[mediatype] || mediatype)
+    }
+
+    render() {
         return (
             <div className={this.state.classes} data-id={this.state.identifier}  key={this.state.identifier}>
                 { (this.state.collection0) ? // Believe, but not certain, that there is always going to be a collection0

@@ -324,11 +324,6 @@ export default class Nav {
         Audio.play(elAnchor);
         return false;
     }
-    // noinspection JSUnusedGlobalSymbols
-    static searchMore(elAnchor) {
-        Search.searchMore(elAnchor); // Ignore promise returned
-        return false;
-    }
 }
 
 

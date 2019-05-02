@@ -13,10 +13,4 @@ export default class Home extends Search {
     );
     }
 
-    /*
-    async more() {
-        console.log("MORE Disabled on Home page because of bug in advancedsearch page=2");
-    }
-    */
-
 }

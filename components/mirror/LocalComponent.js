@@ -82,8 +82,10 @@ class LocalGridRowComponent extends IAReactComponent {
         }
     }
 
-    renderInnerElement() { return (
-        !(this.state.members && this.state.members.length) ? null :  /* If no members, probably a query failed so dont display */
+    renderInnerElement() {
+        // Build a grid of tiles like in Collection but doesnt have the "More" scrolling feature
+        return (
+        //!(this.state.members && this.state.members.length) ? null :  /* If no members, probably a query failed so dont display */
             <div className="row">
                 <div className="columns-items" style={{"marginLeft": "0px"}}>
                     <div style={{position:"relative"}}>
