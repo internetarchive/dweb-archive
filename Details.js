@@ -15,12 +15,13 @@ import React from './ReactFake';
 // React requires className= rather than class=, ReactFake supports both
 
 import ACUtil from '@internetarchive/dweb-archivecontroller/Util';
-import DetailsActionButtons from './components/details/DetailsActionButtons';
-import DetailsCollectionList from './components/details/DetailsCollectionList';
-import DetailsDownloadOptions from './components/details/DetailsDownloadOptions';
+import DetailsActionButtons from "@internetarchive/ia-components/sandbox/details/DetailsActionButtons";
+import DetailsCollectionList from "@internetarchive/ia-components/sandbox/details/DetailsCollectionList";
+import DetailsDownloadOptions from "@internetarchive/ia-components/sandbox/details/DetailsDownloadOptions";
+import RelatedItems from"@internetarchive/ia-components/sandbox/tiles/RelatedItems";
+
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
-import RelatedItems from './components/tiles/RelatedItems';
 
 export default class Details extends ArchiveBase {
     constructor({itemid = undefined, metaapi = undefined}={}) {
