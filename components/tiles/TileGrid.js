@@ -2,12 +2,17 @@ const debug = require('debug')('dweb-archive:TileGrid');
 //Note this component is only tested on Real React it may or may not work in ReactFake
 import React from 'react';
 import IAReactComponent from '../IAReactComponent'; // Encapsulates differences between dweb-archive/ReactFake and iaux/React
-import TileComponent from '../tiles/TileComponent';
+import TileComponent from "./TileComponent.js";
 //import PropTypes from 'prop-types' // Not currently used by IAUX
 
 /* This is the inner part of a tile grid, see dweb-archive/Search.js for an example of its use
+    There are two components here.
+    <TileGrid members=[ArchiveMember*]>
+    <ScrollableTileGrid item=ArchiveItem>
+    Both depend on dweb-archivecontroller since TileComponent does, and in particular ScrollableTileGrid calls ArchiveItem.proto.more() to update
 
-   It is past a list of members that the Item has already retrieved from a search or collection etc
+    They depend on the CSS copied from archive.org to dweb-archive.org, that could be put inside this component if required.
+
  */
 
 class TileGrid extends IAReactComponent {
@@ -80,10 +85,7 @@ class ScrollableTileGrid extends IAReactComponent {
                 }
             } else { //Real react
                 debug("TODO should be getting state here");
-                this.setState({xxx: !this.xxx})
-
-                //this.setState({item:this.props.item});
-                //this.setState({members: this.state.members}); // TODO-UXLOCAL check if this is reqd, i.e. if appending to item.members, which is members will work
+                this.setState({xxx: !this.xxx});    // Force it to rerender since its state.members didnt change, but the contents of it did.
             }
             AJS.more_searching = false;
         });
