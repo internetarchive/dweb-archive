@@ -1,8 +1,8 @@
-const debug = require('debug')('dweb-archive:TileComponent');
+const debug = require('debug')('dweb-archive:RelatedItems');
 //Note this component is Real-React only, it may or may not work in ReactFake
 import React from 'react';
 import IAReactComponent from '../IAReactComponent'; // Encapsulates differences between dweb-archive/ReactFake and iaux/React
-import TileComponent from '../tiles/TileComponent';
+import TileComponent from "@internetarchive/ia-components/sandbox/tiles/TileComponent.js";
 //import PropTypes from 'prop-types' // Not currently used by IAUX
 
 /* RelatedItems is a component intended for the bottom of details page to display related items.

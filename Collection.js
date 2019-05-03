@@ -1,7 +1,8 @@
 import React from './ReactFake';
 import Search from "./Search";
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
-import Tabby from "./components/details/Tabby";
+import Tabby from "@internetarchive/ia-components/sandbox/details/Tabby";
+
 
 export default class Collection extends Search {
     constructor({itemid=undefined, metaapi=undefined}={}) {

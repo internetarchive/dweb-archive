@@ -6,8 +6,6 @@ const ACUtil = require("@internetarchive/dweb-archivecontroller/Util.js");
 import React from "./ReactFake";
 import Collection from "./Collection";
 import {LocalWelcomeComponent, LocalGridRowComponent} from "./components/mirror/LocalComponent";
-import {TileGrid} from "./components/tiles/TileGrid";
-
 
 export default class Local extends Collection {
 

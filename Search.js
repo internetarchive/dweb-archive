@@ -4,8 +4,7 @@ import React from './ReactFake';
 const canonicaljson = require('@stratumn/canonicaljson');
 
 import ArchiveBase from './ArchiveBase';
-import TileComponent from './components/tiles/TileComponent';
-import {ScrollableTileGrid} from './components/tiles/TileGrid';
+import {ScrollableTileGrid} from "@internetarchive/ia-components/sandbox/tiles/TileGrid";
 
 /* Section to ensure node and browser able to use Headers, Request and Fetch */
 /*

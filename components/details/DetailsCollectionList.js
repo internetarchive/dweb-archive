@@ -1,6 +1,6 @@
 import React from 'react';
 import IAReactComponent from '../IAReactComponent';
-import AnchorDetails from '../AnchorDetails';
+import AnchorDetails from "@internetarchive/ia-components/sandbox/AnchorDetails.js";
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 
 export default class DetailsCollectionList extends IAReactComponent {
