@@ -2,7 +2,7 @@ import React from 'react';
 import IAReactComponent from '../IAReactComponent';
 const debug = require('debug')('dweb-archive:LocalComponent');
 
-import {TileGrid} from "@internetarchive/ia-components/sandbox/tiles/TileGrid";
+import {TileGrid} from "@internetarchive/ia-components/sandbox/tiles/TileGrid.jsx";
 import ACUtil  from '@internetarchive/dweb-archivecontroller/Util';
 import ArchiveMember from '@internetarchive/dweb-archivecontroller/ArchiveMember';
 

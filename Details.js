@@ -15,10 +15,10 @@ import React from './ReactFake';
 // React requires className= rather than class=, ReactFake supports both
 
 import ACUtil from '@internetarchive/dweb-archivecontroller/Util';
-import DetailsActionButtons from "@internetarchive/ia-components/sandbox/details/DetailsActionButtons";
-import DetailsCollectionList from "@internetarchive/ia-components/sandbox/details/DetailsCollectionList";
-import DetailsDownloadOptions from "@internetarchive/ia-components/sandbox/details/DetailsDownloadOptions";
-import RelatedItems from"@internetarchive/ia-components/sandbox/tiles/RelatedItems";
+import DetailsActionButtons from "@internetarchive/ia-components/sandbox/details/DetailsActionButtons.jsx";
+import DetailsCollectionList from "@internetarchive/ia-components/sandbox/details/DetailsCollectionList.jsx";
+import DetailsDownloadOptions from "@internetarchive/ia-components/sandbox/details/DetailsDownloadOptions.jsx";
+import RelatedItems from "@internetarchive/ia-components/sandbox/tiles/RelatedItems.jsx";
 
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact

@@ -5,8 +5,8 @@ module.exports = {
     module: {
             rules: [
                 {
-                    test: /\.js$/,
-                    exclude: /(node_modules\/[a-z]|bower_components)/, //TODO-IAUX make this exclusion more precise
+                    test: /\.js[x]*$/,
+                    exclude: /(node_modules\/[a-z]|@[a-hj-z]|bower_components)/, //TODO-IAUX only trying to not-exclude @internetarchive
                     use: {
                         loader: 'babel-loader',
                         options: {
