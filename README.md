@@ -135,6 +135,9 @@ For a *Search/Colletion/Home* the structure is slightly different
 See [Dweb document index](https://github.com/internetarchive/dweb-transports/blob/master/DOCUMENTINDEX.md) for a list of the repos that make up the Internet Archive's Dweb project, and an index of other documents. 
 
 ## Release notes
+* 0.1.58: Added crawl UI CSS (rest is in ia-components) 
+* 0.1.58: ScrollableTileGrid component 
+* 0.1.58: Move components into @internetarchive/ia-components repo
 * 0.1.57: Simplify handling of urls, especially removes unneeded metadata fetch from a lot of thumbnails on mirror
 * 0.1.56: Component support reorganized and expanded for IAUX
 * 0.1.55: Move setconfig url; AnchorDetails & Tabby components; work with playlist API (in dweb-archivecontroller 0.1.52)
