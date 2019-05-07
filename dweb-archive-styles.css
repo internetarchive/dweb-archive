@@ -122,4 +122,17 @@ body.navia .navbar #nav-dweb a img {
     position: relative;
     top: 1px;
 }
-body.ia-module .welcome { padding-top: 75px;}
+/* For LocalComponent
+    Not marking crawl-tile or crawl-metadata as really not significant to user
+*/
+.crawl-details {
+    border: 1px solid #ff0000;
+}
+
+.crawl-all {
+    border: 3px solid #ff0000;
+}
+
+.notavailable {
+    opacity: 30%
+}

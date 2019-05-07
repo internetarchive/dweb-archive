@@ -60,6 +60,7 @@ class LocalGridRowComponent extends IAReactComponent {
             const members = configmerged.apps.crawl.tasks.map(task => {
                 const isDetailsOrMore = task && (_levels.indexOf(task.level) >= _levels.indexOf("details"));
                 const m = memberDict[task.identifier] || new ArchiveMember({identifier: task.identifier}, {unexpanded: true});
+                m.crawl = task.level;
                 m.search = task.search || (isDetailsOrMore && configmerged.apps.crawl.opts.defaultDetailsSearch);
                 return m;
             });
