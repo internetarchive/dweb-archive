@@ -268,6 +268,7 @@ export default class Nav {
             } else if (itemid === "local") {
                 (await new Local({itemid, metaapi:{}})).render(res);  //TODO-UXLOCAL figure out how to get yaml to it
             } else {
+                //TODO edit this to make function like fetch_metadata but as a static function that can be used without creating temporary details item "d"
                 let d = await new Details({itemid}).fetch_metadata(); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
                 let metaapi = d.exportMetadataAPI({wantPlaylist: true}); // Cant pass Details to the constructors below
                 if (!d.metadata) {

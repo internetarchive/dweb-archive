@@ -12,9 +12,9 @@ export default class Local extends Collection {
     banner() {
         /* TODO-UXLOCAL add control buttons */
         return <LocalWelcomeComponent
-                    title={"Resources"}
+                    title="Resources"
                     byline={"downloaded to "+ ACUtil.gatewayServer()}
-                    description={""}
+                    description=""
                 />
     }
     wrap() {

@@ -79,6 +79,7 @@ export default class ConfigDetailsComponent extends IAFakeReactComponent {
         const configuser = config[1] || {};
         const configmerged = Object.deeperAssign({}, configdefault, configuser); // Cheating, but assumes no arrays needing merging
         // noinspection JSUnresolvedVariable
+        // Note there is similar code in dweb-mirror.MirrorConfig.crawlMember
         const task = configmerged.apps.crawl.tasks.find(t => t.identifier.includes(identifier));
         const isDetailsOrMore = task && ConfigDetailsComponent._levels.indexOf(task.level) >= ConfigDetailsComponent._levels.indexOf("details");
         // noinspection JSUnresolvedVariable

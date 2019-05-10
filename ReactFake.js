@@ -454,7 +454,7 @@ export default class React  {
             // React uses camelCase for events. thy are converted here to lowercase since we allow storage of a function as the value, and the browser allows that
             const attrname = (name.toLowerCase() === "classname" ? "class" : ["onClick"].includes(name) ? name.toLowerCase(name) : name );
             if (name === "dangerouslySetInnerHTML") {
-                element.innerHTML = attrs[name]["__html"];
+                element.innerHTML = attrs[name]["__html"] || null;
                 delete attrs.dangerouslySetInnerHTML;
             }
             // Turn root-relative URLS in IMG and A into absolute urls - ideally these are also caught by special cases (note don't appear to be any of these in most code)
