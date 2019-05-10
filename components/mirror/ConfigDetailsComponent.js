@@ -1,12 +1,14 @@
+import ReactDOM from "react-dom";
+
 const debug = require('debug')('dweb-archive:ConfigDetailsComponent');
 const canonicaljson = require('@stratumn/canonicaljson');
-import React from "../../ReactFake";
-import IAFakeReactComponent from '../IAFakeReactComponent';
+import React from "react";
+import IAReactComponent from '../IAReactComponent';
 const ACUtil = require('@internetarchive/dweb-archivecontroller/Util'); // For Object.deeperAssign
 //DwebTransports is not needed, its a global
 //TODO-CONFIG make it be empty if not on mirror
 
-export default class ConfigDetailsComponent extends IAFakeReactComponent {
+export default class ConfigDetailsComponent extends IAReactComponent {
     /* -- Not used with ReactFake yet
     static propTypes = {
         identifier: PropTypes.string,
@@ -23,29 +25,56 @@ export default class ConfigDetailsComponent extends IAFakeReactComponent {
     constructor(props)
     {
         super(props);
+        this.setState(props);
+        ConfigDetailsComponent.instance = this; // Allow finding it
     }
 
     loaded() {
         return (typeof this.state.level !== "undefined");
     }
-    static insertInside(elementId, props) {
+    static findAndSetState(state) {
+        this.instance.setState(state);
+    }
+    static insertInside(elementId, props={}) { //TODO-UXLOCAL probably obsolete
         // Called from nav_details to display the config info
         const parentElement = document.getElementById(elementId); // Note this isnt a Component, cos its in the archive.html
         const el = new this(props).render(); // Will be loading asynchronously
         while (parentElement.lastChild) {
             parentElement.removeChild(parentElement.lastChild);
         }
-        React.addKids(parentElement, el); // Using addKids to force the "ref" to be used //TODO-IAUX probably doesnt have addKids ?
+        //React.addKids(parentElement, el); // Using addKids to force the "ref" to be used //TODO-IAUX probably doesnt have addKids ?
+        ReactDOM.render(el, parentElement)
     }
-
     render() {
-        if (this.isFakeReact || !this.loaded()) {
-            return <span ref={this.load}>Loading ...</span>
-        } else { // Pure IAUX
-            return this.renderInnerElement(); // Will rerender when state changes
+        //if (this.isFakeReact || !this.loaded()) {
+        //    return <span ref={this.load}>Loading ...</span>
+        //} else { // Pure IAUX
+        //TODO-CONFIG make it hideable with red/yellow/green spider button or similar
+        //TODO-CONFIG make it editable
+        //TODO-CONFIG dont show search if its not a collection - but note we dont (currently) know that here.
+        /*
+        {(!this.state.level) ? null : // Only show this bug if crawling
+            this.state.level === "details"
+                ? <img src="/images/noun_Ladybug_1869205.svg" alt={"crawl "+this.state.level}/>
+                : this.state.level === "all"
+                ? <img src="/images/noun_Ladybug_1869205_red.svg" alt={"crawl "+this.state.level} />
+                : null
         }
+        */
+        return (
+            <ul>
+            <li className={"crawl"+(this.state.level || "none")} data-id={this.props.identifier}  key={this.props.identifier} onClick={this.onClick}>
+                {this.state.level ? `Crawling ${this.state.level}` : "Not Crawling"}
+                { (this.state.search && ConfigDetailsComponent._levels.indexOf(this.state.level) >= ConfigDetailsComponent._levels.indexOf("details"))
+                    ?
+                    <span>{`  Search ${this.state.search.rows} rows at ${this.state.search.level}`}</span>
+                    : null }
+            </li>
+            </ul>
+        );
     }
 
+    /*
     loadcallable(enclosingEl) {
         // Called by React when the Loading... div is displayed
         const urlConfig = [ACUtil.gatewayServer(), "info"].join('/');
@@ -58,20 +87,6 @@ export default class ConfigDetailsComponent extends IAFakeReactComponent {
             }
         });
     }
-
-    setState(infoAsState) {
-        // Called when new info is available to display
-        super.setState(infoAsState);
-        // On FakeReact need to manually rerender
-        if (this.isFakeReact) {
-            const innerElement = this.renderInnerElement();
-            while (this.enclosingElement.lastChild) { // Remove "Loading..." or previous version
-                this.enclosingElement.removeChild(this.enclosingElement.lastChild);
-            }
-            this.enclosingElement.appendChild(innerElement);
-        }
-    }
-
     stateFromInfo(info, cb) {
         const identifier = this.props.identifier;
         const config = info.config; // Mixed in with other info
@@ -93,54 +108,37 @@ export default class ConfigDetailsComponent extends IAFakeReactComponent {
             searchLevel: search && search.level
         });
     }
-    renderInnerElement() {
-        //TODO-CONFIG make it hideable with red/yellow/green spider button or similar
-        //TODO-CONFIG make it editable
-        //TODO-CONFIG dont show search if its not a collection - but note we dont (currently) know that here.
-        return (
-            <div className="configdetails" data-id={this.props.identifier}  key={this.props.identifier}>
-                <span onClick={this.onClick}>{this.state.level ? `Crawling ${this.state.level}` : "Not Crawling"}</span>
-                { this.state.search ?
-                    <span>{`Search ${this.state.rows} rows at ${this.state.searchLevel}`}</span>
-                    : null }
-            </div>
-        );
-    }
-
+    */
     clickCallable() {
-        debug("%s: Crawl clicked", this.props.identifier);
-        //this.state.configuser = Object.assign(this.state.configuser, {xx})
-        if (!this.state.configuser) this.state.configuser = {};
-        Object.deeperAssign(this.state.configuser, {apps: { crawl: {} }} ); // Make sure has path
-        if (!this.state.configuser.apps.crawl.tasks) this.state.configuser.apps.crawl.tasks = []; // Make sure has a list can push into
-        // Make sure we have a task to work with: existing, new, or split out of array
-        if (!this.state.task) { // Nothing for this identifier
-            this.state.task = {identifier: this.props.identifier};
-            this.state.configuser.apps.crawl.tasks.push(this.state.task);
-        } else if (Array.isArray(this.state.task.identifier)) {
-            this.state.task.identifier.splice(this.state.task.identifier.indexOf(this.props.identifier), 1);
-            this.state.task = Object.assign({}, this.state.task, {identifier: this.props.identifier}); // Will copy level and search etc from old task
-            this.state.configuser.apps.crawl.tasks.push(this.state.task);
-        }
-        // Bump the level to next one
-        if (this.state.task.level === "details") {
-            this.state.task.level = "all";
-        } else if (this.state.task.level === "all") {
-            this.state.task.level = undefined;
+        // Cycle through possible states on click
+        debug("%s: Crawl clicked", this.state.identifier);
+
+        if (!this.state.identifier) {
+            debug("Clicking but not an identifier");
         } else {
-            this.state.task.level = "details";
-        }
-        //TODO handle case of clicking back ot empty - remove task
-        const urlSetConfig = [ACUtil.gatewayServer(), "admin/setconfig"].join('/');
-        DwebTransports.httptools.p_POST(urlSetConfig,
-            {data: canonicaljson.stringify(this.state.configuser), contenttype: "application/json"},
-            (err, info) => {
-                debug("Configuration %s", err ? "Failed "+err.message : "set");
-                if (!err) {
-                    this.stateFromInfo(info, (err, res) => this.setState(res));
+            // Do the UI part first, so responsive
+            // Bump the level to next one
+            // TODO Note its handling of search is not quite correct, if it cycles to all, and is non-default search then server will lose the search value,
+            // TODO and cycling back to details will think its still there.
+            // TODO since planning on allowing editing of search, should handle then.
+            const level = this.state.level === "details" ? "all"
+                : this.state.level === "all" ? undefined
+                    : "details";
+            this.setState({level});
+
+            // For some reason (probably because added via ReactDOM.render above) it thinks unmounted so setState not re-rendering, so redo here for now (till nav-dweb moved into React)
+            const parentElement = document.getElementById('dweb-mirrorconfig'); // Note this isnt a Component, cos its in the archive.html
+            const el = this.render(); // Will be loading asynchronously
+            ReactDOM.render(el, parentElement)
+
+            const urlSetConfig = [ACUtil.gatewayServer(), "admin/setconfig", this.state.identifier, level || "none"].join('/');
+            DwebTransports.httptools.p_GET(urlSetConfig, {}, (err, info) => {
+                // Gets back info, but not currently using
+                if (err) {
+                    debug("Failed to set config level for %s to %s", this.state.identifier, this.state.level)
                 }
-            }
-        );
+            });
+        }
     }
 }
 ConfigDetailsComponent._levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-archive/components/ConfigDetailsComponent.js

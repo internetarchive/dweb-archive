@@ -51,16 +51,13 @@ body.navia .navbar #nav-dweb ul{margin-bottom: 0px; display: inline}
     height: auto;
     display: block; /* Make sure Dweb ipfs, etc all on one line - flexgrid could be better*/
 }
-#dweb-status {
+#dweb-status, #dweb-mirrorconfig {
     display: inline-block;
 }
-#dweb-mirrorconfig {
-    display: inline-block;
-}
-#dweb-status ul {
+#dweb-status ul, #dweb-mirrorconfig ul {
     padding-left:0;
 }
-body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb a, .navbar #nav-dweb #dweb-mirrorconfig {
+body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb a, .navbar #nav-dweb #dweb-mirrorconfig li {
     height: auto;
     font-size: 12px;
     cursor: pointer;
@@ -69,13 +66,10 @@ body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb a, .n
     zoom:1;
     line-height:1;
 }
-.navbar #nav-dweb #dweb-mirrorconfig {
-    padding: 5px 8px 5px 20px;
-}
-body.navia .navbar #nav-dweb #dweb-status li {
+body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb #dweb-mirrorconfig li  {
     padding: 5px 8px 5px 5px;
 }
-body.navia .navbar #nav-dweb #dweb-status li,  .navbar #nav-dweb #dweb-mirrorconfig  {
+body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb #dweb-mirrorconfig li  {
     padding: 5px 8px 5px 20px;
     border: 1px solid #848484;
     border-radius: 3px;
@@ -125,14 +119,16 @@ body.navia .navbar #nav-dweb a img {
 /* For LocalComponent
     Not marking crawl-tile or crawl-metadata as really not significant to user
 */
-.crawl-details {
-    border: 1px solid #ff0000;
-}
-
-.crawl-all {
-    border: 3px solid #ff0000;
-}
 
 .notavailable {
     opacity: 30%
+}
+.crawlnone {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="200" height="200"><circle cx="100" cy="100" r="95" fill="red" /></svg>');
+}
+.crawldetails {
+     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="200" height="200"><circle cx="100" cy="100" r="95" fill="green" /></svg>');
+}
+.crawlall {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="200" height="200"><circle cx="100" cy="100" r="95" fill="gold" /></svg>');
 }

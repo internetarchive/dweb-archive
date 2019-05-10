@@ -566,7 +566,11 @@ export default class React  {
             ReactDOM.unmountComponentAtNode(parent)
             //child.renderFakeElement.parentElement.removeChild(child.renderFakeElement);
         }
-        const el = ReactDOM.render(child, parent); // Have to render after already in the DOM, although it might not be above ?
+        try {
+            const el = ReactDOM.render(child, parent); // Have to render after already in the DOM, although it might not be above ?
+        } catch(err) {
+            debug(">>>> renderRealReact caught %O", err);
+        }
     }
     static domrender(els, node) { // Four cases - have/dont old/new
         let navdweb = document.getElementById('nav-dweb'); // Find the navbar element TODO-STATUS this might move

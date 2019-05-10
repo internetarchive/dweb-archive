@@ -135,7 +135,7 @@ export default class Collection extends Search {
         const creator = (this.metadata.creator  &&  (metadata.creator.join(', ') != this.metadata.title) ? metadata.creator.join(', ') : '');
         //ARCHIVE-BROWSER note the elements below were converted to HTML 3 times in original version
         //TODO-DETAILS on prelinger, banner description is getting truncated.
-        const description = !description ? undefined : this.preprocessDescription(this.metadata.description).replace(/(..\/)+..\//g, "../"); // Contains HTML (supposedly safe) inserted via innerHTML thing
+        const description = !this.metadata.description ? undefined : this.preprocessDescription(this.metadata.description).replace(/(..\/)+..\//g, "../"); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const imgsrc = this.thumbnailFile();
         const imgname = this.itemid + ".PNG";   // Required or rendermedia has difficulty knowing what to render since it doesnt take a mimetype
         return (

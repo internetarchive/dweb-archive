@@ -9954,6 +9954,13 @@ body.ia-module.tiles .row > .tilebars .results .item-ia {
     width: 45px;
     height: 45px;
   }
+  body.ia-module.tiles .row > .tilebars .item-ia .item-parent .item-parent-img img,
+  body.ia-module.tiles .row > .tilebars .item-ia .item-crawl .item-parent-img img {
+    width: 40px;
+    height: 40px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+  }
   body.ia-module.tiles .row > .tilebars .item-ia .item-parent .item-crawl-img,
   body.ia-module.tiles .row > .tilebars .item-ia .item-crawl .item-crawl-img {
     position: absolute;
@@ -10438,6 +10445,13 @@ body.ia-module.tiles .row > .tilebars .results .item-ia {
     width: 45px;
     height: 45px;
   }
+  body.ia-module.tiles .item-ia .item-parent .item-parent-img img,
+  body.ia-module.tiles .item-ia .item-crawl .item-parent-img img {
+    width: 40px;
+    height: 40px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+  }
   body.ia-module.tiles .item-ia .item-parent .item-crawl-img,
   body.ia-module.tiles .item-ia .item-crawl .item-crawl-img {
     position: absolute;
@@ -10921,6 +10935,13 @@ body.ia-module.tiles .row > .tilebars .results .item-ia {
   body.ia-module.tiles .item-ia .item-crawl .item-parent-img {
     width: 45px;
     height: 45px;
+  }
+  body.ia-module.tiles .item-ia .item-parent .item-parent-img img,
+  body.ia-module.tiles .item-ia .item-crawl .item-parent-img img {
+    width: 40px;
+    height: 40px;
+    margin-top: 1px;
+    margin-bottom: 1px;
   }
   body.ia-module.tiles .item-ia .item-parent .item-crawl-img,
   body.ia-module.tiles .item-ia .item-crawl .item-crawl-img {

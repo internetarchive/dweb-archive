@@ -4,6 +4,7 @@
     "email": "mitra@mitra.biz",
     "url": "http://www.mitra.biz"
   },
+  "browserslist": "> 20%, not dead",
   "bugs": {
     "url": "https://github.com/internetarchive/dweb-archive/issues"
   },

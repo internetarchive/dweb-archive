@@ -35,6 +35,7 @@ export default class Nav {
       /* The navigation stuff.   Order is navwrap : maincontent : itemDetailsAbout */
       /* navwrap1( navwrap2 (navhat; navbar( nav-tophat-helper; navbar-main; nav-about))) */
       {/*--TODO-DETAILS update navwrap to match actual code in both search.html and commute.html--*/}
+      // noinspection CheckTagEmptyBody
       return (
         <div id="navwrap1">
           <div id="navwrap2">
@@ -114,7 +115,7 @@ export default class Nav {
                 </li>
               </ul> {/*--navbar-main--*/}
               <ul id="nav-abouts" class="">
-                {/*--TODO-BOOTSTRAP ongoing, was trying to make these eg. /about and use name lookup, but fails because not CORS and havent built gateway, and there is no "headless" version of these pages--*/}
+                {/*--TODO-BOOTSTRAP ongoing, was trying to make these eg. /about and use name lookup, but fails because not CORS and have not built gateway, and there is no "headless" version of these pages--*/}
                 <li><a target="_top" data-event-click-tracking="TopNav|AboutLink" href="https://archive.org/about/">ABOUT</a>
                 </li>
                 <li><a target="_top" data-event-click-tracking="TopNav|ContactLink"
@@ -153,9 +154,6 @@ export default class Nav {
     static async nav_details(id, {wanthistory=true, page=undefined}={}) {
         debug("Navigating to Details %s", id);
 
-        if (DwebArchive.mirror) {
-            ConfigDetailsComponent.insertInside('dweb-mirrorconfig', {identifier: id || "/"})
-        }
         const destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
         await Nav.factory(id, destn, {wanthistory, page}); // Not sure what returning ....
@@ -249,7 +247,7 @@ export default class Nav {
             let supportsArc = ! (window.location.origin === "file://" || window.location.pathname.startsWith("/ipfs/")  || window.location.pathname.startsWith("/ipns/"));
             if (!supportsArc) {
                 if (itemid) cnp.push(`item=${itemid}`);   // Need item id parameter on local files
-                if (page) cnp.push(`page=${page}`); // Unliked to be used, but probably ignored downstream.
+                if (page) cnp.push(`page=${page}`); // Unlikely to be used, but probably ignored downstream.
                 if (downloaddirectory) cnp.push('download=1');   // Need item id parameter on local files
             }
             cnp = cnp.filter(p => !!p).join('&');
@@ -265,6 +263,7 @@ export default class Nav {
         try {
             if (!itemid) {
                 (await new Home().fetch()).render(res);
+                this.setCrawlStatus({identifier: id, crawl: item.crawl});
             } else if (itemid === "local") {
                 (await new Local({itemid, metaapi:{}})).render(res);  //TODO-UXLOCAL figure out how to get yaml to it
             } else {
@@ -280,42 +279,55 @@ export default class Nav {
                         debug(`XXX Writing title but dont have one, look at %O`, d);
                     }
                     if (downloaddirectory) {
-                        new DownloadDirectory({itemid, metaapi}).render(res);
+                        const item = new DownloadDirectory({itemid, metaapi});
+                        item.render(res);
+                        this.setCrawlStatus({identifier: id, crawl: item.crawl});
                     } else {
-                        switch (d.metadata.mediatype) {
-                            case "collection":
-                                (await new Collection({itemid, metaapi}).fetch()).render(res);   //fetch will do search
-                                break;
-                            case "texts":
-                                if (d.useBookReader()) {
-                                    new Texts({itemid, metaapi, page}).render(res);
-                                } else {
-                                    new DetailsError({itemid, message: 'Cant be displayed in bookreader, code needs to use a carousel'}).render(res); //TODO-BOOK see thetaleofpeterra14304gut (I think) and alicesadventures19033gut (I think)
-                                }
-                                break;
-                            case "image":
-                                new Image({itemid, metaapi}).render(res);
-                                break;
-                            case "audio": // Intentionally drop thru to movies
-                            case "etree": // Concerts uploaded
-                                new Audio({itemid, metaapi}).render(res);
-                                break;
-                            case "movies":
-                                new Video({itemid, metaapi}).render(res);
-                                break;
-                            case "account":
-                                return (await new Account({itemid, metaapi}).fetch()).render(res);
-                            default:
-                                //TODO Not yet supporting software, zotero (0 items); data; web
-                                new DetailsError({itemid, message: `Unsupported mediatype: ${d.metadata.mediatype}`}).render(res);
-                            //    return new Nav(")
-                        }
+                        const item = await this.renderableItem({itemid, metaapi, page, prioritem: d});
+                        item.render(res);
+                        this.setCrawlStatus({identifier: itemid, crawl: item.crawl});
+                        return item;
                     }
                 }
             }
         } catch(err) {
             console.error("Nav.factory detected error",err);
             new DetailsError({itemid, message: err.message}).render(res);
+            //TODO-UXLOCAL think about return
+        }
+    }
+    static setCrawlStatus({identifier, crawl}) {
+        if (DwebArchive.mirror) {
+            ConfigDetailsComponent.insertInside('dweb-mirrorconfig', crawl); //TODO-UXLOCAL May need to ... {identifier: id || "/"})
+            //ConfigDetailsComponent.findAndSetState(crawl);
+        }
+    }
+
+    static async renderableItem({prioritem, itemid, metaapi, page}) {
+      /* Returns an ArchiveItem subclass or a DetailsError */
+        switch (metaapi.metadata.mediatype) {
+            case "collection":
+                return await new Collection({itemid, metaapi}).fetch();   //fetch will do search
+            case "texts":
+                if (prioritem.useBookReader()) {
+                    return new Texts({itemid, metaapi, page});
+                } else {
+                    //TODO-BOOKS find an example that cant use bookreader, there were some in a dweb-archive or dweb-mirror issue about bookreader
+                    return new DetailsError({itemid, message: 'Cant be displayed in bookreader, code needs to use a carousel'}); //TODO-BOOK see thetaleofpeterra14304gut (I think) and alicesadventures19033gut (I think)
+                }
+            case "image":
+                return new Image({itemid, metaapi});
+            case "audio": // Intentionally drop thru to movies
+            case "etree": // Concerts uploaded
+                return new Audio({itemid, metaapi});
+            case "movies":
+                return new Video({itemid, metaapi});
+            case "account":
+                return (await new Account({itemid, metaapi}).fetch());
+            default:
+                //TODO Not yet supporting software, zotero (0 items); data; web
+                return new DetailsError({itemid, message: `Unsupported mediatype: ${metaapi.metadata.mediatype}`});
+            //    return new Nav(")
         }
     }
 
