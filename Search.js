@@ -5,6 +5,7 @@ const canonicaljson = require('@stratumn/canonicaljson');
 
 import ArchiveBase from './ArchiveBase';
 import {ScrollableTileGrid} from "@internetarchive/ia-components/index.js";
+import {NavWrap} from '@internetarchive/ia-components/sandbox/details/NavWrap';
 
 /* Section to ensure node and browser able to use Headers, Request and Fetch */
 /*
@@ -54,7 +55,7 @@ export default class Search extends ArchiveBase {
          */
         return (
             <div id="wrap">
-                { new Nav().navwrap() }
+                <NavWrap item={this}/>
                 {/*TODO - follow structure used by Details and check matches archive.html/details examples */}
                 {/*--Begin page content --*/}
                 <div class="container container-ia">

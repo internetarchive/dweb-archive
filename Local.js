@@ -6,6 +6,7 @@ const ACUtil = require("@internetarchive/dweb-archivecontroller/Util.js");
 import React from "./ReactFake";
 import Collection from "./Collection";
 import {LocalWelcomeComponent, LocalGridRowComponent} from "./components/mirror/LocalComponent";
+import {NavWrap} from '@internetarchive/ia-components/sandbox/details/NavWrap';
 
 export default class Local extends Collection {
 
@@ -24,7 +25,7 @@ export default class Local extends Collection {
 
         return (
             <div id="wrap">
-                { new Nav().navwrap() }
+                <NavWrap item={this}/>
                 {/*--Begin page content --*/}
                 <div class="container container-ia">
                     <a name="maincontent" id="maincontent"></a>

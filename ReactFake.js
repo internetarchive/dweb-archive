@@ -573,27 +573,31 @@ export default class React  {
         }
     }
     static domrender(els, node) { // Four cases - have/dont old/new
-        let navdweb = document.getElementById('nav-dweb'); // Find the navbar element TODO-STATUS this might move
-        let navdwebparent;
-        if (navdweb) { // old, ?new
-            navdwebparent = navdweb.parentElement;
-            navdwebparent.removeChild(navdweb);
-            navdwebparent = undefined; // Removed old version
+        /* TODO-NAVDWEB
+            let navdweb = document.getElementById('nav-dweb'); // Find the navbar element TODO-STATUS this might move
+            let navdwebparent;
+            if (navdweb) { // old, ?new
+                navdwebparent = navdweb.parentElement;
+                navdwebparent.removeChild(navdweb);
+                navdwebparent = undefined; // Removed old version
+            }
+            */
+            deletechildren(node, false);
+            node.appendChild(els);
+            /*TODO-NAVDWEB
+            let navdwebnew = document.getElementById('nav-dweb'); // Look for a new one, note wont find the one we removed above
+            if (navdwebnew) navdwebparent = navdwebnew.parentElement;  // ?o&&n
+            if (navdweb && navdwebnew) { // o&&n
+                navdwebparent.removeChild(navdwebnew); // Remove new copy
+            }
+            if ( !navdwebparent) { // o&&!n,
+                navdwebparent = document.getElementById('nav-dweb-parent') || document.children[0]; // Find the navbar element and if fails then put on HTML for now TODO-STATUS this might move
+            }
+            if (navdweb) { // o&&?n Add in old one if we have it
+                navdwebparent.append(navdweb); // Put it back in the right place, or stash temporarily if not found
+            }
+         */
         }
-        deletechildren(node, false);
-        node.appendChild(els);
-        let navdwebnew = document.getElementById('nav-dweb'); // Look for a new one, note wont find the one we removed above
-        if (navdwebnew) navdwebparent = navdwebnew.parentElement;  // ?o&&n
-        if (navdweb && navdwebnew) { // o&&n
-            navdwebparent.removeChild(navdwebnew); // Remove new copy
-        }
-        if ( !navdwebparent) { // o&&!n,
-            navdwebparent = document.getElementById('nav-dweb-parent') || document.children[0]; // Find the navbar element and if fails then put on HTML for now TODO-STATUS this might move
-        }
-        if (navdweb) { // o&&?n Add in old one if we have it
-            navdwebparent.append(navdweb); // Put it back in the right place, or stash temporarily if not found
-        }
-    }
 };
 
 React.Component = class {

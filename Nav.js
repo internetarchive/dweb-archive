@@ -19,7 +19,6 @@ import Video from './Video';
 import Account from './Account';
 import DetailsError from './DetailsError';
 import DownloadDirectory from './DownloadDirectory';
-import ConfigDetailsComponent from './components/mirror/ConfigDetailsComponent';
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 const debug = require('debug')('dweb-archive:Nav');
 
@@ -28,117 +27,6 @@ const TRANSPORT_STATUS_PAUSED = 4;  // Cheat to avoid having to import Transport
 export default class Nav {
   constructor() {
     //super();
-    this.mts = ['web', 'texts', 'movies', 'audio', 'software', 'image'];
-  }
-
-  navwrap() {  // Embedded in wrap()
-      /* The navigation stuff.   Order is navwrap : maincontent : itemDetailsAbout */
-      /* navwrap1( navwrap2 (navhat; navbar( nav-tophat-helper; navbar-main; nav-about))) */
-      {/*--TODO-DETAILS update navwrap to match actual code in both search.html and commute.html--*/}
-      // noinspection CheckTagEmptyBody
-      return (
-        <div id="navwrap1">
-          <div id="navwrap2">
-
-            <div id="nav-tophat" class="collapse">
-
-                <div class="row toprow web" style="max-width:1000px;margin:auto;">
-                    <div class="col-xs-12">
-                        <div class="wayback-txt">
-                            Search the history of over 338 billion
-                            <a style="display:inline" href="https://blog.archive.org/2016/10/23/defining-web-pages-web-sites-and-web-captures/">web pages</a> on the Internet.
-                        </div>
-                        <div class="roundbox7 wayback-main">
-                            <div class="row">
-                                <div class="col-sm-6" style="padding-left:0; padding-right:0;">
-                                    <a style="padding-bottom:0" href="https://archive.org/web/"><img src="./images/WaybackLogoSmall.png" alt="Wayback Machine"/></a>
-                                </div>
-                                <div class="col-sm-6" style="padding-top:13px;">
-                                    <form style="position:relative;">
-                                        <span class="iconochive-search" aria-hidden="true"></span><span
-                                            class="sr-only">search</span> <label for="nav-wb-url" class="sr-only">Search the Wayback
-                                        Machine</label>
-                                        <input id="nav-wb-url" class="form-control input-sm roundbox20" type="text"
-                                               placeholder="enter URL or keywords" name="url" autocomplete="off"
-                                               onclick="$(this).css('padding-left','').parent().find('.iconochive-search').hide()"/>
-                                    </form>
-                                </div>
-                            </div>{/*--/.row--*/}
-                        </div>{/*--/.wayback-main--*/}
-                    </div>
-                </div>{/*--./row--*/}
-
-                {/* TODO-DETAILS-INFOREQD Need to figure out how to auto-generator the other rows of nav-tophat for each media type */}
-            </div>{/*--/#nav-tophat--*/}
-
-            <div id="nav-dweb-parent" className="navbar navbar-inverse navbar-static-top" role="navigation">
-              <div id="nav-tophat-helper" className="hidden-xs"></div>
-              <ul className="nav navbar-nav navbar-main">
-
-                {this.mts.map((mt, n) => (
-                     <li key={'mikey'+n} className="dropdown dropdown-ia pull-left">
-                         <AnchorDetails title={mt} className={'navia-link '+mt} identifier={mt}
-                         >{/*--disabled till top hat worked on dweb-archive issue#70 -- data-top-kind={mt} data-toggle="tooltip" target="_top" data-placement="bottom"--*/}
-                             <span className={'iconochive-'+mt} aria-hidden="true"></span>
-                             <span className="sr-only">{mt}</span>
-                         </AnchorDetails>
-                     </li>
-                ) ) }
-                <li className="navbar-brand-li">
-                  <a className="navbar-brand" onClick="Nav.nav_home();" target="_top">
-                    <span className="iconochive-logo"  aria-hidden="true"></span>
-                    <span className="sr-only">logo</span>
-                  </a>
-                </li>
-
-                <li id="nav-search" className="dropdown dropdown-ia pull-right">
-                  <a onClick="$(this).parents('#nav-search').find('form').submit(); return false;">
-                    <span className="iconochive-search" aria-hidden="true"></span>
-                    <span className="sr-only">search</span>
-                  </a>
-                  <div class="searchbar">
-                    <form  class="search-form js-search-form" role="search" onSubmit="Nav.nav_search(this.elements[0].value); return 0;"
-                        data-event-form-tracking="TopNav|SearchForm" data-wayback-machine-search-url="https://web.archive.org/web/*/">
-                      <label htmlFor="search-bar-2" className="sr-only">Search the Archive</label>
-                      <input id="search-bar-2" class="js-search-bar" placeholder="Search" type="text" name="search" value=""
-                        aria-controls="navbar_search_options" aria-label="Search the Archive. Filters and Advanced Search available below."/>
-                      <input type="submit" value="Search"/>
-                    </form>
-                  </div>
-                </li>
-
-                <li className="dropdown dropdown-ia pull-right">
-                  <a href="https://archive.org/create" target="top" data-toggle="tooltip" data-placement="bottom" title="Upload">
-                    <span className="iconochive-upload"  aria-hidden="true"></span>
-                    <span className="sr-only">upload</span>
-                  </a>
-                </li>
-              </ul> {/*--navbar-main--*/}
-              <ul id="nav-abouts" class="">
-                {/*--TODO-BOOTSTRAP ongoing, was trying to make these eg. /about and use name lookup, but fails because not CORS and have not built gateway, and there is no "headless" version of these pages--*/}
-                <li><a target="_top" data-event-click-tracking="TopNav|AboutLink" href="https://archive.org/about/">ABOUT</a>
-                </li>
-                <li><a target="_top" data-event-click-tracking="TopNav|ContactLink"
-                       href="https://archive.org/about/contact.php">CONTACT</a></li>
-                <li><a target="_top" data-event-click-tracking="TopNav|BlogLink" href="https://blog.archive.org">BLOG</a>{/*--TODO-BOOTSTRAP this was //blog, no good reason why not forcing https --*/}
-                </li>
-                <li><a target="_top" data-event-click-tracking="TopNav|ProjectsLink"
-                       href="https://archive.org/projects">PROJECTS</a></li>
-                <li><a target="_top" data-event-click-tracking="TopNav|HelpLink"
-                       href="https://archive.org/about/faqs.php">HELP</a></li>
-                <li><a target="_top" data-event-click-tracking="TopNav|DonateLink"
-                       href="https://archive.org/donate">DONATE</a></li>
-                <li><a target="_top" data-event-click-tracking="TopNav|JobsLink"
-                       href="https://archive.org/about/jobs.php">JOBS</a></li>
-                <li><a target="_top" data-event-click-tracking="TopNav|VolunteerLink"
-                       href="https://archive.org/about/volunteerpositions.php">VOLUNTEER</a></li>
-                <li><a target="_top" data-event-click-tracking="TopNav|PeopleLink"
-                       href="https://archive.org/about/bios.php">PEOPLE</a></li>
-              </ul>
-                {/*--navbar--*/} </div>
-          {/*--nav-wrap2--*/} </div>
-        {/*--nav-wrap1--*/} </div>
-      );
   }
 
     static clear(destn) {
@@ -263,7 +151,7 @@ export default class Nav {
         try {
             if (!itemid) {
                 (await new Home().fetch()).render(res);
-                this.setCrawlStatus({identifier: id, crawl: item.crawl});
+                /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
             } else if (itemid === "local") {
                 (await new Local({itemid, metaapi:{}})).render(res);  //TODO-UXLOCAL figure out how to get yaml to it
             } else {
@@ -281,11 +169,11 @@ export default class Nav {
                     if (downloaddirectory) {
                         const item = new DownloadDirectory({itemid, metaapi});
                         item.render(res);
-                        this.setCrawlStatus({identifier: id, crawl: item.crawl});
+                        /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
                     } else {
                         const item = await this.renderableItem({itemid, metaapi, page, prioritem: d});
                         item.render(res);
-                        this.setCrawlStatus({identifier: itemid, crawl: item.crawl});
+                        /* TODO-DWEBNAV this.setCrawlStatus({identifier: itemid, crawl: item.crawl}); */
                         return item;
                     }
                 }
@@ -296,13 +184,14 @@ export default class Nav {
             //TODO-UXLOCAL think about return
         }
     }
+    /*TODO-DWEBNAV
     static setCrawlStatus({identifier, crawl}) {
         if (DwebArchive.mirror) {
             ConfigDetailsComponent.insertInside('dweb-mirrorconfig', crawl); //TODO-UXLOCAL May need to ... {identifier: id || "/"})
             //ConfigDetailsComponent.findAndSetState(crawl);
         }
     }
-
+    */
     static async renderableItem({prioritem, itemid, metaapi, page}) {
       /* Returns an ArchiveItem subclass or a DetailsError */
         switch (metaapi.metadata.mediatype) {

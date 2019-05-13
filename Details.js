@@ -19,6 +19,7 @@ import {DetailsActionButtons, DetailsCollectionList, DetailsDownloadOptions, Rel
 
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
+import {NavWrap} from '@internetarchive/ia-components/sandbox/details/NavWrap';
 
 export default class Details extends ArchiveBase {
     constructor({itemid = undefined, metaapi = undefined}={}) {
@@ -34,7 +35,7 @@ export default class Details extends ArchiveBase {
         return (
             <div id="wrap" itemscope itemtype={this.itemtype}>
                 {/* Missing donate-banner and scripts & css before it */}
-                { new Nav().navwrap() }
+                <NavWrap item={this}/>
                 {/*--Begin page content --*/}
                 <div class="container container-ia">
                     <a name="maincontent" id="maincontent"></a>

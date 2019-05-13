@@ -2,7 +2,7 @@ import React from './ReactFake';
 import Search from "./Search";
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
 import {Tabby} from "@internetarchive/ia-components/index.js";
-
+import {NavWrap} from '@internetarchive/ia-components/sandbox/details/NavWrap';
 
 export default class Collection extends Search {
     constructor({itemid=undefined, metaapi=undefined}={}) {
@@ -24,7 +24,7 @@ export default class Collection extends Search {
         return (
             <div id="wrap">
                 {/*TODO needs "aside" */}
-                { new Nav().navwrap() }
+                <NavWrap item={this}/>
                 {/*--Begin page content --*/}
                 <div class="container container-ia">
                     <a name="maincontent" id="maincontent"></a>

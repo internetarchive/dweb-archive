@@ -1,6 +1,7 @@
 import React from './ReactFake';
 import Search from './Search';
 import {Tabby} from "@internetarchive/ia-components/index.js";
+import {NavWrap} from '@internetarchive/ia-components/sandbox/details/NavWrap';
 
 export default class Account extends Search {
     /*
@@ -37,7 +38,7 @@ export default class Account extends Search {
         return (
             <div id="wrap">
                 {/* Missing donate-banner and scripts & css before it */}
-                { new Nav().navwrap() }
+                <NavWrap item={this}/>
                 {/*--Begin page content --*/}
                 <main id="maincontent">
                     <div class="container container-ia">

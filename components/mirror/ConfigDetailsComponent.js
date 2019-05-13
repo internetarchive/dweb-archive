@@ -24,7 +24,7 @@ export default class ConfigDetailsComponent extends IAReactComponent {
     */
     constructor(props)
     {
-        super(props);
+        super(props);   // { identifier, level, search }
         this.setState(props);
         ConfigDetailsComponent.instance = this; // Allow finding it
     }
@@ -35,6 +35,7 @@ export default class ConfigDetailsComponent extends IAReactComponent {
     static findAndSetState(state) {
         this.instance.setState(state);
     }
+    /* TODO-DWEBNAV
     static insertInside(elementId, props={}) { //TODO-UXLOCAL probably obsolete
         // Called from nav_details to display the config info
         const parentElement = document.getElementById(elementId); // Note this isnt a Component, cos its in the archive.html
@@ -45,6 +46,7 @@ export default class ConfigDetailsComponent extends IAReactComponent {
         //React.addKids(parentElement, el); // Using addKids to force the "ref" to be used //TODO-IAUX probably doesnt have addKids ?
         ReactDOM.render(el, parentElement)
     }
+     */
     render() {
         //if (this.isFakeReact || !this.loaded()) {
         //    return <span ref={this.load}>Loading ...</span>
