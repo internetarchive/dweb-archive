@@ -135,6 +135,8 @@ For a *Search/Colletion/Home* the structure is slightly different
 See [Dweb document index](https://github.com/internetarchive/dweb-transports/blob/master/DOCUMENTINDEX.md) for a list of the repos that make up the Internet Archive's Dweb project, and an index of other documents. 
 
 ## Release notes
+
+* 0.1.61: Updated ia-components and dweb-archivecontroller in webpack
 * 0.1.60: move navwrap into IAUX and rebuild transport and crawl indicators
 * 0.1.59: Bug fix with undefined description
 * 0.1.58: Added crawl UI CSS (rest is in ia-components) 
