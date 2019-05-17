@@ -15,6 +15,7 @@ import React from './ReactFake';
 // React requires className= rather than class=, ReactFake supports both
 
 import ACUtil from '@internetarchive/dweb-archivecontroller/Util';
+import ArchiveMember from '@internetarchive/dweb-archivecontroller/ArchiveMember.js';
 import {DetailsActionButtons, DetailsCollectionList, DetailsDownloadOptions, RelatedItems} from "@internetarchive/ia-components/index.js";
 
 import ArchiveBase from './ArchiveBase';
@@ -297,7 +298,11 @@ export default class Details extends ArchiveBase {
                     <div class="col-sm-4 thats-right item-details-archive-info">
                         {/*TODO need section class=boxy item-stats-summary- not obvious where data from, its not in metadata */}
                         <DetailsDownloadOptions identifier={itemid} files={this.files} files_count={this.files_count}/>
-                        <DetailsCollectionList collections={collections} collectionTitles={collectionTitles}/>
+                        <DetailsCollectionList
+                            collections={collections}
+                            collectionTitles={collectionTitles}
+                            ArchiveMemberExpand={ArchiveMember.expand}
+                        />
                         {/*TODO need boxy item-upload-info - its not obvious, on commute its the adder field, on mbid its derivation
                         of uploader which is email, on text its ___ */}
                     </div>{/*--/.col-md-2--*/}
