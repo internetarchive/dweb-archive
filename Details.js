@@ -15,8 +15,8 @@ import React from './ReactFake';
 // React requires className= rather than class=, ReactFake supports both
 
 import ACUtil from '@internetarchive/dweb-archivecontroller/Util';
-import {DetailsActionButtons, DetailsCollectionList, DetailsDownloadOptions, RelatedItems} from "@internetarchive/ia-components/index.js";
-
+import {DetailsActionButtons, DetailsDownloadOptions, RelatedItems} from "@internetarchive/ia-components/index.js";
+import DetailsCollectionList from './components/DetailsCollectionList';
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
 import {NavWrap} from '@internetarchive/ia-components/sandbox/details/NavWrap';

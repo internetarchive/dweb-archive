@@ -1,6 +1,6 @@
 import React from 'react';
-import IAReactComponent from '../IAReactComponent';
-import AnchorDetails from '../AnchorDetails';
+import IAReactComponent from './IAReactComponent';
+import {AnchorDetails} from '@internetarchive/ia-components/index.js';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember.js";
 
 /*
@@ -9,6 +9,9 @@ import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember
     If titles arent supplied it will attempt to find through ArchiveMember.expand so dependend on ArchiveMember if not supplying titles.
 
     <DetailsCollectionList collections=["prelinger"*]  collectionTitles={prelinger: "Prelinger Archives"} />
+
+    TODO - Isa wants this collection to be passed the collectionTitles already expanded,
+    TODO - since caller is Details.js which is FakeReact and doesnt rerender this will have to wait until something above this is React and therefore r-rendering
 
  */
 export default class DetailsCollectionList extends IAReactComponent {
