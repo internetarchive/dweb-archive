@@ -59,7 +59,7 @@ Name:&nbsp;<input type="text" class="formbox" id="urlorname" placeholder="/arc/a
             statusupdate("Loading URL: ", orighref);
             const url = new URL(orighref);
             let name;
-            const pathname = (url.pathname === "/") ? "" : url.pathname; // Remove extraneous / if added by browser
+            const pathname = (url.pathname === "/") ? "/home" : url.pathname; // Remove extraneous / if added by browser
             url.pathname = "";  // Leave empty as intended, will resolve to Domain or Leaf of the domain name
             if (url.hostname === "dweb.me") {                                   // e.g. https://dweb.me/arc/archive.org/foo
                 name = pathname.substring(1);                                   // should be arc/ or ipfs/ or something like that
