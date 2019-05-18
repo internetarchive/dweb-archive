@@ -2,7 +2,7 @@ const debug = require('debug')("BookReaderWrapper");
 import React from "../ReactFake";
 import IAFakeReactComponent from './IAFakeReactComponent';
 import RawBookReaderResponse from '@internetarchive/dweb-archivecontroller/RawBookReaderResponse';
-const ACUtil = require('@internetarchive/dweb-archivecontroller/Util'); // For gatewayServr
+import {gatewayServer} from '@internetarchive/dweb-archivecontroller/Util'; // For gatewayServr
 
 //TODO-BOOK note all the <script> tags added to archive.html for this, some may be able to be moved here
 /*
@@ -38,7 +38,7 @@ export default class BookReaderWrapper extends IAFakeReactComponent {
         if (this.props.item) this.props.identifier = this.props.item.itemid;
     }
     loadcallable(enclosingElement) {
-        const protocolServer = ACUtil.gatewayServer();
+        const protocolServer = gatewayServer();
         const [ protocol, unused, serverPort] = protocolServer.split('/');
         const item = this.props.item;
         const identifier = this.props.identifier;

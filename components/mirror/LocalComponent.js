@@ -3,7 +3,7 @@ import IAReactComponent from '../IAReactComponent';
 const debug = require('debug')('dweb-archive:LocalComponent');
 
 import {TileGrid} from "@internetarchive/ia-components/index.js";
-import ACUtil  from '@internetarchive/dweb-archivecontroller/Util';
+import {gatewayServer, Object_deeperAssign}  from '@internetarchive/dweb-archivecontroller/Util';
 import ArchiveMember from '@internetarchive/dweb-archivecontroller/ArchiveMember';
 
 const _levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-archive/components/ConfigDetailsComponent.js
@@ -55,14 +55,16 @@ class LocalGridRowComponent extends IAReactComponent {
         const config = info.config; // Mixed in with other info
         const configdefault = config[0];
         const configuser = config[1] || {};
-        const configmerged = Object.deeperAssign({}, configdefault, configuser); // Cheating, but assumes no arrays needing merging
-        ArchiveMember.expand(configmerged.apps.crawl.tasks.map(task => task.identifier), (err, memberDict) => {
-            const members = configmerged.apps.crawl.tasks.map(task => {
-                const isDetailsOrMore = task && (_levels.indexOf(task.level) >= _levels.indexOf("details"));
-                return (memberDict[task.identifier] || new ArchiveMember({identifier: task.identifier, crawl: task}, {unexpanded: true}));
+        const configmerged = Object_deeperAssign({}, configdefault, configuser); // Cheating, but assumes no arrays needing merging
+        ArchiveMember.expand(
+            configmerged.apps.crawl.tasks.map(task => task.identifier),     // [IDENTIFIER*]
+            (err, memberDict) => {                                      // { IDENTIFIER: ArchiveMember }
+                const members = configmerged.apps.crawl.tasks.map(task => {
+                    const isDetailsOrMore = task && (_levels.indexOf(task.level) >= _levels.indexOf("details"));
+                    return (memberDict[task.identifier] || new ArchiveMember({identifier: task.identifier, crawl: task}, {unexpanded: true}));
+                });
+                cb(null, members);
             });
-            cb(null, members);
-        });
         // TODO-UXLOCAL handle default things like configmerged.apps.crawl.opts.defaultDetailsSearch
     }
 
@@ -70,7 +72,7 @@ class LocalGridRowComponent extends IAReactComponent {
         // Called by React (Fake or Real) when the Loading... div is displayed
         this.enclosingElement = enclosingEl; // Tell it where to render inside when info found
         if (!this.loaded()) { // Break loop render->loadcallable->setState->render ...
-            const urlConfig = [ACUtil.gatewayServer(), "info"].join('/');
+            const urlConfig = [gatewayServer(), "info"].join('/');
             DwebTransports.httptools.p_GET(urlConfig, {}, (err, info) => {
                 if (err) {
                     debug("Config Failed to get info");

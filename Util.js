@@ -139,7 +139,7 @@ function canonicalUrl(url, opts={}) {
         By default URLs are returned unmodified
 
         Cases handled:
-        /xxx -> Dweb|Mirror: <server>/arc/archive.org/xxx AO:
+        /xxx -> Dweb|Mirror: <server>/arc/archive.org/xxx AO: /xxx      Required for /services/img in thumbnails
      */
     if (url.startsWith("/")) {
         return (typeof DwebArchive === "undefined")  ? url : DwebArchive.mirror + "/arc/archive.org" + url

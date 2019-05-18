@@ -1,7 +1,7 @@
 /* This is a transition file, bridging between the model of everything subclassing Details, while moving to componentization */
 //const debug = require('debug')('Local');
 // Other internetarchive repos
-const ACUtil = require("@internetarchive/dweb-archivecontroller/Util.js");
+import {gatewayServer} from "@internetarchive/dweb-archivecontroller/Util.js";
 // This repo
 import React from "./ReactFake";
 import Collection from "./Collection";
@@ -14,7 +14,7 @@ export default class Local extends Collection {
         /* TODO-UXLOCAL add control buttons */
         return <LocalWelcomeComponent
                     title="Resources"
-                    byline={"downloaded to "+ ACUtil.gatewayServer()}
+                    byline={"downloaded to "+ gatewayServer()}
                     description=""
                 />
     }

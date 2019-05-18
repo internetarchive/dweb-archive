@@ -36,7 +36,7 @@ export default class Nav {
     }
     static async nav_home({wanthistory=true}={}) {
         debug("Going home");
-        return await Nav.nav_details(undefined, {wanthistory});
+        return await Nav.nav_details("home", {wanthistory});
     }
 
     static async nav_details(id, {wanthistory=true, page=undefined}={}) {
@@ -149,8 +149,8 @@ export default class Nav {
             history.pushState(historystate, `Internet Archive item ${itemid ? itemid : ""}`, historyloc);
         }
         try {
-            if (!itemid) {
-                (await new Home().fetch()).render(res);
+            if (!itemid || (itemid === "home")) {
+                (await new Home({itemid: "home"}).fetch()).render(res);
                 /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
             } else if (itemid === "local") {
                 (await new Local({itemid, metaapi:{}})).render(res);  //TODO-UXLOCAL figure out how to get yaml to it
@@ -187,7 +187,7 @@ export default class Nav {
     /*TODO-DWEBNAV
     static setCrawlStatus({identifier, crawl}) {
         if (DwebArchive.mirror) {
-            ConfigDetailsComponent.insertInside('dweb-mirrorconfig', crawl); //TODO-UXLOCAL May need to ... {identifier: id || "/"})
+            ConfigDetailsComponent.insertInside('dweb-mirrorconfig', crawl); //TODO-UXLOCAL May need to ... {identifier: id || "home"})
             //ConfigDetailsComponent.findAndSetState(crawl);
         }
     }
