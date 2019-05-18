@@ -1,7 +1,7 @@
 import React from './ReactFake';
 
 import AV from './AV';
-import Util from './Util';
+import {config} from './Util';
 import TheatreControls from './components/TheatreControls';
 
 /* Notes on Audio
@@ -30,7 +30,7 @@ export default class Audio extends AV {
             .forEach(el => el.classList.remove("playing"));
         elAnchor.querySelectorAll(".jwrowV2").forEach(el => el.classList.add("playing"));
         const elAudio = document.getElementById("streamContainer");
-        React.loadStream(elAudio, af, {name: af.metadata.name, preferredTransports: Util.config.preferredAVtransports});
+        React.loadStream(elAudio, af, {name: af.metadata.name, preferredTransports: config.preferredAVtransports});
         return false;
     }
 

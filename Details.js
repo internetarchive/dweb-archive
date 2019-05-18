@@ -16,7 +16,7 @@ import React from './ReactFake';
 
 import ACUtil from '@internetarchive/dweb-archivecontroller/Util';
 import {DetailsActionButtons, DetailsDownloadOptions, RelatedItems} from "@internetarchive/ia-components/index.js";
-import DetailsCollectionList from './components/DetailsCollectionList';
+import DetailsCollectionListWrapper from './components/DetailsCollectionListWrapper';
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
 import {NavWrap} from '@internetarchive/ia-components/sandbox/details/NavWrap';
@@ -72,7 +72,7 @@ export default class Details extends ArchiveBase {
             $(this).children(".my-checkbox").toggleClass("checked");
             $.get($(this).attr("href"))
         });
-        super.browserAfter(); // runs archive_setup_push and Util.AJS_on_dom_loaded(); Do this after the scripts above - which means put this browserAfter AFTER superclasses
+        super.browserAfter(); // runs archive_setup_push and AJS_on_dom_loaded(); Do this after the scripts above - which means put this browserAfter AFTER superclasses
     }
 
     embedWordpress() {
@@ -297,7 +297,7 @@ export default class Details extends ArchiveBase {
                     <div class="col-sm-4 thats-right item-details-archive-info">
                         {/*TODO need section class=boxy item-stats-summary- not obvious where data from, its not in metadata */}
                         <DetailsDownloadOptions identifier={itemid} files={this.files} files_count={this.files_count}/>
-                        <DetailsCollectionList collections={collections} collectionTitles={collectionTitles}/>
+                        <DetailsCollectionListWrapper collections={collections} collectionTitles={collectionTitles}/>
                         {/*TODO need boxy item-upload-info - its not obvious, on commute its the adder field, on mbid its derivation
                         of uploader which is email, on text its ___ */}
                     </div>{/*--/.col-md-2--*/}

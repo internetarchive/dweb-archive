@@ -3,7 +3,7 @@ import React from './ReactFake';
 //import ReactDOMServer from 'react-dom/server';
 //Next line is for client, not needed on server but doesnt hurt
 //import ReactDOM from 'react-dom';
-import Util from './Util';
+import {AJS_on_dom_loaded} from './Util';
 import ArchiveItem from '@internetarchive/dweb-archivecontroller/ArchiveItem';
 
 export default class ArchiveBase extends ArchiveItem {
@@ -41,7 +41,7 @@ export default class ArchiveBase extends ArchiveItem {
     }
     browserAfter() {
         this.archive_setup_push(); // Subclassed function to setup stuff for after loading.
-        Util.AJS_on_dom_loaded(); // Runs code pushed archive_setup - needed for image if "super" this, put it after superclasses
+        AJS_on_dom_loaded(); // Runs code pushed archive_setup - needed for image if "super" this, put it after superclasses
     }
     render(res) {
         var els = this.wrap();    // Build the els
