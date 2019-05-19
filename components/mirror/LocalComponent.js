@@ -1,6 +1,7 @@
 import React from 'react';
 import IAReactComponent from '../IAReactComponent';
 const debug = require('debug')('dweb-archive:LocalComponent');
+import waterfall from 'async/waterfall';
 
 import {TileGrid} from "@internetarchive/ia-components/index.js";
 import {gatewayServer, Object_deeperAssign}  from '@internetarchive/dweb-archivecontroller/Util';
@@ -35,6 +36,8 @@ class LocalWelcomeComponent extends IAReactComponent {
         </div>
     )}
 }
+
+//util_apply(f, cb) => return function(err, interim) { let donecb=false; if (err) { cb(err); } else { try { var res = f(interim); donecb=true; cb(null, interim) } catch(err) { cb(err) }}}
 class LocalGridRowComponent extends IAReactComponent {
     /*  static propTypes = {
             members: PropTypes.array,
@@ -49,37 +52,30 @@ class LocalGridRowComponent extends IAReactComponent {
     loaded() {
         return this.state.members && this.state.members.length
     }
-
-    stateFromInfo(info, cb) {
-        //TODO-UXLOCAL Note this might want to go in higher level so can display defaults at banner for example
-        const config = info.config; // Mixed in with other info
-        const configdefault = config[0];
-        const configuser = config[1] || {};
-        const configmerged = Object_deeperAssign({}, configdefault, configuser); // Cheating, but assumes no arrays needing merging
-        ArchiveMember.expand(
-            configmerged.apps.crawl.tasks.map(task => task.identifier),     // [IDENTIFIER*]
-            (err, memberDict) => {                                      // { IDENTIFIER: ArchiveMember }
-                const members = configmerged.apps.crawl.tasks.map(task => {
-                    const isDetailsOrMore = task && (_levels.indexOf(task.level) >= _levels.indexOf("details"));
-                    return (memberDict[task.identifier] || new ArchiveMember({identifier: task.identifier, crawl: task}, {unexpanded: true}));
-                });
-                cb(null, members);
-            });
-        // TODO-UXLOCAL handle default things like configmerged.apps.crawl.opts.defaultDetailsSearch
-    }
-
+    
     loadcallable(enclosingEl) {
         // Called by React (Fake or Real) when the Loading... div is displayed
         this.enclosingElement = enclosingEl; // Tell it where to render inside when info found
         if (!this.loaded()) { // Break loop render->loadcallable->setState->render ...
             const urlConfig = [gatewayServer(), "info"].join('/');
-            DwebTransports.httptools.p_GET(urlConfig, {}, (err, info) => {
-                if (err) {
-                    debug("Config Failed to get info");
-                } else {
-                    this.stateFromInfo(info, (err, res) => this.setState({members: res}));
+            let configmerged;
+            waterfall([
+                cb => DwebTransports.httptools.p_GET(urlConfig, {}, cb),
+                (info, cb) => {
+                        configmerged = Object_deeperAssign({}, ...info.config);
+                        ArchiveMember.expand(configmerged.apps.crawl.tasks.map(task => task.identifier), cb);
+                    }, // { ArchiveMember } [IDENTIFIER*]
+                ],(err, memberDict) => { // [ArchiveMember*]
+                    if (err) {
+                        debug("ERROR: loadcallable failed %O", err);
+                    } else {
+                        const members = configmerged.apps.crawl.tasks.map(task =>
+                            memberDict[task.identifier] || new ArchiveMember({identifier: task.identifier, crawl: task}, {unexpanded: true}));
+                        this.setState({members})
+                    }
                 }
-            });
+            );
+            // TODO-UXLOCAL handle default things like configmerged.apps.crawl.opts.defaultDetailsSearch
         }
     }
 
