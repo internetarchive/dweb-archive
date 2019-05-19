@@ -132,7 +132,7 @@ export default class React  {
                     if (err) { cb(err) } else { cb(null, [].concat(...res)) }; // Flatten, for now accept there might be dupes
                 });
             } else if (url instanceof ArchiveMember) {  // Its a member, we want the urls of the images
-                url.urls(cb);                           // This will be fast - just thumbnaillinks or service, wont try and ask gateway for metadata and IPFS ima
+                url.urls(cb);                           // This will be fast - just thumbnaillinks or services, wont try and ask gateway for metadata and IPFS ima
             } else if (url instanceof ArchiveFile) {
                 url.urls(cb);                           // This could be slow, may have to get the gateway to cache the file in IPFS
             } else {
@@ -172,7 +172,7 @@ export default class React  {
                 urls = urls.filter(u => !u.includes("magnet:"));
             } else { // This includes ArchiveMember
                 urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
-            }  //Examples: [dweb:/arc/archive.org/service/foo]
+            }  //Examples: [dweb:/arc/archive.org/services/foo]
             for (i in urls) { // This can get used if /services/xx passed in here, then converted to dweb:/arc/archive.org/services
                 if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
                     urls[i] = await this.thumbnailUrlsFrom(urls[i].slice(35));

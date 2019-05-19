@@ -101,9 +101,9 @@ Thumbnail links are slightly odd due to an IA anomaly.
 
 * From archive.org
     * They are generated and stored in a database, *not* as files.
-    * They are retrieved from e.g.  [archive.org/service/commute](https://archive.org/service/commute)
+    * They are retrieved from e.g.  [archive.org/services/img/commute](https://archive.org/services/img/commute)
 * From Gateway
-    * During item-level metadata queries they are retrieved from the archive.org/service link
+    * During item-level metadata queries they are retrieved from the archive.org/services/img link
     and added to IPFS & Contenthash and links to these locations are added to the item level metadata.
 * From Dweb
     * They are accessible via the IPFS links added in the metadata (since we use files.add instead of urlstore)
