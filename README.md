@@ -136,6 +136,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* 0.1.63: webpack fixes from ia-components (unpushed) and dweb-archivecontroller 0.1.59
 * 0.1.62: DetailsCollectionList supporting icons, dweb-archivecontroller/Util.js refactor, support home and local better
 * 0.1.61: Updated ia-components and dweb-archivecontroller in webpack
 * 0.1.60: move navwrap into IAUX and rebuild transport and crawl indicators
