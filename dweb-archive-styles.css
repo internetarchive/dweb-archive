@@ -126,6 +126,9 @@ body.navia .navbar #nav-dweb a img {
 .crawlnone {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="200" height="200"><circle cx="100" cy="100" r="95" fill="red" /></svg>');
 }
+.crawldownloaded {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="200" height="200"><circle cx="100" cy="100" r="95" fill="white" /></svg>');
+}
 .crawldetails {
      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="200" height="200"><circle cx="100" cy="100" r="95" fill="green" /></svg>');
 }
