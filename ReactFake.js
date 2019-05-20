@@ -303,7 +303,7 @@ export default class React  {
             Dont try and use IPFS till get a fix for createReadStream
 
             el: HTML element to load into (the video, img or audio tag)
-            urls:   String, Array or ArchiveFile
+            urls:   relative or absolute url, array of url, or ArchiveFile i.e. flexible!
             name:   Name of the stream - this is important to something, but I can't remember what
             cb(err,el):     If present, will be passed to RenderMedia.render and called back on failure or when can play/view the element
         */
@@ -312,7 +312,7 @@ export default class React  {
             //TODO-MIRROR-ISSUE47 ...and then p_resolveNames (or in here) should probably be where we decide these can go to the cache...
             //TODO-MIRRROR-ISSUE47 ... or merge p_resolveUrls with p_resolveNames into a urls->urls function esp if this pattern reused ...
             //TODO-MIRROR-ISSUE47 ... but needs to know whether to handle the cache URL as a stream URL or not ...
-            const urlsabs = await this.p_resolveUrls(urls); // Allow relative urls
+            const urlsabs = await this.p_resolveUrls(urls); // [ url* ] where url is absolute (not root or directory relative)
             const urlsresolved = await DwebTransports.p_resolveNames(urlsabs); // Allow names among urls
             // Strategy here ...
             // If serviceworker && webtorrent => video src=
@@ -331,6 +331,7 @@ export default class React  {
                         // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
                         // TODO clean this nasty kludge up,
                         // Find a HTTP transport if connected, then ask it for the URL (as will probably be contenthash) note it leaves non contenthash urls untouched
+                        // TODO if start seeing failures with wrong urls e.g. http://ipfs.io etc then may want to do a HEAD in p_httpfetchurl to check
                         const httpurl = await DwebTransports.p_httpfetchurl(urlsresolved);
                         if (httpurl) {
                             el.src = httpurl;
