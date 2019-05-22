@@ -7,7 +7,7 @@ import {NavWrap} from '@internetarchive/ia-components/sandbox/details/NavWrap';
 export default class Collection extends Search {
     constructor({itemid=undefined, metaapi=undefined}={}) {
         super({ itemid, metaapi,
-            query:  'collection:'+itemid,
+            // query:  'collection:'+itemid, // Replaced by more complex default query in dweb-archivecontroller:ArchiveItem._fetch_query
             sort:   '-downloads',   // This will be overridden based on collection_sort_order
         });
     }

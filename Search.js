@@ -35,7 +35,7 @@ export default class Search extends ArchiveBase {
     Inherited from ArchiveBase: item
     items   List of items found
      */
-    constructor({query='*:*', sort='', and='', rows=searchConfig.rows, page=1, metaapi=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
+    constructor({query=undefined, sort='', and='', rows=searchConfig.rows, page=1, metaapi=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
         super({itemid, metaapi});
         if (typeof(query) === "object") { // form { creator: "Foo bar" ... }
             // This next line uses stringify instead of toString() because we want  '"abc"' and '1' i.e. quotes if its a string
