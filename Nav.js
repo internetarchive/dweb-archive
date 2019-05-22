@@ -187,8 +187,8 @@ export default class Nav {
     /*TODO-DWEBNAV
     static setCrawlStatus({identifier, crawl}) {
         if (DwebArchive.mirror) {
-            ConfigDetailsComponent.insertInside('dweb-mirrorconfig', crawl); //TODO-UXLOCAL May need to ... {identifier: id || "home"})
-            //ConfigDetailsComponent.findAndSetState(crawl);
+            ConfigCrawl.insertInside('dweb-mirrorconfig', crawl); //TODO-UXLOCAL May need to ... {identifier: id || "home"})
+            //ConfigCrawl.findAndSetState(crawl);
         }
     }
     */

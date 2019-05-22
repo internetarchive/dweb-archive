@@ -7,7 +7,7 @@ import {TileGrid} from "@internetarchive/ia-components/index.js";
 import {gatewayServer, Object_deeperAssign}  from '@internetarchive/dweb-archivecontroller/Util';
 import ArchiveMember from '@internetarchive/dweb-archivecontroller/ArchiveMember';
 
-const _levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-archive/components/ConfigDetailsComponent.js
+const _levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-components/.../ConfigCrawl.js
 
 class LocalWelcomeComponent extends IAReactComponent {
 /*  static propTypes = {
@@ -94,7 +94,7 @@ class LocalGridRowComponent extends IAReactComponent {
             </div>
     )}
 
-    // Everything below here is same on LocalComponent and ConfigDetailsComponent - could be a subclass
+    // Everything below here is same on LocalComponent and ConfigCrawl - could be a subclass
 
     setState(infoAsState) {
         // Called when new info is available to display

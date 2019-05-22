@@ -1,7 +1,7 @@
 import React from './ReactFake';
 import Search from './Search';
 import {Tabby} from "@internetarchive/ia-components/index.js";
-import {NavWrap} from '@internetarchive/ia-components/sandbox/details/NavWrap';
+import {NavWrap} from '@internetarchive/ia-components/index.js';
 
 export default class Account extends Search {
     /*

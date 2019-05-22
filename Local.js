@@ -6,7 +6,7 @@ import {gatewayServer} from "@internetarchive/dweb-archivecontroller/Util.js";
 import React from "./ReactFake";
 import Collection from "./Collection";
 import {LocalWelcomeComponent, LocalGridRowComponent} from "./components/mirror/LocalComponent";
-import {NavWrap} from '@internetarchive/ia-components/sandbox/details/NavWrap';
+import {NavWrap} from '@internetarchive/ia-components/index.js';
 
 export default class Local extends Collection {
 

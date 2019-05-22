@@ -19,7 +19,7 @@ import {DetailsActionButtons, DetailsDownloadOptions, RelatedItems} from "@inter
 import DetailsCollectionListWrapper from './components/DetailsCollectionListWrapper';
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
-import {NavWrap} from '@internetarchive/ia-components/sandbox/details/NavWrap';
+import {NavWrap} from '@internetarchive/ia-components/index.js';
 
 export default class Details extends ArchiveBase {
     constructor({itemid = undefined, metaapi = undefined}={}) {
