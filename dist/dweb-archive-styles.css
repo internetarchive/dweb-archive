@@ -51,13 +51,19 @@ body.navia .navbar #nav-dweb ul{margin-bottom: 0px; display: inline}
     height: auto;
     display: block; /* Make sure Dweb ipfs, etc all on one line - flexgrid could be better*/
 }
-#dweb-status, #dweb-mirrorconfig {
+#dweb-status, #dweb-mirrorconfig, #dweb-mirrorreload {
     display: inline-block;
 }
-#dweb-status ul, #dweb-mirrorconfig ul {
+/*
+Override default for <a> as blue
+ */
+#dweb-mirrorreload a {
+    color: #ccc
+}
+#dweb-status ul, #dweb-mirrorconfig ul, #dweb-mirrorreload ul {
     padding-left:0;
 }
-body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb a, .navbar #nav-dweb #dweb-mirrorconfig li {
+body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb a, .navbar #nav-dweb #dweb-mirrorconfig li, .navbar #nav-dweb #dweb-mirrorreload li {
     height: auto;
     font-size: 12px;
     cursor: pointer;
@@ -66,10 +72,10 @@ body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb a, .n
     zoom:1;
     line-height:1;
 }
-body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb #dweb-mirrorconfig li  {
+body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb #dweb-mirrorconfig li, body.navia .navbar #nav-dweb #dweb-mirrorreload li  {
     padding: 5px 8px 5px 5px;
 }
-body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb #dweb-mirrorconfig li  {
+body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb #dweb-mirrorconfig li, body.navia .navbar #nav-dweb #dweb-mirrorreload li {
     padding: 5px 8px 5px 20px;
     border: 1px solid #848484;
     border-radius: 3px;

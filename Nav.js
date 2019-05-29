@@ -39,12 +39,11 @@ export default class Nav {
         return await Nav.nav_details("home", {wanthistory});
     }
 
-    static async nav_details(id, {wanthistory=true, page=undefined}={}) {
+    static async nav_details(id, {wanthistory=true, page=undefined, noCache=undefined}={}) {
         debug("Navigating to Details %s", id);
-
         const destn = document.getElementById('main'); // Blank window (except Nav) as loading
         Nav.clear(destn);
-        await Nav.factory(id, destn, {wanthistory, page}); // Not sure what returning ....
+        await Nav.factory(id, destn, {wanthistory, page, noCache}); // Not sure what returning ....
         return false; // Dont follow anchor link - unfortunately React ignores this
     }
 
@@ -115,8 +114,12 @@ export default class Nav {
         return false; // Dont follow anchor link - unfortunately React ignores this
     }
 
-    static async factory(itemid, res, {wanthistory=true, downloaddirectory=false, page=undefined}={}) {
+    static async factory(itemid, res, {wanthistory=true, downloaddirectory=false, page=undefined, noCache=undefined}={}) {
       /* Fetch and render an ArchiveItem
+        wanthistory:    if set build a new entry in history
+        downloaddirectory:  Want the download directory version of the details page
+        page:           Relevant if its the book reader  (note this might not get all the way through)
+        reload:         True if should use Cache-Control:no-cache to fetch (relevant in dweb-mirror when reloading)
       */
         //console.group("Nav.factory",itemid);
         window.loopguard = itemid;  // Tested in dweb-transport/httptools, will cancel any old loops - this is a kludge to get around a Chrome bug/feature
@@ -150,13 +153,13 @@ export default class Nav {
         }
         try {
             if (!itemid || (itemid === "home")) {
-                (await new Home({itemid: "home"}).fetch()).render(res);
+                (await new Home({itemid: "home"}).fetch({noCache})).render(res);
                 /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
             } else if (itemid === "local") {
                 (await new Local({itemid, metaapi:{}})).render(res);  //TODO-UXLOCAL figure out how to get yaml to it
             } else {
                 //TODO edit this to make function like fetch_metadata but as a static function that can be used without creating temporary details item "d"
-                let d = await new Details({itemid}).fetch_metadata(); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
+                let d = await new Details({itemid}).fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
                 let metaapi = d.exportMetadataAPI({wantPlaylist: true}); // Cant pass Details to the constructors below
                 if (!d.metadata) {
                     new DetailsError({itemid, message: `item ${itemid} cannot be found or does not have metadata`}).render(res);
@@ -167,11 +170,11 @@ export default class Nav {
                         debug(`XXX Writing title but dont have one, look at %O`, d);
                     }
                     if (downloaddirectory) {
-                        const item = new DownloadDirectory({itemid, metaapi});
+                        const item = new DownloadDirectory({itemid, metaapi, noCache}); //TODO-RELOAD noCache is currently ignored
                         item.render(res);
                         /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
                     } else {
-                        const item = await this.renderableItem({itemid, metaapi, page, prioritem: d});
+                        const item = await this.renderableItem({itemid, metaapi, page, noCache, prioritem: d});
                         item.render(res);
                         /* TODO-DWEBNAV this.setCrawlStatus({identifier: itemid, crawl: item.crawl}); */
                         return item;
@@ -192,11 +195,11 @@ export default class Nav {
         }
     }
     */
-    static async renderableItem({prioritem, itemid, metaapi, page}) {
+    static async renderableItem({prioritem, itemid, metaapi, page, noCache}) {
       /* Returns an ArchiveItem subclass or a DetailsError */
         switch (metaapi.metadata.mediatype) {
             case "collection":
-                return await new Collection({itemid, metaapi}).fetch();   //fetch will do search
+                return await new Collection({itemid, metaapi}).fetch({noCache});   //fetch will do search
             case "texts":
                 if (prioritem.useBookReader()) {
                     return new Texts({itemid, metaapi, page});
@@ -212,7 +215,7 @@ export default class Nav {
             case "movies":
                 return new Video({itemid, metaapi});
             case "account":
-                return (await new Account({itemid, metaapi}).fetch());
+                return (await new Account({itemid, metaapi}).fetch({noCache}));
             default:
                 //TODO Not yet supporting software, zotero (0 items); data; web
                 return new DetailsError({itemid, message: `Unsupported mediatype: ${metaapi.metadata.mediatype}`});
