@@ -50,7 +50,7 @@ class LocalGridRowComponent extends IAReactComponent {
     }
 
     loaded() {
-        return this.state.members && this.state.members.length
+        return this.state.members; // Note it can be loaded but still have zero members
     }
     
     loadcallable(enclosingEl) {
