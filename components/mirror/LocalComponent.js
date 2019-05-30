@@ -9,6 +9,14 @@ import ArchiveMember from '@internetarchive/dweb-archivecontroller/ArchiveMember
 
 const _levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-components/.../ConfigCrawl.js
 
+function canonicalizeTasks(tasks) {
+  /* Turn an array of tasks where identifiers may be arrays or singles into canonicalized form - one task per identifier */
+  // This turns each task into an array of tasks with one identifier per task, then flattens that array of arrays into a 1D array
+  return [].concat(...tasks.map(task =>
+    Array.isArray(task.identifier)
+      ? task.identifier.map(identifier => Object.assign({}, task, {identifier}))
+      : task ));
+}
 class LocalWelcomeComponent extends IAReactComponent {
 /*  static propTypes = {
         title: PropTypes.string,
@@ -58,18 +66,20 @@ class LocalGridRowComponent extends IAReactComponent {
         this.enclosingElement = enclosingEl; // Tell it where to render inside when info found
         if (!this.loaded()) { // Break loop render->loadcallable->setState->render ...
             const urlConfig = [gatewayServer(), "info"].join('/');
-            let configmerged;
+            let tasks; // hydrated after info fetched
             waterfall([
                 cb => DwebTransports.httptools.p_GET(urlConfig, {}, cb),
                 (info, cb) => {
-                        configmerged = Object_deeperAssign({}, ...info.config);
-                        ArchiveMember.expand(configmerged.apps.crawl.tasks.map(task => task.identifier), cb);
+                        const configmerged = Object_deeperAssign({}, ...info.config);
+                        tasks = canonicalizeTasks(configmerged.apps.crawl.tasks);
+                        const tasksidentifiers = tasks.map(task => task.identifier);
+                        ArchiveMember.expand(tasksidentifiers, cb);
                     }, // { ArchiveMember } [IDENTIFIER*]
-                ],(err, memberDict) => { // [ArchiveMember*]
+                ],(err, memberDict) => { // [ArchiveMember*] includes specials like local &/or home
                     if (err) {
                         debug("ERROR: loadcallable failed %O", err);
                     } else {
-                        const members = configmerged.apps.crawl.tasks.map(task =>
+                        const members = tasks.map(task =>
                             memberDict[task.identifier] || new ArchiveMember({identifier: task.identifier, crawl: task}, {unexpanded: true}));
                         this.setState({members})
                     }
