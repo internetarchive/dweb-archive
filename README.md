@@ -136,6 +136,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* 0.1.67: Support Reload
 * 0.1.66: Bugfix local pages and default user config
 * 0.1.65: Fix local page if no tasks
 * 0.1.64: Fix bootloader for "home"; White dot in crawl button; nav-wrap CSS; Simple-list queries;
