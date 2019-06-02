@@ -170,7 +170,7 @@ export default class Nav {
                         debug(`XXX Writing title but dont have one, look at %O`, d);
                     }
                     if (downloaddirectory) {
-                        const item = new DownloadDirectory({itemid, metaapi, noCache}); //TODO-RELOAD noCache is currently ignored
+                        const item = new DownloadDirectory({itemid, metaapi});
                         item.render(res);
                         /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
                     } else {

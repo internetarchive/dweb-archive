@@ -29,7 +29,7 @@ export default class Details extends ArchiveBase {
     wrap() {
         /* Wrap the content up checked on mbid (Red Shift)
         context: body wrap(
-        content: (on image)  wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | TODO-ALSOFOUND  | TODO-ANALYTICS )
+        content: (on image)  wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | RelatedItems  | TODO-ANALYTICS )
         returns: elements tree suitable for adding into another render
          */
         return (
@@ -43,7 +43,6 @@ export default class Details extends ArchiveBase {
                 {this.theatreIaWrap()} {/*This is the main-content*/}
                 {this.itemDetailsAboutJSX()}
                 <RelatedItems identifier={this.itemid} item={this}/>
-                {/* should have: alsoFound here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?) */}
                 {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
             {/*--wrap--*/}</div>
         );
