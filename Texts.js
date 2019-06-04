@@ -5,8 +5,8 @@ import TheatreControls from './components/TheatreControls';
 import BookReaderWrap from './components/BookReaderWrapper';
 
 export default class Texts extends Details {
-    constructor({itemid=undefined, metaapi=undefined, page=undefined}={}) {
-        super({ itemid, metaapi});
+    constructor({itemid=undefined, metaapi=undefined, page=undefined, noCache=false}={}) {
+        super({ itemid, metaapi, noCache});
         this.itemtype="http://schema.org/TextDigitalDocument";
         this.page = page;
     }

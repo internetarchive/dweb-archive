@@ -5,8 +5,8 @@ import {gateway, gatewayServer} from '@internetarchive/dweb-archivecontroller/Ut
 import TheatreControls from './components/TheatreControls';
 
 export default class Video extends AV {
-    constructor({itemid=undefined, metaapi=undefined}={}) {
-        super({ itemid, metaapi});
+    constructor({itemid=undefined, metaapi=undefined, noCache=false}={}) {
+        super({ itemid, metaapi, noCache});
         this.itemtype = "http://schema.org/VideoObject";
     }
     setupPlaylist() {

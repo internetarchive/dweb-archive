@@ -6,12 +6,12 @@ import Details from './Details';
 import TheatreControls from './components/TheatreControls';
 
 export default class Image extends Details {
-    constructor({itemid=undefined, metaapi=undefined}={}) {
+    constructor({itemid=undefined, metaapi=undefined, noCache=false}={}) {
         /*
         Construct an Image object before rendering it to a HTML page
         item = metadata from a metadata fetch
          */
-        super({ itemid, metaapi});
+        super({ itemid, metaapi, noCache});
         this.itemtype = "http://schema.org/VisualArtwork";
     }
     archive_setup_push() {

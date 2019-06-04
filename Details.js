@@ -15,19 +15,21 @@ import React from './ReactFake';
 // React requires className= rather than class=, ReactFake supports both
 
 import {languageMapping} from '@internetarchive/dweb-archivecontroller/Util';
-import {DetailsActionButtons, DetailsDownloadOptions, RelatedItems} from "@internetarchive/ia-components/index.js";
+import {DetailsActionButtons, DetailsDownloadOptions} from "@internetarchive/ia-components/index.js";
+import RelatedItemsWrapper from './components/RelatedItemsWrapper';
 import DetailsCollectionListWrapper from './components/DetailsCollectionListWrapper';
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
 import {NavWrap} from '@internetarchive/ia-components/index.js';
 
 export default class Details extends ArchiveBase {
-    constructor({itemid = undefined, metaapi = undefined}={}) {
+    constructor({itemid = undefined, metaapi = undefined, noCache=false}={}) {
         super({itemid, metaapi});
+        this.noCache = noCache;
     }
 
     wrap() {
-        /* Wrap the content up checked on mbid (Red Shift)
+        /* Wrap the content up
         context: body wrap(
         content: (on image)  wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | RelatedItems  | TODO-ANALYTICS )
         returns: elements tree suitable for adding into another render
@@ -42,7 +44,7 @@ export default class Details extends ArchiveBase {
                 </div>{/*--//.container-ia--*/}
                 {this.theatreIaWrap()} {/*This is the main-content*/}
                 {this.itemDetailsAboutJSX()}
-                <RelatedItems identifier={this.itemid} item={this}/>
+                <RelatedItemsWrapper identifier={this.itemid} item={this} noCache={this.noCache} />
                 {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
             {/*--wrap--*/}</div>
         );
