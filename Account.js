@@ -2,6 +2,7 @@ import React from './ReactFake';
 import Search from './Search';
 import {Tabby} from "@internetarchive/ia-components/index.js";
 import {NavWrap} from '@internetarchive/ia-components/index.js';
+import {AJS_on_dom_loaded} from "./Util";
 
 export default class Account extends Search {
     /*
@@ -25,6 +26,13 @@ export default class Account extends Search {
         this.query = `uploader:"${this.metadata.uploader}"`;
         this.sort = '-publicdate';
         return await super.fetch_query(opts); // Unclear if return or opts used, but should send it.
+    }
+    render(res) { // See other DUPLICATEDCODE#001
+        var els = this.wrap();    // Build the els
+        $('body').addClass('bgEEE'); //TODO remove jquery dependency
+        React.domrender(els, res);  //Put the els into the page
+        this.archive_setup_push(); // Subclassed function to setup stuff for after loading.
+        AJS_on_dom_loaded(); // Runs code pushed archive_setup - needed for image if "super" this, put it after superclasses
     }
     wrap() {
         /*

@@ -34,21 +34,6 @@ export default class ArchiveBase extends ArchiveItem {
     }
     theatreIaWrap() {
     }
-
-    browserBefore() {
-        //Anything that is needed to be executed in the browser before the main HTML tree is replaced.
-        // Nothing to do by default
-    }
-    browserAfter() {
-        this.archive_setup_push(); // Subclassed function to setup stuff for after loading.
-        AJS_on_dom_loaded(); // Runs code pushed archive_setup - needed for image if "super" this, put it after superclasses
-    }
-    render(res) {
-        var els = this.wrap();    // Build the els
-        this.browserBefore();
-        React.domrender(els, res);  //Put the els into the page
-        this.browserAfter();
-    }
     preprocessDescription(description) {
         // Now catch some things that often appear in descriptions because it assumes running on archive page e.g. /server/commute/commute.jpg on "commute"
         // And handle multivalue (array) descriptions by concatenating with <br/>

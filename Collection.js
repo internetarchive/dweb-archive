@@ -3,6 +3,7 @@ import Search from "./Search";
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
 import {Tabby} from "@internetarchive/ia-components/index.js";
 import {NavWrap} from '@internetarchive/ia-components/index.js';
+import {AJS_on_dom_loaded} from "./Util";
 
 export default class Collection extends Search {
     constructor({itemid=undefined, metaapi=undefined}={}) {
@@ -11,7 +12,13 @@ export default class Collection extends Search {
             sort:   '-downloads',   // This will be overridden based on collection_sort_order
         });
     }
-
+    render(res) { // See other DUPLICATEDCODE#001
+        var els = this.wrap();    // Build the els
+        $('body').addClass('bgEEE'); //TODO remove jquery dependency
+        React.domrender(els, res);  //Put the els into the page
+        this.archive_setup_push(); // Subclassed function to setup stuff for after loading.
+        AJS_on_dom_loaded(); // Runs code pushed by archive_setup - needed for image if "super" this, put it after superclasses
+    }
     wrap() {
         /* Wrap the content up: wrap ( TODO-aside; navwrap; #maincontent; welcome; cher-modal; container-tabby-collection-row (TODO-columns-facets; columns-items) (tabby-about; tabby-form)
         returns:      elements tree suitable for adding into another render
@@ -182,12 +189,12 @@ export default class Collection extends Search {
     archive_setup_push() {
         // Note the archive_setup.push stuff is subtly different from that for 'search'
         const query = this.query;
-        archive_setup.push(function() {
+        archive_setup.push(function() { // archive_setup is in archive.js
             AJS.date_switcher(`&nbsp;<a href="/search.php?query=${query}&amp;sort=-publicdate"><div class="date_switcher in">Date Archived</div></a> <a href="/search.php?query=${query}&amp;sort=-date"><div class="date_switcher">Date Published</div></a> <a href="/search.php?query=${query}&amp;sort=-reviewdate"><div class="date_switcher">Date Reviewed</div></a> `);
             AJS.lists_v_tiles_setup('collection');
             $('div.ikind').css({visibility:'visible'});
             AJS.popState('');
-            //AJS.tiler();      // Note Traceys code had AJS.tiler('#ikind-search') but Search and Collections examples have it with no args - dont want it here anyway, as breaks per-image Tiler in at least Local.js
+            //AJS.tiler();      // Note Traceys code had AJS.tiler('#ikind-search') but Search and Collections examples have it with no args - dont want it here anyway, as breaks per-image Tiler in at least Local.jsx
             $(window).on('resize  orientationchange', function(evt){
                 clearTimeout(AJS.tiles_wrap_throttler);
                 AJS.tiles_wrap_throttler = setTimeout(AJS.tiler, 250);
@@ -197,8 +204,5 @@ export default class Collection extends Search {
         });
     }
 
-    browserBefore() {
-        $('body').addClass('bgEEE');
-    }
 
 }

@@ -21,6 +21,7 @@ import DetailsCollectionListWrapper from './components/DetailsCollectionListWrap
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
 import {NavWrap} from '@internetarchive/ia-components/index.js';
+import {AJS_on_dom_loaded} from "./Util";
 
 export default class Details extends ArchiveBase {
     constructor({itemid = undefined, metaapi = undefined, noCache=false}={}) {
@@ -28,6 +29,12 @@ export default class Details extends ArchiveBase {
         this.noCache = noCache;
     }
 
+    render(res) { // See other (almost) DUPLICATEDCODE#001
+        var els = this.wrap();    // Build the els
+        // Other DUPLOCATEDCODE#001 do `$('body').addClass('bgEEE')` here
+        React.domrender(els, res);  //Put the els into the page
+        this.browserAfter();
+    }
     wrap() {
         /* Wrap the content up
         context: body wrap(
@@ -43,9 +50,12 @@ export default class Details extends ArchiveBase {
                     <a name="maincontent" id="maincontent"></a>
                 </div>{/*--//.container-ia--*/}
                 {this.theatreIaWrap()} {/*This is the main-content*/}
-                {this.itemDetailsAboutJSX()}
-                <RelatedItemsWrapper identifier={this.itemid} item={this} noCache={this.noCache} />
+                {(!this.itemid) ? null :
+                  this.itemDetailsAboutJSX() }
+                {(!this.itemid) ? null :
+                    <RelatedItemsWrapper identifier={this.itemid} item={this} noCache={this.noCache} /> }
                 {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
+                }
             {/*--wrap--*/}</div>
         );
     }
@@ -62,7 +72,7 @@ export default class Details extends ArchiveBase {
     }
     browserAfter() {
         // initialize_flag
-        // overlay related but might never be used as dont see toggle-flag-overlay appearing anywhere
+        // overlay related but might never be used as dont see toggle-flag-overlay appearing anywhere but might be used in archive.js
         $(".toggle-flag-overlay").click(function (e) {
             e.preventDefault();
             $("#theatre-ia-wrap").removeClass("flagged");
@@ -73,7 +83,8 @@ export default class Details extends ArchiveBase {
             $(this).children(".my-checkbox").toggleClass("checked");
             $.get($(this).attr("href"))
         });
-        super.browserAfter(); // runs archive_setup_push and AJS_on_dom_loaded(); Do this after the scripts above - which means put this browserAfter AFTER superclasses
+        this.archive_setup_push(); // Subclassed function to setup stuff for after loading.
+        AJS_on_dom_loaded(); // Runs code pushed archive_setup - needed for image if "super" this, put it after superclasses
     }
 
     embedWordpress() {
@@ -259,8 +270,6 @@ export default class Details extends ArchiveBase {
                             ) }
                         </div>
 
-                        {/*TODO "See also" section drawing from some of metadata.externalidentifier note two adjacent divs present
-                        on mbid-b105f712-d75e-4d0a-a9c5-bf1948461e2b not in commute will need to retrieve those to do so.*/}
                         <div id="reviews">
                             <h2 style="font-size:36px;font-weight:200;border-bottom:1px solid #979797; padding-bottom:5px; margin-top:50px;">
                                 <div class="pull-right" style="font-size:14px;font-weight:500;padding-top:14px;">
@@ -299,8 +308,7 @@ export default class Details extends ArchiveBase {
                         {/*TODO need section class=boxy item-stats-summary- not obvious where data from, its not in metadata */}
                         <DetailsDownloadOptions identifier={itemid} files={this.files} files_count={this.files_count}/>
                         <DetailsCollectionListWrapper collections={collections} collectionTitles={collectionTitles}/>
-                        {/*TODO need boxy item-upload-info - its not obvious, on commute its the adder field, on mbid its derivation
-                        of uploader which is email, on text its ___ */}
+                        {/* <DetailsUploaderBox identifier={} name={} date={}> see https://github.com/internetarchive/dweb-archive/issues/24 */}
                     </div>{/*--/.col-md-2--*/}
                 </div>{/*--/.row--*/}
             {/*--//.container-ia--*/} </div>

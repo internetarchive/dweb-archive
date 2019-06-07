@@ -6,6 +6,7 @@ const canonicaljson = require('@stratumn/canonicaljson');
 import ArchiveBase from './ArchiveBase';
 import {ScrollableTileGrid} from "@internetarchive/ia-components/index.js";
 import {NavWrap} from '@internetarchive/ia-components/index.js';
+import {AJS_on_dom_loaded} from "./Util";
 
 /* Section to ensure node and browser able to use Headers, Request and Fetch */
 /*
@@ -48,6 +49,13 @@ export default class Search extends ArchiveBase {
         this.page = page;
     }
 
+    render(res) { // See other DUPLICATEDCODE#001
+        var els = this.wrap();    // Build the els
+        $('body').addClass('bgEEE'); //TODO remove jquery dependency
+        React.domrender(els, res);  //Put the els into the page
+        this.archive_setup_push(); // Subclassed function to setup stuff for after loading.
+        AJS_on_dom_loaded(); // Runs code pushed archive_setup - needed for image if "super" this, put it after superclasses
+    }
     wrap() {
         /* Wrap the content up: wrap ( TODO-DONATE | navwrap |
         TODO-DETAILS need stuff before nav-wrap1 and after detailsabout and need to check this against Search and Collection examples
@@ -174,9 +182,6 @@ export default class Search extends ArchiveBase {
             // register for scroll updates (for infinite search results)
             // $(window).scroll(AJS.scrolled); //Now done in ScrollableTileGrid
         });
-    }
-    browserBefore() {   // OVERRIDDEN in Collection.js subclass
-        $('body').addClass('bgEEE');
     }
 
     banner() { // On Search "banner" is a search form  OVERRIDDEN in Collection.js subclass

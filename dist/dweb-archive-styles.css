@@ -122,7 +122,7 @@ body.navia .navbar #nav-dweb a img {
     position: relative;
     top: 1px;
 }
-/* For LocalComponent
+/* For LocalComponent SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
     Not marking crawl-tile or crawl-metadata as really not significant to user
 */
 
@@ -140,4 +140,16 @@ body.navia .navbar #nav-dweb a img {
 }
 .crawlall {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="200" height="200"><circle cx="100" cy="100" r="95" fill="gold" /></svg>');
+}
+
+/* Naming from here conforms to https://rscss.io */
+.settings-item .playbutton {
+    margin-left: 10px;
+    border: 1px solid #303030;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+.settings-item .crawlname {
+    font-size:larger;
+    font-weight: bolder;
 }

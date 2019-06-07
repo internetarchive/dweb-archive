@@ -11,7 +11,8 @@ import Search from './Search';
 import Details from './Details';
 import Home from './Home';
 import Collection from './Collection';
-import Local from './Local';
+import Local from './Local'; //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
+import Settings from './Settings'; //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 import Texts from './Texts';
 import Image from './Image';
 import Audio from './Audio';
@@ -41,9 +42,7 @@ export default class Nav {
 
     static async nav_details(id, {wanthistory=true, page=undefined, noCache=undefined}={}) {
         debug("Navigating to Details %s", id);
-        const destn = document.getElementById('main'); // Blank window (except Nav) as loading
-        Nav.clear(destn);
-        await Nav.factory(id, destn, {wanthistory, page, noCache}); // Not sure what returning ....
+        await Nav.factory(id, {wanthistory, page, noCache}); // Not sure what returning ....
         return false; // Dont follow anchor link - unfortunately React ignores this
     }
 
@@ -108,13 +107,11 @@ export default class Nav {
 
     static async nav_downloaddirectory(itemid) {
         debug("Navigating to Download directory for %s", itemid);
-        const destn = document.getElementById('main'); // Blank window (except Nav) as loading
-        Nav.clear(destn);
-        await Nav.factory(itemid, destn, {wanthistory: true, downloaddirectory: true}); // Not sure what returning ....
+        await Nav.factory(itemid, {wanthistory: true, downloaddirectory: true}); // Not sure what returning ....
         return false; // Dont follow anchor link - unfortunately React ignores this
     }
 
-    static async factory(itemid, res, {wanthistory=true, downloaddirectory=false, page=undefined, noCache=undefined}={}) {
+    static async factory(itemid, {wanthistory=true, downloaddirectory=false, page=undefined, noCache=undefined}={}) {
       /* Fetch and render an ArchiveItem
         wanthistory:    if set build a new entry in history
         downloaddirectory:  Want the download directory version of the details page
@@ -122,6 +119,8 @@ export default class Nav {
         reload:         True if should use Cache-Control:no-cache to fetch (relevant in dweb-mirror when reloading)
       */
         //console.group("Nav.factory",itemid);
+        const destn = document.getElementById('main'); // Blank window (except Nav) as loading
+        Nav.clear(destn);
         window.loopguard = itemid;  // Tested in dweb-transport/httptools, will cancel any old loops - this is a kludge to get around a Chrome bug/feature
         if (wanthistory) {
             const historystate = {itemid}; //TODO-HISTORY may want  to store transports, paused etc here
@@ -153,16 +152,18 @@ export default class Nav {
         }
         try {
             if (!itemid || (itemid === "home")) {
-                (await new Home({itemid: "home"}).fetch({noCache})).render(res);
+                (await new Home({itemid: "home"}).fetch({noCache})).render(destn);
                 /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
-            } else if (itemid === "local") {
-                (await new Local({itemid, metaapi:{}})).render(res);  //TODO-UXLOCAL figure out how to get yaml to it
+            } else if (itemid === "local") { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
+                (await new Local({itemid, metaapi:{}})).render(destn);
+            } else if (itemid === "settings") { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
+                (await new Settings({itemid, metaapi:{}})).render(destn);
             } else {
                 //TODO edit this to make function like fetch_metadata but as a static function that can be used without creating temporary details item "d"
                 let d = await new Details({itemid}).fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
                 let metaapi = d.exportMetadataAPI({wantPlaylist: true}); // Cant pass Details to the constructors below
                 if (!d.metadata) {
-                    new DetailsError({itemid, message: `item ${itemid} cannot be found or does not have metadata`}).render(res);
+                    new DetailsError({itemid, message: `item ${itemid} cannot be found or does not have metadata`}).render(destn);
                 } else {
                     if (d.metadata.title) {
                         document.title = `${d.metadata.title} : Decentralized Internet Archive`;
@@ -171,11 +172,11 @@ export default class Nav {
                     }
                     if (downloaddirectory) {
                         const item = new DownloadDirectory({itemid, metaapi});
-                        item.render(res);
+                        item.render(destn);
                         /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
                     } else {
                         const item = await this.renderableItem({itemid, metaapi, page, noCache, prioritem: d});
-                        item.render(res);
+                        item.render(destn);
                         /* TODO-DWEBNAV this.setCrawlStatus({identifier: itemid, crawl: item.crawl}); */
                         return item;
                     }
@@ -183,7 +184,7 @@ export default class Nav {
             }
         } catch(err) {
             console.error("Nav.factory detected error",err);
-            new DetailsError({itemid, message: err.message}).render(res);
+            new DetailsError({itemid, message: err.message}).render(destn);
             //TODO-UXLOCAL think about return
         }
     }

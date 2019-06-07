@@ -13,5 +13,5 @@ export default class Home extends Search {
         );
     }
     _fetch_metadata(opts, cb) { cb(null, this); } // No metadata for home
-
+    //TODO this can use the _fetch_metadata exception being coded 2019-06-06
 }
