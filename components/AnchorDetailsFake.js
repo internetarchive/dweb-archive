@@ -3,10 +3,27 @@
 import React from '../ReactFake';
 import IAFakeReactComponent from './IAFakeReactComponent';
 const debug = require('debug')('dweb-archive:AnchorDetailsFake');
+import {ObjectFilter} from '../util.js';
 
-// Utility functions, I (Mitra) like to put these on Object, but maybe better here.
-function ObjectFromEntries(arr) { arr.reduce((res,kv)=>(res[kv[0]]=kv[1],res),{});} // [[ k0, v0],[k1,v1] => {k0:v0, k1:v1}
-function ObjectFilter(obj, f) { ObjectFromEntries( Object.entries(obj).filter(kv=>f(kv[0], kv[1]))); }
+/**
+ * Component used as an anchor to a Details page
+ * Encapsulates differences between four options  Dweb||IAUX
+ * There is an AnchorDetailsFake in dweb-archive for places where this has to be embeded in ReactFake
+ *
+ * Behavior:
+ * On render we split props between the Anchor and the URL and build the URL.
+ *
+ * On click - behavior varies between Dweb and IAUX
+ *      Dweb:   Navigate via the Nav.nav_details function
+ *      !Dweb:  normal Anchor behavior to go to the href
+ **
+ * <AnchorDetails
+ *  identifier  of item
+ *  reload      if set, passed to Nav.nav_details as an opt
+ *  sort        passed to URL as a parameter
+ *  Any other properties are passed to the <a />
+ *
+ */
 
 export default class AnchorDetails extends IAFakeReactComponent {
     // Component that encapsulates the difference between four options: Dweb||IAUX, React||FakeReact for links.
@@ -18,42 +35,34 @@ export default class AnchorDetails extends IAFakeReactComponent {
     React+Dweb:  onClick={this.click}
     FakeReact+Dweb: strangely seems to work with onClick={this.click}
     */
-
-    /* Maybe Used in IAUX in future, but not in ReactFake
-    Note other propTypes are passed to underlying Anchor - ones known in use are: tabIndex, id, className, data-event-click-tracking, title
-    static propTypes = {
-        identifier: PropTypes.string.isRequired,
-        sort: PropTypes.string,
-    };
-    */
     constructor(props)
     {
-        //TODO-IAUX what about other props and children
-        // children: [ react.element* ]
-        super(props);
-        this.onClick = (ev) => { return this.clickCallable.call(this, ev); };
+        super(props); // { identifier, reload }
+        this.setState({
+            urlProps: ObjectFilter(this.props, (k,v) => AnchorDetails.urlparms.includes(k)),
+            anchorProps: ObjectFilter(this.props, (k,v)=>(!AnchorDetails.urlparms.includes(k) && !['children'].includes(k)))
+        })
     }
     clickCallable(ev) {
-        debug("Cicking on link to details: %s",this.props.identifier);
-        DwebArchive.Nav.nav_details(this.props.identifier);
-        ev.preventDefault();    // Prevent it going to the anchor (equivlent to "return false" in non-React
-        // ev.stopPropagation(); ev.nativeEvent.stopImmediatePropagation(); // Suggested alternatives which dont work
-        return false; // Stop the non-react version propogating
+        // Note this is only called in dweb; !Dweb has a director href
+        debug("Clicking on link to details: %s",this.props.identifier);
+        DwebArchive.Nav.nav_details(this.props.identifier, {noCache: this.props.reload, wanthistory: !this.props.reload});
+        return false; // Dont propogate event
     }
     render() {
         // this.props passes identifier which is required for Dweb, but typically also passes tabIndex, class, title
         const url = new URL(`https://archive.org/details/${this.props.identifier}`);
         const usp = new URLSearchParams;
-        AnchorDetails.urlparms.forEach(k=> usp.append(k, this.props[k]))
-        usp.search = usp; // Note this copies, not updatable
-        const anchorProps = ObjectFilter(this.props, (k,v)=>!AnchorDetails.urlparms.includes(k));
+        Object.entries(this.state.urlProps).forEach(kv => usp.append(kv[0], kv[1]));
+        url.search = usp; // Note this copies, not updatable
         return ( // Note there is intentionally no spacing in case JSX adds a unwanted line break
-            (typeof DwebArchive === "undefined") ?
-                <a href={url.href} {...anchorProps}>{this.props.children}</a>
-                :
-                // This is the Dweb version for React|!React
-                <a href={url.href} onClick={this.onClick}  {...anchorProps}>{this.props.children}</a>
+          (typeof DwebArchive === "undefined") ?
+            <a href={url.href} {...this.state.anchorProps}>{this.props.children}</a>
+            :
+            // This is the Dweb version for React|!React
+            <a href={url.href} onClick={this.onClick}  {...this.state.anchorProps}>{this.props.children}</a>
         );
     }
 }
-AnchorDetails.urlparms=['sort']; // Properties that go in the URL to details
+AnchorDetails.urlparms=['sort', 'reload']; // Properties that go in the URL to details
+//Note other propTypes are passed to underlying Anchor - ones known in use are: tabIndex, id, className, data-event-click-tracking, title
