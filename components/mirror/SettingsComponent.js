@@ -2,40 +2,12 @@ import React from 'react';
 import IAReactComponent from '../IAReactComponent';
 const debug = require('debug')('dweb-archive:SettingsComponent');
 
-//TODO-UXSETTINGS - check these
 import waterfall from 'async/waterfall';
 import {gatewayServer}  from '@internetarchive/dweb-archivecontroller/Util';
 import {NavWrap} from "@internetarchive/ia-components/index";
+import {CommonWelcomeComponent} from "./CommonComponent";
 
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
-
-//TODO-UXSETTINGS move this and equialent in LocalComponent.js to CommonComponent.js
-class SettingsWelcomeComponent extends IAReactComponent {
-  /*  static propTypes = {
-          title: PropTypes.string,
-          byline: PropTypes.object,
-          description: PropTypes.object,
-      };
-  */
-  constructor(props) {
-    super(props);
-  }
-
-  render() { return (
-    <div className="welcome container container-ia width-max" style={{'backgroundColor':'white'}}>
-      <div className="container">
-        <div className="row">
-          <div className="col-xs-11 col-sm-10 welcome-left">
-            <h1>{this.props.title}</h1>
-            <h4>{this.props.byline}</h4>{/*TODO get name of server from info*/}
-            <div id="descript" style={{maxHeight:"43px", cursor:'pointer'}} dangerouslySetInnerHTML={{__html: this.props.description}}>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )}
-}
 
 class SettingsCrawlLI extends IAReactComponent {
   /*  static propTypes = {
@@ -170,7 +142,7 @@ class SettingsItem extends IAReactComponent {
           <a name="maincontent" id="maincontent"></a>
         </div>
         {/*Replaces banner() in Collection and Search) */}
-        <SettingsWelcomeComponent
+        <CommonWelcomeComponent
           title="Settings"
           byline={"on " + gatewayServer()}
           description=""
@@ -184,5 +156,5 @@ class SettingsItem extends IAReactComponent {
     )
   }
 }
-export {SettingsWelcomeComponent, SettingsCrawlsComponent, SettingsItem};
+export {SettingsCrawlsComponent, SettingsItem};
 

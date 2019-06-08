@@ -7,6 +7,7 @@ import {TileGrid} from "@internetarchive/ia-components/index.js";
 import {gatewayServer, Object_deeperAssign}  from '@internetarchive/dweb-archivecontroller/Util';
 import ArchiveMember from '@internetarchive/dweb-archivecontroller/ArchiveMember';
 import {NavWrap} from "@internetarchive/ia-components/index";
+import {CommonWelcomeComponent} from "./CommonComponent";
 
 const _levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-components/.../ConfigCrawl.js
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
@@ -18,32 +19,6 @@ function canonicalizeTasks(tasks) {
     Array.isArray(task.identifier)
       ? task.identifier.map(identifier => Object.assign({}, task, {identifier}))
       : task ));
-}
-class LocalWelcomeComponent extends IAReactComponent {
-  /*  static propTypes = {
-          title: PropTypes.string,
-          byline: PropTypes.object,
-          description: PropTypes.object,
-      };
-  */
-  constructor(props) {
-    super(props);
-  }
-
-  render() { return (
-    <div className="welcome container container-ia width-max" style={{'backgroundColor':'white'}}>
-      <div className="container">
-        <div className="row">
-          <div className="col-xs-11 col-sm-10 welcome-left">
-            <h1>{this.props.title}</h1>
-            <h4>{this.props.byline}</h4>{/*TODO get name of server from info*/}
-            <div id="descript" style={{maxHeight:"43px", cursor:'pointer'}} dangerouslySetInnerHTML={{__html: this.props.description}}>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )}
 }
 
 //util_apply(f, cb) => return function(err, interim) { let donecb=false; if (err) { cb(err); } else { try { var res = f(interim); donecb=true; cb(null, interim) } catch(err) { cb(err) }}}
@@ -112,7 +87,7 @@ class LocalItem extends IAReactComponent {
           <a name="maincontent" id="maincontent"></a>
         </div>
         {/*Replaces banner() in Collection and Search) */}
-        <LocalWelcomeComponent
+        <CommonWelcomeComponent
           title="Resources"
           byline={"crawled by " + gatewayServer()}
           description=""
@@ -127,5 +102,5 @@ class LocalItem extends IAReactComponent {
     )
   }
 }
-export {LocalWelcomeComponent, LocalGridRowComponent, LocalItem};
+export {LocalGridRowComponent, LocalItem};
 
