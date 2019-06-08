@@ -6,6 +6,7 @@ const canonicaljson = require('@stratumn/canonicaljson');
 import ArchiveBase from './ArchiveBase';
 import {ScrollableTileGrid} from "@internetarchive/ia-components/index.js";
 import {NavWrap} from '@internetarchive/ia-components/index.js';
+import {AnchorModalGo} from './components/ModalGoFake';
 import {AJS_on_dom_loaded} from "./Util";
 
 /* Section to ensure node and browser able to use Headers, Request and Fetch */
@@ -252,11 +253,11 @@ export default class Search extends ArchiveBase {
                     </div>
                     <div id="search-actions" class="col-sm-2 col-md-2 col-lg-2">
                         <span class="iconochive-share" aria-hidden="true"></span><span class="sr-only">share</span> Share<br/>
-                        <a class="stealth"
+                        <AnchorModalGo className="stealth"
                            href={addBookmarkURL}
-                           onclick="return AJS.modal_go(this,{favorite:1})"
+                           opts={{favorite:1}}
                            data-target="#confirm-modal"><span class="iconochive-favorite" aria-hidden="true"></span><span
-                                class="sr-only">favorite</span> Favorite</a><br/>
+                                className="sr-only">favorite</span> Favorite</AnchorModalGo><br/>
                     </div>
                 </div>{/*--/.row--*/}
             </div>{/*--/.container--*/}
