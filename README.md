@@ -136,6 +136,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.70: Add icons to new buttons
 * v0.1.69: Add settings and reload buttons to DwebNav
 * v0.1.68: Add settings component and some refactoring
 * v0.1.67: Support Reload
