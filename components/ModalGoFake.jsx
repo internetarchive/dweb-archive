@@ -3,7 +3,7 @@
 //const debug = require('debug')('dweb-archive:ModalGo');
 import React from '../ReactFake';
 import IAFakeReactComponent from './IAFakeReactComponent'; // Encapsulates differences between dweb-archive/ReactFake and iaux/React
-import {ObjectFilter} from '../../util.js';
+import {ObjectFilter} from '@internetarchive/dweb-archivecontroller/Util.js';
 
 /* AnchorModalGo and ButtonModalGo wrap the AJS.modal_go call in archive.js to allow it to work with react.
  */

@@ -4,7 +4,7 @@ const debug = require('debug')('dweb-archive:LocalComponent');
 import waterfall from 'async/waterfall';
 
 import {TileGrid} from "@internetarchive/ia-components/index.js";
-import {gatewayServer, Object_deeperAssign}  from '@internetarchive/dweb-archivecontroller/Util';
+import {gatewayServer, ObjectDeeperAssign}  from '@internetarchive/dweb-archivecontroller/Util';
 import ArchiveMember from '@internetarchive/dweb-archivecontroller/ArchiveMember';
 import {NavWrap} from "@internetarchive/ia-components/index";
 import {CommonWelcomeComponent} from "./CommonComponent";
@@ -37,7 +37,7 @@ class LocalGridRowComponent extends IAReactComponent {
       waterfall([
           cb => DwebTransports.httptools.p_GET(urlConfig, {}, cb),
           (info, cb) => {
-            const configmerged = Object_deeperAssign({}, ...info.config);
+            const configmerged = ObjectDeeperAssign({}, ...info.config);
             tasks = canonicalizeTasks(configmerged.apps.crawl.tasks);
             const tasksidentifiers = tasks.map(task => task.identifier);
             ArchiveMember.expand(tasksidentifiers, cb);

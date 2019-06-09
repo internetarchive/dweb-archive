@@ -3,7 +3,7 @@
 import React from '../ReactFake';
 import IAFakeReactComponent from './IAFakeReactComponent';
 const debug = require('debug')('dweb-archive:AnchorDetailsFake');
-import {ObjectFilter} from '../util.js';
+import {ObjectFilter} from '@internetarchive/dweb-archivecontroller/Util.js';
 
 /**
  * Component used as an anchor to a Details page

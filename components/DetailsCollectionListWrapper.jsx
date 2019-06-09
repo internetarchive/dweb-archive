@@ -2,7 +2,7 @@ import React from 'react';
 import IAReactComponent from './IAReactComponent';
 import {DetailsCollectionList} from '@internetarchive/ia-components/index.js';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember.js";
-import {Object_map} from "@internetarchive/dweb-archivecontroller/Util.js";
+import {Objectmap} from "@internetarchive/dweb-archivecontroller/Util.js";
 
 /*
 Wrapper around DetailsCollectionList so that it can go back into IAUX and this can be called by Details.js
@@ -22,7 +22,7 @@ export default class DetailsCollectionListWrapper extends IAReactComponent {
     if (!this.state.expansionTried) {
       this.state.expansionTried = true;
       ArchiveMember.expand(collections.filter(k => !this.state.collectionTitles[k]), (err, res) => { // res = { id: AS(id) }
-        const collectionTitles = Object.assign({}, this.state.collectionTitles, Object_map(res, (k, v) => [k, v.title]));
+        const collectionTitles = Object.assign({}, this.state.collectionTitles, Objectmap(res, (k, v) => [k, v.title]));
         this.setState({ collectionTitles }); // Cause a rerender
       });
     }
