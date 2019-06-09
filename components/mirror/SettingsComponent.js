@@ -38,10 +38,10 @@ class SettingsCrawlLI extends IAReactComponent {
     const crawl = this.state.crawl;
     return (
       <li key={crawl.name}><span className="crawlname">{crawl.name}</span>:
-      <span className="playbutton" onClick={this.restart}>{'<<'}</span>
+      <img className="playbutton" onClick={this.restart} src="/archive/images/baseline-fast_rewind-24px.svg" alt="restart"/>
         {crawl.queue.paused
-          ? <span className="playbutton" onClick={this.resume}>{'>'}</span>
-          : <span className="playbutton" onClick={this.pause}>{'||'}</span>
+          ? <img className="playbutton" onClick={this.resume} src="/archive/images/baseline-fast_rewind-24px.svg" alt="rewind"/>
+          : <img className="playbutton" onClick={this.pause} src="/archive/images/baseline-pause-24px.svg" alt="pause"/>
         }
         {/*<span className="playbutton" onClick={this.empty}>{'X'}</span> -- Not currently showing X*/}
       <ul> {/*Make collapsable*/}
@@ -109,7 +109,7 @@ class SettingsCrawlsComponent extends IAReactComponent {
   }
 
   render() {
-    // Build a grid of tiles like in Collection but doesnt have the "More" scrolling feature
+    // Build a list of crawls
     let crawlid = 0;
     return (!this.state.crawls)
         ? <span>Loading ...</span>
@@ -118,6 +118,7 @@ class SettingsCrawlsComponent extends IAReactComponent {
             <div className="columns-items" style={{"marginLeft": "0px"}}>
               <div style={{position: "relative"}}>
                 <div>
+                  <h4>Crawls</h4>
                   <ul>
                     {this.state.crawls.map(crawl => <SettingsCrawlLI key={crawl.name} id={crawlid++} crawl={crawl}/>) }
                   </ul>
