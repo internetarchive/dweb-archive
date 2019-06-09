@@ -136,25 +136,26 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
-* 0.1.68: Add settings component and some refactoring
-* 0.1.67: Support Reload
-* 0.1.66: Bugfix local pages and default user config
-* 0.1.65: Fix local page if no tasks
-* 0.1.64: Fix bootloader for "home"; White dot in crawl button; nav-wrap CSS; Simple-list queries;
-* 0.1.63: webpack fixes from ia-components (unpushed) and dweb-archivecontroller 0.1.59
-* 0.1.62: DetailsCollectionList supporting icons, dweb-archivecontroller/Util.js refactor, support home and local better
-* 0.1.61: Updated ia-components and dweb-archivecontroller in webpack
-* 0.1.60: move navwrap into IAUX and rebuild transport and crawl indicators
-* 0.1.59: Bug fix with undefined description
-* 0.1.58: Added crawl UI CSS (rest is in ia-components) 
-* 0.1.58: ScrollableTileGrid component 
-* 0.1.58: Move components into @internetarchive/ia-components repo
-* 0.1.57: Simplify handling of urls, especially removes unneeded metadata fetch from a lot of thumbnails on mirror
-* 0.1.56: Component support reorganized and expanded for IAUX
-* 0.1.55: Move setconfig url; AnchorDetails & Tabby components; work with playlist API (in dweb-archivecontroller 0.1.52)
-* 0.1.53: Refactor components for IAUX; Incorporate dweb-archivecontroller fix to relateditems; 
-* 0.1.52: Bug fix
-* 0.1.51: Support bookreader (more work to do on this)
-* 0.1.50: Set title on window from item title, or query.
-* 0.1.49: config button; IAReactComponent; 
-* 0.1.48: Repeatable metadata; 
+* v0.1.69: Add settings and reload buttons to DwebNav
+* v0.1.68: Add settings component and some refactoring
+* v0.1.67: Support Reload
+* v0.1.66: Bugfix local pages and default user config
+* v0.1.65: Fix local page if no tasks
+* v0.1.64: Fix bootloader for "home"; White dot in crawl button; nav-wrap CSS; Simple-list queries;
+* v0.1.63: webpack fixes from ia-components (unpushed) and dweb-archivecontroller 0.1.59
+* v0.1.62: DetailsCollectionList supporting icons, dweb-archivecontroller/Util.js refactor, support home and local better
+* v0.1.61: Updated ia-components and dweb-archivecontroller in webpack
+* v0.1.60: move navwrap into IAUX and rebuild transport and crawl indicators
+* v0.1.59: Bug fix with undefined description
+* v0.1.58: Added crawl UI CSS (rest is in ia-components) 
+* v0.1.58: ScrollableTileGrid component 
+* v0.1.58: Move components into @internetarchive/ia-components repo
+* v0.1.57: Simplify handling of urls, especially removes unneeded metadata fetch from a lot of thumbnails on mirror
+* v0.1.56: Component support reorganized and expanded for IAUX
+* v0.1.55: Move setconfig url; AnchorDetails & Tabby components; work with playlist API (in dweb-archivecontroller 0.1.52)
+* v0.1.53: Refactor components for IAUX; Incorporate dweb-archivecontroller fix to relateditems; 
+* v0.1.52: Bug fix
+* v0.1.51: Support bookreader (more work to do on this)
+* v0.1.50: Set title on window from item title, or query.
+* v0.1.49: config button; IAReactComponent; 
+* v0.1.48: Repeatable metadata; 

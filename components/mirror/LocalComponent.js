@@ -95,7 +95,7 @@ class LocalItem extends IAReactComponent {
         <div class="container container-ia nopad">
           <div id="tabby-collection" class="tabby-data in">
             {/*Replaces rowColumnsItems in Search (used by Account & Collection)*/}
-            <LocalGridRowComponent members={this.props.items.members}/>
+            <LocalGridRowComponent members={this.props.item.members}/>
           </div>
         </div>
       </>
