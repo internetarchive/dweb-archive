@@ -91,20 +91,21 @@
             paused: searchparams.getAll("paused"),
             mirror: mirror, // Careful with this, gatewayServer will return dweb.me if mirror undefined
         });
+        const opts = Nav.setState(searchparams); // Save the state, and returns any other searchparams
         if (query) {
             // noinspection JSIgnoredPromiseFromCall
-            Nav.nav_search({query, sort});
+            Nav.nav_search({query, sort}, opts, {wanthistory: true}); // Intentionally passing transport, paused, etc that are used above
         } else if (item) {
             if (download) { // Note only works for downloading items, not files - can add later if reqd
                 // noinspection JSIgnoredPromiseFromCall
-                Nav.nav_downloaddirectory(item);
+                Nav.nav_downloaddirectory(item, opts, {wanthistory: true});
             } else {
                 // noinspection JSIgnoredPromiseFromCall
-                Nav.nav_details(item, {page});
+                Nav.nav_details(item, opts, {page, wanthistory: true});
             }
         } else {
             // noinspection JSIgnoredPromiseFromCall
-            Nav.nav_home();
+            Nav.nav_home(opts, {wanthistory: true});
         }
     }
 </script>
