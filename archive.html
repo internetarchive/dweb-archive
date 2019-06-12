@@ -81,47 +81,30 @@
 <script>
     //TODO - make this work if url is /arc/archive.org/details/foo
     $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
-    async function main({query=undefined, sort=undefined, item=undefined, download=false, page=undefined, mirror=undefined }={}) {
-        if (mirror && !mirror.startsWith('http')) { mirror = "http://"+mirror; } // Allow abbreviation like mirror=localhost:4244, also allows mirror to specify https://xyz.org
-        DwebArchive.mirror = mirror; // So DwebArchive can check it locally, must be before gatewayServer call below
-        await DwebTransports.p_connect({
-            statuselement: document.getElementById("dweb-status"),
-            http: {urlbase: DwebArchive.gatewayServer()},
-            transports: searchparams.getAll("transport"),
-            paused: searchparams.getAll("paused"),
-            mirror: mirror, // Careful with this, gatewayServer will return dweb.me if mirror undefined
-        });
-        const opts = Nav.setState(searchparams); // Save the state, and returns any other searchparams
-        if (query) {
-            // noinspection JSIgnoredPromiseFromCall
-            Nav.nav_search({query, sort}, opts, {wanthistory: true}); // Intentionally passing transport, paused, etc that are used above
-        } else if (item) {
-            if (download) { // Note only works for downloading items, not files - can add later if reqd
-                // noinspection JSIgnoredPromiseFromCall
-                Nav.nav_downloaddirectory(item, opts, {wanthistory: true});
-            } else {
-                // noinspection JSIgnoredPromiseFromCall
-                Nav.nav_details(item, opts, {page, wanthistory: true});
-            }
-        } else {
-            // noinspection JSIgnoredPromiseFromCall
-            Nav.nav_home(opts, {wanthistory: true});
-        }
+    async function main() {
+      // Allow abbreviation like mirror=localhost:4244, also allows mirror to specify https://xyz.org
+      const searchparams = new URL(window.location.href).searchParams
+      let mirror = searchparams.get("mirror");
+      if (mirror && !mirror.startsWith('http')) { mirror = "http://"+mirror; }
+      // Save the persistent (cross-window) state (transport & mirror & paused), and returns any other searchparams not saved
+      const opts = Nav.setState(searchparams, {mirror: mirror});
+      DwebArchive.mirror = mirror; // So DwebArchive can check it locally, must be before gatewayServer call below
+      const i = location.pathname.indexOf("/details/") || location.pathname.indexOf("/download/");
+      const item = (i > -1) ? location.pathname.slice(i + 9) : opts.item;
+      opts.download = (location.pathname.indexOf("/download/") > -1) || opts.download || false;
+      await DwebTransports.p_connect({
+        statuselement: document.getElementById("dweb-status"),
+        http: {urlbase: DwebArchive.gatewayServer()},
+        transports: searchparams.getAll("transport"),   //TODO-SEARCHPARAMS need to check how setState handles multiple transport
+        paused: searchparams.getAll("paused"),          //TODO-SEARCHPARAMS need to check how setState handles multiple paused
+        mirror: mirror,                                 // Careful with this, gatewayServer will return dweb.me if mirror undefined
+      });
+      Nav.metafactory(opts);
     }
 </script>
 <div id="main"></div><!-- destination for part accumulated by Details.js etc as html-->
 <script>
-    var searchparams = new URL(window.location.href).searchParams;
-    i = location.pathname.indexOf("/details/") || location.pathname.indexOf("/download/");
-    // noinspection JSIgnoredPromiseFromCall
-    main({
-        item: (i > -1) ? location.pathname.slice(i + 9) : searchparams.get("item"),
-        query: searchparams.get("query"),
-        sort: searchparams.get("sort"),
-        page: searchparams.get("page"),
-        mirror: searchparams.get("mirror"),
-        download: (location.pathname.indexOf("/download/") > -1) || searchparams.get("download") || false
-    });
+    main();
 </script>
 
 </body>

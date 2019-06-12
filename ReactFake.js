@@ -173,7 +173,7 @@ export default class React  {
             } else { // This includes ArchiveMember
                 urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
             }  //Examples: [dweb:/arc/archive.org/services/foo]
-            for (i in urls) { // This can get used if /services/xx passed in here, then converted to dweb:/arc/archive.org/services
+            for (let i in urls) { // This can get used if /services/xx passed in here, then converted to dweb:/arc/archive.org/services
                 if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
                     urls[i] = await this.thumbnailUrlsFrom(urls[i].slice(35));
                 }

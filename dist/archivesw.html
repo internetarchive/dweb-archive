@@ -36,12 +36,13 @@
 
     async function main() {
         await DwebTransports.p_connect({statuselement: document.getElementById("statuselement"), transports: searchparams.getAll("transport"), paused: searchparams.getAll("paused")});
+        const opts = Nav.setState(searchparams); // Save persistent state
         if (query) {
-            Nav.nav_search(query)
+            Nav.nav_search(query, opts, {wanthistory: true});
         } else if (item) {
-            Nav.nav_details(item);
+            Nav.nav_details(item, opts, {wanthistory: true});
         } else {
-            Nav.nav_home();
+            Nav.nav_home(opts, {wanthistory: true});
         }
     }
 
@@ -51,11 +52,6 @@
 
 <div id="main"></div><!-- destination for part accumulated by Details.js etc as html-->
 <script>
-    //Nav.nav_details("commute"); //Movie
-    //Nav.nav_details("prelinger"); //Collection of Movies
-    //Nav.nav_details("zandvoort.newspapers.1992.zandvoorts.nieuwsblad"); //Text through book reader
-    //Nav.nav_home();
-    //Nav.nav_details("mbid-b105f712-d75e-4d0a-a9c5-bf1948461e2b") // Image (Red Shift)
     localStorage.debug = "dweb-transports:* dweb-objects:* dweb-archive:*";
     var searchparams = new URL(window.location.href).searchParams;
     i = location.pathname.indexOf("/details/");
