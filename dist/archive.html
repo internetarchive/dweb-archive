@@ -85,7 +85,7 @@
       // Allow abbreviation like mirror=localhost:4244, also allows mirror to specify https://xyz.org
       const searchparams = new URL(window.location.href).searchParams
       let mirror = searchparams.get("mirror");
-      if (mirror && !mirror.startsWith('http')) { mirror = "http://"+mirror; }
+      if (mirror && (!mirror === null) && !mirror.startsWith('http')) { mirror = "http://"+mirror; }
       // Save the persistent (cross-window) state (transport & mirror & paused), and returns any other searchparams not saved
       const opts = Nav.setState(searchparams, {mirror: mirror});
       DwebArchive.mirror = mirror; // So DwebArchive can check it locally, must be before gatewayServer call below

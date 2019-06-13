@@ -33,7 +33,7 @@ function pushHistory(...optss) {
   const optsFunctional = ["wanthistory", "noCache"]; // opts used by nav_search and factory, dont save or restore
   const optsCombined = Object.assign({}, ...optss.map(opts => opts instanceof URLSearchParams ? URLSearchParamsEntries(opts) : opts));
   const opts = ObjectFilter(optsCombined,  // Set of opts want in history etc
-    (k,v) => ((typeof v !== "undefined") && !optsFunctional.includes(k)));
+    (k,v) => ((typeof v !== "undefined") && (v !== null) && !optsFunctional.includes(k)));
 
   // Filter opts to various kinds needed
   // Known opts in url.search to pass through include: tab, query
@@ -245,7 +245,7 @@ export default class Nav {
     if (!this.state) this.state = {};
     const persistentState = ["transport", "mirror", "paused"]; // Note that transport and paused are arrays
     const combinedOpts = Object.assign({}, this.state, ...optss.map(opts => opts instanceof URLSearchParams ? URLSearchParamsEntries(opts) : opts));
-    this.state = ObjectFilter(combinedOpts, (k, unusedV) => persistentState.includes(k)); // Dont mind keeping undefined state
+    this.state = ObjectFilter(combinedOpts, (k, v) => (persistentState.includes(k) && (typeof v !== "undefined") && (v !== null) && ((!Array.isArray(v)) || v.length ))); // Dont keep undefined state, will end up in URLs
     return ObjectFilter(combinedOpts, (k, unusedV) => !persistentState.includes(k)); // return any opts not persistent
   }
 
