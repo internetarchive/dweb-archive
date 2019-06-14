@@ -136,6 +136,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.73: Fix issue with mirror in offline (introduced in 0.1.72)
 * v0.1.72: Fix some issues when mirror not specified e.g. on dweb.archive.org
 * v0.1.71: Characters on crawl list to SVG; Complex refactor of history
 * v0.1.70: Add icons to new buttons
