@@ -49,7 +49,7 @@ export default class BookReaderWrapper extends IAFakeReactComponent {
             resumeCookiePath: `\/arc\/archive.org\/details\/${this.props.identifier}`,
             urlMode: 'history',
             // Only reflect page onto the URL
-            urlTrackedParams: ['page'],    //TODO-BOOK "x" added for debugging
+            urlTrackedParams: ['page'],
             enableBookTitleLink: false,
             bookUrlText: null,
             initialSearchTerm: null,
@@ -59,13 +59,11 @@ export default class BookReaderWrapper extends IAFakeReactComponent {
             // Note archive.org/download/xx/page/cover_t.jpg redirects to e.g.  https://ia601600.us.archive.org/BookReader/BookReaderPreview.php?id=xx&itemPath=%2F27%2Fitems%2Fxx&server=ia601600.us.archive.org&page=cover_t.jpg
             //getPageURI: xyzzy
         };
-        //TODO-BOOK this line will evolve as work thru steps to use local server and cached metadata etc
         item.fetch_bookreader({page: this.props.page}, (err, ai) => {      // Load Bookreader data async
             const rawAPI = RawBookReaderResponse.fromArchiveItem(item);
             BookReaderJSIAinit(rawAPI.cooked(), options); // Note don't need to change during cooking as will be delivered by server (or cooked in mirror) as appropriate
         });
         // Usage stats
-        //TODO-BOOK figure out why not being loaded
         if (window.archive_analytics) window.archive_analytics.values['bookreader'] = 'open';
     }
 
@@ -82,37 +80,6 @@ export default class BookReaderWrapper extends IAFakeReactComponent {
 /*
 
 * Strategy
-    * [TESTED] Trivial component: calls IA backgroung server via server field. and BookReaderJSIAinit using BookReaderJSIAinit and Bookreader in globals (as unmodifed code does) Called from Texts.js
-    * [TESTED] Component to fetch BookReaderJSIA via fetch_bookreader so caches it and/or gets from localhost:4244/BookReader/BookReaderJSIA
-    * [TESTED localhost] get pages thru localhost
-    * TESTING each step:
-        * http://localhost:4244/arc/archive.org/details/unitednov65unit
-        * http://localhost:4244/arc/archive.org/details/unitednov65unit?mirror=localhost:4244&transport=HTTP
-        * http://localhost:4244/arc/archive.org/details/unitednov65unit?mirror=localhost:4244&transport=HTTP WHEN DISCONNECTED (IIAB)
-        * http://192.168.88.1:4244/arc/archive.org/details/AboutBan1935?transport=HTTP&mirror=192.168.88.1:4244 WHEN DISCONNECTED (Rachel)
-* ==== Next  step ====
-    * Failing tests
-        * When disconnected, fails to read names - need backstop and need in GUN
-        * https://dweb.me/arc/archive.org/details/ialerequestsummary?
-        * when IPFS not running keeps trying addIPFS - go thru transports and fail nicely if transport not connected
-* ==== AFTER next step ===
-    * BUT ui needs to check for nearby sizes if doesnt have correct one and offline
-    * Fetch bookdata (assumes done fetch_metadata)
-        * Work with isa on URL schemes
-        * [ ] THEN fetch dweb.me
-        * [ ] THEN fetch via transports (including dweb.me)
-    * dweb.me/xxxxx
-        * Currently goes direct to datanode, will go to dweb.me once archive.org/BookReader/ works
-        * construct url from metadata d1,d2,dir
-          * set server=dweb.me
-          * edit result to turn https://dweb.me into http://localhost:4244/
-        * THEN Make localhost/BookReader/BookReaderJSIA.php forward to dweb.me
-      * Dweb.me: /Bookreader/BookReaderImages.php
-        * Call actual server for page (use metadata to find server), push url into ipfs to get from dweb.me
-    * Crawl:
-        * metadata gets the json (fetch_metadata)
-        * Details gets each of the pages at a reasonable scale - e.g. 4 or 5
-        * All gets all files (as now)
     * function usesBookreader(metadata)
       * = true if mediatype=texts && has abby and pdf files
       * test on some image only files - like the peterrabbit one
