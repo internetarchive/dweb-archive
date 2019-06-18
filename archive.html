@@ -89,9 +89,12 @@
       // Save the persistent (cross-window) state (transport & mirror & paused), and returns any other searchparams not saved
       const opts = Nav.setState(searchparams, {mirror: mirror});
       DwebArchive.mirror = mirror; // So DwebArchive can check it locally, must be before gatewayServer call below
-      const i = location.pathname.indexOf("/details/") || location.pathname.indexOf("/download/");
-      const item = (i > -1) ? location.pathname.slice(i + 9) : opts.item;
-      opts.download = (location.pathname.indexOf("/download/") > -1) || opts.download || false;
+      const pathParts = location.pathname.split('/');
+      const k = ['details', 'download'].find(kPossible => pathParts.includes(kPossible));
+      opts.identifier = k
+        ? pathParts[pathParts.length-1] // identifier must be last part of URL for this to work
+        : opts.identifier || opts.item;
+      opts.download = pathParts.includes('download') || opts.download || false;
       await DwebTransports.p_connect({
         statuselement: document.getElementById("dweb-status"),
         http: {urlbase: DwebArchive.gatewayServer()},

@@ -146,7 +146,7 @@ export default class Nav {
   }
 
   static async nav_downloaddirectory(identifier, ...optss) {
-    debug("Navigating to Download directory for %s", itemid);
+    debug("Navigating to Download directory for %s", identifier);
     await Nav.factory(identifier, ...optss, {wanthistory: true, download: 1}); // Not sure what returning ....
     return false; // Dont follow anchor link - unfortunately React ignores this
   }
@@ -256,11 +256,11 @@ export default class Nav {
     opts.wanthistory = true;
     if (query) {
       this.nav_search({query, sort}, opts); // Intentionally passing transport, paused, etc that are used above
-    } else if (item) {
+    } else if (identifier) {
       if (download) { // Note only works for downloading items, not files - can add later if reqd
-        this.nav_downloaddirectory(item, opts);
+        this.nav_downloaddirectory(identifier, opts);
       } else {
-        this.nav_details(item, opts);
+        this.nav_details(identifier, opts);
       }
     } else {
       this.nav_home(opts);
