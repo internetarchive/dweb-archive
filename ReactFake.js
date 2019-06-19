@@ -149,10 +149,10 @@ export default class React  {
         el.appendChild(elImg);
     }
 
-    static async thumbnailUrlsFrom(itemid) {
+    static async thumbnailUrlsFrom(identifier) {
         // Return thumbnail links
         //itemid
-        return await new ArchiveItem({itemid}).thumbnaillinks()
+        return await new ArchiveItem({identifier}).thumbnaillinks()
     }
     static async p_loadImg(el, name, urls, cb) {
         /*
