@@ -136,6 +136,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.75: Include fixes from iaux-PR<=202 and dweb-archivecontroller v0.1.64
 * v0.1.74: Fix some issues with downloads
 * v0.1.73: Fix issue with mirror in offline (introduced in 0.1.72)
 * v0.1.72: Fix some issues when mirror not specified e.g. on dweb.archive.org
