@@ -1,8 +1,5 @@
 import React from './ReactFake';
-
-
-const canonicaljson = require('@stratumn/canonicaljson');
-
+import { stringify } from '@stratumn/canonicaljson';
 import ArchiveBase from './ArchiveBase';
 import {ScrollableTileGrid} from "@internetarchive/ia-components/dweb-index.js";
 import {NavWrap} from '@internetarchive/ia-components/dweb-index.js';
@@ -26,6 +23,19 @@ if (typeof(Window) === "undefined") {
 }
 */
 
+// See other almost DUPLICATEDCODE#003 (iaux and dweb-archive)
+function _onefield(key, value) {
+    return Array.isArray(value)
+      ? value.map(v => _onefield(key, v)).join(' OR ')
+      // This next line uses stringify instead of toString() because we want  '"abc"' and '1' i.e. quotes if its a string
+      : (`${key}:${stringify(value)}`);
+}
+
+function queryFrom(query) {
+    return Object.entries(query).map(kv => _onefield(kv[0], kv[1])).join(' AND '); // k1:v1 AND k2:v2
+}
+// End of DUPLICATEDCODE#0003
+
 const searchConfig = {
     rows: 30,  // How many to retrieve per page, smaller numbers load quicker, but then scroll down will have to get next page
 }
@@ -40,8 +50,7 @@ export default class Search extends ArchiveBase {
     constructor({query=undefined, sort='', and='', rows=searchConfig.rows, page=1, metaapi=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
         super({itemid, metaapi});
         if (typeof(query) === "object") { // form { creator: "Foo bar" ... }
-            // This next line uses stringify instead of toString() because we want  '"abc"' and '1' i.e. quotes if its a string
-            query = Object.keys(query).map(k => `${k}:${canonicaljson.stringify(query[k])}`).join(' AND ');
+            query = queryFrom(query);
         }
         this.query = query; // Note this should be an UNENCODED query  or an object
         this.rows= rows;

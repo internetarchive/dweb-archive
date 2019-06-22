@@ -111,7 +111,7 @@ export default class Nav {
   static async nav_search(q, opts = {}) {
     /*
     Navigate to a search
-    q = query (string to search for) or object e.g. {query; foo, sort: -date} as passed to new Search()
+    q = query (string to search for) or object e.g. {query: foo, sort: -date} as passed to new Search()
      */
     debug("Navigating to Search for %s", q);
     const destn = document.getElementById('main'); // Blank window (except Nav) as loading

@@ -5,7 +5,7 @@ import waterfall from 'async/waterfall';
 
 import {TileGrid} from "@internetarchive/ia-components/dweb-index.js";
 import {gatewayServer, ObjectDeeperAssign}  from '@internetarchive/dweb-archivecontroller/Util';
-import ArchiveMember from "@internetarchive/ia-components/dweb-index.js";
+import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 import {NavWrap} from "@internetarchive/ia-components/dweb-index";
 import {CommonWelcomeComponent} from "./CommonComponent";
 

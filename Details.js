@@ -14,13 +14,11 @@ import React from './ReactFake';
 // React requires style={{display: none}} ReactFake can also handle quoted style="display: none"
 // React requires className= rather than class=, ReactFake supports both
 
-import {languageMapping} from '@internetarchive/dweb-archivecontroller/Util';
-import {DetailsActionButtons, DetailsDownloadOptions} from "@internetarchive/ia-components/dweb-index.js";
 import RelatedItemsWrapper from './components/RelatedItemsWrapper';
-import DetailsCollectionListWrapper from './components/DetailsCollectionListWrapper';
+import DetailsAboutWrapper from './components/DetailsAboutWrapper';
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
-import {NavWrap} from '@internetarchive/ia-components/dweb-index.js';
+import {DetailsActionButtons, DetailsDownloadOptions, DetailsReviews, DetailsMetadata, DetailsAbout, NavWrap} from '@internetarchive/ia-components/dweb-index.js';
 import {AJS_on_dom_loaded} from "./Util";
 
 export default class Details extends ArchiveBase {
@@ -136,182 +134,11 @@ export default class Details extends ArchiveBase {
         );
     }
 
-    itemDetailsAboutJSX() {
-        /* This builds a JSX tht sits underneth theatre-ia-wrap DIV that is built by theatreIaWrap */
-        const itemid = this.itemid;
-        const metadata = this.metadata;
-        const title = metadata.title;
-        const creator = (metadata.creator || []).join(',');
-        const queryCreator=(metadata.creator || []).map(c => `creator:"${c}"`).join(' OR ');
-        const queryCreatorEnc= encodeURIComponent(queryCreator);
-        const datePublished = metadata.date;
-        const publishers=metadata.publisher || [];
-        const keywords = metadata.subject;
-        // noinspection JSUnresolvedVariable
-        const licence = metadata.licenseurl; //TODO - handle other licenses - hardwired for CC currently
-        const languages = metadata.language || [];
-        const queryLanguage=languages.map(l => `language:${l} OR language:"{languageMapping[l]"`).join(' OR ');
-        const queryLanguageEnc= encodeURIComponent(queryLanguage);
-        const languageLong = languages.map(l => languageMapping[l]).join(',');
-        const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
-        const metadataListKeyStrings = {ocr: "OCR", runtime: "Run time", ppi: "PPI"}; /*Metadata with something other than capitalize first letter*/
-        const metadataListExclude = [
-            // This list has metadata that should not be listed in a table because it is handled in some other way
-            //"added-date", "adder",          // TODO see note below about "adder" and uncomment here when box added
-            "backup_location", "collection", "creator", "credits", "curation", "date", "description", "licenseurl", "magnetlink", "mediatype",
-            "public", "publicdate", "publisher", "subject", "thumbnaillinks", "title", "updatedate", "updater", "uploader",
-        ];
-
-        const metadataListFound = Object.keys(metadata)
-            .filter( (k) => (!metadataListExclude.includes(k)) && metadata[k] && metadata[k].length);   // List of keys in the metadata that are not empty strings or empty arrays
-
-
-
-            //TODO  Replace "a" with onclicks to download function on f
-        // noinspection JSUnresolvedVariable
-        const collections = metadata.collection; // [str*]
-        // noinspection JSUnresolvedVariable
-        const collectionTitles = this.collection_titles;   // Dictionary mapping collection itemid to title
-        const mediatype = metadata.mediatype;
-        const iconochiveIcon="iconochive-"+mediatype; //obscure mediatypes are supported
-        // noinspection JSUnresolvedVariable
-        const contributors = metadata.contributor || [].join(', ');
-        // noinspection JSUnresolvedVariable
-        const reviews = this.reviews;
-        const writeReviewsURL = `https://archive.org/write-review.php?identifier=${itemid}`;  //TODO need an indirect way to submit a review
-        // noinspection JSUnresolvedVariable
-        const credits = (metadata.credits || []).join(', ');
-        //TODO-DETAILS much of below doesn't work (yet)
-        //TODO-DETAILS note the structure of this has changed - see the difference in originals between multitrackaudio and mbid for example
+    itemDetailsAboutJSX() { //TODO eliminate this and subclasses of it by copying parent into all places used
+        /* This its underneth theatre-ia-wrap DIV that is built by theatreIaWrap */
         return (
-            <div class="container container-ia item-details-about">
-                <div class="relative-row row">
-                    <div class="thats-right" style="text-align:right;">
-                        <DetailsActionButtons identifier={itemid} title={metadata.title}/>
-                    </div>
-                    {/*-- flag initialization moved to browserAfter() --*/}
-                    <div class="col-sm-8 thats-left item-details-metadata">
-                        <h1 style={{fontSize:"30px", "marginBottom":0}}>
-                            <div class="left-icon"><span className={`${iconochiveIcon} ${mediatype}`} aria-hidden="true"></span><span
-                                    class="sr-only">{mediatype}</span></div>
-                            <span itemprop="name">{title}</span>
-                        </h1>
-
-                        <div class="actions-ia">
-
-                        </div>
-
-
-                        <div class="key-val-big">
-                            <div>
-                                <span class="key">by</span>{' '}
-                                <span class="value"><span><a href={`/search.php?query=%28${queryCreatorEnc}%29`} onclick={Nav.onclick_search({query: {creator: queryCreator}})}>{creator}</a></span></span>
-                            </div>
-                        </div>
-
-                        <br/>
-                        <div class="key-val-big">
-                            Publication date <a href={`/search.php?query=date%3A{datePublished}`} onclick={Nav.onclick_search({query: {date: datePublished}})}>{' '}
-                            <span itemprop="datePublished">{datePublished}</span></a>
-                        </div>
-
-                        {licence ? (
-                        <div class="key-val-big">
-                            Usage <a rel="license" title="http://creativecommons.org/licenses/by-nc-nd/2.0/"
-                                     href="http://creativecommons.org/licenses/by-nc-nd/2.0/" target="_blank">http://creativecommons.org/licenses/by-nc-nd/2.0/<img
-                                class="cclic" src="./images/cc/cc.png"/><img class="cclic" src="./images/cc/by.png"/><img
-                                class="cclic" src="./images/cc/nc.png"/><img class="cclic" src="./images/cc/nd.png"/></a></div>
-                        ) : ( undefined ) }
-                        {/*TODO-Only show if keywords non-blank*/}
-                        {keywords ? (
-                        <div class="key-val-big">
-                            Topics <span itemprop="keywords">
-                          {keywords.map((keyword)=> (
-                                <a href={`/search.php?query=subject%3A%22${keyword}%22`} onclick={Nav.onclick_search({query: {subject: keyword}})}>{keyword}</a> ))}
-                      </span> {/*TODO should really have , between each but join() not easy in JSX*/}
-                        </div>
-                        ) : ( undefined ) }
-                        { publishers.length ? (
-                        <div><span class="key">Publisher</span>{' '}
-
-                            <span
-                                    class="value"
-                            ><a href={`/search.php?query=publisher%3A%22${publishers.join("%22%20OR%20%22")}%22`} onclick={Nav.onclick_search({query: {publisher: publishers.join("%22%20OR%20%22")}})}><span
-                                    itemprop="publisher">{publishers.join(', ')}</span></a></span>
-                        </div>
-                        ) : ( undefined ) }
-                        {/*-- sponsor (also does usage rights, if specified for the sponsor) --*/}
-
-                        {/*-- contributors (also does usage rights, if specified for the contributors) --*/}
-                        { contributors ? ( <div><span class="key">Contributor</span>{' '}<span class="value">{contributors}</span></div> ) : ( undefined ) }
-                        { queryLanguage ? (
-                            <div class="key-val-big">
-                                <div>
-                                    <span class="key">Language</span>{' '}
-
-                                    <span class="value"><span><a href={`/search.php?query=%28${queryLanguageEnc}%29`}
-                                        onclick={Nav.onclick_search({query: `(${queryLanguage})`})}>{languageLong}</a></span></span>
-                                </div>
-                            </div>
-                        ) : ( undefined ) }
-
-                        <div class="clearfix"></div>
-                        { description ? ( <div id="descript" itemprop="description" dangerouslySetInnerHTML={{__html: description}}></div> ) : ( undefined ) }
-
-                        { credits ? ( <h2 style="font-size:18px">Credits</h2> ) : ( undefined ) }
-                        { credits ? ( <p class="content">{credits}</p>        ) : ( undefined ) }
-
-                        <div class="metadata-expandable-list" role="list">
-                            { metadataListFound.map((k) =>
-                                <div role="listitem">
-                                    <span class="key">{metadataListKeyStrings[k] || (k.charAt(0).toUpperCase() + k.substr(1))}</span>{' '}
-                                    <span class="value">{metadata[k]}</span>
-                                </div>
-                            ) }
-                        </div>
-
-                        <div id="reviews">
-                            <h2 style="font-size:36px;font-weight:200;border-bottom:1px solid #979797; padding-bottom:5px; margin-top:50px;">
-                                <div class="pull-right" style="font-size:14px;font-weight:500;padding-top:14px;">
-                                    <a class="stealth" href={writeReviewsURL}><span class="iconochive-plus-circle"
-                                                                                    aria-hidden="true"></span><span class="sr-only">plus-circle</span>
-                                        Add Review</a><br/>
-                                </div>
-                                <div class="left-icon" style="margin-top:3px"><span class="iconochive-comment"
-                                                                                    aria-hidden="true"></span><span class="sr-only">comment</span>
-                                </div>
-                                Reviews
-                            </h2>
-                            { reviews && reviews.length ? reviews.map((review) => (
-                                <div class="aReview">
-                                    <b>Reviewer:</b>{' '}
-                                    <AnchorDetails identifier={`@${review.reviewer}`} data-event-click-tracking="ItemReviews|ReviewerLink">{review.reviewer}</AnchorDetails>
-                                    -
-                                    <span alt={`${review.stars} out of 5 stars`} title={`${review.stars} out of 5 stars`}>
-                                        { ['*','*','*','*','*'].slice(0,review.stars).map(x =>
-                                            <span class="iconochive-favorite size-75-percent" aria-hidden="true"></span> , <span class="sr-only">favorite</span>
-                                        ) }
-                                    </span>
-                                    - {review.reviewdate}{/*TODO reviewdate needs pretty printing*/}<br/>
-                                    <b>Subject:</b>{' '}{review.reviewtitle}
-                                    <div class="breaker-breaker">{review.reviewbody}</div>
-                                </div>
-                            )) : (
-                                <div class="small-label">
-                                    There are no reviews yet. Be the first one to <a href={writeReviewsURL}>write a review</a>.
-                                </div>
-                            )}
-                        </div>
-
-                    </div>{/*--/.col-md-10--*/}
-                    <div class="col-sm-4 thats-right item-details-archive-info">
-                        {/*TODO need section class=boxy item-stats-summary- not obvious where data from, its not in metadata */}
-                        <DetailsDownloadOptions identifier={itemid} files={this.files} files_count={this.files_count}/>
-                        <DetailsCollectionListWrapper collections={collections} collectionTitles={collectionTitles}/>
-                        {/* <DetailsUploaderBox identifier={} name={} date={}> see https://github.com/internetarchive/dweb-archive/issues/24 */}
-                    </div>{/*--/.col-md-2--*/}
-                </div>{/*--/.row--*/}
-            {/*--//.container-ia--*/} </div>
+          <DetailsAboutWrapper metadata={this.metadata} files={this.files} files_count={this.files_count}
+                        collection_titles={this.collection_titles} description={this.preprocessDescription(this.metadata.description)}/>
         );
     }
 
