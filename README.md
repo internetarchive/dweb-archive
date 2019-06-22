@@ -136,6 +136,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.78: Fix search links on details page (includes refactor DetailsAbout into iaux)
 * v0.1.77: Include bug fixes from dweb-archivecontroller v0.1.65
 * v0.1.76: Include fixes from iaux-PR<=202 and dweb-archivecontroller v0.1.64
 * v0.1.74: Fix some issues with downloads
