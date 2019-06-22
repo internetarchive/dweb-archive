@@ -1,7 +1,7 @@
 import React from './ReactFake';
 import Search from './Search';
-import {Tabby} from "@internetarchive/ia-components/index.js";
-import {NavWrap} from '@internetarchive/ia-components/index.js';
+import {Tabby} from "@internetarchive/ia-components/dweb-index.js";
+import {NavWrap} from '@internetarchive/ia-components/dweb-index.js';
 import {AJS_on_dom_loaded} from "./Util";
 
 export default class Account extends Search {

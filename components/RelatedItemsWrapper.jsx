@@ -1,7 +1,7 @@
 //const debug = require('debug')('ia-components:RelatedItemsWrapper');
 import React from 'react';
 import IAReactComponent from './IAReactComponent'; // Encapsulates differences between dweb-archive/ReactFake and iaux/React
-import {RelatedItems} from '@internetarchive/ia-components/index.js';
+import {RelatedItems} from '@internetarchive/ia-components/dweb-index.js';
 
 //Note this component is a bridge from Details.js to a IAUX React Component (that wants not to be dependent on archivecontroller,
 //It won't work in FakeReact because it relies on setState to cause a rerender.

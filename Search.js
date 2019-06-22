@@ -4,8 +4,8 @@ import React from './ReactFake';
 const canonicaljson = require('@stratumn/canonicaljson');
 
 import ArchiveBase from './ArchiveBase';
-import {ScrollableTileGrid} from "@internetarchive/ia-components/index.js";
-import {NavWrap} from '@internetarchive/ia-components/index.js';
+import {ScrollableTileGrid} from "@internetarchive/ia-components/dweb-index.js";
+import {NavWrap} from '@internetarchive/ia-components/dweb-index.js';
 import {AnchorModalGo} from './components/ModalGoFake';
 import {AJS_on_dom_loaded} from "./Util";
 

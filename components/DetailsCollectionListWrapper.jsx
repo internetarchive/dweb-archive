@@ -1,6 +1,6 @@
 import React from 'react';
 import IAReactComponent from './IAReactComponent';
-import {DetailsCollectionList} from '@internetarchive/ia-components/index.js';
+import {DetailsCollectionList} from '@internetarchive/ia-components/dweb-index.js';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember.js";
 import {Objectmap} from "@internetarchive/dweb-archivecontroller/Util.js";
 

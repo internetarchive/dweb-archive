@@ -15,12 +15,12 @@ import React from './ReactFake';
 // React requires className= rather than class=, ReactFake supports both
 
 import {languageMapping} from '@internetarchive/dweb-archivecontroller/Util';
-import {DetailsActionButtons, DetailsDownloadOptions} from "@internetarchive/ia-components/index.js";
+import {DetailsActionButtons, DetailsDownloadOptions} from "@internetarchive/ia-components/dweb-index.js";
 import RelatedItemsWrapper from './components/RelatedItemsWrapper';
 import DetailsCollectionListWrapper from './components/DetailsCollectionListWrapper';
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
-import {NavWrap} from '@internetarchive/ia-components/index.js';
+import {NavWrap} from '@internetarchive/ia-components/dweb-index.js';
 import {AJS_on_dom_loaded} from "./Util";
 
 export default class Details extends ArchiveBase {

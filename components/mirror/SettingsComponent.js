@@ -4,7 +4,7 @@ const debug = require('debug')('dweb-archive:SettingsComponent');
 
 import waterfall from 'async/waterfall';
 import {gatewayServer}  from '@internetarchive/dweb-archivecontroller/Util';
-import {NavWrap} from "@internetarchive/ia-components/index";
+import {NavWrap} from "@internetarchive/ia-components/dweb-index.js";
 import {CommonWelcomeComponent} from "./CommonComponent";
 
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller

@@ -3,10 +3,10 @@ import IAReactComponent from '../IAReactComponent';
 const debug = require('debug')('dweb-archive:LocalComponent');
 import waterfall from 'async/waterfall';
 
-import {TileGrid} from "@internetarchive/ia-components/index.js";
+import {TileGrid} from "@internetarchive/ia-components/dweb-index.js";
 import {gatewayServer, ObjectDeeperAssign}  from '@internetarchive/dweb-archivecontroller/Util';
-import ArchiveMember from '@internetarchive/dweb-archivecontroller/ArchiveMember';
-import {NavWrap} from "@internetarchive/ia-components/index";
+import ArchiveMember from "@internetarchive/ia-components/dweb-index.js";
+import {NavWrap} from "@internetarchive/ia-components/dweb-index";
 import {CommonWelcomeComponent} from "./CommonComponent";
 
 const _levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-components/.../ConfigCrawl.js
