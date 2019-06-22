@@ -4,7 +4,5 @@ dist/bookreader/BookReader
 dist/dweb-transports-bundle.js
 dist/dweb-objects-bundle.js
 *.swp
-/package-lock.json
 /includes/package-lock.json
-yarn.lock
 yarn-error.log
