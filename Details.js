@@ -33,6 +33,8 @@ export default class Details extends ArchiveBase {
         React.domrender(els, res);  //Put the els into the page
         this.browserAfter();
     }
+
+    // See almost identical DUPLICATEDCODE#004
     wrap() {
         /* Wrap the content up
         context: body wrap(
@@ -49,7 +51,8 @@ export default class Details extends ArchiveBase {
                 </div>{/*--//.container-ia--*/}
                 {this.theatreIaWrap()} {/*This is the main-content*/}
                 {(!this.itemid) ? null :
-                  this.itemDetailsAboutJSX() }
+                  <DetailsAboutWrapper metadata={this.metadata} files={this.files} files_count={this.files_count}
+                                       collection_titles={this.collection_titles} description={this.preprocessDescription(this.metadata.description)}/> }
                 {(!this.itemid) ? null :
                     <RelatedItemsWrapper identifier={this.itemid} item={this} noCache={this.noCache} /> }
                 {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
@@ -131,14 +134,6 @@ export default class Details extends ArchiveBase {
                     </div>
                 </form>
             </div>
-        );
-    }
-
-    itemDetailsAboutJSX() { //TODO eliminate this and subclasses of it by copying parent into all places used
-        /* This its underneth theatre-ia-wrap DIV that is built by theatreIaWrap */
-        return (
-          <DetailsAboutWrapper metadata={this.metadata} files={this.files} files_count={this.files_count}
-                        collection_titles={this.collection_titles} description={this.preprocessDescription(this.metadata.description)}/>
         );
     }
 

@@ -1,6 +1,8 @@
 import React from './ReactFake';
 import Details from './Details';
-import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
+import AnchorDetails from './components/AnchorDetailsFake';
+import {NavWrap} from "@internetarchive/ia-components/sandbox/details/NavWrap";
+import RelatedItemsWrapper from "./components/RelatedItemsWrapper"; // Have to use the Fake one as long as this is FakeReact
 
 /*
 Support directories of files,
@@ -10,23 +12,36 @@ TODO needs date in form probably like new Date().toLocaleDateString('en-GB',{day
  */
 
 export default class DownloadDirectory extends Details {
-    theatreIaWrap() {
-        const itemid = this.itemid;
-        return (
+
+    wrap() {
+        /* Wrap the content up
+        context: body wrap(
+        content: (on image)  wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | RelatedItems  | TODO-ANALYTICS )
+        returns: elements tree suitable for adding into another render
+         */
+      const identifier = this.itemid;
+      return (
+        <div id="wrap" itemscope itemtype={this.itemtype}>
+            {/* Missing donate-banner and scripts & css before it */}
+            <NavWrap item={this}/>
+            {/*--Begin page content --*/}
+            <div class="container container-ia">
+                <a name="maincontent" id="maincontent"></a>
+            </div>{/*--//.container-ia--*/}
+            {/*This is the main-content*/}
             <div class="container container-ia">
                 <div class="download-directory-listing">
-                    <h1>Files for {itemid}</h1>
+                    <h1>Files for {identifier}</h1>
                     <hr />
                     <pre>
                         <table class="directory-listing-table">
                             <thead><th>Name</th>{/*--<th>Last modified</th>--*/}<th>Size</th></thead>
                             <tbody>
                                 <tr>
-                                    <td><AnchorDetails identifier={itemid}><span class="iconochive-Uplevel" title="Parent Directory" aria-hidden="true"></span> Go to parent directory</AnchorDetails></td>
+                                    <td><AnchorDetails identifier={identifier}><span class="iconochive-Uplevel" title="Parent Directory" aria-hidden="true"></span> Go to parent directory</AnchorDetails></td>
                                     <td></td>
                                     <td></td>
                                 </tr>
-                                {/*-- TODO-DIR next loop needs doing --*/}
                                 { this.files.map(f => (
                                     <tr>
                                     <td><a source={f}
@@ -41,9 +56,13 @@ export default class DownloadDirectory extends Details {
                         </table>
                     </pre>
                 </div>
-             {/*--/.container--*/}</div>
+             </div>
+            {(!identifier) ? null :
+              <RelatedItemsWrapper identifier={identifier} item={this} noCache={this.noCache} /> }
+            {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
+            }
+            {/*--wrap--*/}</div>
         );
     }
 
-    itemDetailsAboutJSX() { } // Clear as not used in Directory
 }

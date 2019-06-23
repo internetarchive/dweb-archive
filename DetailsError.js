@@ -1,20 +1,36 @@
 import React from './ReactFake';
 import Details from './Details'
+import {NavWrap} from "@internetarchive/ia-components/sandbox/details/NavWrap";
+import RelatedItemsWrapper from "./components/RelatedItemsWrapper";
 
 export default class DetailsError extends Details {
     constructor({itemid=undefined, metaapi=undefined, message="Undefined error message"}={}) {
         super({ itemid, metaapi});
         this.message = message;
     }
-    theatreIaWrap() {
-        return (
-        <div class="dweb-message">
-            {this.message}
-        </div>
-        )
-    }
     render(res) {
         super.render(res)
     }
-    itemDetailsAboutJSX() { }
+    // See almost identical DUPLICATEDCODE#004
+    wrap() {
+        /* Wrap the content up
+        context: body wrap(
+        content: (on image)  wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | RelatedItems  | TODO-ANALYTICS )
+        returns: elements tree suitable for adding into another render
+         */
+        return (
+          <div id="wrap" itemscope itemtype={this.itemtype}>
+              {/* Missing donate-banner and scripts & css before it */}
+              <NavWrap item={this}/>
+              {/*--Begin page content --*/}
+              <div class="container container-ia">
+                  <a name="maincontent" id="maincontent"></a>
+              </div>{/*--//.container-ia--*/}
+              {/*This is the main-content*/}
+              <div className="dweb-message">
+                  {this.message}
+              </div>
+          </div>
+        );
+    }
 }
