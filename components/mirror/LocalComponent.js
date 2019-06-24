@@ -29,9 +29,9 @@ class LocalGridRowComponent extends IAReactComponent {
   */
   constructor(props) {
     super(props);
-    this.state.members = this.props.members; // Maybe undefined
+    this.state.members = this.props.members || []; // Maybe undefined
     // Called by React when the Loading... div is displayed
-    if (!this.members) {
+    if (!this.state.members.length) {
       const urlConfig = [gatewayServer(), "info"].join('/');
       let tasks; // hydrated after info fetched
       waterfall([
@@ -58,7 +58,7 @@ class LocalGridRowComponent extends IAReactComponent {
 
   render() {
     // Build a grid of tiles like in Collection but doesnt have the "More" scrolling feature
-    return (!this.state.members)
+    return (!this.state.members.length)
         ? <span>Loading ...</span>
         :
           <div className="row">
@@ -95,7 +95,7 @@ class LocalItem extends IAReactComponent {
         <div class="container container-ia nopad">
           <div id="tabby-collection" class="tabby-data in">
             {/*Replaces rowColumnsItems in Search (used by Account & Collection)*/}
-            <LocalGridRowComponent members={this.props.item.members}/>
+            <LocalGridRowComponent members={(this.props.item.membersFav || []).concat(this.props.item.membersSearch || [])}/>
           </div>
         </div>
       </>
