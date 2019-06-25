@@ -55,7 +55,6 @@ Last edited to match reality 14 August 2018
                     * theatreIaWrap - wrap the main content in controls (e.g. play etc)
                         * Displays main content - highly variable between types (Texts, Image, Video etc)
                         * cherModal - display sharing info
-                    * itemDetailsAboutJSX - content about the main object
                 * browserbefore - anything to do before putting the elements onto the page
                     * archive_setup_push - put functions into a data structure (used by Archive's AJS) this is subclassed by each type
                     * AJS_on_dom_loaded - run the functions saved with archive_setup_push (TODO or some other funciton - define)
