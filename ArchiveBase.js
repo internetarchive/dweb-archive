@@ -5,6 +5,7 @@ import React from './ReactFake';
 //import ReactDOM from 'react-dom';
 import {AJS_on_dom_loaded} from './Util';
 import ArchiveItem from '@internetarchive/dweb-archivecontroller/ArchiveItem';
+import { ReactConfig } from './ReactSupport';
 
 export default class ArchiveBase extends ArchiveItem {
     /*
@@ -41,8 +42,8 @@ export default class ArchiveBase extends ArchiveItem {
         return  !description ? description
                 : (Array.isArray(description) ? description.join('<br/>') : description)
                 .replace('\n','<br/>')
-                .replace(/src=(['"])http:\/\/www.archive.org\//gi, 'src=$1'+ React._config().root + '/') // src="/  absolute urls
-                .replace(/src=(['"])\//gi, 'src=$1'+ React._config().root + '/'); // src="/  absolute urls
+                .replace(/src=(['"])http:\/\/www.archive.org\//gi, 'src=$1'+ ReactConfig().root + '/') // src="/  absolute urls
+                .replace(/src=(['"])\//gi, 'src=$1'+ ReactConfig().root + '/'); // src="/  absolute urls
 
     }
 

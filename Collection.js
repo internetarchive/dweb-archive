@@ -191,6 +191,7 @@ export default class Collection extends Search {
         // Note the archive_setup.push stuff is subtly different from that for 'search'
         const query = this.query;
         archive_setup.push(function() { // archive_setup is in archive.js
+            //TODO - figure out what AJS.date_switcher does and build into SearchSwitcher component
             AJS.date_switcher(`&nbsp;<a href="/search.php?query=${query}&amp;sort=-publicdate"><div class="date_switcher in">Date Archived</div></a> <a href="/search.php?query=${query}&amp;sort=-date"><div class="date_switcher">Date Published</div></a> <a href="/search.php?query=${query}&amp;sort=-reviewdate"><div class="date_switcher">Date Reviewed</div></a> `);
             AJS.lists_v_tiles_setup('collection');
             $('div.ikind').css({visibility:'visible'});

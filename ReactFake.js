@@ -12,7 +12,6 @@ import throttle from "throttleit";
 import from2 from "from2";
 import prettierBytes from "prettier-bytes";
 const Url = require('url');
-const asyncMap = require('async/map');
 //These are needed to mingle real-react with Fake-react during transition.
 import ReactDOM from 'react-dom';
 import RealReact from 'react';
@@ -23,7 +22,7 @@ import ArchiveFile from "@internetarchive/dweb-archivecontroller/ArchiveFile";
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 // Other parts of dweb-archive
 import {config} from './Util';
-
+import { ReactConfig, resolveUrls, p_resolveUrls, thumnailUrlsFrom, loadImg } from './ReactSupport';
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 
 
@@ -37,7 +36,7 @@ Handling of FakeReact IAFakeReactComponents
         * the top element built may contain a ref=f(el). this will be stored as a function in setAttributes (its untested if a sub-element contains ref=f()
     * addKids(parent) adds the rendered elements to the parent
     * addKids(parent) calls "ref", passing the element created to the IAReactObject,
-      * The ref call will typically fetch state and add more sub-elements e.g. via ReactFake.loadImg
+      * The ref call will typically fetch state and add more sub-elements e.g. via ReactFake.loadImgBackgroun
     * addKids(parent) calls NEWIAREACTOBJ.componentDidMount()
 */
 //TODO write up handling of Real React components in here
@@ -62,175 +61,9 @@ function deletechildren(el, keeptemplate) { //Note same function in htmlutils
 
 export default class React  {
 
-    static relativeurl(r, url) {
-        /* Convert a relative url into a real one based on a possible base URL
-            r       Url to try and go relative to
-            url     Relative URL of form ./xyz or "/xyz"
-            returns a url relative to r, or undefined if dont have one
-        */
-        let l = Url.parse(r); // Parse url into a Url structure
-        if (url.startsWith('.')) { url = url.substr(1); }
-        if (["https:","http:","file:"].includes(l.protocol)
-            || (l.path.startsWith('/ipfs/')  && (l.path.lastIndexOf('/') > l.path.indexOf("/ipfs/")+5))
-            || (l.path.startsWith('/arc/')  && (l.path.lastIndexOf('/') > l.path.indexOf("/ipfs/")+4))
-            ) {
-            return  r.substr(0, r.lastIndexOf('/'))+url;
-        }
-        return undefined
-    }
-    static _config() {
-        return DwebArchive.mirror ? {
-                root:       DwebArchive.mirror + "/arc/archive.org",    // Used for absolute URLs in descriptions e.g. /details/foo
-                relname:    DwebArchive.mirror + "/arc/archive.org/",   // Used for img.src=./
-                rootname:   DwebArchive.mirror + "/arc/archive.org/",   // Used for img.rc=/serve etc (see example in commute.description
-                tabbyrootinsert: "/arc/archive.org", // Insert before tabby links to gets to https://dweb.me/arc/archive.org/details/foo?bar in origin dweb.me with url /details/foo?bar
-            } : {
-                root:       "https://dweb.archive.org",   // Used for absolute URLs in descriptions e.g. /details/foo
-                relname:    "dweb:/arc/archive.org/",   // Used for img.src=./
-                rootname:   "dweb:/arc/archive.org/", // Used for img.rc=/serve etc (see example in commute.description
-                tabbyrootinsert: "/arc/archive.org", // Insert before tabby links to gets to https://dweb.me/arc/archive.org/details/foo?bar in origin dweb.me with url /details/foo?bar
-            };
-    }
-    static resolveUrls(url, options={}) {
-        /* Synchronous part of p_resolveUrls, handle subset of cases that don't require network access (asyncronicity)
-        url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
-        returns:   Array of URLs suitable for passing to Transports - may be "dweb: or ipfs: etc, i.e. not canonical or gateway yet
-         */
-        if (Array.isArray(url)) {
-            let urls = url.map(u => this.resolveUrls(u, options));    // Recurse urls is now array of arrays (most of which will probably be single value
-            return [].concat(...urls);  // Flatten, for now accept there might be dupes
-        }
-        // Its now a singular URL
-        if (url instanceof ArchiveFile) { //NOTE dont think this is ever the case as p_resolveUrls will catch ArchiveFile
-            console.error("resolveUrls called with ArchiveFile - use p_resolveUrls for this case");
-            return [url];  // Will be very lucky if this works - its going to try and embed a url in an href for example
-        } else if (url.startsWith("//")) {
-            return "https:"+url;    // Ick - a reference to href="//foo.bar" rather than href="https://foo.bar"
-        } else if (url.startsWith("/")) {
-            if (!(url.startsWith("/search.php") || url.startsWith("/services") || url.startsWith("/details"))) {
-                console.warn("Probably not a good idea to use root-relative URL", url); //could genericise to use options.rel instead of config but might not catch cases e.g. of /images
-            }
-            return [this.relativeurl(React._config().rootname, url)].filter(u => !!u);  // e.g. /foo => [https://bar.com/foo]
-        } else if (url.startsWith("./")) {
-            if (!url.startsWith("./images")) {
-                console.warn("Relative URLs arent a great idea as what to be relative to is often unclear", url, options); //could genericise to use rel instead of config but might not catch cases e.g. of /images
-            }
-            return [this.relativeurl(React._config().relname, url)].filter(u => !!u);
-        } else {
-            return [url]; // Not relative, just pass it back
-        }
-    }
-    static p_resolveUrls(url, cb) { //TODO check callers can now use cb
-        /*
-        url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
-        cb or resolves: Array of URLs suitable for passing to Transports
-         */
-        if (cb) { try { f.call(this, url, cb) } catch(err) { cb(err)}} else { return new Promise((resolve, reject) => { try { f.call(this, url, (err, res) => { if (err) {reject(err)} else {resolve(res)} })} catch(err) {reject(err)}})} // Promisify pattern v2
-        function f(url, cb) {
-            if (Array.isArray(url)) {  // Recurse urls is now array of arrays (most of which will probably be single value
-                asyncMap(url, (url, cb) => f.call(this, url, cb), (err, res) => {
-                    if (err) { cb(err) } else { cb(null, [].concat(...res)) }; // Flatten, for now accept there might be dupes
-                });
-            } else if (url instanceof ArchiveMember) {  // Its a member, we want the urls of the images
-                url.urls(cb);                           // This will be fast - just thumbnaillinks or services, wont try and ask gateway for metadata and IPFS ima
-            } else if (url instanceof ArchiveFile) {
-                url.urls(cb);                           // This could be slow, may have to get the gateway to cache the file in IPFS
-            } else {
-                cb(null, this.resolveUrls(url));        // Synchronous code will work
-            }
-        }
-    }
-
-    static _loadImgSrc(el, url, cb) {
-        // This should only happen if the original script was loaded from local disk
-        let elImg = document.createElement("img");
-        elImg.setAttribute("src", url);
-        if (cb) cb(undefined, elImg);  // Set attributes (shouldnt have kids)
-        el.appendChild(elImg);
-    }
-
-    static async thumbnailUrlsFrom(identifier) {
-        // Return thumbnail links
-        //itemid
-        return await new ArchiveItem({identifier}).thumbnaillinks()
-    }
-    static async p_loadImg(el, name, urls, cb) {
-        /*
-        This is the asyncronous part of loadImg, runs in the background to update the image.
-        Previous version got a static (non stream) content and puts in an existing IMG tag but this fails in Firefox
-        This version appends to a tag using RenderMedia.append which means using a stream
-        Note it can't be inside load_img which has to be synchronous and return a jsx tree.
-
-        Some cases of interest
-        /services/img/foo with rel=["dweb:/arc/archive.org/"] > "dweb:/arc/archive.org/services/img/  special case > metadata>thumbnailimg
-         */
-        try {
-            debug("Loading Image %s from %o", name, urls);
-            if (urls instanceof ArchiveFile && urls.name() === "__ia_thumb.jpg") {
-                urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
-                // Dont use magnet urls on __ia_thumb.jpg as opens many webtorrents and fails when tiling TODO this could be a parameter to p_loadImg
-                urls = urls.filter(u => !u.includes("magnet:"));
-            } else { // This includes ArchiveMember
-                urls = await this.p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
-            }  //Examples: [dweb:/arc/archive.org/services/foo]
-            for (let i in urls) { // This can get used if /services/xx passed in here, then converted to dweb:/arc/archive.org/services
-                if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
-                    urls[i] = await this.thumbnailUrlsFrom(urls[i].slice(35));
-                }
-            }
-            urls = [].concat(...urls); // Flatten any urls expanded above
-            urls = await DwebTransports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
-            // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
-            let fileurl = urls.find(u => u.startsWith("file"));
-            let magneturl = urls.find(u => u.includes('magnet:'));
-            let streamUrls = await DwebTransports.p_urlsValidFor(urls, "createReadStream");
-            streamUrls = streamUrls.filter(u => !u.href.startsWith("ipfs:")); // IPFS too unreliable (losing data, no errors) to use for streams esp for thumbnails
-            if (fileurl) {
-                this._loadImgSrc(el, fileurl, cb);
-            } else if ((DwebTransports.type === "ServiceWorker") && magneturl) { //TODO-MIRROR could possible pick up here as well
-                this._loadImgSrc(el, magneturl.replace('magnet:', `${window.origin}/magnet/`), cb);
-            } else if (streamUrls.length) {
-                const file = {
-                    name: name,
-                    createReadStream: await DwebTransports.p_f_createReadStream(streamUrls)
-                    // Initiate a stream, & return a f({start, end}) => readstream
-                    // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
-                };
-                RenderMedia.append(file, el, cb);  // Render into supplied element - have to use append, as render doesnt work, the cb will set attributes and/or add children.
-            } else {
-                // Otherwise fetch the file, and pass via rendermedia and from2
-                //TODO-MULTI-GATEWAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
-                try {
-                    const buff = await DwebTransports.p_rawfetch(urls, {timeoutMS: 5000, relay: false});  //Maybe should not time out since streams will almost always get used, and in this case could be a large file and last resort to use a download url.
-                    // Logged by Transports
-                    const file = {
-                        name: name,
-                        createReadStream: function (opts) {
-                            if (!opts) opts = {};
-                            return from2([buff.slice(opts.start || 0, opts.end || (buff.length - 1))])
-                        }
-                    };
-                    RenderMedia.append(file, el, cb);  // Render into supplied element - have to use append, as render doesnt work, the cb will set attributes and/or add children.
-                } catch (err) {
-                }
-            }
-        } catch(err) {
-            console.error("Unable to p_loadImg", name, urls, err.message);
-            this._loadImgSrc(el, "/images/Broken_document.png", cb);
-        }
-    }
-
-    static loadImg(name, urls, cb) {
-        //asynchronously loads file from one of metadata, turns into blob, and stuffs into element
-        // urls can be a array of URLs of an ArchiveFile (which is passed as an ArchiveFile because ArchiveFile.urls() is async as may require expanding metadata
-        // Usage like  {this.loadImg(<img width=10>))
-        //UNSURE WHY MADE THS ASSERTION - ASYNC UNDER MIRROR SHOULD BE FINE - SEE CALL in createElement
-        // console.assert(!DwebArchive.mirror); // This should never get called in mirror case
-        const element = document.createElement("span");
-        // noinspection JSIgnoredPromiseFromCall
-        this.p_loadImg(element, name, urls, cb);
-        /* Asynchronously load image under element - note NOT awaiting return*/
-        return element;
+    static loadImg3(el, name, urls, cb) {
+        // This only exists temporarily so components can find it via ReactFake ... TODO move calls
+        loadImg(el, name, urls, cb);
     }
 
     static async _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) {
@@ -312,7 +145,7 @@ export default class React  {
             //TODO-MIRROR-ISSUE47 ...and then p_resolveNames (or in here) should probably be where we decide these can go to the cache...
             //TODO-MIRRROR-ISSUE47 ... or merge p_resolveUrls with p_resolveNames into a urls->urls function esp if this pattern reused ...
             //TODO-MIRROR-ISSUE47 ... but needs to know whether to handle the cache URL as a stream URL or not ...
-            const urlsabs = await this.p_resolveUrls(urls); // [ url* ] where url is absolute (not root or directory relative)
+            const urlsabs = await p_resolveUrls(urls); // [ url* ] where url is absolute (not root or directory relative)
             const urlsresolved = await DwebTransports.p_resolveNames(urlsabs); // Allow names among urls
             // Strategy here ...
             // If serviceworker && webtorrent => video src=
@@ -380,36 +213,10 @@ export default class React  {
                 return element
             }
         }
-        if (tag === "img" && !DwebArchive.mirror) { // We'll build a span, and set a async process to rewrite it as an img connected to a stream
-            console.assert(Object.keys(attrs).includes("src")); // TODO can remove this and next line - I added this test because a) code below fails if !src, and b can't see why wouldnt have src
-            if (Object.keys(attrs).includes("src")) {
-                const src = attrs.src;
-                const name = attrs["imgname"]       ? attrs["imgname"]
-                    : (src instanceof ArchiveFile)  ? src.name()
-                    : src.includes("/services/img") ? src + ".jpg"
-                    : Array.isArray(src)            ? src[0] + ".jpg"   // E.g. thumbnaillinks are typical [ipfs://, http:...]
-                    : src                           ? src : "DUMMY.PNG"
-                    ;
-                delete attrs.src;   // Make sure dont get passed to cb for building into img (which wont like an array)
-                return this.loadImg(name, src, cb);   //Creates a <span></span>, asynchronously creates an <img> under it and calls cb on that IMG. The <div> is returned immediately.
-            }
-        } else {
-            const element = document.createElement(tag);
-            React.setAttributes(element, tag, attrs);   // Note many more special cases in setAttributes
-            React.addKids(element, kids);
-            return element;
-        }
-        function cb(err, element) {
-            if (err) {
-                console.warn("Caught error in createElement callback in loadImg or loadStream",
-                    (src instanceof ArchiveFile) ? src.name : src,
-                    err.message);
-                throw err;
-            }
-            React.setAttributes(element, tag, attrs);
-            React.addKids(element, kids);
-            return element;
-        }
+        const element = document.createElement(tag);
+        React.setAttributes(element, tag, attrs);   // Note many more special cases in setAttributes
+        React.addKids(element, kids);
+        return element;
     }
     static setAttributes(element, tag, attrs) {
         /* Build out a created element adding Attributes and Children
@@ -417,22 +224,25 @@ export default class React  {
         tag:    Lower case string of element e.g. "img"
         attrs:  Object {attr: value}
 
-        Note: This is called back by loadImg after creating the tag.
+        Note: This is called back by loadImgBackground after creating the tag.
         Special cases coded here:
             <a href='./aaa' | href='/aaa' id='tabby-bbb'> => <a href="/arc/archive.org/aaa" id='tabby-bbb'>
             <audio|video src=ArchiveFile> => loadStream(ArchiveFile)
             <a source=ArchiveFile  => source=ArchiveFile (stored correctly)
-            Dont try and catch img.src here, its too late - catch it in loadImg (called from createElement)
+            Dont try and catch img.src here, its too late - catch it in loadImgBackground (called from createElement)
         */
         function _setahref(href) {
             // Expects attrs & element set in outer setAttributes
             let possibleOnclick;
+            /* Obsoleted by AnchorSearch
             if (href.includes("archive.org/search.php?query=")) { //Note this doesnt handle other parameters in the URL but unlikely to find in legacy urls like search.php
                 if (!"onclick" in attrs) {
                     console.error("archive.org/search.php should always be accompanied with an onclick handler");
                 }
                 // Don't set possibleOnClock, we want it explicitly
-            } else if (href.startsWith("dweb:/arc/archive.org/details/")) { // E.g <a href="/details/foo">
+            } else
+            */
+            if (href.startsWith("dweb:/arc/archive.org/details/")) { // E.g <a href="/details/foo">
                 //console.assert(false,"IAUX FLAG - LOOK AT CALL STACK HERE");
                 let itemid = href.slice(30);
                 possibleOnclick = `Nav.nav_detailsOnClick("${itemid}"); return false;`; //TODO-IAUX move to AnchorDetails but if AnchorDetails is React then reqs wrapping ReactComponent
@@ -462,9 +272,9 @@ export default class React  {
             if (["a.href"].includes(tag + "." + name) && (typeof attrs[name] === "string") ) { // <a href=<string>
                 if (attrs[name].startsWith('./') || attrs[name].startsWith('/')) {
                     if (attrs.id && attrs.id.startsWith('tabby-')) {  // There is some weird javascript in AJS.tabby which assumes this is root-relative, so dont change it
-                        attrs[name] = React._config().tabbyrootinsert + attrs[name]; // Rewrite value to store
+                        attrs[name] = ReactConfig().tabbyrootinsert + attrs[name]; // Rewrite value to store
                     } else {
-                        let hrefs = this.resolveUrls(attrs[name]); // Array of urls, but should be just one since href name will be singular as will rel
+                        let hrefs = resolveUrls(attrs[name]); // Array of urls, but should be just one since href name will be singular as will rel
                         if (hrefs.length > 1) {
                             console.error("Decide what mean by multiple hrefs in an anchor handle onclick for it below hrefs=",hrefs)
                         }
@@ -482,7 +292,7 @@ export default class React  {
                 } else if (attrs[name] instanceof ArchiveMember ) {
                     element[name] = attrs[name].httpUrl();
                 } else {
-                    element[name] = DwebTransports.gatewayUrl(this.resolveUrls(attrs[name])[0]); // Will always be singular url
+                    element[name] = DwebTransports.gatewayUrl(resolveUrls(attrs[name])[0]); // Will always be singular url
                 }
             } else if (["video.src", "audio.src"].includes(tag + "." + name) && attrs[name] instanceof ArchiveFile) {
                 const af = attrs[name];
@@ -493,6 +303,19 @@ export default class React  {
                 this.loadStream(element, af, {name: videoname, preferredTransports: config.preferredAVtransports});  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
             } else if (["a.source"].includes(tag + "." + name) && attrs[name] instanceof Object) {
                 element[name] = attrs[name];      // Store the ArchiveFile or Track in the DOM, function e.g. onClick will access it.
+            } else if (["img.src"].includes(tag + "." + name) && !DwebArchive.mirror  { // Load image via dweb - but not if DwebArchiveMirror
+                const imgname = attrs["imgname"]
+                  ? attrs["imgname"]
+                  : (attrs["src"] instanceof ArchiveFile)
+                    ? attrs["src"].name()
+                    : attrs["src"].includes("/services/img")
+                      ? attrs["src"] + ".jpg"
+                      : Array.isArray(attrs["src"])
+                        ? attrs["src"][0] + ".jpg"   // E.g. thumbnaillinks are typical [ipfs://, http:...]
+                        : attrs["src"]
+                          ? attrs["src"]
+                          : "DUMMY.PNG";
+                loadImg(element, imgname, attrs[name], (unusedErr, unusedEl) => {});
             } else if (name && attrs.hasOwnProperty(name)) {
                 let value = attrs[name];
                 if (value === true) {
@@ -518,7 +341,7 @@ export default class React  {
     static addKids(element, child) {
         /* add kids to a created element, note this is NOT called when children are added from a component into the render of the component.
         kids:   Array of children
-        /* This is called back by loadImg after creating the tag. */
+        /* This is called back by loadImgBackground after creating the tag. */
         if (Array.isArray(child)) {
             child.forEach(k => this.addKids(element, k));
         } else if ((typeof child === "undefined") || (child === null)) { // This was !child, but that skips the integer 0.

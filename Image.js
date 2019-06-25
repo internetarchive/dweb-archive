@@ -4,6 +4,7 @@ import React from './ReactFake';
 
 import Details from './Details';
 import TheatreControls from './components/TheatreControls';
+import { ImageMainTheatre } from '@internetarchive/ia-components/dweb-index.js';
 
 export default class Image extends Details {
     constructor({itemid=undefined, metaapi=undefined, noCache=false}={}) {
@@ -47,31 +48,8 @@ export default class Image extends Details {
                             <TheatreControls identifier={itemid} mediatype={this.metadata.mediatype}/>
 
                 { mainArchiveFile ? (
-                            <div className="details-carousel-wrapper">
-                                <section id="ia-carousel" className="carousel slide" data-ride="carousel" data-interval="false"
-                                         aria-label="Item image slideshow" style={{maxHeight: "600px"}}>
-                                    <ol className="carousel-indicators" style={{display:"none"}}>
-                                        <li data-target="#ia-carousel" data-slide-to="0" className=" active" role="button" tabIndex="0"
-                                            aria-label="Go to image 1"></li>
-                                    </ol>
-
-                                    <div className="carousel-inner">
-                                        <div className="item active">
-                                            <a className="carousel-image-wrapper"
-                                                onclick="Nav.nav_download(this);"
-                                                source={mainArchiveFile}
-                                                title="Open full sized image" target="_blank">{/*--Separate window so dont break DWeb--*/}
-                                                    <img src={mainArchiveFile} id="streamContainer" className="rot0 carousel-image" alt="item image #1"/> {/*--Note this div not img to work around ffox bug, see ArchiveFile.loadImg--*/}
-                                            </a>
-                                            <div className="carousel-caption">
-                                                {mainArchiveFile.metadata.name}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </section>
-
-                            </div>
+                  // TODO only partially done
+                  <ImageMainTheatre alt="item image #1" source={mainArchiveFile} caption={mainArchiveFile.metadata.name }/>
                 ) : (
                             <div className="row" style={{color:"white"}}>
                                 <div className="col-md-10 col-md-offset-1 no-preview">
