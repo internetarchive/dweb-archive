@@ -12,6 +12,53 @@ import from2 from "from2";
 import RenderMedia from "render-media";
 const debug = require('debug')('dweb-archive:ReactSupport');
 
+/*
+
+This file contains a lot of processing of names, here is a summary, taking note of how they flow into each other
+
+ relativeUrl(PPP://RRR/SSS/TTT  /AAA/BBB/CCC   synchronous used by resolveUrl
+    Where r = PPP://RRR/SSS/TTT
+    /AAA/BBB          -> PPP://RRR/SSS/AAA/BBB
+    [.]/ipfs/BBB/CCC  -> PPP://RRR/SSS/ipfs/AAAA/BBB
+    [.]/arc/BBB/CCC   -> PPP://RRR/SSS/arc/AAAA/BBB
+
+ resolveUrls - synchronous used by p_resolveUrls & by setAttributes for img.src etc on DwebMirror and a.href  synchronous
+    ArchiveFile       -> error
+    //AAA             -> https://AAA
+    [.]/AAA       (warning if not /search* /services* /detail*)
+                  MIRR-> MIRROR/arc/archive.org/AAA
+                  DWEB-> dweb://arc/archive.org/AAA
+                         TODO could be gateway/URL TODO probably gets /arc/aaa wrong
+    PPP://AAA/BBB     -> PPP://AAA/BBB
+
+  p_resolveUrls - asynchronous used by resolveImageUrls & p_loadStream
+    [url*]  -> [ p_resolveUrls(url)*]
+    ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/arc/archive.org/thumbnail/IDENTIFIER
+    ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/arc/archive.org/download/IDENTIFIER/FILENAME ] (possible extra roundtrip if not populated
+    //AAA             -> https://AAA
+    [.]/AAA       (warning if not /search* /services* /detail*)
+                  MIRR-> MIRROR/arc/archive.org/AAA
+                  DWEB-> dweb://arc/archive.org/AAA
+                         TODO could be gateway/URL TODO probably gets /arc/aaa wrong
+    PPP://AAA/BBB     -> PPP://AAA/BBB
+
+  resolveImageUrls - asynchronous used by imgUrlOrStream
+    ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/arc/archive.org/download/IDENTIFIER/FILENAME ] (possible extra roundtrip if not populated, exclude magnet if __ia_thumb.jpg)
+    [url*]  -> [ p_resolveUrls(url)*]
+    ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/arc/archive.org/thumbnail/IDENTIFIER
+    ArchiveFile       -> error
+    //AAA             -> https://AAA
+    [.]/AAA       (warning if not /search* /services* /detail*)
+                  MIRR-> MIRROR/arc/archive.org/AAA
+                  DWEB-> dweb://arc/archive.org/AAA
+    [.]/services/img/IDENTIFIER
+                  MIRR-> MIRROR/arc/archive.org/services/img/IDENTIFIER
+                  DWEB-> ARCHIVEITEM.metadata.thumbnaillinks via next line
+    dweb://arc/archiveorg/services/img/IDENTIFIER -> ARCHIVEITEM.metadata.thumbnaillinks
+    PPP://AAA/BBB     -> PPP://AAA/BBB
+
+ */
+
 function ReactConfig() {
   return DwebArchive.mirror ? {
     root:       DwebArchive.mirror + "/arc/archive.org",    // Used for absolute URLs in descriptions e.g. /details/foo
@@ -49,7 +96,9 @@ function relativeurl(r, url) {
   }
   return undefined
 }
+/*
 
+ */
 function resolveUrls(url, options={}) {
   /* Synchronous part of p_resolveUrls, handle subset of cases that don't require network access (asyncronicity)
   url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
@@ -80,6 +129,7 @@ function resolveUrls(url, options={}) {
   }
 }
 
+
 function p_resolveUrls(url, cb) { //TODO check callers can now use cb
   /*
   url:   Array or Single url, each could be relative("./foo.jpg", or root relative ("/images.foo.jpg") and could also be a ArchiveFile
@@ -92,8 +142,10 @@ function p_resolveUrls(url, cb) { //TODO check callers can now use cb
         if (err) { cb(err) } else { cb(null, [].concat(...res)) } // Flatten, for now accept there might be dupes
       });
     } else if (url instanceof ArchiveMember) {  // Its a member, we want the urls of the images
+      // ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/arc/archive.org/thumbnail/IDENTIFIER
       url.urls(cb);                           // This will be fast - just thumbnaillinks or services, wont try and ask gateway for metadata and IPFS ima
     } else if (url instanceof ArchiveFile) {
+      // ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/arc/archive.org/download/IDENTIFIER/FILENAME ]
       url.urls(cb);                           // This could be slow, may have to get the gateway to cache the file in IPFS
     } else {
       cb(null, resolveUrls(url));        // Synchronous code will work
@@ -120,15 +172,46 @@ async function bufferedFile(name, urls) {
   };
 }
 
+
+
+async function resolveImageUrls(urls) {
+  /* Generate a canoncial array of urls for fetching an image,
+    There could be use for something similar for non images
+
+    urls can be many things:
+    ArchiveFile for a thumbnail:    Subselect urls that are not magnet links as that would start webtorrent on all item
+    ArchiveFile (other)             ask p_resolveUrls
+    dweb:/arc/archive.org/services/img/IDENTIFIER ask thmbnailUrlsFrom(IDENTIFIER) to convert to Item and look up (possibly slow)
+   */
+  if (urls instanceof ArchiveFile && urls.name() === "__ia_thumb.jpg") {
+    urls = await p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any, it already
+    // Dont use magnet urls on __ia_thumb.jpg as opens many webtorrents and fails when tiling TODO this could be a parameter to p_loadImg
+    urls = urls.filter(u => !u.includes("magnet:"));
+  } else { // This includes ArchiveMember
+    urls = await p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
+  }  //Examples: [dweb:/arc/archive.org/services/foo]
+  for (let i in urls) { // This can get used if /services/xx passed in here, then converted to dweb:/arc/archive.org/services
+    if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
+      urls[i] = await thumbnailUrlsFrom(urls[i].slice(35));
+    }
+  }
+  urls = [].concat(...urls); // Flatten any urls expanded above
+
+}
 async function imgUrlOrStream(el, name, urls, cb) {
   /*
-  This is the asynchronous part of loadImg, runs in the background to update the image.
+  This is asynchronous converts urls in various formats to either a "file" data structure or a url (which may be a blob URL)
+  * Step 1: canonicalize URLs
+  * Step 2: Split into file / magnet / stream / other
+  * Step 3: Setup to fetch (or in some cases fetch, buffer and pass pointer to buffer)
+  * After: URL stuffed into img.src, or file passed to Render.render
 
   //TODO rewrite this to use callbacks internally
   Some cases of interest
   /services/img/foo with rel=["dweb:/arc/archive.org/"] > "dweb:/arc/archive.org/services/img/  special case > metadata>thumbnailimg
    */
   try {
+    // Step 1: canonicalize URLs
     debug("Loading Image %s from %o", name, urls);
     if (urls instanceof ArchiveFile && urls.name() === "__ia_thumb.jpg") {
       urls = await p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
@@ -143,12 +226,14 @@ async function imgUrlOrStream(el, name, urls, cb) {
       }
     }
     urls = [].concat(...urls); // Flatten any urls expanded above
+    // Step 2: Split into file / magnet / stream / other
     urls = await DwebTransports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
     // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
     let fileurl = urls.find(u => u.startsWith("file"));
     let magneturl = urls.find(u => u.includes('magnet:'));
     let streamUrls = await DwebTransports.p_urlsValidFor(urls, "createReadStream");
     streamUrls = streamUrls.filter(u => !u.href.startsWith("ipfs:")); // IPFS too unreliable (losing data, no errors) to use for streams esp for thumbnails
+    // Step 3: Return as url or { name: createReadStream(f(range opts)=>stream)
     cb(null,
       fileurl
         ? fileurl

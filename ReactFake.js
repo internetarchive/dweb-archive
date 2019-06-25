@@ -303,7 +303,7 @@ export default class React  {
                 this.loadStream(element, af, {name: videoname, preferredTransports: config.preferredAVtransports});  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
             } else if (["a.source"].includes(tag + "." + name) && attrs[name] instanceof Object) {
                 element[name] = attrs[name];      // Store the ArchiveFile or Track in the DOM, function e.g. onClick will access it.
-            } else if (["img.src"].includes(tag + "." + name) && !DwebArchive.mirror  { // Load image via dweb - but not if DwebArchiveMirror
+            } else if (["img.src"].includes(tag + "." + name) && !DwebArchive.mirror)  { // Load image via dweb - but not if DwebArchiveMirror
                 const imgname = attrs["imgname"]
                   ? attrs["imgname"]
                   : (attrs["src"] instanceof ArchiveFile)
