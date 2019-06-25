@@ -1,27 +1,13 @@
 import React from './ReactFake';
 import { stringify } from '@stratumn/canonicaljson';
+// Other Archive Repos
+import {ScrollableTileGrid, NavWrap, SearchSwitcher} from '@internetarchive/ia-components/dweb-index.js';
+// This repo
 import ArchiveBase from './ArchiveBase';
-import {ScrollableTileGrid} from "@internetarchive/ia-components/dweb-index.js";
-import {NavWrap} from '@internetarchive/ia-components/dweb-index.js';
 import {AnchorModalGo} from './components/ModalGoFake';
 import {AJS_on_dom_loaded} from "./Util";
 
 /* Section to ensure node and browser able to use Headers, Request and Fetch */
-/*
-var fetch,Headers,Request;
-if (typeof(Window) === "undefined") {
-    //var fetch = require('whatwg-fetch').fetch; //Not as good as node-fetch-npm, but might be the polyfill needed for browser.safari
-    //XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;  // Note this doesnt work if set to a var or const, needed by whatwg-fetch
-    fetch = nodefetch;
-    Headers = fetch.Headers;      // A class
-    Request = fetch.Request;      // A class
-} else {
-    // If on a browser, need to find fetch,Headers,Request in window
-    fetch = window.fetch;
-    Headers = window.Headers;
-    Request = window.Request;
-}
-*/
 
 // See other almost DUPLICATEDCODE#003 (iaux and dweb-archive)
 function _onefield(key, value) {
@@ -135,39 +121,7 @@ export default class Search extends ArchiveBase {
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="topinblock">
-                                        <div class="hidden-xs hidden-sm">
-                                            <div class="sort-by">
-                                                SORT BY
-                                            </div>
-                                            {/*--TODO-DETAILS this dropdown doesnt reorder, test other UI elements in vicinity as well see https://github.com/internetarchive/dweb-archive/issues/15--*/}
-                                            <span class="big-label blue-pop">{/*TODO-ISSUE dweb-archive#57 remove relevance on Collections*/}
-                                                {(!this.itemid) ? // Dont show on collections
-                                                    <a class="ikind stealth in" data-id="relevance" href={`/search.php?query=${encodedQuery}`} onclick={`Nav.onclick_search({query:this.query})`}>RELEVANCE</a>
-                                                    : undefined }
-                                                {(!this.itemid) ? // Dont show on collections
-                                                    <div class="iconochive-dot ikind-sep"></div>
-                                                : undefined }
-                                                <a class="ikind stealth" data-id="views" href={`/search.php?query=${encodedQuery}&amp;sort=-downloads`}
-                                                    onclick={Nav.onclick_search({query:this.query, sort: "-downloads"})}>VIEWS</a>
-                                                <div class="iconochive-dot ikind-sep"></div>
-                                                <a class="ikind stealth" data-id="title" href={`/search.php?query=${encodedQuery}&amp;sort=titleSorter`}
-                                                    onclick={Nav.onclick_search({query:this.query, sort: "titleSorter"})}>TITLE</a>
-                                                <div class="iconochive-dot ikind-sep"></div>
-                                                <a class="ikind stealth" id="date_switcher" data-id="date-archived" href={`/search.php?query=${encodedQuery}&amp;sort=-publicdate`}
-                                                    onclick={Nav.onclick_search({query:this.query, sort: "-publicdate" })}>DATE ARCHIVED</a>
-                                                <div class="iconochive-dot ikind-sep hidden"></div>
-                                                <a class="ikind stealth hidden" data-id="date-published" href={`/search.php?query=${encodedQuery}&amp;sort=-date`}
-                                                    onclick={Nav.onclick_search({query:this.query, sort: "-date"})}>DATE PUBLISHED</a>
-                                                <div class="iconochive-dot ikind-sep hidden"></div>
-                                                <a class="ikind stealth hidden" data-id="date-reviewed" href={`/search.php?query=${encodedQuery}&amp;sort=-reviewdate`}
-                                                    onclick={Nav.onclick_search({query:this.query, sort: "-reviewdate"})}>DATE REVIEWED</a>
-                                                <div class="iconochive-dot ikind-sep"></div>
-                                                <a class="ikind stealth" data-id="creator" href={`/search.php?query=${encodedQuery}&amp;sort=creatorSorter`}
-                                                    onclick={Nav.onclick_search({query:this.query, sort: "creatorSorter"})}>CREATOR</a>
-                                            </span>
-                                        </div>
-                                    </div>
+                                    <SearchSwitcher identifier={this.itemid} query={this.query}/>
                                 </div>{/*--/.sortbar--*/}
                                 <div class="sortbar-rule"></div>
                             {/*--/.co-top-row--*/}
@@ -197,8 +151,6 @@ export default class Search extends ArchiveBase {
 
     banner() { // On Search "banner" is a search form  OVERRIDDEN in Collection.js subclass
         const query=this.query;
-        // We are using advancedsearch so this link isn't needed
-        // let searchURL=`https://archive.org/advancedsearch.php?q={query}`;
         const addBookmarkURL=`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=search&amp;identifier={encodeURIComponent(query)}&amp;title={encodeURIComponent(query)}`;  //TODO figure out decentralized bookmark submission
         return (
         <div class="container container-ia width-max"
