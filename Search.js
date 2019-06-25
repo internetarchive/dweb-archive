@@ -33,7 +33,8 @@ export default class Search extends ArchiveBase {
     Inherited from ArchiveBase: item
     items   List of items found
      */
-    constructor({query=undefined, sort='', and='', rows=searchConfig.rows, page=1, metaapi=undefined, itemid=undefined}={}) { //TODO-IPFSIMAGE Remove
+    constructor({ query=undefined, sort='', and='', rows=searchConfig.rows, page=1, metaapi=undefined,
+                    itemid=undefined, noCache=false }={}) {
         super({itemid, metaapi});
         if (typeof(query) === "object") { // form { creator: "Foo bar" ... }
             query = queryFrom(query);
@@ -43,6 +44,7 @@ export default class Search extends ArchiveBase {
         this.sort = sort || ''; // In some cases sort=null is passed, when want default (e.g. when url query=foo passed to archive.html) and null is not false.
         this.and = and;
         this.page = page;
+        this.noCache= noCache;
     }
 
     render(res) { // See other DUPLICATEDCODE#001
@@ -134,6 +136,7 @@ export default class Search extends ArchiveBase {
 
     archive_setup_push() { // run in browserAfter
         const self = this;
+        //TODO figure out what this is doing, and replace with AnchorSearch etc
         AJS.date_switcher(`&nbsp;<a href="https://dweb.archive.org/search/${encodeURIComponent(this.query)+"?sort=-publicdate"}" onclick='${Nav.onclick_search({query:this.query, sort: "-publicdate"})}'><div class="date_switcher in">Date Archived</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(this.query)+"?sort=-date"}" onclick='${Nav.onclick_search({query:this.query, sort: "-date"})}'><div class="date_switcher">Date Published</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(this.query)+"?sort=-reviewdate"}" onclick='${Nav.onclick_search({query:this.query, sort: "-reviewdate"})}'><div class="date_switcher">Date Reviewed</div></a> `);
         archive_setup.push(function() {
             AJS.lists_v_tiles_setup('search');  //TODO-DETAILS this line should for example be 'account' for Account

@@ -114,10 +114,11 @@ export default class Nav {
     q = query (string to search for) or object e.g. {query: foo, sort: -date} as passed to new Search()
      */
     debug("Navigating to Search for %s", q);
+    const {noCache=false} = opts;
     const destn = document.getElementById('main'); // Blank window (except Nav) as loading
     Nav.clear(destn);
-    const s = await new Search((typeof (q) === "object") ? q : (typeof (q) === "string") ? {query: q} : undefined).fetch();
-    pushHistory(opts, {query: s.query}); // Pass
+    const s = await new Search((typeof (q) === "object") ? q : (typeof (q) === "string") ? {query: q} : undefined, opts).fetch({noCache});
+    pushHistory(opts, {query: s.query}); // Note this takes account of wantHistory
     document.title = `${q} : Decentralized Internet Archive`;
     s.render(destn);
   }
