@@ -39,10 +39,8 @@
         const opts = Nav.setState(searchparams); // Save persistent state
         if (query) {
             Nav.nav_search(query, opts, {wanthistory: true});
-        } else if (item) {
-            Nav.nav_details(item, opts, {wanthistory: true});
         } else {
-            Nav.nav_home(opts, {wanthistory: true});
+            Nav.nav_details(item || "home", opts, {wanthistory: true});
         }
     }
 

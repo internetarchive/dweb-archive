@@ -85,11 +85,6 @@ export default class Nav {
     React.domrender(new DetailsError({message: < span>Loading - note this can take a while if no-one else has accessed this item yet</span>}).wrap(), destn)
   }
 
-  static async nav_home(...optss) {
-    debug("Going home");
-    return await Nav.nav_details("home", ...optss);
-  }
-
   // noinspection JSUnusedGlobalSymbols
   static async nav_detailsOnClick(identifier) {
     // Short cut for onClick's added by FakeReact
@@ -257,14 +252,10 @@ export default class Nav {
     opts.wanthistory = true;
     if (query) {
       this.nav_search({query, sort}, opts); // Intentionally passing transport, paused, etc that are used above
-    } else if (identifier) {
-      if (download) { // Note only works for downloading items, not files - can add later if reqd
+    } else if (download) { // Note only works for downloading items, not files - can add later if reqd
         this.nav_downloaddirectory(identifier, opts);
-      } else {
-        this.nav_details(identifier, opts);
-      }
     } else {
-      this.nav_home(opts);
+        this.nav_details(identifier || "home", opts);
     }
   }
 }
@@ -277,12 +268,8 @@ window.onpopstate = function(event) {
     if (event.state && event.state.query) {
         // noinspection JSIgnoredPromiseFromCall
         Nav.nav_search(event.state.query, stateOpts);
-    } else if (identifier) {
-        // noinspection JSIgnoredPromiseFromCall
-        Nav.nav_details(identifier, stateOpts);
     } else {
-        // noinspection JSIgnoredPromiseFromCall
-        Nav.nav_home(stateOpts);
+        Nav.nav_details(identifier || "home", stateOpts);
     }
 
 };
