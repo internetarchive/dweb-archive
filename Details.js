@@ -18,8 +18,9 @@ import RelatedItemsWrapper from './components/RelatedItemsWrapper';
 import DetailsAboutWrapper from './components/DetailsAboutWrapper';
 import ArchiveBase from './ArchiveBase';
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
-import {DetailsActionButtons, DetailsDownloadOptions, DetailsReviews, DetailsMetadata, DetailsAbout, NavWrap} from '@internetarchive/ia-components/dweb-index.js';
+import {DetailsActionButtons, DetailsDownloadOptions, DetailsReviews, DetailsMetadata, DetailsAbout} from '@internetarchive/ia-components/dweb-index.js';
 import {AJS_on_dom_loaded} from "./Util";
+import {NavWrapWrapper} from './components/NavWrapWrapper';
 
 export default class Details extends ArchiveBase {
     constructor({itemid = undefined, metaapi = undefined, noCache=false}={}) {
@@ -44,7 +45,7 @@ export default class Details extends ArchiveBase {
         return (
             <div id="wrap" itemscope itemtype={this.itemtype}>
                 {/* Missing donate-banner and scripts & css before it */}
-                <NavWrap item={this}/>
+                <NavWrapWrapper item={this}/>
                 {/*--Begin page content --*/}
                 <div class="container container-ia">
                     <a name="maincontent" id="maincontent"></a>

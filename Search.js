@@ -1,8 +1,9 @@
 import React from './ReactFake';
 import { stringify } from '@stratumn/canonicaljson';
 // Other Archive Repos
-import {ScrollableTileGrid, NavWrap, SearchSwitcher} from '@internetarchive/ia-components/dweb-index.js';
+import {ScrollableTileGrid, SearchSwitcher} from '@internetarchive/ia-components/dweb-index.js';
 // This repo
+import {NavWrapWrapper} from './components/NavWrapWrapper';
 import ArchiveBase from './ArchiveBase';
 import {AnchorModalGo} from './components/ModalGoFake';
 import {AJS_on_dom_loaded} from "./Util";
@@ -61,7 +62,7 @@ export default class Search extends ArchiveBase {
          */
         return (
             <div id="wrap">
-                <NavWrap item={this}/>
+                <NavWrapWrapper item={this}/>
                 {/*TODO - follow structure used by Details and check matches archive.html/details examples */}
                 {/*--Begin page content --*/}
                 <div class="container container-ia">

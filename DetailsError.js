@@ -1,6 +1,6 @@
 import React from './ReactFake';
 import Details from './Details'
-import {NavWrap} from "@internetarchive/ia-components/sandbox/details/NavWrap";
+import {NavWrapWrapper} from './components/NavWrapWrapper';
 import RelatedItemsWrapper from "./components/RelatedItemsWrapper";
 
 export default class DetailsError extends Details {
@@ -21,7 +21,7 @@ export default class DetailsError extends Details {
         return (
           <div id="wrap" itemscope itemtype={this.itemtype}>
               {/* Missing donate-banner and scripts & css before it */}
-              <NavWrap item={this}/>
+              <NavWrapWrapper item={this}/>
               {/*--Begin page content --*/}
               <div class="container container-ia">
                   <a name="maincontent" id="maincontent"></a>

@@ -1,7 +1,7 @@
 import React from './ReactFake';
 import Details from './Details';
 import AnchorDetails from './components/AnchorDetailsFake';
-import {NavWrap, DownloadDirectoryDiv} from "@internetarchive/ia-components/dweb-index.js";
+import {NavWrapWrapper} from './components/NavWrapWrapper';
 import RelatedItemsWrapper from "./components/RelatedItemsWrapper"; // Have to use the Fake one as long as this is FakeReact
 
 /*
@@ -23,7 +23,7 @@ export default class DownloadDirectory extends Details {
       return (
         <div id="wrap" itemscope itemtype={this.itemtype}>
             {/* Missing donate-banner and scripts & css before it */}
-            <NavWrap item={this}/>
+            <NavWrapWrapper item={this}/>
             {/*--Begin page content --*/}
             <div class="container container-ia">
                 <a name="maincontent" id="maincontent"></a>

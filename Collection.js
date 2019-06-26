@@ -2,7 +2,7 @@ import React from './ReactFake';
 import Search from "./Search";
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
 import {Tabby} from "@internetarchive/ia-components/dweb-index.js";
-import {NavWrap} from '@internetarchive/ia-components/dweb-index.js';
+import {NavWrapWrapper} from './components/NavWrapWrapper';
 import {AnchorModalGo} from './components/ModalGoFake';
 import {AJS_on_dom_loaded} from "./Util";
 
@@ -32,7 +32,7 @@ export default class Collection extends Search {
         return (
             <div id="wrap">
                 {/*TODO needs "aside" */}
-                <NavWrap item={this}/>
+                <NavWrapWrapper item={this}/>
                 {/*--Begin page content --*/}
                 <div class="container container-ia">
                     <a name="maincontent" id="maincontent"></a>

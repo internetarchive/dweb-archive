@@ -137,7 +137,7 @@ class SettingsItem extends IAReactComponent {
   render() {
     return (
       <div>
-        <NavWrap item={this.props.item}/>
+        <NavWrapWrapper item={this.props.item}/>
         {/*--Begin page content --*/}
         <div className="container container-ia">
           <a name="maincontent" id="maincontent"></a>

@@ -6,7 +6,7 @@ import waterfall from 'async/waterfall';
 import {TileGrid} from "@internetarchive/ia-components/dweb-index.js";
 import {gatewayServer, ObjectDeeperAssign}  from '@internetarchive/dweb-archivecontroller/Util';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
-import {NavWrap} from "@internetarchive/ia-components/dweb-index";
+import {NavWrapWrapper} from '../NavWrapWrapper';
 import {CommonWelcomeComponent} from "./CommonComponent";
 
 const _levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-components/.../ConfigCrawl.js
@@ -81,7 +81,7 @@ class LocalItem extends IAReactComponent {
   render() {
     return (
       <>
-        <NavWrap item={this.props.item}/>
+        <NavWrapWrapper item={this.props.item}/>
         {/*--Begin page content --*/}
         <div class="container container-ia">
           <a name="maincontent" id="maincontent"></a>
