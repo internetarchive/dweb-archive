@@ -30,7 +30,7 @@ export default class Details extends ArchiveBase {
 
     render(res) { // See other (almost) DUPLICATEDCODE#001
         var els = this.wrap();    // Build the els
-        // Other DUPLOCATEDCODE#001 do `$('body').addClass('bgEEE')` here
+        // Other DUPLICATEDCODE#001 do `$('body').addClass('bgEEE')` here
         React.domrender(els, res);  //Put the els into the page
         this.browserAfter();
     }
@@ -66,7 +66,7 @@ export default class Details extends ArchiveBase {
     archive_setup_push() {
         archive_setup.push(function(){  // This is common to Text, AV and image - though some have stuff before this and some a
             AJS.tilebars(); // page load
-            $(window).on('resize  orientationchange', function(evt){
+            $(window).on('resize  orientationchange', function(evt){ //TODO-JQUERY remove dependency window.on probably works fine
                 clearTimeout(AJS.also_found_throttler);
                 AJS.also_found_throttler = setTimeout(AJS.tilebars, 250)
             });

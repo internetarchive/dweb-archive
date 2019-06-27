@@ -50,7 +50,7 @@ export default class Search extends ArchiveBase {
 
     render(res) { // See other DUPLICATEDCODE#001
         var els = this.wrap();    // Build the els
-        $('body').addClass('bgEEE'); //TODO remove jquery dependency
+        document.body.classList.add('bgEEE');
         React.domrender(els, res);  //Put the els into the page
         this.archive_setup_push(); // Subclassed function to setup stuff for after loading.
         AJS_on_dom_loaded(); // Runs code pushed archive_setup - needed for image if "super" this, put it after superclasses

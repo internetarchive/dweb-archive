@@ -16,7 +16,7 @@ export default class Local extends Collection {
         <LocalItem item={this}/>
       </div>
     );
-    $('body').addClass('bgEEE'); //TODO remove jquery dependency
+    document.body.classList.add('bgEEE');
     React.domrender(els, destn);  //Put the els into the page
     this.archive_setup_push(); // Subclassed function to setup stuff for after loading.
     AJS_on_dom_loaded(); // Runs code pushed archive_setup - needed for image if "super" this, put it after superclasses
