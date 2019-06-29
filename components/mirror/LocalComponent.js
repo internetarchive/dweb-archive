@@ -83,7 +83,7 @@ class LocalItem extends IAReactComponent {
       <>
         <NavWrapWrapper item={this.props.item}/>
         {/*--Begin page content --*/}
-        <div class="container container-ia">
+        <div className="container container-ia">
           <a name="maincontent" id="maincontent"></a>
         </div>
         {/*Replaces banner() in Collection and Search) */}
@@ -92,8 +92,8 @@ class LocalItem extends IAReactComponent {
           byline={"crawled by " + gatewayServer()}
           description=""
         />
-        <div class="container container-ia nopad">
-          <div id="tabby-collection" class="tabby-data in">
+        <div className="container container-ia nopad">
+          <div id="tabby-collection" className="tabby-data in">
             {/*Replaces rowColumnsItems in Search (used by Account & Collection)*/}
             <LocalGridRowComponent members={(this.props.item.membersFav || []).concat(this.props.item.membersSearch || [])}/>
           </div>

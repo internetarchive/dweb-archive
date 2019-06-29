@@ -1,10 +1,11 @@
 import React from 'react';
 import IAReactComponent from '../IAReactComponent';
 const debug = require('debug')('dweb-archive:SettingsComponent');
+import prettierBytes from 'prettier-bytes';
 
 import waterfall from 'async/waterfall';
 import {gatewayServer}  from '@internetarchive/dweb-archivecontroller/Util';
-import {NavWrap} from "@internetarchive/ia-components/dweb-index.js";
+import {NavWrapWrapper} from "../NavWrapWrapper";
 import {CommonWelcomeComponent} from "./CommonComponent";
 
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
@@ -44,7 +45,7 @@ class SettingsCrawlLI extends IAReactComponent {
           : <img className="playbutton" onClick={this.pause} src="/archive/images/baseline-pause-24px.svg" alt="pause"/>
         }
         {/*<span className="playbutton" onClick={this.empty}>{'X'}</span> -- Not currently showing X*/}
-      <ul> {/*Make collapsable*/}
+      <ul> {/*TODO Make collapsable*/}
         <li><span>Queue: </span>
           <span>Waiting: {crawl.queue.length}; </span>
           <span>Running: {crawl.queue.running}; </span>
@@ -55,13 +56,22 @@ class SettingsCrawlLI extends IAReactComponent {
           <li><span>Working on: </span>
             <ul>
               {crawl.queue.workersList.map(worker =>
-                <li key={worker.debugname}>{worker.parent.join(' > ')} {'>'} {worker.debugname} {worker.file.metadata.size}</li>)}
+                <li key={worker.debugname}>
+                  {worker.parent.join(' > ')} {'>'} {worker.debugname}
+                  { worker.reqUrl // Its a page
+                      ? null
+                      : worker.file  // Its a file
+                        ? prettierBytes(parseInt(worker.file.metadata.size))
+                        : null } // Its an item
+                </li>)}
             </ul>
           </li>
         }
         <li><span>Options: </span>
-          { ["concurrency", "maxFileSize", "limitTotalTasks"].map( // Integers
+          { ["concurrency", "limitTotalTasks"].map( // Integers
             k => <span key={k}>{`${k}: ${crawl.opts[k]}; `}</span>) }
+          { ["maxFileSize"].map( // Bytes
+            k => <span key={k}>{`${k}: ${prettierBytes(crawl.opts[k])}; `}</span>) }
           {["skipFetchFile", "skipCache"].map( //Booleans
             k => crawl.opts[k] ? <span key={k}>{k} </span> : null ) }
         </li>

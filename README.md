@@ -135,6 +135,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.80: Prettier bytes output; bugs in settings and local  
 * v0.1.79: componentize: ItemDetailsAboutJSX, DownloadDirectory, SearchSwitcher, ImageDweb; NavNavWrapper; refactor members->membersFav,membersSearch; reload/no-cache on searches; obsolete nav_home; 
 * v0.1.78: Fix search links on details page (includes refactor DetailsAbout into iaux)
 * v0.1.77: Include bug fixes from dweb-archivecontroller v0.1.65

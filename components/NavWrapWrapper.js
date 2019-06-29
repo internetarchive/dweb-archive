@@ -18,7 +18,7 @@ import {gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
 
 export default class NavWrapWrapper extends IAReactComponent {
   constructor(props) {
-    super(props); //  metadata description files files_count collection_titles
+    super(props); //  item
     // TODO-DWEBNAV need to tell Transports to set this status when changes
     waterfall([
       cb => DwebTransports.p_statuses(cb),      // e.g. [ { name: HTTP: status: 0 }* ]
