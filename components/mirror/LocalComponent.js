@@ -29,7 +29,29 @@ class LocalGridRowComponent extends IAReactComponent {
   */
   constructor(props) {
     super(props);
-    this.state.members = this.props.members || []; // Maybe undefined
+  }
+
+  render() {
+    // Build a grid of tiles like in Collection but doesnt have the "More" scrolling feature
+    return (!this.props.members.length)
+        ? <span>Loading ...</span>
+        :
+          <div className="row">
+            <div className="columns-items" style={{"marginLeft": "0px"}}>
+              <div style={{position: "relative"}}>
+                <div id="ikind-search" className="ikind in">
+                  <TileGrid members={this.props.members}/>
+                </div>
+              </div>
+            </div>
+          </div>
+  }
+}
+
+class LocalItem extends IAReactComponent {
+  constructor(props) {
+    super(props); // item
+    this.state.members = this.props.item.membersFav || []; // Lets assume they are in membersFav not membersSearch
     // Called by React when the Loading... div is displayed
     if (!this.state.members.length) {
       const urlConfig = [gatewayServer(), "info"].join('/');
@@ -46,36 +68,32 @@ class LocalGridRowComponent extends IAReactComponent {
           if (err) {
             debug("ERROR: loadcallable failed %O", err);
           } else {
-            const members = tasks.map(task =>
+            const item = this.props.item;
+            item.membersFav = tasks.map(task =>
               memberDict[task.identifier] || new ArchiveMember({identifier: task.identifier, crawl: task}, {unexpanded: true}));
-            this.setState({members})
+
+            if ((typeof item.downloaded !== "object") && (item.downloaded !== null)) item.downloaded = {};
+            // See ALMOST-IDENTICAL-CODE-SUMMARIZEFILES
+            const filesDownloaded = item.files.filter(af => af.downloaded);
+            item.downloaded.files_all_size = item.files.reduce((sum, af) => sum + (parseInt(af.metadata.size) || 0), 0);
+            item.downloaded.files_all_count = item.files.length;
+            item.downloaded.files_size = filesDownloaded.reduce((sum, af) => sum + (parseInt(af.metadata.size) || 0), 0);
+            item.downloaded.files_count = filesDownloaded.length;
+            item.downloaded.files_details = true; // By definition !
+            // See ALMOST-IDENTICAL-CODE-MEMBERSUMMARY
+            const membersDownloaded = item.membersFav.concat(item.membersSearch || []).filter(am => (typeof am.downloaded !== "undefined"));
+            item.downloaded.members_size = membersDownloaded.reduce((sum, am) => sum + am.downloaded.files_size + (am.downloaded.pages_size || 0), 0);
+            item.downloaded.members_details_count = membersDownloaded.filter(am => am.downloaded.details).length;
+            item.downloaded.members_all_count = (item.membersFav || []).length + (item.membersSearch || []).length;
+            item.downloaded.details = true;
+            this.setState({
+              members: this.props.item.membersFav,
+              item: this.props.item });
           }
         }
       );
       // TODO-UXLOCAL handle default things like configmerged.apps.crawl.opts.defaultDetailsSearch
     }
-  }
-
-  render() {
-    // Build a grid of tiles like in Collection but doesnt have the "More" scrolling feature
-    return (!this.state.members.length)
-        ? <span>Loading ...</span>
-        :
-          <div className="row">
-            <div className="columns-items" style={{"marginLeft": "0px"}}>
-              <div style={{position: "relative"}}>
-                <div id="ikind-search" className="ikind in">
-                  <TileGrid members={this.state.members}/>
-                </div>
-              </div>
-            </div>
-          </div>
-  }
-}
-
-class LocalItem extends IAReactComponent {
-  constructor(props) {
-    super(props); // item
   }
 
   render() {
@@ -95,7 +113,7 @@ class LocalItem extends IAReactComponent {
         <div className="container container-ia nopad">
           <div id="tabby-collection" className="tabby-data in">
             {/*Replaces rowColumnsItems in Search (used by Account & Collection)*/}
-            <LocalGridRowComponent members={(this.props.item.membersFav || []).concat(this.props.item.membersSearch || [])}/>
+            <LocalGridRowComponent members={this.state.members}/>
           </div>
         </div>
       </>
