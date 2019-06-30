@@ -163,7 +163,7 @@ export default class Collection extends Search {
                         <div className="col-xs-1 col-sm-2 welcome-right">
                             <AnchorModalGo className="stealth" opts={{ignore_lnk:1,shown:AJS.embed_codes_adjust}}
                                data-target="#cher-modal"><span class="iconochive-share"  aria-hidden="true"></span><span class="sr-only">share</span><span class="hidden-xs-span"> Share</span></AnchorModalGo><br/>
-                            {/*TODO-LOGIN /bookmarks isnt going to work, also not logged in https://github.com/internetarchive/dweb-archive/issues/new
+                            {/*TODO-LOGIN /bookmarks isnt going to work, also not logged in
                             <a class="stealth" href="/bookmarks.php?add_bookmark=1&amp;mediatype=collection&amp;identifier=prelinger&amp;title=Prelinger+Archives" onclick="return AJS.modal_go(this,{favorite:1})"
                                data-target="#confirm-modal"><span class="iconochive-favorite"  aria-hidden="true"></span><span class="sr-only">favorite</span><span class="hidden-xs-span"> Favorite</span></a><br/>
                             */}

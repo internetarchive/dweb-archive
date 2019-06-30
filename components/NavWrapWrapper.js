@@ -35,13 +35,18 @@ export default class NavWrapWrapper extends IAReactComponent {
         } // Note an error in contacting Mirror will skip to end and not update
       },
       (info, cb) => {
-        this.setState({transportStatuses: info.transportStatuses}); // Now set to those of Mirror
+        const httpstatus = info.transportStatuses.find(s=> s.name==='HTTP');
+        this.setState({
+          mirror2gateway: DwebArchive.mirror && httpstatus && (httpstatus.status === 0), // Can mirror see gateway
+          transportStatuses: info.transportStatuses }); // Now set to those of Mirror
       }], (err) => {});
   }
 
   render() {
     return (
-      <NavWrap item={this.props.item} transportStatuses={this.state.transportStatuses} />
+      <NavWrap item={this.props.item}
+               transportStatuses={this.state.transportStatuses}
+               mirror2gateway={this.state.mirror2gateway} />
     );
   }
 }
