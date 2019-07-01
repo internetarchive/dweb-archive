@@ -109,12 +109,13 @@ export default class Nav {
     q = query (string to search for) or object e.g. {query: foo, sort: -date} as passed to new Search()
      */
     debug("Navigating to Search for %s", q);
+    const semiTitle = DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive";
     const {noCache=false} = opts;
     const destn = document.getElementById('main'); // Blank window (except Nav) as loading
     Nav.clear(destn);
     const s = await new Search((typeof (q) === "object") ? q : (typeof (q) === "string") ? {query: q} : undefined, opts).fetch({noCache});
     pushHistory(opts, {query: s.query}); // Note this takes account of wantHistory
-    document.title = `${q} : Decentralized Internet Archive`;
+    document.title = `${q} : ${semiTitle}`;
     s.render(destn);
   }
 
@@ -160,12 +161,16 @@ export default class Nav {
     Nav.clear(destn);
     window.loopguard = identifier;  // Tested in dweb-transport/httptools, will cancel any old loops - this is a kludge to get around a Chrome bug/feature
     try {
+      const semiTitle = DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive";
       if (!identifier || (identifier === "home")) {
+        document.title = `Home : ${semiTitle}`; //TODO-IAUX when consolidated, this could be done in NavWeb component or even higher
         (await new Home({itemid: "home"}).fetch({noCache})).render(destn);
         /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
       } else if (identifier === "local") { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
+        document.title = `Local : ${semiTitle}`;
         (await new Local({itemid: identifier, metaapi: {}})).render(destn);
       } else if (identifier === "settings") { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
+        document.title = `Settings : ${semiTitle}`;
         (await new Settings({itemid: identifier, metaapi: {}})).render(destn);
       } else {
         //TODO edit this to make function like fetch_metadata but as a static function that can be used without creating temporary details item "d"
@@ -178,9 +183,9 @@ export default class Nav {
           }).render(destn);
         } else {
           if (d.metadata.title) {
-            document.title = `${d.metadata.title} : Decentralized Internet Archive`;
+            document.title = `${d.metadata.title} : ${semiTitle}`;
           } else {
-            debug(`XXX Writing title but dont have one, look at %O`, d);
+            debug(`ERROR Writing title but dont have one, look at %O`, d);
           }
           if (download) {
             const item = new DownloadDirectory({itemid: identifier, metaapi});
