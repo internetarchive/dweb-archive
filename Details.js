@@ -51,9 +51,11 @@ export default class Details extends ArchiveBase {
                     <a name="maincontent" id="maincontent"></a>
                 </div>{/*--//.container-ia--*/}
                 {this.theatreIaWrap()} {/*This is the main-content*/}
-                {(!this.itemid) ? null :
+                {(!this.itemid) ? null : // TODO-GREY DetailsAboutWrapper wants browser2archive which is calculated in NavWrapWrapper, when both in same react can do better
                   <DetailsAboutWrapper metadata={this.metadata} files={this.files} files_count={this.files_count}
-                                       collection_titles={this.collection_titles} description={this.preprocessDescription(this.metadata.description)}/> }
+                                       collection_titles={this.collection_titles}
+                                       description={this.preprocessDescription(this.metadata.description)}
+                                       browser2archive={true} /> }
                 {(!this.itemid) ? null :
                     <RelatedItemsWrapper identifier={this.itemid} item={this} noCache={this.noCache} /> }
                 {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}

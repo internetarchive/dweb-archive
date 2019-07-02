@@ -10,6 +10,8 @@ import ArchiveFile from "@internetarchive/dweb-archivecontroller/ArchiveFile";
 import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";
 import from2 from "from2";
 import RenderMedia from "render-media";
+import waterfall from "async/waterfall";
+import {gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
 const debug = require('debug')('dweb-archive:ReactSupport');
 
 /*
@@ -272,5 +274,35 @@ function loadImg(el, name, urls, cb) { // Fork of p_loadImg to use Render instea
 }
 
 
+function transportStatusAndProps() {
+  // TODO-DWEBNAV need to tell Transports to set this status when changes
+  waterfall([
+    cb => DwebTransports.p_statuses(cb),      // e.g. [ { name: HTTP: status: 0 }* ]
+    (transportStatuses, cb) => {
+      const httpStatus = transportStatuses.find(s=> s.name==='HTTP');
+      if (DwebArchive.mirror) {
+        if (httpStatus) { httpStatus.name = "MIRROR"; }
+      }
+      if (!(DwebArchive.mirror && (httpStatus.status === 0))) {
+        cb(null, {transportStatuses});
+      } else {
+        const infoUrl = [gatewayServer(), "info"].join('/');
+        DwebTransports.httptools.p_GET(infoUrl, {}, cb)
+      } // Note an error in contacting Mirror will skip to end and not update
+    }
+  ],(err, info) => {  // Process result of one or both info calls into states that indicate e.g. whether online etc
+    if (err) {
+      cb(err);
+    } else {
+      const httpstatus = info.transportStatuses.find(s=> s.name==='HTTP');
+      cb(null, {
+        mirror2gateway: DwebArchive.mirror && httpstatus && (httpstatus.status === 0), // Can mirror see gateway
+        browser2archive: DwebArchive.mirror && httpstatus && (httpstatus.status === 0), //TODO may be more nuanced but prob same as above
+        transportStatuses: info.transportStatuses }); // Now set to those of Mirror
+    }
+  })
+}
+
+
 //Not exporting relativeurl as not used
-export { ReactConfig, resolveUrls, p_resolveUrls, thumbnailUrlsFrom, imgUrlOrStream, loadImg }
+export { ReactConfig, resolveUrls, p_resolveUrls, thumbnailUrlsFrom, imgUrlOrStream, loadImg, transportStatusAndProps }

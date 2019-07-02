@@ -10,7 +10,7 @@ This split is needed because Isa prefers not to have functionality like queries 
 but the Details.js.wrap doesnt rerender so need something inside that does.
  */
 export default class DetailsAboutWrapper extends IAReactComponent {
-  constructor(props) {
+  constructor(props) { //browser2archive
     super(props); //  metadata description files files_count collection_titles
     this.state.collection_titles = (typeof this.props.collection_titles === 'undefined') ? {} : this.props.collection_titles;
     this.state.expansionTried = false;
@@ -32,7 +32,7 @@ export default class DetailsAboutWrapper extends IAReactComponent {
     return (
       <DetailsAbout metadata={this.props.metadata} description={this.props.description} files={this.props.files}
                     files_count={this.props.files_count} collection_titles={this.state.collection_titles}
-                    ref="this.load" />
+                    ref="this.load" browser2archive={this.props.browser2archive}/>
     );
   }
 }

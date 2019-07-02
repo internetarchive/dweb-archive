@@ -20,33 +20,21 @@ export default class NavWrapWrapper extends IAReactComponent {
   constructor(props) {
     super(props); //  item
     // TODO-DWEBNAV need to tell Transports to set this status when changes
-    waterfall([
-      cb => DwebTransports.p_statuses(cb),      // e.g. [ { name: HTTP: status: 0 }* ]
-      (transportStatuses,cb) => {
-        const httpStatus = transportStatuses.find(s=> s.name==='HTTP');
-        if (DwebArchive.mirror) {
-          if (httpStatus) { httpStatus.name = "MIRROR"; }
-        }
-        if (!(DwebArchive.mirror && (httpStatus.status === 0))) {
-          cb(null, {transportStatuses});
-        } else {
-          const infoUrl = [gatewayServer(), "info"].join('/');
-          DwebTransports.httptools.p_GET(infoUrl, {}, cb)
-        } // Note an error in contacting Mirror will skip to end and not update
-      },
-      (info, cb) => {
-        const httpstatus = info.transportStatuses.find(s=> s.name==='HTTP');
-        this.setState({
-          mirror2gateway: DwebArchive.mirror && httpstatus && (httpstatus.status === 0), // Can mirror see gateway
-          transportStatuses: info.transportStatuses }); // Now set to those of Mirror
-      }], (err) => {});
+    // TODO-IAUX as this component gets bundled into others, move the Wrapper up and note DetailsAboutWrapper needs these as well
+    transportStatusAndProps((err, res)=> { // { transportStatuses, mirror2gateway, browser2archive }
+      if (!err) {
+        this.setState(res);
+      }
+    })
   }
 
   render() {
     return (
       <NavWrap item={this.props.item}
                transportStatuses={this.state.transportStatuses}
-               mirror2gateway={this.state.mirror2gateway} />
+               mirror2gateway={this.state.mirror2gateway}
+               browser2archive={this.state.browser2archive}
+      />
     );
   }
 }
