@@ -274,7 +274,7 @@ function loadImg(el, name, urls, cb) { // Fork of p_loadImg to use Render instea
 }
 
 
-function transportStatusAndProps() {
+function transportStatusAndProps(cb) {
   // TODO-DWEBNAV need to tell Transports to set this status when changes
   waterfall([
     cb => DwebTransports.p_statuses(cb),      // e.g. [ { name: HTTP: status: 0 }* ]

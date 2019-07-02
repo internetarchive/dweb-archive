@@ -1,8 +1,9 @@
 import React from 'react';
 import waterfall from 'async/waterfall';
-import IAReactComponent from './IAReactComponent';
 import {NavWrap} from '@internetarchive/ia-components/dweb-index.js';
 import {gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
+import IAReactComponent from './IAReactComponent';
+import {transportStatusAndProps} from "../ReactSupport";
 
 /**
  * Wrapper around NavWrap to pass it status so that IAUX component knows less about Dweb

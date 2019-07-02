@@ -54,24 +54,30 @@ function pushHistory(...optss) {
     url.path =  (!supportsArc) ? window.location.pathname
       : query ? '/arc/archive.org/details'
       : `/arc/archive.org/${opts.download ? "download" : "details"}${identifier ? "/" + identifier : ""}${opts.page ? "/page/" + opts.page : ""}`;
-    // noinspection JSValidateTypes
-    url.search = new URLSearchParams(Object.assign({}, Nav.state, (supportsArc || query) ? opts : optsDetails));
+    const combinedparams = Object.assign({}, Nav.state, (!supportsArc || query) ? opts : optsDetails);
+    const usp = new URLSearchParams();
+    Object.entries(combinedparams).forEach(
+      kv => Array.isArray(kv[1])
+        ? kv[1].forEach(v=>usp.append(kv[0],v))
+        : usp.append(kv[0],kv[1]))
+    url.search = usp;
     history.pushState(opts, historyTitle, url.href);
   }
   return opts; // Useful to caller
 }
+
 function URLSearchParamsEntries(sp) {
-    const res = {};
-    // Handle parameters known to be arrays
-    ["transport","paused"].forEach(k => res[k]=[]);
-    sp.forEach((v,k) => {
-      if (Array.isArray(res[k])) {
-        res[k].push(v);
-      } else {
-        res[k] = v
-      }
-    });
-    return res;
+  const res = {};
+  // Handle parameters known to be arrays
+  ["transport","paused"].forEach(k => res[k]=[]);
+  sp.forEach((v,k) => {
+    if (Array.isArray(res[k])) {
+      res[k].push(v);
+    } else {
+      res[k] = v
+    }
+  });
+  return res;
 }
 
 export default class Nav {
@@ -245,7 +251,11 @@ export default class Nav {
     // Set global state that persists between what would normally be pages and is remembered
     if (!this.state) this.state = {};
     const persistentState = ["transport", "mirror", "paused"]; // Note that transport and paused are arrays
-    const combinedOpts = Object.assign({}, this.state, ...optss.map(opts => opts instanceof URLSearchParams ? URLSearchParamsEntries(opts) : opts));
+    const combinedOpts = Object.assign({},
+      this.state,
+      ...optss.map(opts => opts instanceof URLSearchParams
+        ? URLSearchParamsEntries(opts)
+        : opts));
     this.state = ObjectFilter(combinedOpts, (k, v) => (persistentState.includes(k) && (typeof v !== "undefined") && (v !== null) && ((!Array.isArray(v)) || v.length ))); // Dont keep undefined state, will end up in URLs
     return ObjectFilter(combinedOpts, (k, unusedV) => !persistentState.includes(k)); // return any opts not persistent
   }

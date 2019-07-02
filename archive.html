@@ -97,8 +97,8 @@
       await DwebTransports.p_connect({
         statuselement: document.getElementById("dweb-status"),
         http: {urlbase: DwebArchive.gatewayServer()},
-        transports: searchparams.getAll("transport"),   //TODO-SEARCHPARAMS need to check how setState handles multiple transport
-        paused: searchparams.getAll("paused"),          //TODO-SEARCHPARAMS need to check how setState handles multiple paused
+        transports: searchparams.getAll("transport"),
+        paused: searchparams.getAll("paused"),
         mirror: mirror,                                 // Careful with this, gatewayServer will return dweb.me if mirror undefined
       });
       Nav.metafactory(opts);
