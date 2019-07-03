@@ -51,7 +51,7 @@ function pushHistory(...optss) {
     const url = new URL(window.location);
     // Ideally we'd like to be on a service that supports /arc but if it doesnt we've got an alternative.
     const supportsArc = ! (url.origin === "file://" || url.pathname.startsWith("/ipfs/")  || url.pathname.startsWith("/ipns/") );
-    url.path =  (!supportsArc) ? window.location.pathname
+    url.pathname =  (!supportsArc) ? window.location.pathname
       : query ? '/arc/archive.org/details'
       : `/arc/archive.org/${opts.download ? "download" : "details"}${identifier ? "/" + identifier : ""}${opts.page ? "/page/" + opts.page : ""}`;
     const combinedparams = Object.assign({}, Nav.state, (!supportsArc || query) ? opts : optsDetails);
