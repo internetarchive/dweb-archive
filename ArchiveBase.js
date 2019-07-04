@@ -30,8 +30,8 @@ export default class ArchiveBase extends ArchiveItem {
     itemtype    Schema.org for this eg. "http://schema.org/TextDigitalDocument"
     query   query part of search to run (Search|Collection|Home only)
      */
-    constructor({itemid = undefined, metaapi = undefined}={}) {
-        super({itemid, metaapi});
+    constructor({itemid = undefined, metaapi = undefined, sort=undefined}={}) {
+        super({itemid, metaapi, sort});
     }
     theatreIaWrap() {
     }

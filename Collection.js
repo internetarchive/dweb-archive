@@ -10,7 +10,6 @@ export default class Collection extends Search {
     constructor({itemid=undefined, metaapi=undefined}={}) {
         super({ itemid, metaapi,
             // query:  'collection:'+itemid, // Replaced by more complex default query in dweb-archivecontroller:ArchiveItem._fetch_query
-            sort:   '-downloads',   // This will be overridden based on collection_sort_order
         });
     }
     render(res) { // See other DUPLICATEDCODE#001

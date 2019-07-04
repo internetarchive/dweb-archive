@@ -119,9 +119,10 @@ export default class Nav {
     const {noCache=false} = opts;
     const destn = document.getElementById('main'); // Blank window (except Nav) as loading
     Nav.clear(destn);
-    const s = await new Search((typeof (q) === "object") ? q : (typeof (q) === "string") ? {query: q} : undefined, opts).fetch({noCache});
-    pushHistory(opts, {query: s.query}); // Note this takes account of wantHistory
-    document.title = `${q} : ${semiTitle}`;
+    const qq = (typeof (q) === "object") ? q : (typeof (q) === "string") ? {query: q} : undefined;
+    const s = await new Search(qq, opts).fetch({noCache});
+    pushHistory(opts, qq); // Note this takes account of wantHistory
+    document.title = `${qq.query} ${qq.sort || ""} : ${semiTitle}`;
     s.render(destn);
   }
 
@@ -263,7 +264,7 @@ export default class Nav {
   static metafactory(opts) {
     let {query, sort, item, identifier, download} = opts;
     identifier = identifier || item;
-    opts = ObjectFilter(opts, (k, v) => !["query", "sort", "item", "download"].includes(k));
+    opts = ObjectFilter(opts, (k, v) => !["query", "sort", "item", "identifier", "download"].includes(k));
     opts.wanthistory = true;
     if (query) {
       this.nav_search({query, sort}, opts); // Intentionally passing transport, paused, etc that are used above

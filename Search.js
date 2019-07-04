@@ -36,13 +36,12 @@ export default class Search extends ArchiveBase {
      */
     constructor({ query=undefined, sort='', and='', rows=searchConfig.rows, page=1, metaapi=undefined,
                     itemid=undefined, noCache=false }={}) {
-        super({itemid, metaapi});
+        super({itemid, metaapi, sort});
         if (typeof(query) === "object") { // form { creator: "Foo bar" ... }
             query = queryFrom(query);
         }
         this.query = query; // Note this should be an UNENCODED query  or an object
         this.rows= rows;
-        this.sort = sort || ''; // In some cases sort=null is passed, when want default (e.g. when url query=foo passed to archive.html) and null is not false.
         this.and = and;
         this.page = page;
         this.noCache= noCache;
