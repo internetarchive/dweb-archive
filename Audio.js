@@ -18,8 +18,8 @@ export default class Audio extends AV {
         this.itemtype = "http://schema.org/AudioObject";
     }
 
-    setupPlaylist() {
-        super.setupPlaylist("audio");
+    setPlaylist() {
+        super.setPlaylist("audio");
     }
     static play(elAnchor) {
         // Note - this is redirected from Nav which is a global
@@ -37,7 +37,7 @@ export default class Audio extends AV {
 
     theatreIaWrap() {
         /* Here's how it fits in on Images ... may be different on Audio
-            wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | TODO-ALSOFOUND  | TODO-ANALYTICS )
+                wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | alsofound  | TODO-ANALYTICS )
             item-details-about looks empty on the example chosen but that is a change in structure and maybe related to presence absence of forum etc
         */
         const itemid = this.itemid;
@@ -45,7 +45,7 @@ export default class Audio extends AV {
         const metadata = this.metadata;
         const title = metadata.title;
         const imgurl = `https://archive.org/services/img/${itemid}`; //OK as absolute URL as only used as itemprop
-        this.setupPlaylist();
+        this.setPlaylist();
         const af0 = this.playlist[0] && this.playlist[0].sources[0] && this.playlist[0].sources[0].urls;
         const initialPlay = 1;
         const imgsrc = this.thumbnailFile();

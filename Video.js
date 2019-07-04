@@ -9,8 +9,8 @@ export default class Video extends AV {
         super({ itemid, metaapi, noCache});
         this.itemtype = "http://schema.org/VideoObject";
     }
-    setupPlaylist() {
-        super.setupPlaylist("video");  // Setup this.playlist
+    setPlaylist() {
+        super.setPlaylist("video");  // Setup this.playlist
     }
 
     theatreIaWrap() {
@@ -34,7 +34,7 @@ export default class Video extends AV {
                 {"file":"/download/commute/commute.ogv","type":"ogg","height":"304","width":"400","label":"304p"}],
             "tracks":[{"file":"https://archive.org/stream/commute/commute.thumbs/commute_000005.jpg&vtt=vtt.vtt","kind":"thumbnails"}]}],
         */
-        this.setupPlaylist();   // Creates this.playlist
+        this.setPlaylist();   // Creates this.playlist
         const playing = this.playlist[0];
         const source = playing.sources[0];
         const af = source.urls;     // An ArchiveFile
