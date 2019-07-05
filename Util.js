@@ -81,7 +81,7 @@ function AJS_on_dom_loaded() {
 
 /* OBS not used since code in Collection.js commented out
     static metaFromUpdater({uploader=undefined, email=undefined}={}) {
-        // Need to be able to convert email to uploader
+        // Need to be able to convert email to uploader see https://webarchive.jira.com/browse/PBOX-3047?focusedCommentId=109572#comment-109572
         const u = uploader ||email; // TODO need to be able to convert back and forth with uploader and email
         const id = `@${u}`; // TODO This needs some character stripping/conversion from update to id - @IA figure out what this is
         return {

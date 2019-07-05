@@ -23,7 +23,7 @@ export default class Account extends Search {
     }
     async fetch_query(opts) {
         // Subclass ArchiveItem.fetch_query
-        this.query = `uploader:"${this.metadata.uploader}"`;
+        this.query = `uploader:"${this.metadata.uploader}"`; // See https://webarchive.jira.com/browse/PBOX-3047?focusedCommentId=109572#comment-109572 for indefinately postponed changes to uploader field
         this.sort = '-publicdate';
         return await super.fetch_query(opts); // Unclear if return or opts used, but should send it.
     }

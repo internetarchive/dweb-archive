@@ -3,6 +3,7 @@ import React from './ReactFake';
 import AV from './AV';
 import {config} from './Util';
 import TheatreControls from './components/TheatreControls';
+import { CherModal } from './components/CherModal';
 
 /* Notes on Audio
     - see also https://github.com/internetarchive/dweb-archive/issues/18
@@ -114,8 +115,7 @@ export default class Audio extends AV {
                                     </div>
                                 </div>
                             </div>
-                            {this.cherModal("audio")}
-
+                            <CherModal identifier={this.itemid} creator={this.metadata.creator} mediatype={this.metadata.mediatype} title={this.metadata.title}/>
                         </div>{/*--/.xs-col-12--*/}
                     </div>{/*--/.row--*/}
 

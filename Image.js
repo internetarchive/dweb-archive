@@ -5,6 +5,8 @@ import React from './ReactFake';
 import Details from './Details';
 import TheatreControls from './components/TheatreControls';
 import { ImageMainTheatre } from '@internetarchive/ia-components/dweb-index.js';
+import { CherModal } from './components/CherModal';
+
 
 export default class Image extends Details {
     constructor({itemid=undefined, metaapi=undefined, noCache=false}={}) {
@@ -64,7 +66,7 @@ export default class Image extends Details {
                 ) }
                             {/* Script tags moved into the JS*/}
                             <div id="webtorrentStats" style="color: white; text-align: center;"></div>
-                            {this.cherModal("image")}
+                            <CherModal identifier={this.itemid} creator={this.metadata.creator} mediatype={this.metadata.mediatype} title={this.metadata.title}/>
                         </div>{/*--/.xs-col-12*/}
                     </div>{/*--/.row*/}
 

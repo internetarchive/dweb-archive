@@ -4,6 +4,7 @@ import Details from './Details'
 import TheatreControls from './components/TheatreControls';
 import BookReaderWrap from './components/BookReaderWrapper';
 import { Carousel } from '@internetarchive/ia-components/dweb-index.js';
+import { CarouselTheatre, BookReaderTheatre } from './components/Theatres';
 
 export default class Texts extends Details {
     constructor({itemid=undefined, metaapi=undefined, page=undefined, noCache=false}={}) {
@@ -21,7 +22,7 @@ export default class Texts extends Details {
         const detailsURL = `https://archive.org/details/${identifier}`;  // Probably correct as archive.org/details since used as itemProp
         const imageURL = `https://archive.org/services/img/${identifier}`;  // itemprop so ok to leave
         //TODO-DETAILS-DWEB use alternative URLS via IPFS
-        const viewStrategy = this.guessViewStrategy();
+        const viewStrategy = this.subtype();
         //const isCarousel = this.itemid === "thetaleofpeterra14838gut"; //TODO-CAROUSEL just dummied for testing
         if (viewStrategy === "carousel") {
             archive_setup.push(function () {
@@ -39,43 +40,30 @@ export default class Texts extends Details {
                 <h1 class="sr-only">{metadata.title}</h1>
                 <h2 class="sr-only">Item Preview</h2>
 
-                    <div id="theatre-ia" class="container">
-                            <div class="row">
-                                <div class="xs-col-12">
-                                  { (viewStrategy === "carousel")
-                                  ?
-                                    <>
-                                    <div id="theatre-controls"></div>
-                                    <Carousel identifier={identifier} slides={this.files2slides(this.files4carousel())}/>
-                                    </>
-                                  : (viewstrategy === "bookreader")
-                                  ?
-                                    <>
-                                    <TheatreControls identifier={this.itemid} mediatype={this.metadata.mediatype} />
-                                    <BookReaderWrap item={this} page={this.page} />
-                                    </>
-                                  :
-                                      "Unsupported item of mediatype=texts but matches no known pattern"
-                                  }
-                                    {this.cherModal("audio")}
-                                    <center style="color:white;margin-bottom:10px">
-                                    </center>
-                                </div>
-                            </div>
-                    </div>
+                  { (viewStrategy === "carousel")
+                  ?
+                    <CarouselTheatre identifier={identifier}
+                                     slides={this.files4carousel().map(f => ({filename: f.metadata.name, source: f}))}
+                                     creator={this.metadata.creator}
+                                     mediatype={this.metadata.mediatype}
+                                     title={this.metadata.title}
+                    />
+                  : (viewstrategy === "bookreader")
+                  ? <BookReaderTheatre
+                        identifier={identifier}
+                        item={this}
+                        creator={this.metadata.creator}
+                        mediatype={this.metadata.mediatype}
+                        title={this.metadata.title}
+                        page={this.page}
+                    />
+                  :
+                      "Unsupported item of mediatype=texts but matches no known pattern"
+                  }
                 <div id="flag-overlay" class="center-area ">
-            </div>
+                </div>
             </div>
             );
 
-    }
-
-    guessViewStrategy() {
-        // Heuristic to figure out what kind of texts we have, this will evolve as @tracey gradually releases more info :-)
-        return this.subtype(); // bookreader | carousel (e.g. thetaleofpeterra14838gut)
-    }
-    files2slides(ff) {
-        // This matches what the carousel component needs
-        return ff.map(f => ({filename: f.metadata.name, source: f}));
     }
 }

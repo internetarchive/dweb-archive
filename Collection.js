@@ -5,6 +5,8 @@ import {Tabby} from "@internetarchive/ia-components/dweb-index.js";
 import {NavWrapWrapper} from './components/NavWrapWrapper';
 import {AnchorModalGo} from './components/ModalGoFake';
 import {AJS_on_dom_loaded} from "./Util";
+import { CherModal } from './components/CherModal';
+
 
 export default class Collection extends Search {
     constructor({itemid=undefined, metaapi=undefined}={}) {
@@ -37,7 +39,7 @@ export default class Collection extends Search {
                     <a name="maincontent" id="maincontent"></a>
                 </div>{/*--//.container-ia--*/}
                 {this.banner()}
-                {this.cherModal("collection")}
+                <CherModal identifier={this.itemid} creator={this.metadata.creator} mediatype={this.metadata.mediatype} title={this.metadata.title}/>
                 <div class="container container-ia nopad">
                     <div id="tabby-collection" class="tabby-data in">
                         {this.rowColumnsItems()}
@@ -80,6 +82,7 @@ export default class Collection extends Search {
                             </div>{/* /.col-sm-7 */}
                             <div class="col-sm-5" style="margin-bottom:50px;">
                                 {/* TODO-UPLOADER not supported - need way to turn email into userid - see Missing-API doc I think its there
+                                // See https://webarchive.jira.com/browse/PBOX-3047?focusedCommentId=109572#comment-109572 for indefinately postponed changes to uploader field TODO-@IA
                                 <div class="about-box" style="background-color:rgb(251,242,221); margin-bottom:0;">
                                     <div class="topinblock"
                                          style="text-align:center; border-right:1px solid #ccc; padding:0 25px;margin-right:25px;">

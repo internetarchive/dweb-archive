@@ -91,55 +91,6 @@ export default class Details extends ArchiveBase {
         AJS_on_dom_loaded(); // Runs code pushed archive_setup - needed for image if "super" this, put it after superclasses
     }
 
-    embedWordpress() {
-        // THis appeared on image and movie examples
-        const metadata = this.metadata;
-        const itemid = metadata.identifier; // Shortcut as used a lot
-        return (
-            <div>
-                <form className="form" role="form">
-                    <div className="form-group">
-                        <label>EMBED (for wordpress.com hosted blogs)</label>
-                        <textarea id="embedcodehereWP" className="form-control textarea-invert-readonly"
-                                  rows="3" readOnly="readonly">{`[archiveorg ${itemid} width=560 height=384 frameborder=0 webkitallowfullscreen=true mozallowfullscreen=true]`}</textarea>
-                    </div>
-                </form>
-            </div>
-        );
-    }
-    embedAdvanced(type) {
-        // From text, video, image
-        const metadata = this.metadata;
-        const itemid = metadata.identifier; // Shortcut as used a lot
-        return(
-            <div>
-                Want more?
-                <a href={`https://archive.org/help/${type}.php?identifier=${itemid}`}>Advanced embedding details, examples, and
-                    help</a>!
-            </div>
-        );
-    }
-    embed() {
-        // Same on text, video, image
-        // Note this shortEmbedURL is just displayed in a form used to explain how to embed, its not actually called from dweb code.
-        const shortEmbedURL = `https://archive.org/stream/${this.itemid}?ui=embed`;    //Note on archive.org/details this is different from iframeURL and not clear if that is intentional
-        return(
-            <div>
-                <form class="form" role="form">
-                    <div class="form-group">
-                        <label>EMBED</label>
-                        <textarea id="embedcodehere" class="form-control textarea-invert-readonly"
-                                  rows="3" readonly="readonly">{`<iframe 
-                                src=${shortEmbedURL}
-                                width="480" height="430" frameborder="0"
-                                webkitallowfullscreen="true" mozallowfullscreen="true"
-                                allowfullscreen></iframe>`}</textarea>
-                    </div>
-                </form>
-            </div>
-        );
-    }
-
     useBookReader() {
         // True if should use the BookReader, otherwise its images
         return true; //TODO-BOOK2 check for pdf and abby
