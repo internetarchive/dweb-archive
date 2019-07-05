@@ -54,7 +54,7 @@ function pushHistory(...optss) {
     url.pathname =  (!supportsArc) ? window.location.pathname
       : query ? '/arc/archive.org/details'
       : `/arc/archive.org/${opts.download ? "download" : "details"}${identifier ? "/" + identifier : ""}${opts.page ? "/page/" + opts.page : ""}`;
-    const combinedparams = Object.assign({}, Nav.state, (!supportsArc || query) ? opts : optsDetails);
+    const combinedparams = Object.assign({}, (!supportsArc || query) ? opts : optsDetails); // For now, not putting persistent state in URL (was Nav.state) as first parm
     const usp = new URLSearchParams();
     Object.entries(combinedparams).forEach(
       kv => Array.isArray(kv[1])
