@@ -4,6 +4,7 @@ import {NavWrap} from '@internetarchive/ia-components/dweb-index.js';
 import {gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
 import IAReactComponent from './IAReactComponent';
 import {transportStatusAndProps} from "../ReactSupport";
+import {SaveModal} from "./SaveModal";
 
 /**
  * Wrapper around NavWrap to pass it status so that IAUX component knows less about Dweb
@@ -31,11 +32,14 @@ export default class NavWrapWrapper extends IAReactComponent {
 
   render() {
     return (
+      <>
       <NavWrap item={this.props.item}
                transportStatuses={this.state.transportStatuses}
                mirror2gateway={this.state.mirror2gateway}
-               browser2archive={this.state.browser2archive}
+               browser2archive={this.props.browser2archive}
       />
+      <SaveModal identifier={this.props.item.itemid} directories={this.state.directories} />
+      </>
     );
   }
 }

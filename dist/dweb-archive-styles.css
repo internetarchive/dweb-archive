@@ -73,7 +73,7 @@ body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb a, .n
     line-height:1;
 }
 .dwebnavbuttons li  {
-    padding: 5px 8px 5px 20px;
+    padding: 5px 8px 5px 8px;
     background-size: 14px;
     color: #c0c0c0;
 }
@@ -119,16 +119,19 @@ body.navia .navbar #nav-dweb a img {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="200" height="200"><circle cx="100" cy="100" r="95" fill="purple" /></svg>');
 
 }
+/*
 .dwebnavbuttons .reload {
     background-image: url('/archive/images/baseline-update-24px.svg');
 }
+ */
+/*
 .dwebnavbuttons .settings {
     background-image: url('/archive/images/settings.svg');
 }
 .dwebnavbuttons .local {
     background-image: url('/archive/images/baseline-home-24px.svg');
 }
-
+*/
 .dweb-message { padding-top: 60px; padding-left; 3em } /*Else gets hidden behind navwrap - not sure why */
 
 .dweb-nav-left {
