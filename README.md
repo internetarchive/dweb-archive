@@ -135,6 +135,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.82: Yarn upgrade; browser2archive flag; multivalue transport=; url history fix; carousel; sort on search; componentize chermodal and theatres; save button;
 * v0.1.81: Disable reload when unavailable; Local and Home download count; Titles on pages
 * v0.1.80: Prettier bytes output; bugs in settings and local  
 * v0.1.79: componentize: ItemDetailsAboutJSX, DownloadDirectory, SearchSwitcher, ImageDweb; NavNavWrapper; refactor members->membersFav,membersSearch; reload/no-cache on searches; obsolete nav_home; 
