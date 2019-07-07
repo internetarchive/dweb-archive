@@ -16,6 +16,7 @@ export default class Texts extends Details {
         super.archive_setup_push(); // On eample images the theatre & carosel came before the parts common to AV, Image and Text
         archive_setup.push(function(){ AJS.booksize(); });
     }
+    /*OBS
     theatreIaWrap() {
         const identifier = this.itemid
         const metadata = this.metadata;
@@ -66,4 +67,6 @@ export default class Texts extends Details {
             );
 
     }
+
+     */
 }

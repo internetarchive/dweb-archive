@@ -17,19 +17,20 @@ import React from './ReactFake';
 import RelatedItemsWrapper from './components/RelatedItemsWrapper';
 import DetailsAboutWrapper from './components/DetailsAboutWrapper';
 import ArchiveBase from './ArchiveBase';
-import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
-import {DetailsActionButtons, DetailsDownloadOptions, DetailsReviews, DetailsMetadata, DetailsAbout} from '@internetarchive/ia-components/dweb-index.js';
 import {AJS_on_dom_loaded} from "./Util";
 import {NavWrapWrapper} from './components/NavWrapWrapper';
+import { BookReaderTheatre, CarouselTheatre, MessageTheatre, AudioTheatre } from "./components/Theatres";
+import {ImageMainTheatre} from "@internetarchive/ia-components/dweb-index";
 
 export default class Details extends ArchiveBase {
     constructor({itemid = undefined, metaapi = undefined, noCache=false}={}) {
         super({itemid, metaapi});
         this.noCache = noCache;
+        this.state = {}; // This will be automatic when moves to React
     }
 
     render(res) { // See other (almost) DUPLICATEDCODE#001
-        var els = this.wrap();    // Build the els
+        const els = this.wrap();    // Build the els
         // Other DUPLICATEDCODE#001 do `$('body').addClass('bgEEE')` here
         React.domrender(els, res);  //Put the els into the page
         this.browserAfter();
@@ -68,7 +69,7 @@ export default class Details extends ArchiveBase {
     archive_setup_push() {
         archive_setup.push(function(){  // This is common to Text, AV and image - though some have stuff before this and some a
             AJS.tilebars(); // page load
-            $(window).on('resize  orientationchange', function(evt){ //TODO-JQUERY remove dependency window.on probably works fine
+            $(window).on('resize  orientationchange', function(unusedEvt){ //TODO-JQUERY remove dependency window.on probably works fine
                 clearTimeout(AJS.also_found_throttler);
                 AJS.also_found_throttler = setTimeout(AJS.tilebars, 250)
             });
@@ -91,8 +92,106 @@ export default class Details extends ArchiveBase {
         AJS_on_dom_loaded(); // Runs code pushed archive_setup - needed for image if "super" this, put it after superclasses
     }
 
-    useBookReader() {
-        // True if should use the BookReader, otherwise its images
-        return true; //TODO-BOOK2 check for pdf and abby
+    theatreIaWrap() {
+        // This is a combo wrap that handles multiple mediatypes
+
+      // Some shortcuts - apply in texts and image cases at least
+      const identifier = this.itemid;
+      const metadata = this.metadata;
+      //TODO-DETAILS-DWEB use alternative URLS via Dweb for some of the URLs in here
+      const detailsURL = `https://archive.org/details/${identifier}`;  // Probably correct as archive.org/details since used as itemProp
+      const viewStrategy = (["texts"].includes(metadata.mediatype)) ? this.subtype() : undefined;
+      if (viewStrategy === "carousel") {
+        archive_setup.push(function () {
+          AJS.theatresize();
+          AJS.carouselsize('#ia-carousel', true);
+        });
+      }
+      const mainArchiveFile = ["image"].includes(metadata.mediatype)
+        ? this.playableFile("image") // Can be undefined if none included
+        : undefined;
+      if (["audio","etree"].includes(this.metadata.mediatype))
+        this.setPlaylist();
+      return (
+        <div id="theatre-ia-wrap" className="container container-ia width-max"
+             style={["image"].includes(metadata.mediatype) ? {height: "600px"} : undefined}
+             resized={["image"].includes(metadata.mediatype)}
+             >
+          <link itemProp="url" href={detailsURL}/>
+          {/* - TODO unclear why image & text|audio mediatypes use different itemprop below check current archive.org pages*/}
+          <link itemProp={["image"].includes(metadata.mediatype) ? "thumbnailUrl" : "image"}
+            href="https://archive.org/services/img/{identifier}"/>{/*OK for direct link since itemprop*/}
+
+          { ["audio","etree"].includes(this.metadata.mediatype)
+            ?
+              this.playlist.map((track,i) => ( // OK to be absolute or dweb link
+                <div key={i} itemprop="hasPart" itemscope itemtype="http://schema.org/AudioObject">
+                  <meta itemprop="name" content={track.title}/>
+                  <meta itemprop="duration" content={`PT0M${parseInt(track.duration)}S`}/>
+                  {   // Loop over the sources which can be multiple files for the same track.  Note this is limited to playable sources, could add unplayable to playlist if want as separate field e.g. unplayablesources
+                    track.sources.map((f,i) => (
+                      <link key={i} itemprop="associatedMedia" href={`https://archive.org/download/${identifier}/${f.name}`}/>
+                    ))
+                  }
+                </div>
+              ))
+            :
+              this.files.filter((af)=> af.metadata.source !== "metadata")
+                .map((af) => ( //OK for direct link since itemprop
+                  <link itemProp="associatedMedia" href={`https://archive.org/download/${identifier}/${af.metadata.name}`} key={`${identifier}/${af.metadata.name}`}/>
+              ))
+          }
+          <h1 class="sr-only">{metadata.title}</h1>
+          <h2 className="sr-only">{metadata.mediatype} preview</h2>
+          { (["texts"].includes(metadata.mediatype) && (viewStrategy === "carousel") )
+            ?
+              <CarouselTheatre
+                identifier={identifier}
+                slides={this.files4carousel().map(f => ({filename: f.metadata.name, source: f}))}
+                creator={metadata.creator}
+                mediatype={metadata.mediatype}
+                title={metadata.title}
+              />
+            : (["texts"].includes(metadata.mediatype) && (viewStrategy === "bookreader"))
+            ? <BookReaderTheatre
+                identifier={identifier}
+                item={this}
+                creator={metadata.creator}
+                mediatype={metadata.mediatype}
+                title={metadata.title}
+                page={this.page}
+              />
+            : (["image"].includes(metadata.mediatype) && mainArchiveFile)
+            ?
+              <ImageMainTheatre
+                alt="item image #1"
+                source={mainArchiveFile}
+                caption={mainArchiveFile.metadata.name}
+                identifier={identifier}
+                mediatype={metadata.mediatype}
+                creator={metadata.creator}
+                title={metadata.title}/>
+            : (["audio","etree"].includes(metadata.mediatype))
+            ?
+                <AudioTheatre
+                  identifier={identifier}
+                  mediatype={this.metadata.mediatype} creator={this.metadata.creator} title={this.metadata.title}
+                  imgsrc={this.thumbnailFile()}
+                  playlist={this.playlist}
+                  initialPlay={1}
+                />
+            :
+              <MessageTheatre title="There Is No Preview Available For This Item">
+                <p>
+                  This item does not appear to have any files that can be experienced on Archive.org
+                  <br/><span className="hidden-xs hidden-sm">Please download files in this item to interact with them on your computer.</span><br/>
+                  {/* Should be link to DownloadDirectory */}
+                  <a className="show-all" href={`https://archive.org/download/${identifier}`} target="_blank">Show all files</a>
+                </p>
+              </MessageTheatre>
+           }
+          <div id="flag-overlay" class="center-area "> </div>
+        </div>
+      )
     }
 }

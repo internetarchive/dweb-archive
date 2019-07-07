@@ -25,6 +25,7 @@ export default class Image extends Details {
         super.archive_setup_push(); // On example images the theatre & carosel came before the parts common to AV, Image and Text
     }
 
+    /* OBS
     theatreIaWrap() {
         const metadata = this.metadata;
         const itemid = metadata.identifier; // Shortcut as used a lot
@@ -35,7 +36,7 @@ export default class Image extends Details {
             <div id="theatre-ia-wrap" className="container container-ia width-max  resized" style={{height: "600px"}}>
                 <link itemProp="url" href={detailsURL}/>
 
-                <link itemProp="thumbnailUrl" href="https://archive.org/services/img/{itemid}"/>{/*OK for direct link since itemprop*/}
+                <link itemProp="thumbnailUrl" href="https://archive.org/services/img/{itemid}"/>
 
                 { this.files.filter((af)=> af.metadata.source !== "metadata").map((af) => ( //OK for direct link since itemprop
                     <link itemProp="associatedMedia" href={`https://archive.org/download/${itemid}/${af.metadata.name}`} key={`${itemid}/${af.metadata.name}`}/>
@@ -59,22 +60,21 @@ export default class Image extends Details {
                                     <p>
                                         This item does not appear to have any files that can be experienced on Archive.org
                                         <br/><span className="hidden-xs hidden-sm">Please download files in this item to interact with them on your computer.</span><br/>
-                                        <a className="show-all" href={`https://archive.org/download/${itemid}`} target="_blank">Show all files</a>{/*TODO-DETAILS-FILE should handle download of collection*/}
+                                        <a className="show-all" href={`https://archive.org/download/${itemid}`} target="_blank">Show all files</a>
                                     </p>
                                 </div>
                             </div>
                 ) }
-                            {/* Script tags moved into the JS*/}
                             <div id="webtorrentStats" style="color: white; text-align: center;"></div>
                             <CherModal identifier={this.itemid} creator={this.metadata.creator} mediatype={this.metadata.mediatype} title={this.metadata.title}/>
-                        </div>{/*--/.xs-col-12*/}
-                    </div>{/*--/.row*/}
+                        </div>
+                    </div>
 
-                </div>{/*--#theatre-ia*/}
+                </div>
                 <div id="flag-overlay" className="center-area ">
                 </div>
             </div>
             )
     };
-
+  */
 }

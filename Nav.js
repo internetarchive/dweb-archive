@@ -219,12 +219,7 @@ export default class Nav {
       case "collection":
         return await new Collection({itemid, metaapi, noCache}).fetch({noCache});   //fetch will do search
       case "texts":
-        if (prioritem.useBookReader()) {
           return new Texts({itemid, metaapi, page, noCache});
-        } else {
-          //TODO-BOOKS find an example that cant use bookreader, there were some in a dweb-archive or dweb-mirror issue about bookreader
-          return new DetailsError({itemid, message: 'Cant be displayed in bookreader, code needs to use a carousel'}); //TODO-BOOK see thetaleofpeterra14304gut (I think) and alicesadventures19033gut (I think)
-        }
       case "image":
         return new Image({itemid, metaapi, noCache});
       case "audio": // Intentionally drop thru to movies

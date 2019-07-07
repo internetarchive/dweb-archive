@@ -1,11 +1,11 @@
-import React from "../ReactFake";
-import IAFakeReactComponent from './IAFakeReactComponent';
+import React from "react";
+import IAReactComponent from './IAReactComponent';
 
 /* Theatre Control are little widgets used in each of the "theatre" displays,
 
  */
 
-export default class TheatreControls extends IAFakeReactComponent {
+export default class TheatreControls extends IAReactComponent {
     /* Used in IAUX, but not in ReactFake
     static propTypes = {
         identifier: PropTypes.string.isRequired,
@@ -36,27 +36,27 @@ export default class TheatreControls extends IAFakeReactComponent {
                 </a>
             : undefined }
             { ["movies"].includes(this.props.mediatype) ?
-            <a href="#" id="gofullscreen" onClick="">
+            <a href="#" id="gofullscreen">
                 <div data-toggle="tooltip" data-container="body" data-placement="left" className="iconochive-fullscreen"
                      title="fullscreen view"></div>
             </a>
             : undefined }
             { ["audio","etree","movies"].includes(this.props.mediatype) ?
-                <a href="#" onClick="return AJS.flash_click(0)">
+                <a href="#" onClick={()=>AJS.flash_click(0)}>
                     <div data-toggle="tooltip" data-container="body" data-placement="left" className="iconochive-flash"
                          title="Click to have player try flash first, then HTML5 second"></div>
                 </a>
             : undefined }
             { ["audio","etree","movies"].includes(this.props.mediatype) ?
-                <a href="#" onClick="return AJS.mute_click()">
+                <a href="#" onClick={AJS.mute_click}>
                     <div data-toggle="tooltip" data-container="body" data-placement="left" className="iconochive-unmute"
                          title="sound is on.  click to mute sound."></div>
                 </a>
             : undefined }
             { ["audio","etree","movies"].includes(this.props.mediatype) ?
-                <a href="#" onClick="return AJS.mute_click()">
+                <a href="#" onClick={AJS.mute_click}>
                     <div data-toggle="tooltip" data-container="body" data-placement="left" className="iconochive-mute"
-                         style="display:none" title="sound is off.  click for sound."></div>
+                         style={{display:"none"}} title="sound is off.  click for sound."></div>
                 </a>
             : undefined }
         </div>
