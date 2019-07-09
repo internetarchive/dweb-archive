@@ -19,8 +19,9 @@ import DetailsAboutWrapper from './components/DetailsAboutWrapper';
 import ArchiveBase from './ArchiveBase';
 import {AJS_on_dom_loaded} from "./Util";
 import {NavWrapWrapper} from './components/NavWrapWrapper';
-import { BookReaderTheatre, CarouselTheatre, MessageTheatre, AudioTheatre } from "./components/Theatres";
+import { BookReaderTheatre, CarouselTheatre, MessageTheatre, AudioTheatre, VideoTheatre } from "./components/Theatres";
 import {ImageMainTheatre} from "@internetarchive/ia-components/dweb-index";
+import {gateway, gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
 
 export default class Details extends ArchiveBase {
     constructor({itemid = undefined, metaapi = undefined, noCache=false}={}) {
@@ -108,19 +109,30 @@ export default class Details extends ArchiveBase {
           AJS.carouselsize('#ia-carousel', true);
         });
       }
+      //TODO video at momemtn only plays first in playlist which is usually, but not always correct - need an example of multi-video item
+      if ((!this.isDark) && ['audio', 'etree', 'movies'].includes(this.metadata.mediatype))
+        this.setPlaylist();
+      const playing = (["movies"].includes(metadata.mediatype)) ? this.playlist[0] : undefined;
+      const source = (["movies"].includes(metadata.mediatype)) ? playing.sources[0] : undefined;
       const mainArchiveFile = ["image"].includes(metadata.mediatype)
         ? this.playableFile("image") // Can be undefined if none included
         : undefined;
-      if ((!this.isDark) && ["audio","etree"].includes(this.metadata.mediatype))
-        this.setPlaylist();
+      const cfg =   (!["movies"].includes(metadata.mediatype)) ? undefined : // Cant find this used anywhere, maybe it was part of jwPlayer
+        {"start":0,"embed":null,"so":false,"autoplay":false,"width":0,"height":0,"list_height":0,"audio":false,
+        "responsive":true,"flash":false, "hide_list":true,
+        "identifier": this.itemid,
+        "collection": this.metadata.collection[0],
+      };
+
       return (
-        <div id="theatre-ia-wrap" className="container container-ia width-max"
+
+          <div id="theatre-ia-wrap" className="container container-ia width-max"
              style={["image"].includes(metadata.mediatype) ? {height: "600px"} : undefined}
              resized={["image"].includes(metadata.mediatype)}
              >
           <link itemProp="url" href={detailsURL}/>
           {/* - TODO unclear why image & text|audio mediatypes use different itemprop below check current archive.org pages*/}
-          <link itemProp={["image"].includes(metadata.mediatype) ? "thumbnailUrl" : "image"}
+          <link itemProp={["image","movies"].includes(metadata.mediatype) ? "thumbnailUrl" : "image"}
             href="https://archive.org/services/img/{identifier}"/>{/*OK for direct link since itemprop*/}
 
           { (this.playlist && ["audio","etree"].includes(this.metadata.mediatype)) // this.isDark wont have a playlist
@@ -142,6 +154,15 @@ export default class Details extends ArchiveBase {
                   <link itemProp="associatedMedia" href={`https://archive.org/download/${identifier}/${af.metadata.name}`} key={`${identifier}/${af.metadata.name}`}/>
               ))
           }
+          { !["movies"].includes(metadata.mediatype) ? null :
+            <>
+            <link itemProp="contentUrl" href={`${gatewayServer()}${gateway.urlDownload}/${identifier}/${source.name}`}/>
+            <link itemProp="embedUrl" href={`${gatewayServer()}${gateway.urlDownload}/${identifier}/${playing.orig}`}/>
+            <meta itemProp="duration" content={`PT0M${parseInt(playing.duration)}S`}/>
+            </>
+          }
+
+
           <h1 class="sr-only">{metadata.title}</h1>
           <h2 className="sr-only">{metadata.mediatype} preview</h2>
           { (["texts"].includes(metadata.mediatype) && (viewStrategy === "carousel") )
@@ -181,6 +202,12 @@ export default class Details extends ArchiveBase {
                   playlist={this.playlist}
                   initialPlay={1}
                 />
+            : (["movies"].includes(metadata.mediatype))
+            ? /* The 'poster' is intentionally a direct Http link as its intended only for search engines etc
+                 Preference is 2nd thumbnail (first is usually black-sreen) in .thumbs/ directory (e.g. for "commute");
+                 if only one (e.g. item 'stairs') use that. */
+                  <VideoTheatre identifier={identifier} mediatype={metadata.mediatype} poster={this.videoThumbnailFile().httpUrl()}
+                    title={metadata.title} creator={metadata.creator} source={source.urls} />
             :
               <MessageTheatre title="There Is No Preview Available For This Item">
                 <p>

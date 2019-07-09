@@ -5,8 +5,15 @@ import { CherModal } from './CherModal';
 import { BookReaderWrapper } from './BookReaderWrapper';
 import { Carousel, ImageDweb }  from '@internetarchive/ia-components/dweb-index.js';
 import TheatreControls from "./TheatreControls";
-import { AudioDweb } from "./Audio";
+import { AudioDweb, VideoDweb } from "./AudioVideo";
 import {config} from "../Util";
+
+/**
+ * A collection of theatres for embedding in Details page
+ *
+ * Each theatre has a similar structure, especially the outer "theatre-ia" DIV
+ * TODO refactor out that outer structure
+ */
 
 class BookReaderTheatre extends IAReactComponent {
   // Props: mediatype, identifier, creator, title, item
@@ -89,7 +96,8 @@ class AudioTheatre extends IAReactComponent {
   /**
    * <AudioTheatre
    *    identifier=string mediatype='audio'|'etree' creator=string title=string    All from metadata
-   *    imgsrc=ARCHIVEFILE playlist={PLAYLIST}
+   *    imgsrc=ARCHIVEFILE
+   *    playlist={PLAYLIST}
    *    initialPlay=INT
    */
   constructor(props) {
@@ -153,6 +161,27 @@ class AudioTheatre extends IAReactComponent {
     </div>
   )};
 }
+
+class VideoTheatre extends IAReactComponent {
+  // Props: identifier mediatype poster creator mediatype title source=ARCHIVEFILE
+  render() { return (
+    <div id="theatre-ia" className="container">
+      <div className="row">
+        <div className="xs-col-12">
+          <TheatreControls identifier={this.props.identifier} mediatype={this.props.mediatype}/>
+          <div id="videoContainerX" style={{textAlign: "center"}}>
+            {/* This videothumbnailurl is http since if getting decentralized there is little value compared to loading video itself */}
+            <VideoDweb id="streamContainer" source={this.props.source} poster={this.props.poster} controls></VideoDweb>
+          </div>
+          <div id="webtorrentStats" style={{color: "white", textAlign: "center"}}></div>
+          <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype}
+                     title={this.props.title}/>
+        </div>
+      </div>
+    </div>
+  ); }
+}
+
 class MessageTheatre extends IAReactComponent {
   // Props: title children
 
@@ -174,4 +203,4 @@ class MessageTheatre extends IAReactComponent {
   ); }
 }
 
-export { BookReaderTheatre, CarouselTheatre, MessageTheatre, AudioTheatre }
+export { BookReaderTheatre, CarouselTheatre, MessageTheatre, AudioTheatre, VideoTheatre }

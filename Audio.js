@@ -12,6 +12,7 @@ import { CherModal } from './components/CherModal';
     TODO-AUDIO Body tag on audio has different classes, in particular has <body navia ia-module tiles responsive jwaudio > and jwaudio might be important
     TODO-IA Ask Evan why item-details-about is now closed immediately
  */
+//TODO-THEATRES obsoleting this
 
 export default class Audio extends AV {
     constructor({itemid=undefined, metaapi=undefined, noCache=false}={}) {
