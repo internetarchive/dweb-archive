@@ -215,6 +215,7 @@ export default class Nav {
 
   static async renderableItem({prioritem, itemid, metaapi, page, noCache}) {
     /* Returns an ArchiveItem subclass or a DetailsError */
+    //console.assert(this.metadata) - will have generated error before calling this if no metadata
     switch (metaapi.metadata.mediatype) {
       case "collection":
         return await new Collection({itemid, metaapi, noCache}).fetch({noCache});   //fetch will do search

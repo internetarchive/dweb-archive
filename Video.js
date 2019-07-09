@@ -15,6 +15,7 @@ export default class Video extends AV {
     }
 
     theatreIaWrap() {
+      // console.assert(!this.isDark) // Will be metadata.mediatype=video if here
         const itemid = this.itemid;
         const detailsurl = `https://archive.org/details/${itemid}`; // OK to be direct url since its an itemprop
         const title = this.metadata.title;

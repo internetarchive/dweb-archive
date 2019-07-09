@@ -110,7 +110,7 @@ export default class Details extends ArchiveBase {
       const mainArchiveFile = ["image"].includes(metadata.mediatype)
         ? this.playableFile("image") // Can be undefined if none included
         : undefined;
-      if (["audio","etree"].includes(this.metadata.mediatype))
+      if ((!this.isDark) && ["audio","etree"].includes(this.metadata.mediatype))
         this.setPlaylist();
       return (
         <div id="theatre-ia-wrap" className="container container-ia width-max"
@@ -122,7 +122,7 @@ export default class Details extends ArchiveBase {
           <link itemProp={["image"].includes(metadata.mediatype) ? "thumbnailUrl" : "image"}
             href="https://archive.org/services/img/{identifier}"/>{/*OK for direct link since itemprop*/}
 
-          { ["audio","etree"].includes(this.metadata.mediatype)
+          { (this.playlist && ["audio","etree"].includes(this.metadata.mediatype)) // this.isDark wont have a playlist
             ?
               this.playlist.map((track,i) => ( // OK to be absolute or dweb link
                 <div key={i} itemprop="hasPart" itemscope itemtype="http://schema.org/AudioObject">

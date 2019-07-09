@@ -26,6 +26,7 @@ export default class Collection extends Search {
         returns:      elements tree suitable for adding into another render
          */
         //Note both description & rights need dangerousHTML and \n -> <br/>
+        console.assert(!this.isDark) // Will be mediatype=collection so not isDark
         const metadata = this.metadata;
         const description = this.preprocessDescription(metadata.description); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const rights = this.preprocessDescription(metadata.rights); // Contains HTML (supposedly safe) inserted via innerHTML thing
@@ -141,6 +142,7 @@ export default class Collection extends Search {
 
     banner() {
         //TODO-DETAILS probably move this to the Search class and trigger based on presence of "metadata.identifier" (which is missing for Searches.)
+        //console.assert(!this.isDark && this.metadata) // Will be metadata.mediatype=collection
         const metadata = this.metadata;
         const creator = (this.metadata.creator  &&  (metadata.creator.join(', ') != this.metadata.title) ? metadata.creator.join(', ') : '');
         //ARCHIVE-BROWSER note the elements below were converted to HTML 3 times in original version
