@@ -12,12 +12,8 @@ import Home from './Home';
 import Collection from './Collection';
 import Local from './Local'; //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 import Settings from './Settings'; //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
-import Texts from './Texts';
-import Image from './Image';
-import Audio from './Audio';
-import Video from './Video';
 import Account from './Account';
-import DetailsError from './DetailsError';
+import DetailsError from './DetailsError'; //TODO-THEATRES use message theatre for this
 import DownloadDirectory from './DownloadDirectory';
 import {ObjectFilter} from '@internetarchive/dweb-archivecontroller/Util.js';
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
@@ -88,6 +84,7 @@ export default class Nav {
   static clear(destn) {
     // Clear the screen to give confidence that action under way
     // Leaves Nav, clears rest
+    //TODO-THEATRES use message theatre for this
     React.domrender(new DetailsError({message: < span>Loading - note this can take a while if no-one else has accessed this item yet</span>}).wrap(), destn)
   }
 
@@ -184,7 +181,7 @@ export default class Nav {
         let d = await new Details({itemid: identifier}).fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
         let metaapi = d.exportMetadataAPI({wantPlaylist: true}); // Cant pass Details to the constructors below
         if (!d.metadata) {
-          new DetailsError({
+          new DetailsError({ //TODO-THEATRES use message theatre for this
             itemid: identifier,
             message: `item ${identifier} cannot be found or does not have metadata`
           }).render(destn);
@@ -208,7 +205,7 @@ export default class Nav {
       }
     } catch (err) {
       console.error("Nav.factory detected error", err);
-      new DetailsError({itemid: identifier, message: err.message}).render(destn);
+      new DetailsError({itemid: identifier, message: err.message}).render(destn); //TODO-THEATRES use message theatre for this
       //TODO-UXLOCAL think about return
     }
   }
@@ -217,31 +214,21 @@ export default class Nav {
     /* Returns an ArchiveItem subclass or a DetailsError */
     //console.assert(this.metadata) - will have generated error before calling this if no metadata
     switch (metaapi.metadata.mediatype) {
+      case "texts":
+      case "image":
+      case "audio":
+      case "etree":
+      case "movies":
+          return new Details({itemid, metaapi, page, noCache});
       case "collection":
         return await new Collection({itemid, metaapi, noCache}).fetch({noCache});   //fetch will do search
-      case "texts":
-          return new Texts({itemid, metaapi, page, noCache});
-      case "image":
-        return new Image({itemid, metaapi, noCache});
-      case "audio": // Intentionally drop thru to movies
-      case "etree": // Concerts uploaded
-        return new Audio({itemid, metaapi, noCache});
-      case "movies":
-        return new Video({itemid, metaapi, noCache});
       case "account":
         return (await new Account({itemid, metaapi}).fetch({noCache}));
       default:
         //TODO Not yet supporting software, zotero (0 items); data; web
-        return new DetailsError({itemid, message: `Unsupported mediatype: ${metaapi.metadata.mediatype}`});
+        return new DetailsError({itemid, message: `Unsupported mediatype: ${metaapi.metadata.mediatype}`}); //TODO-THEATRES use a message theatre instead of DetailsError -a) just call Details, b) pass message to Details to MessageTheatre
       //    return new Nav(")
     }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  static audioPlay(elAnchor) {
-    // Used by Audio to play a track - since "Nav" is a global it can access
-    Audio.play(elAnchor);
-    return false;
   }
 
   static setState(...optss) {

@@ -77,11 +77,11 @@ class CherModal extends IAReactComponent {
                       <div className="form-group">
                         <label>EMBED</label>
                         <textarea id="embedcodehere" className="form-control textarea-invert-readonly"
-                                  rows="3" readOnly="readonly">{`<iframe 
+                                  rows="3" readOnly="readonly" value={`<iframe 
                                       src=${shortEmbedURL}
                                       width="480" height="430" frameborder="0"
                                       webkitallowfullscreen="true" mozallowfullscreen="true"
-                                      allowfullscreen></iframe>`}</textarea>
+                                      allowfullscreen></iframe>`}/>
                       </div>
                     </form>
                   </div>
@@ -91,7 +91,7 @@ class CherModal extends IAReactComponent {
                       <div className="form-group">
                         <label>EMBED (for wordpress.com hosted blogs)</label>
                         <textarea id="embedcodehereWP" className="form-control textarea-invert-readonly"
-                                  rows="3" readOnly="readonly">{`[archiveorg ${this.props.identifier} width=560 height=384 frameborder=0 webkitallowfullscreen=true mozallowfullscreen=true]`}</textarea>
+                                  rows="3" readOnly="readonly" value={`[archiveorg ${this.props.identifier} width=560 height=384 frameborder=0 webkitallowfullscreen=true mozallowfullscreen=true]`}/>
                       </div>
                     </form>
                   </div>

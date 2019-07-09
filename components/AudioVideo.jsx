@@ -1,10 +1,10 @@
 
 import React from 'react';
-import ReactFake from '../ReactFake'; //TODO temporary till move p_loadStream to ReactSupport
 import { ObjectFilter } from '@internetarchive/dweb-archivecontroller/Util.js';
 import IAReactComponent from './IAReactComponent';
 import { AnchorDownload } from '@internetarchive/ia-components/dweb-index.js';
 import {config} from "../Util";
+import {loadStream} from "../ReactSupport";
 
 const debug = require('debug')('Video Components');
 
@@ -18,12 +18,11 @@ class AVDweb extends IAReactComponent {
     });
   }
 
-  loadStream() {
+  loadStreamIfChanged() {
     // Load the source into the avElement, which should previously have been set at load
     if (this.avElement && (this.lastsource !== this.props.source)) {
       this.lastsource = this.props.source;
-      //TODO move p_loadStream to ReactSupport
-      ReactFake.p_loadStream(this.avElement, this.props.source, {
+      loadStream(this.avElement, this.props.source, {
         name: this.props.source.metadata.name,
         preferredTransports: config.preferredAVtransports
       });  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
@@ -35,7 +34,7 @@ class AVDweb extends IAReactComponent {
     // On load, set the avElenent and render into it, its done this way since loadcallable is only called once, and not on re-renders
     // TODO this may move to a method on the source (e.g. on ArchiveFile)
     this.avElement = avElement;
-    this.loadStream();
+    this.loadStreamIfChanged();
   }
 
 }
@@ -53,7 +52,7 @@ class AudioDweb extends AVDweb {
 
   render() {
     // noinspection HtmlRequiredAltAttribute
-    this.loadStream(); // During first render this.avEleent won't be set, so will be rendered by load, subsequent renders will trigger it
+    this.loadStreamIfChanged(); // During first render this.avEleent won't be set, so will be rendered by load, subsequent renders will trigger it
     return (
       typeof DwebArchive !== 'undefined'
         ? <audio ref={this.load} data-trackname={this.props.source.metadata.name} {...this.state.tagProps} />
@@ -76,7 +75,7 @@ class VideoDweb extends AVDweb {
 
   render() {
     // noinspection HtmlRequiredAltAttribute
-    this.loadStream();
+    this.loadStreamIfChanged();
     return (
       typeof DwebArchive !== 'undefined'
       ? <video id="streamContainer" poster={this.props.poster} controls ref={this.load} {...this.state.tagProps}></video>

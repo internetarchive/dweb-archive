@@ -33,8 +33,6 @@ export default class ArchiveBase extends ArchiveItem {
     constructor({itemid = undefined, metaapi = undefined, sort=undefined}={}) {
         super({itemid, metaapi, sort});
     }
-    theatreIaWrap() {
-    }
     preprocessDescription(description) {
         // Now catch some things that often appear in descriptions because it assumes running on archive page e.g. /server/commute/commute.jpg on "commute"
         // And handle multivalue (array) descriptions by concatenating with <br/>

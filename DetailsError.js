@@ -3,7 +3,7 @@ import Details from './Details'
 import {NavWrapWrapper} from './components/NavWrapWrapper';
 import RelatedItemsWrapper from "./components/RelatedItemsWrapper";
 
-export default class DetailsError extends Details {
+export default class DetailsError extends Details { //TODO-THEATRES use message theatre for this
     constructor({itemid=undefined, metaapi=undefined, message="Undefined error message"}={}) {
         super({ itemid, metaapi});
         this.message = message;

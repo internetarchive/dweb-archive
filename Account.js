@@ -1,6 +1,6 @@
 import React from './ReactFake';
 import Search from './Search';
-import {Tabby} from "@internetarchive/ia-components/dweb-index.js";
+import {ImageDweb, Tabby} from "@internetarchive/ia-components/dweb-index.js";
 import {NavWrapWrapper} from './components/NavWrapWrapper';
 import {AJS_on_dom_loaded} from "./Util";
 
@@ -151,7 +151,7 @@ export default class Account extends Search {
                                 <div class="col-xs-11 col-sm-2 welcome-left" style="text-align:center;">
                                     <div id="file-dropper-wrap">
                                         <div id="file-dropper"></div>
-                                        <img id="file-dropper-img" src={imagesrc} style="max-width:300px"/>
+                                        <ImageDweb id="file-dropper-img" source={imagesrc} style="max-width:300px"/>
                                     </div>
                                 </div>{/*--/.col-xs-11--*/}
                                 <div class="col-xs-1 col-sm-2 col-sm-push-8 welcome-right">

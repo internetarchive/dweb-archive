@@ -1,6 +1,6 @@
 const debug = require('debug')("BookReaderWrapper");
-import React from "../ReactFake";
-import IAFakeReactComponent from './IAFakeReactComponent';
+import React from "react";
+import IAReactComponent from './IAReactComponent';
 import RawBookReaderResponse from '@internetarchive/dweb-archivecontroller/RawBookReaderResponse';
 import {gatewayServer} from '@internetarchive/dweb-archivecontroller/Util'; // For gatewayServr
 
@@ -18,7 +18,7 @@ https://docs.google.com/presentation/d/1dhDAUjob6oSVWJsuShviW7qkiEou2RlJOsO5QIaE
 function getPage(index, reduce, rotate) {
     debug("gettingPage=%d scale=%d rotate=%O", index, reduce, rotate);
 }
-export default class BookReaderWrapper extends IAFakeReactComponent {
+class BookReaderWrapper extends IAReactComponent {
     /* Notes:
      assumption is that item has  .bookreader { data, brOptions, lendingInfo }
 
@@ -35,18 +35,17 @@ export default class BookReaderWrapper extends IAFakeReactComponent {
     */
     constructor(props) {
         super(props);
-        if (this.props.item) this.props.identifier = this.props.item.itemid;
+        this.state.identifier = this.props.item ? this.props.item.itemid : this.props.identifier;
     }
     loadcallable(enclosingElement) {
         const protocolServer = gatewayServer();
         const [ protocol, unused, serverPort] = protocolServer.split('/');
         const item = this.props.item;
-        const identifier = this.props.identifier;
         var options = {
             el: '#BookReader',
             mobileNavFullscreenOnly: true,
-            urlHistoryBasePath: `\/arc\/archive.org\/details\/${this.props.identifier}\/`,  // This is use when URL is rewritten to include page
-            resumeCookiePath: `\/arc\/archive.org\/details\/${this.props.identifier}`,
+            urlHistoryBasePath: `\/arc\/archive.org\/details\/${this.state.identifier}\/`,  // This is use when URL is rewritten to include page
+            resumeCookiePath: `\/arc\/archive.org\/details\/${this.state.identifier}`,
             urlMode: 'history',
             // Only reflect page onto the URL
             urlTrackedParams: ['page'],
@@ -55,7 +54,7 @@ export default class BookReaderWrapper extends IAFakeReactComponent {
             initialSearchTerm: null,
             imagesBaseURL: (DwebArchive.mirror ? protocolServer+"/archive/" : "https://archive.org/") + "bookreader/BookReader/images/", //TODO-BOOK support /archive/bookreader/BookReader/images on dweb.me
             onePage: {autofit: "auto"},
-            thumbnail:  (DwebArchive.mirror ? `//${serverPort}/arc/archive.org/` : "https://archive.org") + `download/${identifier}/page/cover_t.jpg`   // Unfortunately bookread.js appends protocol so we cant control it here
+            thumbnail:  (DwebArchive.mirror ? `//${serverPort}/arc/archive.org/` : "https://archive.org") + `download/${this.state.identifier}/page/cover_t.jpg`   // Unfortunately bookread.js appends protocol so we cant control it here
             // Note archive.org/download/xx/page/cover_t.jpg redirects to e.g.  https://ia601600.us.archive.org/BookReader/BookReaderPreview.php?id=xx&itemPath=%2F27%2Fitems%2Fxx&server=ia601600.us.archive.org&page=cover_t.jpg
             //getPageURI: xyzzy
         };
@@ -70,7 +69,7 @@ export default class BookReaderWrapper extends IAFakeReactComponent {
     render() { return (
         // Code as cut and paste from https://archive.org/details/unitednov65unit/page/n5 on 2019-02-24
         <div id="IABookReaderWrapper" ref={this.load}>
-            <div id="IABookReaderMessageWrapper" style="display:none;"></div>
+            <div id="IABookReaderMessageWrapper" style={{display: "none"}}></div>
             <div id="BookReader" className="BookReader"></div>
         </div> )
     }
@@ -91,3 +90,4 @@ export default class BookReaderWrapper extends IAFakeReactComponent {
     * In JSIA json are download links that go to //archive.org, rewrite those.
     * Does an OL query: https://openlibrary.org/query.json?type=/type/edition&*=&ocaid=unitednov65unit&callback=jQuery1102030322806165558847_1552068906756&_=1552068906757
 */
+export {BookReaderWrapper}

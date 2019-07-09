@@ -1,9 +1,8 @@
 import React from 'react';
-import ReactFake from '../ReactFake'; //TODO-GREY just temporary till have p_loadStream in ReactSupport
 import IAReactComponent from './IAReactComponent';
 import { CherModal } from './CherModal';
 import { BookReaderWrapper } from './BookReaderWrapper';
-import { Carousel, ImageDweb }  from '@internetarchive/ia-components/dweb-index.js';
+import { AnchorDownload, Carousel, ImageDweb }  from '@internetarchive/ia-components/dweb-index.js';
 import TheatreControls from "./TheatreControls";
 import { AudioDweb, VideoDweb } from "./AudioVideo";
 import {config} from "../Util";
@@ -23,7 +22,7 @@ class BookReaderTheatre extends IAReactComponent {
           <div className="row">
             <div className="xs-col-12">
               <TheatreControls identifier={this.props.identifier} mediatype={this.props.mediatype} />
-              <BookReaderWrap item={this.props.item} page={this.props.page} />
+              <BookReaderWrapper item={this.props.item} page={this.props.page} />
               <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
               <center style={{color:"white", marginBottom:"10px"}}>
               </center>
@@ -64,20 +63,9 @@ class AudioTrack extends IAReactComponent {
    *
    */
 
-  clickCallable(el) { //TODO can probably obsolete Nav.audioPlay (or similar name) and play in Audio.js
+  clickCallable(el) {
     // Note - this is redirected from Nav which is a global
     this.props.theatre.setState({trackPlaying: this.props.trackNumber});
-    /*
-    const af = this.props.source
-    // Remove old playing indicators - TODO React might not like this
-    document.getElementById("tracklist")
-      .querySelectorAll(".jwrowV2")
-      .forEach(el => el.classList.remove("playing"));
-    this.setState({playing: true})
-    //el.querySelectorAll(".jwrowV2").forEach(el => el.classList.add("playing"));
-    const elAudio = document.getElementById("streamContainer");
-    ReactFake.p_loadStream(elAudio, af, {name: af.metadata.name, preferredTransports: config.preferredAVtransports});//TODO-GREY move this to ReactSupport
-     */
     return false; // Dont follow link
   }
 
@@ -114,7 +102,7 @@ class AudioTheatre extends IAReactComponent {
           <div className="row">
             <div className="col-xs-12 col-sm-6 col-md-5 col-lg-4 audio-image-carousel-wrapper">
               <center>{/*--TODO-AUDIO replace image - see https://github.com/internetarchive/dweb-archive/issues/23--*/}
-                <ImageDweb source={this.props.imgsrc} className="img-responsive"/>{/*TODO-IAUX img.src interpreted in ReactFake - move to ImageDweb*/}
+                <ImageDweb source={this.props.imgsrc} className="img-responsive"/>
               </center>
             </div>
             <div className="col-xs-12 col-sm-6 col-md-7 col-lg-8">
@@ -182,6 +170,63 @@ class VideoTheatre extends IAReactComponent {
   ); }
 }
 
+
+class ImageTheatre extends IAReactComponent {
+
+  render() {
+    return ( //TODO compare this with Carousel.jsx
+      <div id="theatre-ia" className="container">
+        <div className="row">
+          <div className="xs-col-12">
+            <TheatreControls identifier={this.props.identifier} mediatype={this.props.mediatype}/>
+
+            <div className="details-carousel-wrapper">
+              <section
+                id="ia-carousel"
+                className="carousel slide"
+                data-ride="carousel"
+                data-interval="false"
+                aria-label="Item image slideshow"
+                style={{ maxHeight: '600px' }}
+              >
+                <ol className="carousel-indicators" style={{ display: 'none' }}>
+                  <li
+                    data-target="#ia-carousel"
+                    data-slide-to="0"
+                    className=" active"
+                    role="button"
+                    tabIndex="0"
+                    aria-label="Go to image 1"
+                  />
+                </ol>
+
+                <div className="carousel-inner">
+                  <div className="item active">
+                    <AnchorDownload
+                      className="carousel-image-wrapper"
+                      source={this.props.source}
+                      title="Open full sized image"
+                      target="_blank"
+                    >
+                      {/* --Separate window so dont break DWeb--*/}
+                      <ImageDweb className="rot0 carousel-image" source={this.props.source} id="streamContainer" src={this.props.src} alt={this.props.alt} />
+                    </AnchorDownload>
+                    <div className="carousel-caption">
+                      {this.props.caption}
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+            {/* Script tags moved into the JS*/}
+            <div id="webtorrentStats" style={{color: "white", textAlign: "center"}}></div>
+            <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
 class MessageTheatre extends IAReactComponent {
   // Props: title children
 
@@ -190,7 +235,7 @@ class MessageTheatre extends IAReactComponent {
       <div id="theatre-ia" className="container">
         <div className="row">
           <div className="xs-col-12">
-            <TheatreControls identifier={identifier} mediatype={metadata.mediatype}/>
+            <TheatreControls identifier={this.props.identifier} mediatype={metadata.mediatype}/>
             <div className="row" style={{color: "white"}}>
               <div className="col-md-10 col-md-offset-1 no-preview">
                 <p className="theatre-title">{this.props.title}</p>
@@ -203,4 +248,4 @@ class MessageTheatre extends IAReactComponent {
   ); }
 }
 
-export { BookReaderTheatre, CarouselTheatre, MessageTheatre, AudioTheatre, VideoTheatre }
+export { BookReaderTheatre, CarouselTheatre, MessageTheatre, AudioTheatre, ImageTheatre, VideoTheatre }

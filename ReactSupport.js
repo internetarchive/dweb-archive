@@ -12,6 +12,8 @@ import from2 from "from2";
 import RenderMedia from "render-media";
 import waterfall from "async/waterfall";
 import {gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
+import prettierBytes from "prettier-bytes";
+import throttle from "throttleit";
 const debug = require('debug')('dweb-archive:ReactSupport');
 
 /*
@@ -305,6 +307,128 @@ function transportStatusAndProps(cb) {
   })
 }
 
+async function _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) {
+  /*
+      Render item by passing a data structure with a stream creating function to the RenderMedia
+      See p_loadStream for arguments
+   */
+  const file = {
+    name: name,
+    createReadStream: await DwebTransports.p_f_createReadStream(urls, {preferredTransports})
+    // Return a function that returns a readable stream that provides the bytes between offsets "start" and "end" inclusive.
+    // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
+    // f_createReadStream can initiate the stream before returning the function.
+  };
+
+  // Enabled autoplay even though its being ignored - see https://github.com/internetarchive/dweb-archive/issues/41
+  RenderMedia.render(file, el, {autoplay: true}, cb);  // Render into supplied element, will set window.WEBTORRENT_TORRENT if uses WebTorrent
+
+  if (window.WEBTORRENT_FILE) {    //TODO-SW need to get status back from WebTorrent
+    const torrent = window.WEBTORRENT_TORRENT;
+    const torrentFile = window.WEBTORRENT_FILE;
+
+    const updateSpeed = () => {
+      if (window.WEBTORRENT_FILE === torrentFile) {    // Check still displaying ours
+        const webtorrentStats = document.querySelector('#webtorrentStats'); // Not moved into updateSpeed as not in document when this is run first time
+        if (webtorrentStats) {
+          const els = (
+            <span>
+                                <b>Peers:</b> {torrent.numPeers}{' '}
+              <b>Progress:</b> {Math.min(100 * torrentFile.progress, 100).toFixed(1)}%{' '}
+              <b>Download speed:</b> {prettierBytes(torrent.downloadSpeed)}/s{' '}
+              <b>Upload speed:</b> {prettierBytes(torrent.uploadSpeed)}/s
+                            </span>
+          );
+          deletechildren(webtorrentStats);
+          webtorrentStats.appendChild(els);
+        }
+      }
+    };
+
+    torrent.on('download', throttle(updateSpeed, 250));
+    torrent.on('upload', throttle(updateSpeed, 250));
+    setInterval(updateSpeed, 1000);
+    updateSpeed(); //Do it once
+  }
+}
+async function _p_loadStreamFetchAndBuffer(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) {
+  /*
+      Render item by fetching a buffer and passing to the RenderMedia
+      This is the worst choice, if can't handle as a stream
+      See p_loadStream for arguments
+   */
+  const buff = await DwebTransports.p_rawfetch(urls);  //Typically will be a Uint8Array, note that this is a fallback to http, only used if streams not available,
+  // currently not timing out which is probably OK since it should always be last choice.
+  const file = {
+    name: name,
+    createReadStream: function (opts) {
+      if (!opts) opts = {};
+      return from2([buff.slice(opts.start || 0, opts.end || (buff.length - 1))])
+    }
+  };
+  RenderMedia.render(file, el, cb);  // Render into supplied element
+}
+
+async function p_loadStream(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) { //CB version below
+  /*
+      More complex strategy. ....
+      If the Transports supports urls/createReadStream (webtorrent only at this point) then load it.
+      If its a HTTP URL use that
+      Dont try and use IPFS till get a fix for createReadStream
+
+      el: HTML element to load into (the video, img or audio tag)
+      urls:   relative or absolute url, array of url, or ArchiveFile i.e. flexible!
+      name:   Name of the stream - this is important to something, but I can't remember what
+      cb(err,el):     If present, will be passed to RenderMedia.render and called back on failure or when can play/view the element
+  */
+  try {
+    //TODO-MIRROR-ISSUE47 have resolveUrls use Transports.canonicalUrls, and special patterns for rel and rootrel (maybe array of patterns)...
+    //TODO-MIRROR-ISSUE47 ...and then p_resolveNames (or in here) should probably be where we decide these can go to the cache...
+    //TODO-MIRRROR-ISSUE47 ... or merge p_resolveUrls with p_resolveNames into a urls->urls function esp if this pattern reused ...
+    //TODO-MIRROR-ISSUE47 ... but needs to know whether to handle the cache URL as a stream URL or not ...
+    const urlsabs = await p_resolveUrls(urls); // [ url* ] where url is absolute (not root or directory relative)
+    const urlsresolved = await DwebTransports.p_resolveNames(urlsabs); // Allow names among urls
+    // Strategy here ...
+    // If serviceworker && webtorrent => video src=
+    // If can createReadStream (IPFS when fixed; webtorrent) => rendermedia
+    // If http => video src
+    // Default fetch as bytes and
+    if (urlsresolved.length) { // At least one url to try
+      let magneturl = urlsresolved.find(u => u.includes('magnet:'));
+      if ((DwebTransports.type === "ServiceWorker") && magneturl) {
+        el.src = magneturl.replace('magnet:', `${window.origin}/magnet/`);
+      } else {
+        const streamUrls = (await DwebTransports.p_urlsValidFor(urlsresolved, "createReadStream"));
+        if (streamUrls.length) {
+          await _p_loadStreamRenderMedia(el, streamUrls, {name, cb, preferredTransports})
+        } else {
+          // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
+          // TODO clean this nasty kludge up,
+          // Find a HTTP transport if connected, then ask it for the URL (as will probably be contenthash) note it leaves non contenthash urls untouched
+          // TODO if start seeing failures with wrong urls e.g. http://ipfs.io etc then may want to do a HEAD in p_httpfetchurl to check
+          const httpurl = await DwebTransports.p_httpfetchurl(urlsresolved);
+          if (httpurl) {
+            el.src = httpurl;
+          } else {
+            await _p_loadStreamFetchAndBuffer(el, urlsresolved, {name, cb, preferredTransports});
+          }
+        }
+      }
+    } else { // No urls
+      console.warn('ReactFake.p_loadStream didnt find any resolvable urls - cant load stream')
+    }
+  } catch(err) {
+    console.error("Uncaught error in p_loadStream",err);
+    throw err;
+  }
+}
+function loadStream(el, urls, opts = {}, cb) {
+  p_loadStream(el, urls, opts)
+  .then((res)=>{ try { cb(null,res)} catch(err) { debug("Uncaught error %O",err)}})
+    .catch((err) => cb(err)); // Unpromisify pattern v5-cbOnly
+}
+
+
 
 //Not exporting relativeurl as not used
-export { ReactConfig, resolveUrls, p_resolveUrls, thumbnailUrlsFrom, imgUrlOrStream, loadImg, transportStatusAndProps }
+export { ReactConfig, resolveUrls, p_resolveUrls, thumbnailUrlsFrom, imgUrlOrStream, loadImg, transportStatusAndProps, loadStream }

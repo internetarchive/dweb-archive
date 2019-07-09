@@ -1,7 +1,7 @@
 import React from './ReactFake';
 import Search from "./Search";
 import AnchorDetails from './components/AnchorDetailsFake'; // Have to use the Fake one as long as this is FakeReact
-import {Tabby} from "@internetarchive/ia-components/dweb-index.js";
+import {ImageDweb, Tabby} from "@internetarchive/ia-components/dweb-index.js";
 import {NavWrapWrapper} from './components/NavWrapWrapper';
 import {AnchorModalGo} from './components/ModalGoFake';
 import {AJS_on_dom_loaded} from "./Util";
@@ -149,6 +149,7 @@ export default class Collection extends Search {
         //TODO-DETAILS on prelinger, banner description is getting truncated.
         const description = !this.metadata.description ? undefined : this.preprocessDescription(this.metadata.description).replace(/(..\/)+..\//g, "../"); // Contains HTML (supposedly safe) inserted via innerHTML thing
         const imgsrc = this.thumbnailFile();
+        //TODO unclear why imgname isn't imgsrc.metadata.name
         const imgname = this.itemid + ".PNG";   // Required or rendermedia has difficulty knowing what to render since it doesnt take a mimetype
         return (
             <div className="welcome container container-ia width-max" style={{'backgroundColor':'white'}}>
@@ -157,7 +158,7 @@ export default class Collection extends Search {
                         <div className="col-xs-11 col-sm-10 welcome-left">
                             <div id="file-dropper-wrap">
                                 <div id="file-dropper"></div>
-                                <img id="file-dropper-img" className="img-responsive" style={{'maxWidth':"350px", margin:'0 10px 5px 0'}} imgname={imgname} src={imgsrc}/>
+                                <ImageDweb id="file-dropper-img" className="img-responsive" style={{'maxWidth':"350px", margin:'0 10px 5px 0'}} imgname={imgname} source={imgsrc}/>
                             </div>
                             <h1>{metadata.title}</h1>
                             <h4>{creator}</h4>
