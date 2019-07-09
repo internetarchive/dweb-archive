@@ -55,6 +55,7 @@ export default class Details extends ArchiveBase {
                 {(!this.itemid) ? null : // TODO-GREY DetailsAboutWrapper wants browser2archive which is calculated in NavWrapWrapper, when both in same react can do better
                   <DetailsAboutWrapper metadata={this.metadata} files={this.files} files_count={this.files_count}
                                        collection_titles={this.collection_titles}
+                                       reviews={this.reviews}
                                        description={this.preprocessDescription(this.metadata.description)}
                                        browser2archive={true} /> }
                 {(!this.itemid) ? null :
