@@ -9,7 +9,7 @@ Wrapper around DetailsAbout so that it can go back into IAUX and this can be cal
 This split is needed because Isa prefers not to have functionality like queries inside smaller components,
 but the Details.js.wrap doesnt rerender so need something inside that does.
  */
-export default class DetailsAboutWrapper extends IAReactComponent {
+class DetailsAboutWrapper extends IAReactComponent {
   constructor(props) { //browser2archive
     super(props); //  metadata description files files_count collection_titles reviews
     this.state.collection_titles = (typeof this.props.collection_titles === 'undefined') ? {} : this.props.collection_titles;
@@ -41,3 +41,4 @@ export default class DetailsAboutWrapper extends IAReactComponent {
     );
   }
 }
+export {DetailsAboutWrapper}

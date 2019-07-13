@@ -2,7 +2,10 @@ import React from 'react';
 import IAReactComponent from './IAReactComponent';
 import {gateway, gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
 import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageTheatre, VideoTheatre} from "./Theatres";
-
+import {transportStatusAndProps} from "../ReactSupport";
+import {NavWrap} from "@internetarchive/ia-components/dweb-index.js";
+import {DetailsAboutWrapper} from "./DetailsAboutWrapper";
+import RelatedItemsWrapper from './RelatedItemsWrapper';
 /**
  * A set of components that make up the Details Page
  * TODO - migrating stuff here from Details.js
@@ -16,6 +19,15 @@ import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageT
  *  page=
  * />
  */
+
+const mediatype2Schema = {
+  audio: "AudioObject",
+  etree: "AudioObject",
+  image: "VisualArtwork",
+  movies: "VideoObject",
+  texts: "TextDigitalDocument"
+}
+
 class DetailsIAWrap extends IAReactComponent {
   render() {
       // This is a combo wrap that handles multiple mediatypes
@@ -124,4 +136,76 @@ class DetailsIAWrap extends IAReactComponent {
         </div>
   ); }
 }
-export { DetailsIAWrap }
+
+class DetailsWork extends IAReactComponent {
+  /**
+   *  This is a working class for Details as its moved slowly into react.
+   *  TODO - obsolete this as it becomes <Details> 
+   *  <DetailsWork
+   *    identifier=IDENTIFIER
+   *    item=ARCHIVEFILE optional if not on Dweb
+   *    metadata= METADATA API ".metadata", munged to enforce contracts (i.e. .
+   *    files=[ArchiveFile] or [ METADATA API .files ]
+   *    subtype = STRING - result of this.subtype(), "carousel","bookreader" supported (mediatype:texts only)
+   *    poster=URL of image  (mediatype:movies,audio,etree only)
+   *    source=ArchiveFile (mediatype:image only)
+   *    files_count=INT (from metadata API)
+   *    reviews={} reviews section of metadata API
+   *    collection_titles=DICT mapping collection to title.
+   *    description=SANITIZED HTML from metadata.description
+   *    page=INT (mediatype:texts only)
+   *    playlist={}  Result of playlist call (/embed/IDENTIFIER?output=json)
+   *    noCache=BOOL if shouldnt use disk cache when reading (only used for Related Items TODO check if used from here down)
+   *    
+   */
+
+   constructor(props) {
+    super(props); //  item
+    // TODO-DWEBNAV need to tell Transports to set this status when changes
+    // TODO-IAUX as this component gets bundled into others, move the Wrapper up and note DetailsAboutWrapper needs these as well
+    transportStatusAndProps((err, res)=> { // { transportStatuses, mirror2gateway, browser2archive, directories }
+      if (!err) {
+        this.setState(res);
+      }
+    })
+  }
+
+  render() { return (
+            <div id="wrap" itemscope itemtype={"http://schema.org/"+mediatype2Schema[this.props.metadata.mediatype]}>
+                {/* Missing donate-banner and scripts & css before it */}
+                <NavWrap item={this.props.item} transportStatuses={this.state.transportStatuses} mirror2gateway={this.state.mirror2gateway}
+                  browser2archive={this.state.browser2archive} directories={this.state.directories} />
+                {/*--Begin page content --*/}
+                <div className="container container-ia">
+                    <a name="maincontent" id="maincontent"></a>
+                </div>{/*--//.container-ia--*/}
+                {/*This is the main-content*/}
+                <DetailsIAWrap
+                  identifier={this.props.identifier}
+                  creator={this.props.metadata.creator}
+                  name={this.props.metadata.name}
+                  item={this.props.item}
+                  title={this.props.metadata.title}
+                  mediatype={this.props.metadata.mediatype}
+                  poster={this.props.poster}
+                  subtype={this.props.subtype}
+                  playlist={this.props.playlist}
+                  source={this.props.source}
+                  files={this.props.files}
+                  page={this.props.page}
+                />
+                {(!this.props.identifier) ? null : // TODO-GREY DetailsAboutWrapper wants browser2archive which is calculated in NavWrapWrapper, when both in same react can do better
+                  <DetailsAboutWrapper metadata={this.props.metadata} files={this.props.files} files_count={this.props.files_count}
+                                       collection_titles={this.props.collection_titles}
+                                       reviews={this.props.reviews}
+                                       description={this.props.description}
+                                       browser2archive={this.state.browser2archive} /> }
+                {(!this.props.identifier) ? null :
+                    <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} /> }
+                {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
+                }
+            </div>
+  )}
+}
+
+export { DetailsIAWrap, DetailsWork }

@@ -15,14 +15,16 @@ import React from './ReactFake';
 // React requires className= rather than class=, ReactFake supports both
 
 import RelatedItemsWrapper from './components/RelatedItemsWrapper';
-import DetailsAboutWrapper from './components/DetailsAboutWrapper';
+import {DetailsAboutWrapper} from './components/DetailsAboutWrapper';
 import ArchiveBase from './ArchiveBase';
 import {AJS_on_dom_loaded} from "./Util";
 import {NavWrapWrapper} from './components/NavWrapWrapper';
 import { BookReaderTheatre, CarouselTheatre, MessageTheatre, AudioTheatre, VideoTheatre } from "./components/Theatres";
 import {ImageMainTheatre} from "@internetarchive/ia-components/dweb-index";
 import {gateway, gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
-import {DetailsIAWrap} from './components/DetailsPage';
+import {DetailsIAWrap, DetailsWork} from './components/DetailsPage';
+import IAFakeReactComponent from './components/IAFakeReactComponent';
+
 
 export default class Details extends ArchiveBase {
     constructor({itemid = undefined, metaapi = undefined, page=undefined, noCache=false}={}) {
@@ -40,61 +42,42 @@ export default class Details extends ArchiveBase {
     }
 
     // See almost identical DUPLICATEDCODE#004
-    wrap() {
+    wrap() { //TODO note cannot merge this into render until DetailsError has its own .render()
         /* Wrap the content up
         context: body wrap(
         content: (on image)  wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | RelatedItems  | TODO-ANALYTICS )
         returns: elements tree suitable for adding into another render
          */
-      const mediatype2Schema = {
-        audio: "AudioObject",
-        etree: "AudioObject",
-        image: "VisualArtwork",
-        movies: "VideoObject",
-        texts: "TextDigitalDocument"
-      }
 
       return (
-            <div id="wrap" itemscope itemtype={"http://schema.org/"+mediatype2Schema[this.metadata.mediatype]}>
-                {/* Missing donate-banner and scripts & css before it */}
-                <NavWrapWrapper item={this}/>
-                {/*--Begin page content --*/}
-                <div class="container container-ia">
-                    <a name="maincontent" id="maincontent"></a>
-                </div>{/*--//.container-ia--*/}
-                {/*This is the main-content*/}
-                <DetailsIAWrap
-                  identifier={this.itemid} creator={this.metadata.creator} name={this.metadata.name}
-                  item={this}
-                  title={this.metadata.title} mediatype={this.metadata.mediatype}
-                  poster={(["movies"].includes(this.metadata.mediatype))
-                    ? this.videoThumbnailFile().httpUrl()
-                    : (["audio", "etree"].includes(this.metadata.mediatype))
-                    ? this.thumbnailFile()
-                    : undefined }
-                  subtype={(["texts"].includes(this.metadata.mediatype)) ? this.subtype() : undefined}
-                  playlist={this.playlist}
-                  source={["image"].includes(this.metadata.mediatype) ?  this.playableFile("image") : undefined}
-                  files={this.files}
-                  page={this.page}
-                />
-                {(!this.itemid) ? null : // TODO-GREY DetailsAboutWrapper wants browser2archive which is calculated in NavWrapWrapper, when both in same react can do better
-                  <DetailsAboutWrapper metadata={this.metadata} files={this.files} files_count={this.files_count}
-                                       collection_titles={this.collection_titles}
-                                       reviews={this.reviews}
-                                       description={this.preprocessDescription(this.metadata.description)}
-                                       browser2archive={true} /> }
-                {(!this.itemid) ? null :
-                    <RelatedItemsWrapper identifier={this.itemid} item={this} noCache={this.noCache} /> }
-                {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
-                }
-            {/*--wrap--*/}</div>
+        <span>
+        <DetailsWork
+          item={this}
+          metadata={this.metadata}
+          files={this.files}
+          identifier={this.itemid}
+          subtype={this.metadata && (["texts"].includes(this.metadata.mediatype)) ? this.subtype() : undefined}
+          poster={(this.metadata && ["movies"].includes(this.metadata.mediatype))
+                   ? this.videoThumbnailFile().httpUrl()
+                   : (["audio", "etree"].includes(this.metadata.mediatype))
+                   ? this.thumbnailFile()
+                   : undefined }
+          source={this.metadata && ["image"].includes(this.metadata.mediatype) ?  this.playableFile("image") : undefined}
+          files_count={this.files_count}
+          reviews={this.reviews}
+          collection_titles={this.collection_titles}
+          description={this.metadata ? this.preprocessDescription(this.metadata.description) : undefined}
+          page={this.page}
+          noCache={this.noCache}
+          playlist={this.playlist}
+        />
+        </span>
         );
     }
 
 
-    archive_setup_push() {
-      if (["image"].includes(this.metadata.mediatype)) archive_setup.push(function() {
+    archive_setup_push() { //TODO merge this into the archive_setup_push inside <DetailsWork> or something it loads
+      if (this.metadata && ["image"].includes(this.metadata.mediatype)) archive_setup.push(function() {
         AJS.theatresize();
         AJS.carouselsize('#ia-carousel', true);
       })
@@ -105,7 +88,7 @@ export default class Details extends ArchiveBase {
                 AJS.also_found_throttler = setTimeout(AJS.tilebars, 250)
             });
         });
-      if (["texts"].includes(this.metadata.mediatype)) archive_setup.push(function() {
+      if (this.metadata && ["texts"].includes(this.metadata.mediatype)) archive_setup.push(function() {
         AJS.booksize();
       })
     }
