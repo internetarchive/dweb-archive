@@ -13,6 +13,7 @@ TODO needs date in form probably like new Date().toLocaleDateString('en-GB',{day
 
 export default class DownloadDirectory extends Details {
   //TODO-IAUX good candidate for next component
+  //TODO-GREY this needs to set browser2archive once its a React Component
     wrap() {
         /* Wrap the content up
         context: body wrap(
@@ -30,6 +31,7 @@ export default class DownloadDirectory extends Details {
             </div>{/*--//.container-ia--*/}
             {/*This is the main-content*/}
             <DownloadDirectoryDiv identifier={this.itemid}
+                                  browser2archive={true}
                                files={this.files.map(f => { return {name: f.metadata.name, size: f.sizePretty()}})} />
             {(!identifier) ? null :
               <RelatedItemsWrapper identifier={identifier} item={this} noCache={this.noCache} /> }

@@ -33,14 +33,14 @@ class BookReaderTheatre extends IAReactComponent {
   }
 }
 class CarouselTheatre extends IAReactComponent {
-  // Props: identifier, slides, creator, mediatype, title
+  // Props: identifier, slides, creator, mediatype, title browser2archive
   render() {
     return (
         <div id="theatre-ia" className="container">
           <div className="row">
             <div className="xs-col-12">
               <div id="theatre-controls"></div>
-              <Carousel identifier={this.props.identifier} slides={this.props.slides}/>
+              <Carousel identifier={this.props.identifier} slides={this.props.slides} browser2archive={this.props.browser2archive}/>
               <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
               <center style={{color:"white", marginBottom: "10px"}}>
               </center>
@@ -207,6 +207,7 @@ class ImageTheatre extends IAReactComponent {
                       source={this.props.source}
                       title="Open full sized image"
                       target="_blank"
+                      browser2archive={this.props.browser2archive}
                     >
                       {/* --Separate window so dont break DWeb--*/}
                       <ImageDweb className="rot0 carousel-image" source={this.props.source} id="streamContainer" src={this.props.src} alt={this.props.alt} />

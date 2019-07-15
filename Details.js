@@ -14,15 +14,9 @@ import React from './ReactFake';
 // React requires style={{display: none}} ReactFake can also handle quoted style="display: none"
 // React requires className= rather than class=, ReactFake supports both
 
-import RelatedItemsWrapper from './components/RelatedItemsWrapper';
-import {DetailsAboutWrapper} from './components/DetailsAboutWrapper';
 import ArchiveBase from './ArchiveBase';
 import {AJS_on_dom_loaded} from "./Util";
-import {NavWrapWrapper} from './components/NavWrapWrapper';
-import { BookReaderTheatre, CarouselTheatre, MessageTheatre, AudioTheatre, VideoTheatre } from "./components/Theatres";
-import {ImageMainTheatre} from "@internetarchive/ia-components/dweb-index";
-import {gateway, gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
-import {DetailsIAWrap, DetailsWork} from './components/DetailsPage';
+import {DetailsWork} from './components/DetailsPage';
 import IAFakeReactComponent from './components/IAFakeReactComponent';
 
 

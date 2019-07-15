@@ -33,10 +33,13 @@ class BookReaderWrapper extends IAReactComponent {
         page: PropType.string, // e.g. 1 or n5
     };
     */
+
     constructor(props) {
         super(props);
         this.state.identifier = this.props.item ? this.props.item.itemid : this.props.identifier;
     }
+    //TODO - this could be in the constructor (but watch the potential race between rendering and JSIAinit)
+    // and BookReaderWrapper could also be merged into BookReaderTheatre
     loadcallable(enclosingElement) {
         const protocolServer = gatewayServer();
         const [ protocol, unused, serverPort] = protocolServer.split('/');

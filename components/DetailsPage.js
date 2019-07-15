@@ -1,11 +1,11 @@
 import React from 'react';
 import IAReactComponent from './IAReactComponent';
-import {gateway, gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
+import {gateway, gatewayServer, ObjectMap} from "@internetarchive/dweb-archivecontroller/Util";
 import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageTheatre, VideoTheatre} from "./Theatres";
 import {transportStatusAndProps} from "../ReactSupport";
-import {NavWrap} from "@internetarchive/ia-components/dweb-index.js";
-import {DetailsAboutWrapper} from "./DetailsAboutWrapper";
+import {NavWrap, DetailsAbout} from "@internetarchive/ia-components/dweb-index.js";
 import RelatedItemsWrapper from './RelatedItemsWrapper';
+import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 /**
  * A set of components that make up the Details Page
  * TODO - migrating stuff here from Details.js
@@ -87,6 +87,7 @@ class DetailsIAWrap extends IAReactComponent {
               creator={this.props.creator}
               mediatype={this.props.mediatype}
               title={this.props.title}
+              browser2archive={this.props.browser2archive}
             />
             : (["texts"].includes(this.props.mediatype) && (this.props.subtype === "bookreader"))
             ? <BookReaderTheatre
@@ -106,7 +107,8 @@ class DetailsIAWrap extends IAReactComponent {
               identifier={this.props.identifier}
               mediatype={this.props.mediatype}
               creator={this.props.creator}
-              title={this.props.title}/>
+              title={this.props.title}
+              browser2archive={this.props.browser2archive}/>
             : (["audio","etree"].includes(this.props.mediatype))
             ?
             <AudioTheatre
@@ -162,12 +164,25 @@ class DetailsWork extends IAReactComponent {
    constructor(props) {
     super(props); //  item
     // TODO-DWEBNAV need to tell Transports to set this status when changes
-    // TODO-IAUX as this component gets bundled into others, move the Wrapper up and note DetailsAboutWrapper needs these as well
+    this.state.expansionTried = false;
+    // Find out what the status is, it informs the UI in several places especially disabling functions when offline
     transportStatusAndProps((err, res)=> { // { transportStatuses, mirror2gateway, browser2archive, directories }
       if (!err) {
-        this.setState(res);
+        this.setState(res); // Cause a rerender of Navbar and possible grey in/out UI
       }
     })
+    // Note this was in DetailsAboutWrapper.loadable, but cant see why it shouldnt be in constructor
+    // expand a list of collections into a list of titles either through collection_titles if supplied (e.g. from dweb gateway) or via a new Search query
+    const {collection} = this.props.metadata;
+    this.state.collection_titles = (typeof this.props.collection_titles === 'undefined') ? {} : this.props.collection_titles;
+    if (!this.state.expansionTried) {
+      // Note Aaron said - 2019-07-12 that should fix it so collection0title provided with metadata which may eliminate need for this
+      this.state.expansionTried = true;
+      ArchiveMember.expand(collection.filter(k => !this.state.collection_titles[k]), (err, res) => { // res = { id: AS(id) }
+        const collection_titles = Object.assign({}, this.state.collection_titles, ObjectMap(res, (k, v) => [k, v.title]));
+        this.setState({ collection_titles }); // Cause a rerender
+      });
+    }
   }
 
   render() { return (
@@ -193,10 +208,11 @@ class DetailsWork extends IAReactComponent {
                   source={this.props.source}
                   files={this.props.files}
                   page={this.props.page}
+                  browser2archive={this.state.browser2archive}
                 />
-                {(!this.props.identifier) ? null : // TODO-GREY DetailsAboutWrapper wants browser2archive which is calculated in NavWrapWrapper, when both in same react can do better
-                  <DetailsAboutWrapper metadata={this.props.metadata} files={this.props.files} files_count={this.props.files_count}
-                                       collection_titles={this.props.collection_titles}
+                {(!this.props.identifier) ? null :
+                  <DetailsAbout metadata={this.props.metadata} files={this.props.files} files_count={this.props.files_count}
+                                       collection_titles={this.state.collection_titles}
                                        reviews={this.props.reviews}
                                        description={this.props.description}
                                        browser2archive={this.state.browser2archive} /> }
