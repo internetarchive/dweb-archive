@@ -24,7 +24,7 @@ export default class NavWrapWrapper extends IAReactComponent {
     // TODO-DWEBNAV need to tell Transports to set this status when changes
     // TODO-IAUX as this component gets bundled into others, move the Wrapper up and note DetailsAboutWrapper needs these as well
     // Eventually obsolete it
-    transportStatusAndProps((err, res)=> { // { transportStatuses, mirror2gateway, browser2archive, diretories }
+    transportStatusAndProps((err, res)=> { // { transportStatuses, mirror2gateway, disconnected, diretories }
       if (!err) {
         this.setState(res);
       }
@@ -37,7 +37,7 @@ export default class NavWrapWrapper extends IAReactComponent {
       <NavWrap item={this.props.item}
                transportStatuses={this.state.transportStatuses}
                mirror2gateway={this.state.mirror2gateway}
-               browser2archive={this.state.browser2archive}
+               disconnected={this.state.disconnected}
       />
       <SaveModal identifier={this.props.item.itemid} directories={this.state.directories} />
       </>

@@ -299,7 +299,7 @@ function transportStatusAndProps(cb) {
       const httpstatus = info.transportStatuses.find(s=> s.name==='HTTP');
       cb(null, {
         mirror2gateway: DwebArchive.mirror && httpstatus && (httpstatus.status === 0), // Can mirror see gateway
-        browser2archive: DwebArchive.mirror && httpstatus && (httpstatus.status === 0), //TODO may be more nuanced but prob same as above
+        disconnected: !(DwebArchive.mirror && httpstatus && (httpstatus.status === 0)), //TODO may be more nuanced but prob same as above
         transportStatuses: info.transportStatuses,  // Now set to those of Mirror
         directories: info.directories // For save modal
       });

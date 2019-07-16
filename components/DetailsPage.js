@@ -87,7 +87,7 @@ class DetailsIAWrap extends IAReactComponent {
               creator={this.props.creator}
               mediatype={this.props.mediatype}
               title={this.props.title}
-              browser2archive={this.props.browser2archive}
+              disconnected={this.props.disconnected}
             />
             : (["texts"].includes(this.props.mediatype) && (this.props.subtype === "bookreader"))
             ? <BookReaderTheatre
@@ -108,7 +108,7 @@ class DetailsIAWrap extends IAReactComponent {
               mediatype={this.props.mediatype}
               creator={this.props.creator}
               title={this.props.title}
-              browser2archive={this.props.browser2archive}/>
+              disconnected={this.props.disconnected}/>
             : (["audio","etree"].includes(this.props.mediatype))
             ?
             <AudioTheatre
@@ -158,6 +158,7 @@ class DetailsWork extends IAReactComponent {
    *    page=INT (mediatype:texts only)
    *    playlist={}  Result of playlist call (/embed/IDENTIFIER?output=json)
    *    noCache=BOOL if shouldnt use disk cache when reading (only used for Related Items TODO check if used from here down)
+   *    disconnected=BOOL true if browser cant see archive.org (or dweb.archive.org)
    *    
    */
 
@@ -166,7 +167,7 @@ class DetailsWork extends IAReactComponent {
     // TODO-DWEBNAV need to tell Transports to set this status when changes
     this.state.expansionTried = false;
     // Find out what the status is, it informs the UI in several places especially disabling functions when offline
-    transportStatusAndProps((err, res)=> { // { transportStatuses, mirror2gateway, browser2archive, directories }
+    transportStatusAndProps((err, res)=> { // { transportStatuses, mirror2gateway, disconnected, directories }
       if (!err) {
         this.setState(res); // Cause a rerender of Navbar and possible grey in/out UI
       }
@@ -189,7 +190,7 @@ class DetailsWork extends IAReactComponent {
             <div id="wrap" itemscope itemtype={"http://schema.org/"+mediatype2Schema[this.props.metadata.mediatype]}>
                 {/* Missing donate-banner and scripts & css before it */}
                 <NavWrap item={this.props.item} transportStatuses={this.state.transportStatuses} mirror2gateway={this.state.mirror2gateway}
-                  browser2archive={this.state.browser2archive} directories={this.state.directories} />
+                         disconnected={this.state.disconnected} directories={this.state.directories} />
                 {/*--Begin page content --*/}
                 <div className="container container-ia">
                     <a name="maincontent" id="maincontent"></a>
@@ -208,14 +209,14 @@ class DetailsWork extends IAReactComponent {
                   source={this.props.source}
                   files={this.props.files}
                   page={this.props.page}
-                  browser2archive={this.state.browser2archive}
+                  disconnected={this.state.disconnected}
                 />
                 {(!this.props.identifier) ? null :
                   <DetailsAbout metadata={this.props.metadata} files={this.props.files} files_count={this.props.files_count}
                                        collection_titles={this.state.collection_titles}
                                        reviews={this.props.reviews}
                                        description={this.props.description}
-                                       browser2archive={this.state.browser2archive} /> }
+                                       disconnected={this.state.disconnected} /> }
                 {(!this.props.identifier) ? null :
                     <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} /> }
                 {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
