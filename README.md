@@ -135,6 +135,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.85: Support canSave, disconnected; Componentize Search
 * v0.1.84: Grey - AnchorDownload / DownloadOptions
 * v0.1.83: Componentisation in Details and Collections
 * v0.1.82: Yarn upgrade; browser2archive flag; multivalue transport=; url history fix; carousel; sort on search; componentize chermodal and theatres; save button;
