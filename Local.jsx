@@ -3,12 +3,12 @@
 // Other internetarchive repos
 // This repo
 import React from "./ReactFake";
-import Collection from "./Collection";
 import {LocalItem} from "./components/mirror/LocalComponent";
 import {AJS_on_dom_loaded} from "./Util";
+import Search from './Search';
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 
-export default class Local extends Collection {
+export default class Local extends Search {
 
   render(destn) { // See other almost DUPLICATEDCODE#002
     var els = ( // Wrap ReactComponent in FakeReact

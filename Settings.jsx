@@ -2,13 +2,13 @@
 //const debug = require('debug')('Settings');
 // This repo
 import React from "./ReactFake";
-import Collection from "./Collection";
+import Search from "./Search";
 import {SettingsItem} from "./components/mirror/SettingsComponent";
 import {AJS_on_dom_loaded} from "./Util";
 
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 
-export default class Settings extends Collection {
+export default class Settings extends Search {
 
   render(destn) { // See other almost DUPLICATEDCODE#002
     var els = ( // Wrap ReactComponent in FakeReact

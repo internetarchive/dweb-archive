@@ -9,7 +9,6 @@ import React from './ReactFake';
 import Search from './Search';
 import Details from './Details';
 import Home from './Home';
-import Collection from './Collection';
 import Local from './Local'; //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 import Settings from './Settings'; //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 import Account from './Account';
@@ -221,7 +220,7 @@ export default class Nav {
       case "movies":
           return new Details({itemid, metaapi, page, noCache});
       case "collection":
-        return await new Collection({itemid, metaapi, noCache}).fetch({noCache});   //fetch will do search
+        return await new Search({itemid, metaapi, noCache}).fetch({noCache});   //fetch will do search
       case "account":
         return (await new Account({itemid, metaapi}).fetch({noCache}));
       default:

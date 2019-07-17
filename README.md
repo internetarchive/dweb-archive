@@ -92,8 +92,7 @@ Build (webpack) the bundles and copy needed files to dist/
             * DownloadsDirectory - for displaying the list of files in an item
             * Image - display an image item
             * Texts - display a Text item (TODO works - but not decentralized)
-        * Search - display a search page like archive.org/search.php?query=foo
-            * Collection - display a Collection item
+        * Search - display a search page like archive.org/search.php?query=foo, also handles mediatype="collection"
             * Home - archive home page, acts like a search
         * DetailsError - display a line of text as an error
 * Nav - common class for navigation structures (mostly at the top of the page) also maps item types to classes
@@ -127,7 +126,7 @@ For a *Search/Colletion/Home* the structure is slightly different
     * Nav.navwrap - navigation as for Details
     * banner - appear above tiles
     * <SearchRowColumnsItems> - loops over results displaying Tiles
-    * About & Forum tabs (for Collection only)
+    * About & Forum tabs (for collections only)
 
 
 ## See also

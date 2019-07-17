@@ -5,9 +5,10 @@ import {NavWrap, ScrollableTileGrid, SearchSwitcher} from "@internetarchive/ia-c
 import {NavWrapWrapper} from "./NavWrapWrapper";
 import {SaveModal} from "./SaveModal";
 import {transportStatusAndProps} from "../ReactSupport";
+import {CherModal} from "./CherModal";
 
 /**
- * A collection of components used on the related Search, Collection and Account pages
+ * A collection of components used on the related Search and Account pages
  */
 
 
@@ -39,6 +40,7 @@ class CollectionBanner extends IAReactComponent {
    * <CollectionBanner
    *  identifier=this.itemid
    *  imgsrc = this.thumbnailFile()
+   *  title=STRING
    *  description =STRING   Note this should have been preprocessed to concatenate any arrays, sanitize the HTML and replace any relative URI's which wont work.
    *    !this.metadata.description ? undefined : this.preprocessDescription(this.metadata.description).replace(/(..\/)+..\//g, "../"); // Contains HTML (supposedly safe) inserted via innerHTML thing
    *  creator=this.metadata.creator title=this.metadata.title   From the metadata API
@@ -47,9 +49,6 @@ class CollectionBanner extends IAReactComponent {
    */
     //TODO-DETAILS on prelinger, banner description is getting truncated.
   render () {
-        //TODO-DETAILS probably merge this with Banner on Search page and trigger based on presence of "metadata.identifier" (which is missing for Searches.)
-        //console.assert(!this.isDark && this.metadata) // Will be metadata.mediatype=collection
-        const metadata = this.metadata;
         // Preprocess creator because JSX doesnt have a good equivalent of join()
         // I'm not sure of an example case where the creator matches the title like this, but suspect there is one :-)
         const creator = (this.props.creator  &&  (this.props.creator.join(', ') != this.props.title) ? this.props.creator.join(', ') : '');
@@ -71,7 +70,7 @@ class CollectionBanner extends IAReactComponent {
                             <AnchorModalGo className="stealth" opts={{ignore_lnk:1,shown:AJS.embed_codes_adjust}}
                                data-target="#cher-modal"><span className="iconochive-share"  aria-hidden="true"></span><span className="sr-only">share</span><span className="hidden-xs-span"> Share</span></AnchorModalGo><br/>
                            <BookmarkButton
-                            url={`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=collection&amp;identifier=${this.itemid}&amp;title=${this.metadata.title}`}
+                            url={`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=collection&amp;identifier=${this.itemid}&amp;title=${this.props.title}`}
                             disconnected={this.props.disconnected}
                            />
                             {/*TODO-LOGIN /editxml isn't going to wrk - we aren't logged in. and its an absolute URL
@@ -95,7 +94,7 @@ class CollectionBanner extends IAReactComponent {
 }
 class CollectionTabby extends IAReactComponent {
   /**
-   * Set of Tabs associated with Collection
+   * Set of Tabs associated with Collections
    *
    * <CollectionTabby
    *  identifier = IDENTIFIER
@@ -365,9 +364,8 @@ class SearchWrap extends IAReactComponent {
    * <SearchWrap
    *    item=this
    * />
-   * TODO-GREY replace NavWrapWrapper with NavWrap and move functionality here then can connct disconnected to that
    */
-  constructor(props) {
+  constructor(props) { //SEE-IDENTICAL-CODE-STATUSES
     super(props); //  item
     // TODO-DWEBNAV need to tell Transports to set this status when changes
     transportStatusAndProps((err, res)=> { // { transportStatuses, mirror2gateway, disconnected, diretories }
@@ -403,7 +401,64 @@ class SearchWrap extends IAReactComponent {
     );
   }
 }
+class CollectionWrap extends IAReactComponent {
+  /**
+   * <CollectionWrap
+   *    item=this
+   * />
+   */
+  constructor(props) { //SEE-IDENTICAL-CODE-STATUSES
+    super(props); //  item
+    // TODO-DWEBNAV need to tell Transports to set this status when changes
+    transportStatusAndProps((err, res) => { // { transportStatuses, mirror2gateway, disconnected, diretories }
+      if (!err) {
+        this.setState(res); // disconnected etc
+      }
+    })
+  }
+
+  render() {
+    /* Wrap the content up: wrap ( TODO-aside; navwrap; #maincontent; welcome; cher-modal; container-tabby-collection-row (TODO-columns-facets; columns-items) (tabby-about; tabby-form)
+    returns:      elements tree suitable for adding into another render
+     */
+    //Note both description & rights need dangerousHTML and \n -> <br/>
+    //TODO-GREY when move this into react replace disconnected={true} with this.prop|state.disconnected
+    const item = this.props.item;
+    console.assert(!item.isDark) // Will be mediatype=collection so not isDark
+    return (
+      <div id="wrap">
+        {/*TODO needs "aside" */}
+        <NavWrapWrapper item={item} canSave={true}/>
+        <div className="container container-ia">
+          <a name="maincontent" id="maincontent"></a>
+        </div>
+        <CollectionBanner
+          identifier={item.itemid}
+          imgsrc={item.thumbnailFile()}
+          description={!item.metadata.description ? undefined : item.preprocessDescription(item.metadata.description).replace(/(..\/)+..\//g, "../")}
+          creator={item.metadata.creator}
+          title={item.metadata.title}
+          disconnected={this.state.disconnected}
+        />
+        <CherModal identifier={item.itemid} creator={item.metadata.creator} mediatype={item.metadata.mediatype}
+                   title={item.metadata.title}/>
+        <div className="container container-ia nopad">
+          <div id="tabby-collection" className="tabby-data in">
+            <SearchRowColumnsItems item={item}/>
+          </div>
+        </div>
+        {/*TODO take a closer look at scripts on originals/prelinger lines 7360-7399*/}
+        {/*--TODO-ANALYTICS is missing --*/}
+        <CollectionTabby
+          identifier={item.itemid}
+          description={item.preprocessDescription(item.metadata.description)}
+          rights={item.preprocessDescription(item.metadata.rights)}
+        />
+      </div>
+    );
+  }
+}
 
 
 
-export { CollectionBanner, CollectionTabby, SearchBanner, SearchSortBar, SearchRowColumnsItems, SearchWrap }
+export { CollectionBanner, CollectionTabby, CollectionWrap, SearchBanner, SearchSortBar, SearchRowColumnsItems, SearchWrap }

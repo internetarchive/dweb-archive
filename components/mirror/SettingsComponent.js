@@ -153,7 +153,7 @@ class SettingsItem extends IAReactComponent {
         <div className="container container-ia">
           <a name="maincontent" id="maincontent"></a>
         </div>
-        {/*Replaces banner() in Collection and Search) */}
+        {/*Replaces banner() in Search) */}
         <CommonWelcomeComponent
           title="Settings"
           byline={"on " + gatewayServer()}

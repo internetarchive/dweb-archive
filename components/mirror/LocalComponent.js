@@ -32,7 +32,7 @@ class LocalGridRowComponent extends IAReactComponent {
   }
 
   render() {
-    // Build a grid of tiles like in Collection but doesnt have the "More" scrolling feature
+    // Build a grid of tiles like in Collection/Search but doesnt have the "More" scrolling feature
     return (!this.props.members.length)
         ? <span>Loading ...</span>
         :
@@ -104,7 +104,7 @@ class LocalItem extends IAReactComponent {
         <div className="container container-ia">
           <a name="maincontent" id="maincontent"></a>
         </div>
-        {/*Replaces banner() in Collection and Search) */}
+        {/*Replaces banner() in Search) */}
         <CommonWelcomeComponent
           title="Resources"
           byline={"crawled by " + gatewayServer()}
@@ -112,7 +112,7 @@ class LocalItem extends IAReactComponent {
         />
         <div className="container container-ia nopad">
           <div id="tabby-collection" className="tabby-data in">
-            {/*Replaces SearchRowColumnsItems in Search (used by Account & Collection)*/}
+            {/*Replaces SearchRowColumnsItems in Search (used by Account)*/}
             <LocalGridRowComponent members={this.state.members}/>
           </div>
         </div>

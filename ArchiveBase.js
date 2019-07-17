@@ -11,14 +11,10 @@ export default class ArchiveBase extends ArchiveItem {
     /*
     Base class for Archive UI application - base of Details = which includes single element items and Search which includes both searches and collections (which are actually items).
     ArchiveBase
-    - Details
-    - - AV
-    - - Image
-    - - Text
+    - Details (also handles AV, Image, Text)
     - - Software (not implemented)
-    - Search
+    - Search (also handles Collection)
     - - Home
-    - - Collection
     Nav - knows about all the classes (includes factory() but doesnt subclass them
     Util - just some utility functions
     Tile - elements on a Search - each is a ArchiveMember
@@ -26,9 +22,8 @@ export default class ArchiveBase extends ArchiveItem {
 
     Fields:
     item    Metadata for item, undefined for a search.
-    items   Metadata for items found if the item is a Collection,
     itemtype    Schema.org for this eg. "http://schema.org/TextDigitalDocument"
-    query   query part of search to run (Search|Collection|Home only)
+    query   query part of search to run (Search/collection|Home only)
      */
     constructor({itemid = undefined, metaapi = undefined, sort=undefined}={}) {
         super({itemid, metaapi, sort});
