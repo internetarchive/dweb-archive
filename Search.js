@@ -1,10 +1,15 @@
 import React from './ReactFake';
 import { stringify } from '@stratumn/canonicaljson';
 // Other Archive Repos
+import {homeQuery} from '@internetarchive/dweb-archivecontroller/Util';
 // This repo
 import ArchiveBase from './ArchiveBase';
-import {AJS_on_dom_loaded} from "./Util";
+import { AJS_on_dom_loaded } from "./Util";
 import { SearchWrap, CollectionWrap } from "./components/SearchPage";
+import { LocalItem } from "./components/mirror/LocalComponent";
+import { SettingsItem } from "./components/mirror/SettingsComponent";
+import { AccountWrap } from "./Account.js";
+
 
 /* Section to ensure node and browser able to use Headers, Request and Fetch */
 
@@ -62,14 +67,21 @@ export default class Search extends ArchiveBase {
          */
         // Note also used by Home, but not by Account
         const mediatype = this.metadata ? this.metadata.mediatype : "search";
+        const identifier = this.itemid;
         return (
-          <span>
+          <div id='wrap'>
             {(mediatype === "collection")
               ? <CollectionWrap item={this}/>
+              : (mediatype === "account")
+              ? <AccountWrap item={this}/>
+              : (identifier === "local")
+              ? <LocalItem item={this}/>
+              : (identifier === "settings")
+              ? <SettingsItem item={this}/>
               : <SearchWrap item={this}/>
             }
-          </span>
-        ); // Span is temporary to keep ReactFake happy
+          </div>
+        ); // div is here to keep ReactFake happy
     }
 
     archive_setup_push() { // run in render
@@ -94,4 +106,3 @@ export default class Search extends ArchiveBase {
         });
     }
 }
-

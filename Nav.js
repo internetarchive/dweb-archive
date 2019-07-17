@@ -1,6 +1,8 @@
 //import ReactDOM from "react-dom";
 
 // noinspection JSUnresolvedFunction
+import {homeQuery} from "@internetarchive/dweb-archivecontroller/Util";
+
 const canonicaljson = require('@stratumn/canonicaljson');
 
 // https://ponyfoo.com/articles/universal-react-babel
@@ -8,10 +10,6 @@ const canonicaljson = require('@stratumn/canonicaljson');
 import React from './ReactFake';
 import Search from './Search';
 import Details from './Details';
-import Home from './Home';
-import Local from './Local'; //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
-import Settings from './Settings'; //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
-import Account from './Account';
 import DetailsError from './DetailsError'; //TODO-THEATRES use message theatre for this
 import DownloadDirectory from './DownloadDirectory';
 import {ObjectFilter} from '@internetarchive/dweb-archivecontroller/Util.js';
@@ -167,14 +165,14 @@ export default class Nav {
       const semiTitle = DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive";
       if (!identifier || (identifier === "home")) {
         document.title = `Home : ${semiTitle}`; //TODO-IAUX when consolidated, this could be done in NavWeb component or even higher
-        (await new Home({itemid: "home"}).fetch({noCache})).render(destn);
+        (await new Search({itemid: "home", query: homeQuery, sort: '-downloads'}).fetch({noCache})).render(destn);
         /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
       } else if (identifier === "local") { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
         document.title = `Local : ${semiTitle}`;
-        (await new Local({itemid: identifier, metaapi: {}})).render(destn);
+        (await new Search({itemid: identifier, metaapi: {}})).render(destn);
       } else if (identifier === "settings") { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
         document.title = `Settings : ${semiTitle}`;
-        (await new Settings({itemid: identifier, metaapi: {}})).render(destn);
+        (await new Search({itemid: identifier, metaapi: {}})).render(destn);
       } else {
         //TODO edit this to make function like fetch_metadata but as a static function that can be used without creating temporary details item "d"
         let d = await new Details({itemid: identifier}).fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
@@ -222,7 +220,7 @@ export default class Nav {
       case "collection":
         return await new Search({itemid, metaapi, noCache}).fetch({noCache});   //fetch will do search
       case "account":
-        return (await new Account({itemid, metaapi}).fetch({noCache}));
+        return (await new Search({itemid, metaapi, query: `uploader:"${metaapi.uploader}"`, sort: '-publicdate'}).fetch({noCache}));
       default:
         //TODO Not yet supporting software, zotero (0 items); data; web
         return new DetailsError({itemid, message: `Unsupported mediatype: ${metaapi.metadata.mediatype}`}); //TODO-THEATRES use a message theatre instead of DetailsError -a) just call Details, b) pass message to Details to MessageTheatre

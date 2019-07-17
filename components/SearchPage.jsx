@@ -21,16 +21,14 @@ class BookmarkButton extends IAReactComponent {
   render() {
     return (
       this.props.disconnected ? null :
-        <div id="search-actions" className="col-sm-2 col-md-2 col-lg-2">
-            <span className="iconochive-share" aria-hidden="true"></span><span
-          className="sr-only">share</span> Share<br/>
-            <AnchorModalGo className="stealth"
-                           href={this.props.URL}
-                           opts={{favorite: 1}}
-                           data-target="#confirm-modal"><span className="iconochive-favorite"
-                                                              aria-hidden="true"></span><span
-              className="sr-only">favorite</span> Favorite</AnchorModalGo><br/>
-        </div>
+        <>
+          <AnchorModalGo className="stealth"
+                         href={this.props.URL}
+                         opts={{favorite: 1}}
+                         data-target="#confirm-modal"><span className="iconochive-favorite"
+                                                            aria-hidden="true"></span><span
+            className="sr-only">favorite</span> Favorite</AnchorModalGo><br/>
+        </>
     )
   }
 }
@@ -378,7 +376,7 @@ class SearchWrap extends IAReactComponent {
   render() {
     const identifier = this.props.item.itemid;  // May be undefined
     return (
-      <div id="wrap">
+      <>
         <NavWrap item={this.props.item}
                  transportStatuses={this.state.transportStatuses}
                  mirror2gateway={this.state.mirror2gateway}
@@ -397,7 +395,7 @@ class SearchWrap extends IAReactComponent {
           <SearchRowColumnsItems item={this.props.item}/>
         </div>
         {/*--TODO-ANALYTiCS is missing --*/}
-      </div>
+      </>
     );
   }
 }
@@ -426,7 +424,7 @@ class CollectionWrap extends IAReactComponent {
     const item = this.props.item;
     console.assert(!item.isDark) // Will be mediatype=collection so not isDark
     return (
-      <div id="wrap">
+      <>
         {/*TODO needs "aside" */}
         <NavWrapWrapper item={item} canSave={true}/>
         <div className="container container-ia">
@@ -454,7 +452,7 @@ class CollectionWrap extends IAReactComponent {
           description={item.preprocessDescription(item.metadata.description)}
           rights={item.preprocessDescription(item.metadata.rights)}
         />
-      </div>
+      </>
     );
   }
 }
