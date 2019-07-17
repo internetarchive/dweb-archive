@@ -11,7 +11,7 @@ import {SaveModal} from "./SaveModal";
  * This split is needed because Isa prefers not to have functionality like queries inside smaller components,
  * but the Details.js.wrap doesnt rerender so need something inside that does.
  *
- * <NavWrapWrapper item=ARCHIVEITEM />
+ * <NavWrapWrapper item=ARCHIVEITEM canSave/>
  *
  * Behavior - retrieves and sets statuses
  *
@@ -38,6 +38,7 @@ export default class NavWrapWrapper extends IAReactComponent {
                transportStatuses={this.state.transportStatuses}
                mirror2gateway={this.state.mirror2gateway}
                disconnected={this.state.disconnected}
+               canSave={this.props.canSave}
       />
       <SaveModal identifier={this.props.item.itemid} directories={this.state.directories} />
       </>

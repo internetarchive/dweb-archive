@@ -189,8 +189,12 @@ class DetailsWork extends IAReactComponent {
   render() { return (
             <div id="wrap" itemscope itemtype={"http://schema.org/"+mediatype2Schema[this.props.metadata.mediatype]}>
                 {/* Missing donate-banner and scripts & css before it */}
-                <NavWrap item={this.props.item} transportStatuses={this.state.transportStatuses} mirror2gateway={this.state.mirror2gateway}
-                         disconnected={this.state.disconnected} directories={this.state.directories} />
+                <NavWrap item={this.props.item}
+                         transportStatuses={this.state.transportStatuses}
+                         mirror2gateway={this.state.mirror2gateway}
+                         disconnected={this.state.disconnected}
+                         directories={this.state.directories}
+                         canSave={this.props.canSave}/>
                 {/*--Begin page content --*/}
                 <div className="container container-ia">
                     <a name="maincontent" id="maincontent"></a>

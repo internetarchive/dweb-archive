@@ -8,9 +8,4 @@ export default class Home extends Search {
 
         super({ itemid, metaapi, query: homeQuery, sort:   '-downloads' });
     }
-    banner() {
-        return (
-            <center style={{margin: "35px"}}><span style={{fontSize: "125px"}} className="iconochive-logo"></span></center>
-        );
-    }
 }

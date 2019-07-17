@@ -64,6 +64,7 @@ export default class Details extends ArchiveBase {
           page={this.page}
           noCache={this.noCache}
           playlist={this.playlist}
+          canSave={true}
         />
         </span>
         );

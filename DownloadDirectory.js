@@ -24,7 +24,7 @@ export default class DownloadDirectory extends Details {
       return (
         <div id="wrap" itemscope itemtype={this.itemtype}>
             {/* Missing donate-banner and scripts & css before it */}
-            <NavWrapWrapper item={this}/>
+            <NavWrapWrapper item={this} canSave={false}/>
             {/*--Begin page content --*/}
             <div class="container container-ia">
                 <a name="maincontent" id="maincontent"></a>

@@ -126,7 +126,7 @@ For a *Search/Colletion/Home* the structure is slightly different
 * Search.wrap
     * Nav.navwrap - navigation as for Details
     * banner - appear above tiles
-    * rowColumnsItems - loops over results displaying Tiles
+    * <SearchRowColumnsItems> - loops over results displaying Tiles
     * About & Forum tabs (for Collection only)
 
 

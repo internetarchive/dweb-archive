@@ -3,6 +3,7 @@ import Search from './Search';
 import {ImageDweb, Tabby} from "@internetarchive/ia-components/dweb-index.js";
 import {NavWrapWrapper} from './components/NavWrapWrapper';
 import {AJS_on_dom_loaded} from "./Util";
+import {SearchRowColumnsItems} from "./components/SearchPage";
 
 export default class Account extends Search {
     /*
@@ -46,7 +47,7 @@ export default class Account extends Search {
         return (
             <div id="wrap">
                 {/* Missing donate-banner and scripts & css before it */}
-                <NavWrapWrapper item={this}/>
+                <NavWrapWrapper item={this} canSave={false}/>
                 {/*--Begin page content --*/}
                 <main id="maincontent">
                     <div class="container container-ia">
@@ -187,7 +188,7 @@ export default class Account extends Search {
         return (
             <div class="container container-ia nopad">
                 <div id="tabby-uploads" class="tabby-data in">
-                        {this.rowColumnsItems()}
+                    <SearchRowColumnsItems item={this} />
                 </div>
             </div>
         );

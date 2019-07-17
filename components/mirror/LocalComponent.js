@@ -99,7 +99,7 @@ class LocalItem extends IAReactComponent {
   render() {
     return (
       <>
-        <NavWrapWrapper item={this.props.item}/>
+        <NavWrapWrapper item={this.props.item} canSave={true}/>
         {/*--Begin page content --*/}
         <div className="container container-ia">
           <a name="maincontent" id="maincontent"></a>
@@ -112,7 +112,7 @@ class LocalItem extends IAReactComponent {
         />
         <div className="container container-ia nopad">
           <div id="tabby-collection" className="tabby-data in">
-            {/*Replaces rowColumnsItems in Search (used by Account & Collection)*/}
+            {/*Replaces SearchRowColumnsItems in Search (used by Account & Collection)*/}
             <LocalGridRowComponent members={this.state.members}/>
           </div>
         </div>

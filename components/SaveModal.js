@@ -56,8 +56,8 @@ class SaveModal extends IAReactComponent {
                 className="iconochive-remove-circle" aria-hidden="true"></span><span className="sr-only">remove-circle</span>
               </button>
               <h3 className="modal-title">Save this {(this.props.mediatype === "collection") ? "Collection" : "Item"}</h3>
-            </div>{/*--/.modal-header--*/}
-            <div id="save-body">{/*was cher-body*/}
+            </div>
+            <div id="save-body">
               <div style={{textAlign: "center", margin: "50px auto"}}>
                 <div className="topinblock">
                   <div id="saver">{/*TODO-SAVEUSB check styles was sharer*/}

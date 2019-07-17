@@ -6,7 +6,7 @@ import {NavWrapWrapper} from './components/NavWrapWrapper';
 import {AnchorModalGo} from './components/ModalGoFake';
 import {AJS_on_dom_loaded} from "./Util";
 import { CherModal } from './components/CherModal';
-import { CollectionBanner, CollectionTabby } from './components/SearchPage';
+import {CollectionBanner, CollectionTabby, SearchRowColumnsItems} from './components/SearchPage';
 
 
 export default class Collection extends Search {
@@ -27,11 +27,12 @@ export default class Collection extends Search {
         returns:      elements tree suitable for adding into another render
          */
         //Note both description & rights need dangerousHTML and \n -> <br/>
+        //TODO-GREY when move this into react replace disconnected={true} with this.prop|state.disconnected
         console.assert(!this.isDark) // Will be mediatype=collection so not isDark
         return (
             <div id="wrap">
                 {/*TODO needs "aside" */}
-                <NavWrapWrapper item={this}/>
+                <NavWrapWrapper item={this} canSave={true}/>
                 {/*--Begin page content --*/}
                 <div class="container container-ia">
                     <a name="maincontent" id="maincontent"></a>
@@ -42,11 +43,12 @@ export default class Collection extends Search {
                   description={!this.metadata.description ? undefined : this.preprocessDescription(this.metadata.description).replace(/(..\/)+..\//g, "../")}
                   creator={this.metadata.creator}
                   title={this.metadata.title}
+                  disconnected={false}
                 />
                 <CherModal identifier={this.itemid} creator={this.metadata.creator} mediatype={this.metadata.mediatype} title={this.metadata.title}/>
                 <div class="container container-ia nopad">
                     <div id="tabby-collection" class="tabby-data in">
-                        {this.rowColumnsItems()}
+                      <SearchRowColumnsItems item={this} />
                     </div>{/*tabby-collection*/}
                 </div>{/*.container*/}
                 {/*TODO take a closer look at scripts on originals/prelinger lines 7360-7399*/}

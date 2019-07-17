@@ -1,10 +1,38 @@
-import react from 'react';
+import React from 'react';
 import IAReactComponent from './IAReactComponent.js';
 import {AnchorModalGo, AnchorDetails, ImageDweb, Tabby} from '@internetarchive/ia-components/dweb-index.js';
+import {NavWrap, ScrollableTileGrid, SearchSwitcher} from "@internetarchive/ia-components/dweb-index";
+import {NavWrapWrapper} from "./NavWrapWrapper";
+import {SaveModal} from "./SaveModal";
+import {transportStatusAndProps} from "../ReactSupport";
 
 /**
  * A collection of components used on the related Search, Collection and Account pages
  */
+
+
+class BookmarkButton extends IAReactComponent {
+  /**
+   * <BookmarkButton url=URL disconnected=BOOL/>
+   *
+   * Note - this isnt going to work on Dweb as not logged in.
+   */
+  render() {
+    return (
+      this.props.disconnected ? null :
+        <div id="search-actions" className="col-sm-2 col-md-2 col-lg-2">
+            <span className="iconochive-share" aria-hidden="true"></span><span
+          className="sr-only">share</span> Share<br/>
+            <AnchorModalGo className="stealth"
+                           href={this.props.URL}
+                           opts={{favorite: 1}}
+                           data-target="#confirm-modal"><span className="iconochive-favorite"
+                                                              aria-hidden="true"></span><span
+              className="sr-only">favorite</span> Favorite</AnchorModalGo><br/>
+        </div>
+    )
+  }
+}
 class CollectionBanner extends IAReactComponent {
   /**
    * Typical usage (assuming "this" is an ARCHIVEFILE
@@ -14,6 +42,7 @@ class CollectionBanner extends IAReactComponent {
    *  description =STRING   Note this should have been preprocessed to concatenate any arrays, sanitize the HTML and replace any relative URI's which wont work.
    *    !this.metadata.description ? undefined : this.preprocessDescription(this.metadata.description).replace(/(..\/)+..\//g, "../"); // Contains HTML (supposedly safe) inserted via innerHTML thing
    *  creator=this.metadata.creator title=this.metadata.title   From the metadata API
+   *  disconnected=BOOL     True if browser cant see archive.org
    *  />
    */
     //TODO-DETAILS on prelinger, banner description is getting truncated.
@@ -41,10 +70,10 @@ class CollectionBanner extends IAReactComponent {
                         <div className="col-xs-1 col-sm-2 welcome-right">
                             <AnchorModalGo className="stealth" opts={{ignore_lnk:1,shown:AJS.embed_codes_adjust}}
                                data-target="#cher-modal"><span className="iconochive-share"  aria-hidden="true"></span><span className="sr-only">share</span><span className="hidden-xs-span"> Share</span></AnchorModalGo><br/>
-                            {/*TODO-LOGIN /bookmarks isnt going to work, also not logged in
-                            <a className="stealth" href="/bookmarks.php?add_bookmark=1&amp;mediatype=collection&amp;identifier=prelinger&amp;title=Prelinger+Archives" onclick="return AJS.modal_go(this,{favorite:1})"
-                               data-target="#confirm-modal"><span className="iconochive-favorite"  aria-hidden="true"></span><span className="sr-only">favorite</span><span className="hidden-xs-span"> Favorite</span></a><br/>
-                            */}
+                           <BookmarkButton
+                            url={`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=collection&amp;identifier=${this.itemid}&amp;title=${this.metadata.title}`}
+                            disconnected={this.props.disconnected}
+                           />
                             {/*TODO-LOGIN /editxml isn't going to wrk - we aren't logged in. and its an absolute URL
                             <div id="editlink" style={{display:"none"}}>
                               <a id="edlink" className="stealth" href="/editxml/prelinger"><span className="iconochive-edit"  aria-hidden="true"></span><span className="sr-only">edit</span><span
@@ -167,4 +196,214 @@ class CollectionTabby extends IAReactComponent {
     </div>
   )}
 }
-export { CollectionBanner, CollectionTabby }
+
+class SearchSortBar extends IAReactComponent {
+  /**
+   * <SearchSortBar
+   *    identifier=IDENTIFIER
+   *    query=STRING
+   * />
+   */
+  render() {
+    return (
+      <div className="sortbar">
+        <a href="#" className="focus-on-child-only pull-right" onClick={() => AJS.tiles_toggle(this,'search')}>
+          <div className="lists-button topinblock iconochive-list" data-toggle="tooltip"
+               title="Show&nbsp;as&nbsp;list"></div>
+        </a>
+        <a href="#" className="focus-on-child-only pull-right" onClick={() => AJS.tiles_toggle(this,'search')}>
+          <div className="tiles-button topinblock iconochive-tiles" data-toggle="tooltip"
+               title="Show&nbsp;thumbnails"></div>
+        </a>
+        <div className="hidden-xs hidden-sm pull-right" style={{height: "50px", width: "30px"}}></div>
+        <div className="micro-label pull-right hidden-tiles">
+          <input type="checkbox" name="showdetails" onChange={()=>AJS.showdetails_toggle(this,'search')}/>
+          <span className="hidden-xs-span">SHOW </span><span>DETAILS</span>
+        </div>
+
+        <div className="up-down">
+          <div className="iconochive-up-solid disabled" aria-hidden="true"></div>
+          <span className="sr-only">up-solid</span>
+          <div className="iconochive-down-solid disabled" aria-hidden="true"></div>
+          <span className="sr-only">down-solid</span></div>
+        <div className="topinblock">
+          <div className="hidden-md hidden-lg">
+            <select className="ikind-mobile form-control" onChange={()=>AJS.ikind_mobile_change(this)}>
+              {(!this.props.identifier) ?  // Dont show on collections
+                <option data-id="relevance" selected="selected">RELEVANCE</option>
+                : undefined }
+              <option data-id="views">VIEWS</option>
+              <option data-id="title">TITLE</option>
+              <option data-id="date-archived">DATE ARCHIVED</option>
+              <option data-id="date-published">DATE PUBLISHED</option>
+              <option data-id="date-reviewed">DATE REVIEWED</option>
+              <option data-id="creator">CREATOR</option>
+            </select>
+          </div>
+        </div>
+        <SearchSwitcher identifier={this.props.identifier} query={this.props.query}/>
+      </div>
+    )
+  }
+}
+class SearchBanner extends IAReactComponent {
+    /**
+     * <SearchBanner
+     *    query=STRING     query string
+     *    disconnected=BOOL True if browser cannot see archive.org
+     * />
+     * //TODO lookout direct URL in middle of this, rather than Nav_search
+     */
+  render() {
+      const query = this.props.query;
+      return (
+        <div className="container container-ia width-max"
+             style={{backgroundColor: "#d8d8d8", paddingTop: "60px", border: "1px", solid: "#979797", paddingBottom: "25px"}}>
+            <div className="container">
+                <div className="row">
+                    <div className="col-sm-2 col-md-2 col-lg-1 hidden-xs">
+                        <h3 style={{margin: "3px 0 0 0", textAlign: "right"}}>Search</h3>
+                    </div>
+                    <div className="col-sm-8 col-md-8 col-lg-9">
+                        <div className="searchbar" style={{marginBottom: "10px", marginRight: "60px"}}>
+                            {/*--TODO-DETAILS change this form into a advancedsearch query--*/}
+                            <form className="form search-form js-search-form"
+                                  id="searchform"
+                                  method="get"
+                                  role="search"
+                                  action="https://archive.org/searchresults.php"
+                                  data-event-form-tracking="Search|SearchForm"
+                                  data-wayback-machine-search-url="https://web.archive.org/web/*/"> {/* TODO-WAYBACK*/}
+                                <div className="form-group" style={{position: "relative"}}>
+                                    <div style={{position: "relative"}}>
+                                        <span aria-hidden="true">
+                                          <span className="iconochive-search"
+                                                style={{position: "absolute", left: "4px", top: "7px", color: "#999", fontSize: "125%"}}
+                                                aria-hidden="true"></span><span className="sr-only">search</span>            </span>
+                                        <input className="form-control input-sm roundbox20 js-search-bar" size="25"
+                                               name="search"
+                                               placeholder="Search" type="text" defaultValue={this.props.query}
+                                               style={{fontSize: "125%", paddingLeft: "30px"}}
+                                               onClick={()=>$(this).css('padding-left','').parent().find('.iconochive-search').hide()}
+                                               aria-controls="search_options"
+                                               aria-label="Search the Archive. Filters and Advanced Search available below."
+                                        />
+                                    </div>
+
+                                    <div
+                                      id="search_options"
+                                      className="search-options js-search-options is-open"
+                                      aria-expanded="true"
+                                      aria-label="Search Options"
+                                      data-keep-open-when-changed="true"
+                                    >
+                                        <fieldset>
+                                            <label><input type="radio" name="sin" value="" defaultChecked/>Search
+                                                metadata</label>
+                                            <label><input type="radio" name="sin" value="TXT"/>Search full text of books</label>
+                                            <label><input type="radio" name="sin" value="TV"/>Search TV captions</label>
+                                            <label><input type="radio" name="sin" value="WEB"/>Search archived web sites</label>
+                                        </fieldset>
+                                        {/* We are using advanced search, so no point in this link
+                                        <a href={searchURL} className="search-options__advanced-search-link">Advanced Search</a> */}
+                                    </div>
+
+                                    <button className="btn btn-gray label-primary input-sm"
+                                            style={{position: "absolute", right: "-60px", top: 0}}
+                                            type="submit">GO
+                                    </button>
+                                    <input type="hidden" name="limit" value="100"/>
+                                    <input type="hidden" name="start" value="0"/>
+                                    <input type="hidden" name="searchAll" value="yes"/>
+                                    <input type="hidden" name="submit" value="this was submitted"/>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {/* //TODO figure out decentralized bookmark submission */}
+                    <BookmarkButton
+                      url={`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=search&amp;identifier=${encodeURIComponent(query)}&amp;title=${encodeURIComponent(query)}`}
+                      disconnected={this.props.disconnected} />
+                </div>
+            </div>
+        </div>
+      )
+  }
+}
+
+class SearchRowColumnsItems extends IAReactComponent {
+  /**
+   * Output the columns-items, wrapped in a row - this will then be wrapped differently for Collections (tabbed) and Search (not)
+   *
+   * <SearchRowColumnsItems
+   *    item=this
+   * />
+   *
+   *  Technical:
+   *      Its Passed an Archive Item, because of the complexity in ScrollableTileGrid
+   *      TODO-IAUX could reorganize SearchRowColumnsItems to take function properties to do more() etc then pass through this
+   */
+
+  render() {
+    const membersToTile = (this.props.item.membersFav || []).concat(this.props.item.membersSearch || []);
+    return (!(membersToTile.length) ? undefined :  /* If no members, probably a query failed so dont display */
+        <div className="row">{/*--DONT NEED TILL HAVE FACETS --*/}
+          {/*TODO-DETAILS Facets not available over advancedsearch*/}
+          {/*--<div className="columns-facets"></div> TODO-DETAILS-FACETS column goes here--*/}
+          <div className="columns-items"
+               style={{marginLeft: "0px"}}>{/*--TODO-DETAILS-FACETS delete the margin-left when add the facet column --*/}
+            <SearchSortBar identifier={this.props.item.itemid} query={this.props.item.query}/>
+            <div className="sortbar-rule"></div>
+            <ScrollableTileGrid item={this.props.item}/>
+          </div>
+        </div>
+    );
+  }
+}
+class SearchWrap extends IAReactComponent {
+  /**
+   * <SearchWrap
+   *    item=this
+   * />
+   * TODO-GREY replace NavWrapWrapper with NavWrap and move functionality here then can connct disconnected to that
+   */
+  constructor(props) {
+    super(props); //  item
+    // TODO-DWEBNAV need to tell Transports to set this status when changes
+    transportStatusAndProps((err, res)=> { // { transportStatuses, mirror2gateway, disconnected, diretories }
+      if (!err) {
+        this.setState(res); // disconnected etc
+      }
+    })
+  }
+
+  render() {
+    const identifier = this.props.item.itemid;  // May be undefined
+    return (
+      <div id="wrap">
+        <NavWrap item={this.props.item}
+                 transportStatuses={this.state.transportStatuses}
+                 mirror2gateway={this.state.mirror2gateway}
+                 disconnected={this.state.disconnected}
+                 canSave={true}
+        />
+        <SaveModal identifier={this.props.item.itemid} directories={this.state.directories} />
+        <div className="container container-ia">
+          <a name="maincontent" id="maincontent"></a>
+        </div>
+        {identifier === "home"
+          ? <center style={{margin: "35px"}}><span style={{fontSize: "125px"}} className="iconochive-logo"></span></center>
+          : <SearchBanner query={this.props.item.query} disconnected={this.state.disconnected}/>
+        }
+        <div className="container container-ia nopad">
+          <SearchRowColumnsItems item={this.props.item}/>
+        </div>
+        {/*--TODO-ANALYTiCS is missing --*/}
+      </div>
+    );
+  }
+}
+
+
+
+export { CollectionBanner, CollectionTabby, SearchBanner, SearchSortBar, SearchRowColumnsItems, SearchWrap }
