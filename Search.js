@@ -5,10 +5,7 @@ import {homeQuery} from '@internetarchive/dweb-archivecontroller/Util';
 // This repo
 import ArchiveBase from './ArchiveBase';
 import { AJS_on_dom_loaded } from "./Util";
-import { SearchWrap, CollectionWrap } from "./components/SearchPage";
-import { LocalItem } from "./components/mirror/LocalComponent";
-import { SettingsItem } from "./components/mirror/SettingsComponent";
-import { AccountWrap } from "./Account.js";
+import { ComboSearchWrap } from "./components/SearchPage";
 
 
 /* Section to ensure node and browser able to use Headers, Request and Fetch */
@@ -70,18 +67,9 @@ export default class Search extends ArchiveBase {
         const identifier = this.itemid;
         return (
           <div id='wrap'>
-            {(mediatype === "collection")
-              ? <CollectionWrap item={this}/>
-              : (mediatype === "account")
-              ? <AccountWrap item={this}/>
-              : (identifier === "local")
-              ? <LocalItem item={this}/>
-              : (identifier === "settings")
-              ? <SettingsItem item={this}/>
-              : <SearchWrap item={this}/>
-            }
+              <ComboSearchWrap item={this}/>
           </div>
-        ); // div is here to keep ReactFake happy
+        ); //TODO-FAKEREACT div is here to keep ReactFake happy
     }
 
     archive_setup_push() { // run in render

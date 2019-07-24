@@ -6,6 +6,10 @@ import {NavWrapWrapper} from "./NavWrapWrapper";
 import {SaveModal} from "./SaveModal";
 import {transportStatusAndProps} from "../ReactSupport";
 import {CherModal} from "./CherModal";
+import { LocalItem } from "./mirror/LocalComponent";
+import { SettingsItem } from "./mirror/SettingsComponent";
+import { AccountWrap } from "../Account.js";
+
 
 /**
  * A collection of components used on the related Search and Account pages
@@ -334,6 +338,7 @@ class SearchRowColumnsItems extends IAReactComponent {
    *
    * <SearchRowColumnsItems
    *    item=this
+   *    disconnected=BOOL   True if browser cant see archive.org
    * />
    *
    *  Technical:
@@ -351,7 +356,7 @@ class SearchRowColumnsItems extends IAReactComponent {
                style={{marginLeft: "0px"}}>{/*--TODO-DETAILS-FACETS delete the margin-left when add the facet column --*/}
             <SearchSortBar identifier={this.props.item.itemid} query={this.props.item.query}/>
             <div className="sortbar-rule"></div>
-            <ScrollableTileGrid item={this.props.item}/>
+            <ScrollableTileGrid item={this.props.item} disconnected={this.props.disconnected}/>
           </div>
         </div>
     );
@@ -363,36 +368,26 @@ class SearchWrap extends IAReactComponent {
    *    item=this
    * />
    */
-  constructor(props) { //SEE-IDENTICAL-CODE-STATUSES
-    super(props); //  item
-    // TODO-DWEBNAV need to tell Transports to set this status when changes
-    transportStatusAndProps((err, res)=> { // { transportStatuses, mirror2gateway, disconnected, diretories }
-      if (!err) {
-        this.setState(res); // disconnected etc
-      }
-    })
-  }
-
   render() {
     const identifier = this.props.item.itemid;  // May be undefined
     return (
       <>
         <NavWrap item={this.props.item}
-                 transportStatuses={this.state.transportStatuses}
-                 mirror2gateway={this.state.mirror2gateway}
-                 disconnected={this.state.disconnected}
+                 transportStatuses={this.props.transportStatuses}
+                 mirror2gateway={this.props.mirror2gateway}
+                 disconnected={this.props.disconnected}
                  canSave={true}
         />
-        <SaveModal identifier={this.props.item.itemid} directories={this.state.directories} />
+        <SaveModal identifier={this.props.item.itemid} directories={this.props.directories} />
         <div className="container container-ia">
           <a name="maincontent" id="maincontent"></a>
         </div>
         {identifier === "home"
           ? <center style={{margin: "35px"}}><span style={{fontSize: "125px"}} className="iconochive-logo"></span></center>
-          : <SearchBanner query={this.props.item.query} disconnected={this.state.disconnected}/>
+          : <SearchBanner query={this.props.item.query} disconnected={this.props.disconnected}/>
         }
         <div className="container container-ia nopad">
-          <SearchRowColumnsItems item={this.props.item}/>
+          <SearchRowColumnsItems item={this.props.item} disconnected={this.props.disconnected}/>
         </div>
         {/*--TODO-ANALYTiCS is missing --*/}
       </>
@@ -405,16 +400,6 @@ class CollectionWrap extends IAReactComponent {
    *    item=this
    * />
    */
-  constructor(props) { //SEE-IDENTICAL-CODE-STATUSES
-    super(props); //  item
-    // TODO-DWEBNAV need to tell Transports to set this status when changes
-    transportStatusAndProps((err, res) => { // { transportStatuses, mirror2gateway, disconnected, diretories }
-      if (!err) {
-        this.setState(res); // disconnected etc
-      }
-    })
-  }
-
   render() {
     /* Wrap the content up: wrap ( TODO-aside; navwrap; #maincontent; welcome; cher-modal; container-tabby-collection-row (TODO-columns-facets; columns-items) (tabby-about; tabby-form)
     returns:      elements tree suitable for adding into another render
@@ -426,7 +411,12 @@ class CollectionWrap extends IAReactComponent {
     return (
       <>
         {/*TODO needs "aside" */}
-        <NavWrapWrapper item={item} canSave={true}/>
+        <NavWrap item={item}
+                 transportStatuses={this.props.transportStatuses}
+                 mirror2gateway={this.props.mirror2gateway}
+                 disconnected={this.props.disconnected}
+                 canSave={true}
+        />
         <div className="container container-ia">
           <a name="maincontent" id="maincontent"></a>
         </div>
@@ -436,13 +426,13 @@ class CollectionWrap extends IAReactComponent {
           description={!item.metadata.description ? undefined : item.preprocessDescription(item.metadata.description).replace(/(..\/)+..\//g, "../")}
           creator={item.metadata.creator}
           title={item.metadata.title}
-          disconnected={this.state.disconnected}
+          disconnected={this.props.disconnected}
         />
         <CherModal identifier={item.itemid} creator={item.metadata.creator} mediatype={item.metadata.mediatype}
                    title={item.metadata.title}/>
         <div className="container container-ia nopad">
           <div id="tabby-collection" className="tabby-data in">
-            <SearchRowColumnsItems item={item}/>
+            <SearchRowColumnsItems item={item} disconnected={this.props.disconnected}/>
           </div>
         </div>
         {/*TODO take a closer look at scripts on originals/prelinger lines 7360-7399*/}
@@ -457,6 +447,50 @@ class CollectionWrap extends IAReactComponent {
   }
 }
 
+class ComboSearchWrap extends IAReactComponent {
+  /**
+   * <ComboSearchWrap item=ARCHIVEITEM />
+   *
+   * @returns {*}
+   */
+  constructor(props) { //SEE-IDENTICAL-CODE-STATUSES
+    super(props); //  item
+    // TODO-DWEBNAV need to tell Transports to set this status when changes
+    transportStatusAndProps((err, statuses) => { // { transportStatuses, mirror2gateway, disconnected, directories }
+      if (!err) {
+        this.setState({statuses}); // disconnected etc
+      }
+    })
+  }
+
+  render() {
+    /* Wrap the content up: wrap ( TODO-DONATE | navwrap |
+    TODO-DETAILS need stuff before nav-wrap1 and after detailsabout and need to check this against Search and mediatype=collection examples
+     */
+    // Note also used by Home, but not by Account
+    const item = this.props.item;
+    const mediatype = item.metadata ? item.metadata.mediatype : "search";
+    const identifier = item.itemid;
+    return ( // this is wrapped with <div id="wrap" to keep FakeReact happy for now TODO-FAKEREACT
+      <>
+        {(mediatype === "collection")
+          ? <CollectionWrap item={item} {...this.state.statuses}/>
+          : (mediatype === "account")
+            ? <AccountWrap item={item} {...this.state.statuses}/>
+            : (identifier === "local")
+              ? <LocalItem item={item} {...this.state.statuses}/>
+              : (identifier === "settings")
+                ? <SettingsItem item={item} {...this.state.statuses}/>
+                : <SearchWrap item={item} {...this.state.statuses}/>
+        }
+        <SaveModal identifier={this.props.item.itemid} directories={this.state.directories} />
+      </>
+
+    );
+  }
 
 
-export { CollectionBanner, CollectionTabby, CollectionWrap, SearchBanner, SearchSortBar, SearchRowColumnsItems, SearchWrap }
+
+}
+
+export { CollectionBanner, CollectionTabby, CollectionWrap, SearchBanner, SearchSortBar, SearchRowColumnsItems, SearchWrap, ComboSearchWrap }

@@ -20,6 +20,7 @@ export default class DownloadDirectory extends Details {
         content: (on image)  wrap( TODO-DONATEBANNER | nav-wrap | maincontent | theatre-ia-wrap | item-details-about | TODO-ACTIONBUTTONS | RelatedItems  | TODO-ANALYTICS )
         returns: elements tree suitable for adding into another render
          */
+        //TODO-GREY need to hook into disconnected
       const identifier = this.itemid;
       return (
         <div id="wrap" itemscope itemtype={this.itemtype}>
@@ -34,7 +35,7 @@ export default class DownloadDirectory extends Details {
                                   disconnected={false}
                                files={this.files.map(f => { return {name: f.metadata.name, size: f.sizePretty()}})} />
             {(!identifier) ? null :
-              <RelatedItemsWrapper identifier={identifier} item={this} noCache={this.noCache} /> }
+              <RelatedItemsWrapper identifier={identifier} item={this} noCache={this.noCache} disconnected={false}/> }
             {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
             }
             {/*--wrap--*/}</div>

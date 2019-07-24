@@ -2,6 +2,7 @@ import React from 'react';
 import IAReactComponent from './components/IAReactComponent.js';
 import {ImageDweb, Tabby, NavWrap} from "@internetarchive/ia-components/dweb-index.js";
 import {SearchRowColumnsItems} from "./components/SearchPage";
+import {transportStatusAndProps} from "./ReactSupport";
 
 
 class AccountTabbyPosts extends IAReactComponent {
@@ -19,6 +20,7 @@ class AccountTabbyPosts extends IAReactComponent {
                       {/*-- NOTE: extra div required by IE bec. table width=100% is set --*/}
                       <div>
                           <table className="forumTable  table table-striped table-condensed table-hover">
+                            <tbody>
                               <tr className="backColor1 forumRowHead">
                                   <td>Subject</td>
                                   <td>Poster</td>
@@ -79,6 +81,7 @@ class AccountTabbyPosts extends IAReactComponent {
                                 </tr>
                                 */}
                               {/* -- End of forum loop */}
+                            </tbody>
                           </table>
                           {/* TODO-ACCOUNT rethink when have query above
                             <br/><b><a href="/iathreads/forum-display.php?poster=tracey%20pooh&limit=100">View more forum posts</a></b>
@@ -146,13 +149,13 @@ class AccountWelcome extends IAReactComponent {
 
 class AccountUploads extends IAReactComponent {
     /**
-     * <AccountUploads item=ARCHIVEITEM />
+     * <AccountUploads item=ARCHIVEITEM disconnected=BOOL />
      */
     render() {
         return (
           <div className="container container-ia nopad">
               <div id="tabby-uploads" className="tabby-data in">
-                  <SearchRowColumnsItems item={this.props.item} />
+                  <SearchRowColumnsItems item={this.props.item} disconnected={this.props.disconnected} />
               </div>
           </div>
         );
@@ -160,6 +163,10 @@ class AccountUploads extends IAReactComponent {
 }
 
 class AccountWrap extends IAReactComponent {
+    /**
+     * <AccountWrap item=ARCHIVEITEM/>
+     * @returns {*}
+     */
     render() {
         /*
         Wraps all page content
@@ -180,7 +187,7 @@ class AccountWrap extends IAReactComponent {
                 </div>
                 {/*--.container-ia --*/}
                 <AccountWelcome item={this.props.item}/>
-                <AccountUploads item={this.props.item}/>
+                <AccountUploads item={this.props.item} disconnected={this.props.disconnected}/>
                 <AccountTabbyPosts item={this.props.item}/>
             </main>
           </>

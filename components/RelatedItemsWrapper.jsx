@@ -13,6 +13,7 @@ export default class RelatedItemsWrapper extends IAReactComponent {
       members:    PropTypes.array, // of ArchiveMembers or similar
       item:       ArchiveItem (essentially something that has a relatedItems({...}) method that can return [member*]
       noCache:    PropTypes.boolean // True if should skip cache when loading (used by dweb-mirror)
+      disconnected PropTypes.boolean // True if browser cannot see archive.org
    */
   constructor(props) {
     console.assert(props.item || props.members,"Must pass either item or members")
@@ -31,7 +32,7 @@ export default class RelatedItemsWrapper extends IAReactComponent {
   render() {
     return (
       // Static or asynchronously loaded members handled here
-      <RelatedItems identifier={this.props.identifier} members={this.state.members} />
+      <RelatedItems identifier={this.props.identifier} members={this.state.members} disconnected={this.props.disconnected} />
     );
   }
 }

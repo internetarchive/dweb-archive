@@ -7,6 +7,7 @@ import waterfall from 'async/waterfall';
 import {gatewayServer}  from '@internetarchive/dweb-archivecontroller/Util';
 import {NavWrapWrapper} from "../NavWrapWrapper";
 import {CommonWelcomeComponent} from "./CommonComponent";
+import {NavWrap} from "@internetarchive/ia-components/sandbox/details/NavWrap";
 
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 
@@ -140,6 +141,44 @@ class SettingsCrawlsComponent extends IAReactComponent {
   }
 }
 
+class SettingsInfo extends IAReactComponent {
+  constructor(props) {
+    super(props);
+    if (!this.info) {
+      const urlInfo = [gatewayServer(), "info"].join('/');
+      waterfall([
+          cb => DwebTransports.httptools.p_GET(urlInfo, {}, cb),
+          // There may be more here , if not then simplify waterfall
+        ],(err, info) => { // [ArchiveMember*] includes specials like local &/or home
+          if (err) {
+            debug("ERROR: fetch of info failed %O", err);
+          } else {
+            this.setState({info});
+          }
+        }
+      );
+    }
+  }
+
+  render() {
+    return (!this.state.info)
+      ? <span>Loading ...</span>
+      :
+      <div className="row">
+        <div className="columns-items" style={{"marginLeft": "0px"}}>
+          <div style={{position: "relative"}}>
+            <div>
+              <h4>Info</h4>
+              <ul>
+                <li><span>Directories: </span><span>{this.state.info.directories.join('; ')}</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+  }
+}
+
 class SettingsItem extends IAReactComponent {
   constructor(props) {
     super(props); // item
@@ -148,7 +187,12 @@ class SettingsItem extends IAReactComponent {
   render() {
     return (
       <div>
-        <NavWrapWrapper item={this.props.item} canSave={false}/>
+        <NavWrap item={this.props.item}
+                 transportStatuses={this.props.transportStatuses}
+                 mirror2gateway={this.props.mirror2gateway}
+                 disconnected={this.props.disconnected}
+                 canSave={false}
+        />
         {/*--Begin page content --*/}
         <div className="container container-ia">
           <a name="maincontent" id="maincontent"></a>
@@ -161,6 +205,7 @@ class SettingsItem extends IAReactComponent {
         />
         <div className="container container-ia nopad">
           <div className="in settings-item">
+            <SettingsInfo/>
             <SettingsCrawlsComponent/>
           </div>
         </div>

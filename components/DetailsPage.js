@@ -162,7 +162,7 @@ class DetailsWork extends IAReactComponent {
    *    
    */
 
-   constructor(props) {
+   constructor(props) { //SEE-IDENTICAL-CODE-STATUSES
     super(props); //  item
     // TODO-DWEBNAV need to tell Transports to set this status when changes
     this.state.expansionTried = false;
@@ -222,7 +222,7 @@ class DetailsWork extends IAReactComponent {
                                        description={this.props.description}
                                        disconnected={this.state.disconnected} /> }
                 {(!this.props.identifier) ? null :
-                    <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} /> }
+                    <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.state.disconnected}/> }
                 {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
                 }
             </div>

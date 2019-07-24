@@ -8,6 +8,7 @@ import {gatewayServer, ObjectDeeperAssign}  from '@internetarchive/dweb-archivec
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 import {NavWrapWrapper} from '../NavWrapWrapper';
 import {CommonWelcomeComponent} from "./CommonComponent";
+import {NavWrap} from "@internetarchive/ia-components/dweb-index";
 
 const _levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-components/.../ConfigCrawl.js
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
@@ -40,7 +41,7 @@ class LocalGridRowComponent extends IAReactComponent {
             <div className="columns-items" style={{"marginLeft": "0px"}}>
               <div style={{position: "relative"}}>
                 <div id="ikind-search" className="ikind in">
-                  <TileGrid members={this.props.members}/>
+                  <TileGrid members={this.props.members} disconnected={this.props.disconnected}/>
                 </div>
               </div>
             </div>
@@ -99,7 +100,12 @@ class LocalItem extends IAReactComponent {
   render() {
     return (
       <>
-        <NavWrapWrapper item={this.props.item} canSave={true}/>
+        <NavWrap item={this.props.item}
+                 transportStatuses={this.props.transportStatuses}
+                 mirror2gateway={this.props.mirror2gateway}
+                 disconnected={this.props.disconnected}
+                 canSave={true}
+        />
         {/*--Begin page content --*/}
         <div className="container container-ia">
           <a name="maincontent" id="maincontent"></a>
@@ -113,7 +119,7 @@ class LocalItem extends IAReactComponent {
         <div className="container container-ia nopad">
           <div id="tabby-collection" className="tabby-data in">
             {/*Replaces SearchRowColumnsItems in Search (used by Account)*/}
-            <LocalGridRowComponent members={this.state.members}/>
+            <LocalGridRowComponent members={this.state.members} disconnected={this.props.disconnected}/>
           </div>
         </div>
       </>
