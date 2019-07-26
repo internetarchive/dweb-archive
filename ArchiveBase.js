@@ -87,11 +87,7 @@ export default class ArchiveBase extends ArchiveItem {
     const itemType = this.metadata ? mediatype2Schema[mediatype] : undefined;
     //TODO-FAKEREACT make the element reusable, so replace  through ReactDOM.render by changing item etc on prebuilt
     const els = (
-      <div id="wrap"
-        itemScope={typeof itemType !== "undefined"}
-        itemType={itemType ? ("http://schema.org/" + itemType) : undefined}>
         <Page item={this} message={this.message} itemType={itemType}/>
-      </div>
     );
     if (isSearch) {
       document.body.classList.add('bgEEE');

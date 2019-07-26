@@ -49,11 +49,9 @@ class Page extends IAReactComponent {
     const itemType = metadata ? mediatype2Schema[mediatype] : undefined;
     return (
       // TODO-FAKEREACT The outer Div is one level up to keep ReactFake happy
-      /*<div id="wrap"
+      <div id="wrap"
            itemScope={typeof itemType !== "undefined"}
            itemType={itemType ? ("http://schema.org/" + itemType) : undefined}>
-        */
-      <>
         { this.props.message
           ?
             <DetailsMessage item={item}
@@ -89,8 +87,7 @@ class Page extends IAReactComponent {
             />
         }
         <SaveModal identifier={identifier} directories={this.state.statuses.directories}/>
-      </>
-      /*</div>*/
+      </div>
     );
   }
 }
