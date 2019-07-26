@@ -75,88 +75,12 @@ export default class ArchiveBase extends ArchiveItem {
   }
 
   renderFake(res) {
-    //isSearch: includes Search, Collection, Account, Settings, Local
-    //!isSearch: is Details (includes DetailsError, DownloadDirectory, DetailsError,
-    const mediatype = this.metadata && this.metadata.mediatype;
-    const isSearch = // See DUPLICATEDCODEISSEARCH
-      (!this.metadata && !this.message)
-      || this.query
-      || ["collection", "account"].includes(mediatype)
-      || ["home", "local", "settings"].includes(this.itemid); //SEE-OTHER-ADD-SPECIAL-PAGE
-
-    const itemType = this.metadata ? mediatype2Schema[mediatype] : undefined;
-    //TODO-FAKEREACT make the element reusable, so replace  through ReactDOM.render by changing item etc on prebuilt
     const els = (
-        <Page item={this} message={this.message} itemType={itemType}/>
+        <Page item={this} message={this.message}/>
     );
-    if (isSearch) {
-      document.body.classList.add('bgEEE');
-    }
     ReactDOM.render(els, res);
-    if (!isSearch) {
-      // initialize_flag
-      // overlay related but might never be used as dont see toggle-flag-overlay appearing anywhere but might be used in archive.js
-      $(".toggle-flag-overlay").click(function (e) {
-        e.preventDefault();
-        $("#theatre-ia-wrap").removeClass("flagged");
-      });
-      // overlay - checkboxes - this may never get used as I cant find any flag-checkboxes or my-checkbox in any sample HTML files
-      $("#flag-checkboxes a").on("click", function (e) {
-        e.preventDefault();
-        $(this).children(".my-checkbox").toggleClass("checked");
-        $.get($(this).attr("href"))
-      });
-    }
-    this.archive_setup_push(isSearch);
-    AJS_on_dom_loaded(); // Runs code pushed archive_setup - needed for image if "super" this, put it after superclasses
   }
 
-  archive_setup_push(isSearch)
-  { // run in render
-    const mediatype = this.metadata ? this.metadata.mediatype : isSearch ? "search" : undefined ;
-    if (isSearch) {
-      const query = this.query;
-      //TODO figure out what this is doing, and replace with AnchorSearch etc
-      archive_setup.push(function () { // archive_setup is in archive.js
-        AJS.date_switcher(
-          (mediatype === "collection")
-            ? `&nbsp;<a href="/search.php?query=${query}&amp;sort=-publicdate"><div class="date_switcher in">Date Archived</div></a> <a href="/search.php?query=${query}&amp;sort=-date"><div class="date_switcher">Date Published</div></a> <a href="/search.php?query=${query}&amp;sort=-reviewdate"><div class="date_switcher">Date Reviewed</div></a> `
-            : `&nbsp;<a href="https://dweb.archive.org/search/${encodeURIComponent(query) + "?sort=-publicdate"}" onclick='${Nav.onclick_search({
-              query: query,
-              sort: "-publicdate"
-            })}'><div class="date_switcher in">Date Archived</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(query) + "?sort=-date"}" onclick='${Nav.onclick_search({
-              query: query,
-              sort: "-date"
-            })}'><div class="date_switcher">Date Published</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(query) + "?sort=-reviewdate"}" onclick='${Nav.onclick_search({
-              query: query,
-              sort: "-reviewdate"
-            })}'><div class="date_switcher">Date Reviewed</div></a> `
-        );
-        AJS.lists_v_tiles_setup(mediatype); // Needs to be collection | search and probably |account
-        AJS.popState(mediatype === 'collection' ? '' : 'search'); //on archive.org: collection=>'' search=>'search'
-        $('div.ikind').css({visibility: 'visible'});
-        //AJS.tiler();
-        $(window).on('resize  orientationchange', function (unusedEvt) {
-          clearTimeout(AJS.tiles_wrap_throttler);
-          AJS.tiles_wrap_throttler = setTimeout(AJS.tiler, 250);
-        });
-      });
-    } else {
-      if (["image"].includes(mediatype)) archive_setup.push(function () {
-        AJS.theatresize();
-        AJS.carouselsize('#ia-carousel', true);
-      });
-      archive_setup.push(function () {  // This is common to Text, AV and image - though some have stuff before this and some a
-        AJS.tilebars(); // page load
-        $(window).on('resize  orientationchange', function (unusedEvt) { //TODO-JQUERY remove dependency window.on probably works fine
-          clearTimeout(AJS.also_found_throttler);
-          AJS.also_found_throttler = setTimeout(AJS.tilebars, 250)
-        });
-      });
-      if (this.metadata && ["texts"].includes(this.metadata.mediatype)) archive_setup.push(function () {
-        AJS.booksize();
-      })
-    }
-  }
+
 }
 

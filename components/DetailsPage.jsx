@@ -22,14 +22,7 @@ class DetailsIAWrap extends IAReactComponent {
    */
   render() {
       // This is a combo wrap that handles multiple mediatypes
-
-      if (this.props.subtype === "carousel") { //TODO merge with other archive_setup_push
-        archive_setup.push(function () {
-          AJS.theatresize();
-          AJS.carouselsize('#ia-carousel', true);
-        });
-      }
-      //TODO video at moment only plays first in playlist which is usually, but not always correct - need an example of multi-video item
+     //TODO video at moment only plays first in playlist which is usually, but not always correct - need an example of multi-video item
 
       return (
 

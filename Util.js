@@ -48,36 +48,6 @@
         return natcompare(a, b);
     }
 */
-function AJS_on_dom_loaded() {
-        /*
-        This function is copied from archive.min.js because
-        a) its run there on DOMLoaded, which is before we've got anything on the page
-        b) Its anonymous in archive.min.js so can't call it
-         */
-        // Use this global hack, by adding class 'accessible-link' to any mouse-only element div/img
-        // Note AJS is defined in archive_min.js
-        AJS.makeMouseElementAccessible('.accessible-link');
-
-
-        AJS.setUpActionTracking(); // Must be before other form submit handlers are assigned
-        AJS.setupPopupLink();
-        // AJS.nav_tophat_setup(); // Not doing nav_tophat_setup because we have no access to tophat via the API
-        // AJS.nav_tophat_wb_setup(); // Not doing nav_tophat_setup because we have no access to tophat via the API
-        AJS.setUpCreativeCommonsLicenseLink();
-        AJS.setUpSearchForms();
-
-        /* global  archive_setup */
-        if (typeof archive_setup !== 'undefined') {
-            // when DOM loaded/stable, do some setup
-            $(() => {
-                for (const fn of archive_setup)
-                    fn()
-                archive_setup = []; // Delete archive_setup
-            })
-        }
-
-        AJS.footer();
-    }
 
 /* OBS not used since code in SearchPage.jsx commented out
     static metaFromUpdater({uploader=undefined, email=undefined}={}) {
@@ -147,4 +117,4 @@ function canonicalUrl(url, opts={}) {
     return url;
 }
 
-export {canonicalUrl, config, AJS_on_dom_loaded}
+export {canonicalUrl, config}

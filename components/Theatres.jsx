@@ -33,6 +33,22 @@ class BookReaderTheatre extends IAReactComponent {
 }
 class CarouselTheatre extends IAReactComponent {
   // Props: identifier, slides, creator, mediatype, title disconnected
+  constructor(props) {
+    super(props);
+    this.componentDidMount = this.component.DidMount.bind(this);
+    this.componentDidUpdate = this.component.DidUpdate.bind(this);
+  }
+  componentDidMount() {
+    this.componentDidMountOrUpdate()
+  }
+  componentDidUpdate() {
+    this.componentDidMountOrUpdate()
+  }
+  componentDidMountOrUpdate() {
+    AJS.theatresize();
+    AJS.carouselsize('#ia-carousel', true);
+  }
+
   render() {
     return (
         <div id="theatre-ia" className="container">

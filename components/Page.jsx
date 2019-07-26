@@ -26,7 +26,9 @@ class Page extends IAReactComponent {
     super(props); //  item, message
     // TODO-DWEBNAV need to tell Transports to set this status when changes
     // Retrieve information from the gateway about its state, for passing and parameterizing the UI.
-    this.state.statuses = {};
+    this.setState({item: this.props.item, message: this.props.message, statuses: {}});
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentDidUpdate = this.componentDidUpdate.bind(this);
     transportStatusAndProps((err, statuses) => { // { transportStatuses, mirror2gateway, disconnected, directories }
       if (!err) {
         this.setState({statuses}); // disconnected etc
@@ -34,34 +36,142 @@ class Page extends IAReactComponent {
     })
   }
 
+  componentDidMount() {
+    DwebArchive.page = this;
+    this.componentDidMountOrUpdate()
+  }
+
+  componentDidUpdate() {
+    this.componentDidMountOrUpdate()
+  }
+
+  componentDidMountOrUpdate() {
+    //TODO-FAKEREACT merge much of this into specific components at deeper level.
+    const item = this.state.item;
+    const identifier = item && item.itemid;
+    const metadata = item && item.metadata;
+    let mediatype = metadata && metadata.mediatype;
+    //isSearch: includes Search, Collection, Account, Settings, Local
+    //!isSearch: is Details (includes DetailsError, DownloadDirectory, DetailsError,
+    const isSearch = // See DUPLICATEDCODEISSEARCH
+      (!metadata && !this.state.message)
+      || item.query
+      || ["collection", "account"].includes(mediatype)
+      || ["home", "local", "settings"].includes(identifier); //SEE-OTHER-ADD-SPECIAL-PAGE
+    if (isSearch && !mediatype) mediatype = "search";
+
+    /*
+      This function is copied from archive.min.js on_dom_loaded() because
+      a) its run there on DOMLoaded, which is before we've got anything on the page
+      b) Its anonymous in archive.min.js so can't call it
+     */
+    // Use this global hack, by adding class 'accessible-link' to any mouse-only element div/img
+    // Note AJS is defined in archive_min.js
+    AJS.makeMouseElementAccessible('.accessible-link');
+
+
+    AJS.setUpActionTracking(); // Must be before other form submit handlers are assigned
+    AJS.setupPopupLink();
+    // AJS.nav_tophat_setup(); // Not doing nav_tophat_setup because we have no access to tophat via the API
+    // AJS.nav_tophat_wb_setup(); // Not doing nav_tophat_setup because we have no access to tophat via the API
+    AJS.setUpCreativeCommonsLicenseLink();
+    AJS.setUpSearchForms();
+
+    if (isSearch) {
+      const query = item && item.query;
+      //TODO figure out what this is doing, and replace with AnchorSearch etc
+      AJS.date_switcher(
+        (mediatype === "collection")
+          ? `&nbsp;<a href="/search.php?query=${query}&amp;sort=-publicdate"><div class="date_switcher in">Date Archived</div></a> <a href="/search.php?query=${query}&amp;sort=-date"><div class="date_switcher">Date Published</div></a> <a href="/search.php?query=${query}&amp;sort=-reviewdate"><div class="date_switcher">Date Reviewed</div></a> `
+          : `&nbsp;<a href="https://dweb.archive.org/search/${encodeURIComponent(query) + "?sort=-publicdate"}" onclick='${Nav.onclick_search({
+            query: query,
+            sort: "-publicdate"
+          })}'><div class="date_switcher in">Date Archived</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(query) + "?sort=-date"}" onclick='${Nav.onclick_search({
+            query: query,
+            sort: "-date"
+          })}'><div class="date_switcher">Date Published</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(query) + "?sort=-reviewdate"}" onclick='${Nav.onclick_search({
+            query: query,
+            sort: "-reviewdate"
+          })}'><div class="date_switcher">Date Reviewed</div></a> `
+        );
+      AJS.lists_v_tiles_setup(mediatype); // Needs to be collection | search and probably |account
+      AJS.popState(mediatype === 'collection' ? '' : 'search'); //on archive.org: collection=>'' search=>'search'
+      $('div.ikind').css({visibility: 'visible'});
+      //AJS.tiler();
+      $(window).on('resize  orientationchange', function (unusedEvt) {
+        clearTimeout(AJS.tiles_wrap_throttler);
+        AJS.tiles_wrap_throttler = setTimeout(AJS.tiler, 250);
+      });
+    }
+    if (["image"].includes(mediatype)) {
+      AJS.theatresize();
+      AJS.carouselsize('#ia-carousel', true);
+    };
+    if (!isSearch) { // This is common to Text, AV and image - though some have stuff before this and some a
+      AJS.tilebars(); // page load
+      $(window).on('resize  orientationchange', function (unusedEvt) { //TODO-JQUERY remove dependency window.on probably works fine
+          clearTimeout(AJS.also_found_throttler);
+          AJS.also_found_throttler = setTimeout(AJS.tilebars, 250)
+      });
+    }
+    if (["texts"].includes(mediatype)) {
+      AJS.booksize();
+    }
+    /* might never be used as dont see toggle-flag-overlay appearing anywhere but might be used in archive.js
+        if (!isSearch) {
+          // initialize_flag - overlay related
+          $(".toggle-flag-overlay").click(function (e) {
+            e.preventDefault();
+            $("#theatre-ia-wrap").removeClass("flagged");
+          });
+        }
+     */
+    /* Doesnt seem to be used anywhere this may never get used as I cant find any flag-checkboxes or my-checkbox in any sample HTML files or on archive.org
+      // overlay - checkboxes
+      if (isSearch) {
+        $("#flag-checkboxes a").on("click", function (e) {
+          e.preventDefault();
+          $(this).children(".my-checkbox").toggleClass("checked");
+          $.get($(this).attr("href"))
+        });
+      }
+     */
+    AJS.footer();
+  }
 
   render() {
-    const item = this.props.item;
+    const item = this.state.item;
     const identifier = item && item.itemid;
     const metadata = item && item.metadata;
     const mediatype = metadata && metadata.mediatype;
+    //isSearch: includes Search, Collection, Account, Settings, Local
+    //!isSearch: is Details (includes DetailsError, DownloadDirectory, DetailsError,
     const isSearch = // See DUPLICATEDCODEISSEARCH
-      (!metadata && !this.props.message)
+      (!metadata && !this.state.message)
       || item.query
       || ["collection", "account"].includes(mediatype)
       || ["home", "local", "settings"].includes(identifier); //SEE-OTHER-ADD-SPECIAL-PAGE
 
     const itemType = metadata ? mediatype2Schema[mediatype] : undefined;
+    if (isSearch) {
+      document.body.classList.add('bgEEE');
+    }
     return (
       // TODO-FAKEREACT The outer Div is one level up to keep ReactFake happy
       <div id="wrap"
            itemScope={typeof itemType !== "undefined"}
-           itemType={itemType ? ("http://schema.org/" + itemType) : undefined}>
-        { this.props.message
+           itemType={itemType ? ("http://schema.org/" + itemType) : undefined}
+      >
+        {this.state.message
           ?
-            <DetailsMessage item={item}
-                            identifier={identifier}
-                            message={this.props.message}
-                            statuses={this.state.statuses} />
+          <DetailsMessage item={item}
+                          identifier={identifier}
+                          message={this.state.message}
+                          statuses={this.state.statuses}/>
           : isSearch
-          ?
+            ?
             <ComboSearchWrap item={item} statuses={this.state.statuses}/>
-          :
+            :
             <DetailsWork
               item={item}
               metadata={metadata}
