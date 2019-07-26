@@ -81,7 +81,7 @@ Build (webpack) the bundles and copy needed files to dist/
 * LICENSE - standard GNU Affero licence
 * webpack.config.js - defines bundling, and in particular which files are needed for the distribution
 
-## Class hierarchy
+## Class hierarchy TODO-FAKEREACT this is way out of date
 * ArchiveFile - represents a single file
 * ArchiveItem - represents data structures for an item (a directory of files)
     * ArchiveBase - superclass for each item type, has the structure of displaying pages
@@ -94,7 +94,6 @@ Build (webpack) the bundles and copy needed files to dist/
             * Texts - display a Text item (TODO works - but not decentralized)
         * Search - display a search page like archive.org/search.php?query=foo, also handles mediatype="collection"
             * Home - archive home page, acts like a search
-        * DetailsError - display a line of text as an error
 * Nav - common class for navigation structures (mostly at the top of the page) also maps item types to classes
 * ReactFake - an expansion of dweb-objects/utils/createElement to fake react-like "createElement" allowing JSX to be used in JS
 * Tile - used to represent each tile displayed in a search
@@ -105,7 +104,7 @@ Build (webpack) the bundles and copy needed files to dist/
 The general route to load a single Details item (TODO - writeup for Search) is ...
 
 
-* Nav.nav_details(itemid)   - load and display a details page
+* Nav.nav_details(itemid)   - load and display a details page TODO-FAKEREACT this is well out of date
     * Nav.factory
         * new Details({itemid}) - to get metadata
         * determine class of item e.g. Texts, video

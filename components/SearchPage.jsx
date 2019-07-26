@@ -1,9 +1,6 @@
 import React from 'react';
-import IAReactComponent from './IAReactComponent.js';
-import {AnchorModalGo, AnchorDetails, ImageDweb, Tabby} from '@internetarchive/ia-components/dweb-index.js';
+import {AnchorModalGo, AnchorDetails, IAReactComponent, ImageDweb, Tabby} from '@internetarchive/ia-components/dweb-index.js';
 import {NavWrap, ScrollableTileGrid, SearchSwitcher} from "@internetarchive/ia-components/dweb-index";
-import {NavWrapWrapper} from "./NavWrapWrapper";
-import {SaveModal} from "./SaveModal";
 import {transportStatusAndProps} from "../ReactSupport";
 import {CherModal} from "./CherModal";
 import { LocalItem } from "./mirror/LocalComponent";
@@ -348,7 +345,7 @@ class SearchRowColumnsItems extends IAReactComponent {
 
   render() {
     const membersToTile = (this.props.item.membersFav || []).concat(this.props.item.membersSearch || []);
-    return (!(membersToTile.length) ? undefined :  /* If no members, probably a query failed so dont display */
+    return (!(membersToTile.length) ? null :  /* If no members, probably a query failed so dont display */
         <div className="row">{/*--DONT NEED TILL HAVE FACETS --*/}
           {/*TODO-DETAILS Facets not available over advancedsearch*/}
           {/*--<div className="columns-facets"></div> TODO-DETAILS-FACETS column goes here--*/}
@@ -378,7 +375,6 @@ class SearchWrap extends IAReactComponent {
                  disconnected={this.props.disconnected}
                  canSave={true}
         />
-        <SaveModal identifier={this.props.item.itemid} directories={this.props.directories} />
         <div className="container container-ia">
           <a name="maincontent" id="maincontent"></a>
         </div>
@@ -405,7 +401,6 @@ class CollectionWrap extends IAReactComponent {
     returns:      elements tree suitable for adding into another render
      */
     //Note both description & rights need dangerousHTML and \n -> <br/>
-    //TODO-GREY when move this into react replace disconnected={true} with this.prop|state.disconnected
     const item = this.props.item;
     console.assert(!item.isDark) // Will be mediatype=collection so not isDark
     return (
@@ -449,19 +444,9 @@ class CollectionWrap extends IAReactComponent {
 
 class ComboSearchWrap extends IAReactComponent {
   /**
-   * <ComboSearchWrap item=ARCHIVEITEM />
+   * <ComboSearchWrap item=ARCHIVEITEM statuses={...}/>
    *
-   * @returns {*}
    */
-  constructor(props) { //SEE-IDENTICAL-CODE-STATUSES
-    super(props); //  item
-    // TODO-DWEBNAV need to tell Transports to set this status when changes
-    transportStatusAndProps((err, statuses) => { // { transportStatuses, mirror2gateway, disconnected, directories }
-      if (!err) {
-        this.setState({statuses}); // disconnected etc
-      }
-    })
-  }
 
   render() {
     /* Wrap the content up: wrap ( TODO-DONATE | navwrap |
@@ -471,21 +456,16 @@ class ComboSearchWrap extends IAReactComponent {
     const item = this.props.item;
     const mediatype = item.metadata ? item.metadata.mediatype : "search";
     const identifier = item.itemid;
-    return ( // this is wrapped with <div id="wrap" to keep FakeReact happy for now TODO-FAKEREACT
-      <>
-        {(mediatype === "collection")
-          ? <CollectionWrap item={item} {...this.state.statuses}/>
+    return (
+      (mediatype === "collection")
+          ? <CollectionWrap item={item} {...this.props.statuses}/>
           : (mediatype === "account")
-            ? <AccountWrap item={item} {...this.state.statuses}/>
+            ? <AccountWrap item={item} {...this.props.statuses}/>
             : (identifier === "local")
-              ? <LocalItem item={item} {...this.state.statuses}/>
+              ? <LocalItem item={item} {...this.props.statuses}/>
               : (identifier === "settings")
-                ? <SettingsItem item={item} {...this.state.statuses}/>
-                : <SearchWrap item={item} {...this.state.statuses}/>
-        }
-        <SaveModal identifier={this.props.item.itemid} directories={this.state.directories} />
-      </>
-
+                ? <SettingsItem item={item} {...this.props.statuses}/>
+                : <SearchWrap item={item} {...this.props.statuses}/>
     );
   }
 

@@ -1,13 +1,11 @@
 import React from 'react';
-import IAReactComponent from '../IAReactComponent';
 const debug = require('debug')('dweb-archive:SettingsComponent');
 import prettierBytes from 'prettier-bytes';
 
 import waterfall from 'async/waterfall';
 import {gatewayServer}  from '@internetarchive/dweb-archivecontroller/Util';
-import {NavWrapWrapper} from "../NavWrapWrapper";
 import {CommonWelcomeComponent} from "./CommonComponent";
-import {NavWrap} from "@internetarchive/ia-components/sandbox/details/NavWrap";
+import {IAReactComponent, NavWrap} from "@internetarchive/ia-components/dweb-index.js";
 
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 

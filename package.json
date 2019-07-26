@@ -47,7 +47,6 @@
   "homepage": "https://github.com/internetarchive/dweb-archive#readme",
   "keywords": [],
   "license": "AGPL-3.0",
-  "main": "Details.js",
   "name": "@internetarchive/dweb-archive",
   "repository": {
     "type": "git",

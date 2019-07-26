@@ -1,19 +1,14 @@
 //import ReactDOM from "react-dom";
-
-// noinspection JSUnresolvedFunction
-import {homeQuery} from "@internetarchive/dweb-archivecontroller/Util";
+import {loadImg} from "./ReactSupport";
 
 const canonicaljson = require('@stratumn/canonicaljson');
-
-// https://ponyfoo.com/articles/universal-react-babel
-// noinspection JSUnresolvedFunction
-import React from './ReactFake';
-import Search from './Search';
-import Details from './Details';
-import DetailsError from './DetailsError'; //TODO-THEATRES use message theatre for this
-import DownloadDirectory from './DownloadDirectory';
-import {ObjectFilter} from '@internetarchive/dweb-archivecontroller/Util.js';
+// Other IA repositories
+import { homeQuery, ObjectFilter } from "@internetarchive/dweb-archivecontroller/Util";
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
+// This repository
+import ArchiveBase from './ArchiveBase';
+import React from './ReactFake';
+
 const debug = require('debug')('dweb-archive:Nav');
 
 function pushHistory(...optss) {
@@ -52,7 +47,8 @@ function pushHistory(...optss) {
     Object.entries(combinedparams).forEach(
       kv => Array.isArray(kv[1])
         ? kv[1].forEach(v=>usp.append(kv[0],v))
-        : usp.append(kv[0],kv[1]))
+        : usp.append(kv[0],kv[1]));
+    // noinspection JSValidateTypes
     url.search = usp;
     history.pushState(opts, historyTitle, url.href);
   }
@@ -82,7 +78,8 @@ export default class Nav {
     // Clear the screen to give confidence that action under way
     // Leaves Nav, clears rest
     //TODO-THEATRES use message theatre for this
-    React.domrender(new DetailsError({message: < span>Loading - note this can take a while if no-one else has accessed this item yet</span>}).wrap(), destn)
+    //TODO-IAUX move this behaviour up into React component see https://github.com/internetarchive/dweb-archive/issues/126
+    //React.domrender(new DetailsError({message: < span>Loading - note this can take a while if no-one else has accessed this item yet</span>}).wrap(), destn)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -114,10 +111,11 @@ export default class Nav {
     const destn = document.getElementById('main'); // Blank window (except Nav) as loading
     Nav.clear(destn);
     const qq = (typeof (q) === "object") ? q : (typeof (q) === "string") ? {query: q} : undefined;
-    const s = await new Search(qq, opts).fetch({noCache});
+    opts.query = qq;
+    const s = await new ArchiveBase(opts).fetch({noCache});
     pushHistory(opts, qq); // Note this takes account of wantHistory
     document.title = `${qq.query} ${qq.sort || ""} : ${semiTitle}`;
-    s.render(destn);
+    s.renderFake(destn);
   }
 
   static onclick_search(q) {
@@ -128,7 +126,7 @@ export default class Nav {
 
   // noinspection JSUnusedGlobalSymbols
   static async nav_download(el) {
-    const source = el.source; // Should be an ArchiveFile. - see example in Details.js
+    const source = el.source; // Should be an ArchiveFile
     if (Array.isArray(source)) {
       for (let s in source) { // noinspection JSUnfilteredForInLoop
         await source[s].p_download(el);
@@ -149,7 +147,7 @@ export default class Nav {
     return false; // Dont follow anchor link - unfortunately React ignores this
   }
 
-  static async factory(identifier, ...optss) {
+  static async factory(identifier, ...optss) { //TODO-REACTFAKE I think this is what becomes the resettable page with the logic in its render
     /* Fetch and render an ArchiveItem
       wanthistory:    if set build a new entry in history
       download:       Want the download directory version of the details page
@@ -165,66 +163,44 @@ export default class Nav {
       const semiTitle = DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive";
       if (!identifier || (identifier === "home")) {
         document.title = `Home : ${semiTitle}`; //TODO-IAUX when consolidated, this could be done in NavWeb component or even higher
-        (await new Search({itemid: "home", query: homeQuery, sort: '-downloads'}).fetch({noCache})).render(destn);
+        (await new ArchiveBase({itemid: "home", query: homeQuery, sort: '-downloads'}).fetch({noCache})).renderFake(destn);
         /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
       } else if (identifier === "local") { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
         document.title = `Local : ${semiTitle}`;
-        (await new Search({itemid: identifier, metaapi: {}})).render(destn);
+        (await new ArchiveBase({itemid: identifier, metaapi: {}})).renderFake(destn);
       } else if (identifier === "settings") { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
         document.title = `Settings : ${semiTitle}`;
-        (await new Search({itemid: identifier, metaapi: {}})).render(destn);
+        (await new ArchiveBase({itemid: identifier, metaapi: {}})).renderFake(destn);
       } else {
+        //TODO-FAKEREACT this is probably not the best way now that using react, better to create DOM object, then hydrate it (i.e. ArchiveBase goes away)
         //TODO edit this to make function like fetch_metadata but as a static function that can be used without creating temporary details item "d"
-        let d = await new Details({itemid: identifier}).fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
-        let metaapi = d.exportMetadataAPI({wantPlaylist: true}); // Cant pass Details to the constructors below
+        let d = await new ArchiveBase({itemid: identifier}).fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
+        let metaapi = d.exportMetadataAPI({wantPlaylist: true}); // Cant pass ArchiveBase to the constructors below
+        let message;
         if (!d.metadata) {
-          new DetailsError({ //TODO-THEATRES use message theatre for this
-            itemid: identifier,
-            message: `item ${identifier} cannot be found or does not have metadata`
-          }).render(destn);
-        } else {
-          if (d.metadata.title) {
-            document.title = `${d.metadata.title} : ${semiTitle}`;
-          } else {
-            debug(`ERROR Writing title but dont have one, look at %O`, d);
-          }
-          if (download) {
-            const item = new DownloadDirectory({itemid: identifier, metaapi});
-            item.render(destn);
-            /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
-          } else {
-            const item = await this.renderableItem({itemid: identifier, metaapi, page, noCache, prioritem: d});
-            item.render(destn);
-            /* TODO-DWEBNAV this.setCrawlStatus({identifier, crawl: item.crawl}); */
-            return item;
-          }
+          message = `item ${identifier} cannot be found or does not have metadata`;
         }
+        if (d.metadata.title) {
+          document.title = message || `${d.metadata.title} : ${semiTitle}`;
+        } else {
+          debug(`ERROR Writing title but dont have one, look at %O`, d);
+        }
+        if (!message && metaapi && metaapi.metadata && !['texts', 'image', 'audio', 'etree', 'movies', 'collection', 'account'].includes(metaapi.metadata.mediatype)) {
+          message = `Unsupported mediatype: ${metaapi.metadata.mediatype}`
+        }
+        const item = new ArchiveBase({itemid: identifier, metaapi, message, noCache, page, download});
+        if (!message) {
+          await item.fetch({noCache});
+        }
+        item.renderFake(destn);
+        /* TODO-DWEBNAV this.setCrawlStatus({identifier, crawl: item.crawl}); */
+        return item;
       }
     } catch (err) {
-      console.error("Nav.factory detected error", err);
-      new DetailsError({itemid: identifier, message: err.message}).render(destn); //TODO-THEATRES use message theatre for this
-      //TODO-UXLOCAL think about return
-    }
-  }
-
-  static async renderableItem({prioritem, itemid, metaapi, page, noCache}) {
-    /* Returns an ArchiveItem subclass or a DetailsError */
-    //console.assert(this.metadata) - will have generated error before calling this if no metadata
-    switch (metaapi.metadata.mediatype) {
-      case "texts":
-      case "image":
-      case "audio":
-      case "etree":
-      case "movies":
-          return new Details({itemid, metaapi, page, noCache});
-      case "collection":
-        return await new Search({itemid, metaapi, noCache}).fetch({noCache});   //fetch will do search
-      case "account":
-        return (await new Search({itemid, metaapi, query: `uploader:"${metaapi.uploader}"`, sort: '-publicdate'}).fetch({noCache}));
-      default:
-        //TODO Not yet supporting software, zotero (0 items); data; web
-        return new DetailsError({itemid, message: `Unsupported mediatype: ${metaapi.metadata.mediatype}`}); //TODO-THEATRES use a message theatre instead of DetailsError -a) just call Details, b) pass message to Details to MessageTheatre
-      //    return new Nav(")
+      debug("ERROR: Nav.factory detected error %o", err);
+      const item = new ArchiveBase({itemid: identifier, message: err.message});
+      // Note not doing the .fetch
+      item.renderFake(destn);
     }
   }
 
@@ -244,14 +220,17 @@ export default class Nav {
   static metafactory(opts) {
     let {query, sort, item, identifier, download} = opts;
     identifier = identifier || item;
-    opts = ObjectFilter(opts, (k, v) => !["query", "sort", "item", "identifier", "download"].includes(k));
+    opts = ObjectFilter(opts, (k, unusedV) => !["query", "sort", "item", "identifier", "download"].includes(k));
     opts.wanthistory = true;
     if (query) {
+      // noinspection JSIgnoredPromiseFromCall
       this.nav_search({query, sort}, opts); // Intentionally passing transport, paused, etc that are used above
     } else if (download) { // Note only works for downloading items, not files - can add later if reqd
-        this.nav_downloaddirectory(identifier, opts);
+        // noinspection JSIgnoredPromiseFromCall
+      this.nav_downloaddirectory(identifier, opts);
     } else {
-        this.nav_details(identifier || "home", opts);
+        // noinspection JSIgnoredPromiseFromCall
+      this.nav_details(identifier || "home", opts);
     }
   }
 }
@@ -265,7 +244,8 @@ window.onpopstate = function(event) {
         // noinspection JSIgnoredPromiseFromCall
         Nav.nav_search(event.state.query, stateOpts);
     } else {
-        Nav.nav_details(identifier || "home", stateOpts);
+        // noinspection JSIgnoredPromiseFromCall
+      Nav.nav_details(identifier || "home", stateOpts);
     }
 
 };

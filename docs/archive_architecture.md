@@ -23,7 +23,8 @@ Last edited to match reality 14 August 2018
     * and loads it into the browser.
 * TODO: incoporate some other URL patterns and to match IPFS's Companion extension and/or Mozilla's library
     
-### Archive UI 
+### Archive UI
+TODO-FAKEREACT this is significantly out of date
 * Core: lives in dweb-archive/archive.html which loads the rest of the UI from dweb-archive and functionality from dweb-transports and dweb-objects
 * Process: lives mostly in Nav.js - its not identical for each mediatype but at a high level
     * Creates an object depending on whether its a Search/Collection or Details

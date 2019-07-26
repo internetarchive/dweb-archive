@@ -1,5 +1,5 @@
 import React from 'react';
-import IAReactComponent from '../IAReactComponent';
+import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
 //const debug = require('debug')('dweb-archive:CommonComponent');
 
 class CommonWelcomeComponent extends IAReactComponent {

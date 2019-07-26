@@ -1,12 +1,11 @@
 import React from 'react';
-import IAReactComponent from '../IAReactComponent';
+import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
 const debug = require('debug')('dweb-archive:LocalComponent');
 import waterfall from 'async/waterfall';
 
 import {TileGrid} from "@internetarchive/ia-components/dweb-index.js";
 import {gatewayServer, ObjectDeeperAssign}  from '@internetarchive/dweb-archivecontroller/Util';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
-import {NavWrapWrapper} from '../NavWrapWrapper';
 import {CommonWelcomeComponent} from "./CommonComponent";
 import {NavWrap} from "@internetarchive/ia-components/dweb-index";
 

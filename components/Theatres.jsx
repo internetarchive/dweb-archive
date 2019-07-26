@@ -1,8 +1,7 @@
 import React from 'react';
-import IAReactComponent from './IAReactComponent';
 import { CherModal } from './CherModal';
 import { BookReaderWrapper } from './BookReaderWrapper';
-import { AnchorDownload, Carousel, ImageDweb }  from '@internetarchive/ia-components/dweb-index.js';
+import { AnchorDownload, Carousel, IAReactComponent, ImageDweb }  from '@internetarchive/ia-components/dweb-index.js';
 import TheatreControls from "./TheatreControls";
 import { AudioDweb, VideoDweb } from "./AudioVideo";
 import {config} from "../Util";

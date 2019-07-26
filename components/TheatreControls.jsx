@@ -1,5 +1,5 @@
 import React from "react";
-import IAReactComponent from './IAReactComponent';
+import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
 
 /* Theatre Control are little widgets used in each of the "theatre" displays,
 

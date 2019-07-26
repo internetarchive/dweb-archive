@@ -1,34 +1,25 @@
 import React from 'react';
-import IAReactComponent from './IAReactComponent';
 import {gateway, gatewayServer, ObjectMap} from "@internetarchive/dweb-archivecontroller/Util";
 import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageTheatre, VideoTheatre} from "./Theatres";
-import {transportStatusAndProps} from "../ReactSupport";
-import {NavWrap, DetailsAbout} from "@internetarchive/ia-components/dweb-index.js";
+import {IAReactComponent, NavWrap, DetailsAbout, DownloadDirectoryDiv } from "@internetarchive/ia-components/dweb-index.js";
 import RelatedItemsWrapper from './RelatedItemsWrapper';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 /**
  * A set of components that make up the Details Page
- * TODO - migrating stuff here from Details.js
- *
- * <DetailsIAWrap
- *  identifier, mediatype, name, title, creator     Fields form Metadata API
- *  item=ARCHIVEITEM  // Currently Needed if its a bookreader,
- *  poster=URL    // Poster for videos, mostly for search engines
- *  playlist={...} // As stored in item from playlist API
- *  files=
- *  page=
- * />
  */
 
-const mediatype2Schema = {
-  audio: "AudioObject",
-  etree: "AudioObject",
-  image: "VisualArtwork",
-  movies: "VideoObject",
-  texts: "TextDigitalDocument"
-}
-
 class DetailsIAWrap extends IAReactComponent {
+  /**
+   * <DetailsIAWrap
+   *  identifier, mediatype, name, title, creator     Fields form Metadata API
+   *  item=ARCHIVEITEM  // Currently Needed if its a bookreader,
+   *  poster=URL        // Poster for videos, mostly for search engines
+   *  playlist={...}    // As stored in item from playlist API
+   *  files=
+   *  page=
+   *  download=         // if true display the download directory
+   * />
+   */
   render() {
       // This is a combo wrap that handles multiple mediatypes
 
@@ -39,6 +30,7 @@ class DetailsIAWrap extends IAReactComponent {
         });
       }
       //TODO video at moment only plays first in playlist which is usually, but not always correct - need an example of multi-video item
+
       return (
 
         /*React doesnt like this - says resized isnt boolean// resized={["image"].includes(this.props.mediatype)} */
@@ -139,10 +131,24 @@ class DetailsIAWrap extends IAReactComponent {
   ); }
 }
 
+class DetailsError extends IAReactComponent {
+  /**
+   * <DetailsError
+   *    message=STRING
+   * />
+   */
+  render() {
+    return ( // TODO Copy styles from the error in is_dark
+        <div className="dweb-message">
+          {this.props.message}
+        </div>
+    )
+  }
+}
+
 class DetailsWork extends IAReactComponent {
   /**
-   *  This is a working class for Details as its moved slowly into react.
-   *  TODO - obsolete this as it becomes <Details> 
+   *  This is the buld of a Details page
    *  <DetailsWork
    *    identifier=IDENTIFIER
    *    item=ARCHIVEFILE optional if not on Dweb
@@ -159,19 +165,16 @@ class DetailsWork extends IAReactComponent {
    *    playlist={}  Result of playlist call (/embed/IDENTIFIER?output=json)
    *    noCache=BOOL if shouldnt use disk cache when reading (only used for Related Items TODO check if used from here down)
    *    disconnected=BOOL true if browser cant see archive.org (or dweb.archive.org)
+   *    download=BOOL true if want the Download Directory for thsi item
+   *    message=STRING Dont display content, display a message
+   *    statuses={...} disconnected, directories etc returned from call to /info
    *    
    */
 
-   constructor(props) { //SEE-IDENTICAL-CODE-STATUSES
+   constructor(props) {
     super(props); //  item
     // TODO-DWEBNAV need to tell Transports to set this status when changes
     this.state.expansionTried = false;
-    // Find out what the status is, it informs the UI in several places especially disabling functions when offline
-    transportStatusAndProps((err, res)=> { // { transportStatuses, mirror2gateway, disconnected, directories }
-      if (!err) {
-        this.setState(res); // Cause a rerender of Navbar and possible grey in/out UI
-      }
-    })
     // Note this was in DetailsAboutWrapper.loadable, but cant see why it shouldnt be in constructor
     // expand a list of collections into a list of titles either through collection_titles if supplied (e.g. from dweb gateway) or via a new Search query
     const {collection} = this.props.metadata;
@@ -187,46 +190,76 @@ class DetailsWork extends IAReactComponent {
   }
 
   render() { return (
-            <div id="wrap" itemscope itemtype={"http://schema.org/"+mediatype2Schema[this.props.metadata.mediatype]}>
-                {/* Missing donate-banner and scripts & css before it */}
-                <NavWrap item={this.props.item}
-                         transportStatuses={this.state.transportStatuses}
-                         mirror2gateway={this.state.mirror2gateway}
-                         disconnected={this.state.disconnected}
-                         directories={this.state.directories}
-                         canSave={this.props.canSave}/>
-                {/*--Begin page content --*/}
-                <div className="container container-ia">
-                    <a name="maincontent" id="maincontent"></a>
-                </div>{/*--//.container-ia--*/}
-                {/*This is the main-content*/}
-                <DetailsIAWrap
-                  identifier={this.props.identifier}
-                  creator={this.props.metadata.creator}
-                  name={this.props.metadata.name}
-                  item={this.props.item}
-                  title={this.props.metadata.title}
-                  mediatype={this.props.metadata.mediatype}
-                  poster={this.props.poster}
-                  subtype={this.props.subtype}
-                  playlist={this.props.playlist}
-                  source={this.props.source}
-                  files={this.props.files}
-                  page={this.props.page}
-                  disconnected={this.state.disconnected}
-                />
-                {(!this.props.identifier) ? null :
-                  <DetailsAbout metadata={this.props.metadata} files={this.props.files} files_count={this.props.files_count}
-                                       collection_titles={this.state.collection_titles}
-                                       reviews={this.props.reviews}
-                                       description={this.props.description}
-                                       disconnected={this.state.disconnected} /> }
-                {(!this.props.identifier) ? null :
-                    <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.state.disconnected}/> }
-                {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
-                }
-            </div>
+    <>
+      {/* Missing donate-banner and scripts & css before it */}
+      <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
+      {/*--Begin page content --*/}
+      <div className="container container-ia">
+          <a name="maincontent" id="maincontent"></a>
+      </div>{/*--//.container-ia--*/}
+      {/*This is the main-content*/}
+      { this.props.download
+        ?
+          <DownloadDirectoryDiv identifier={this.props.identifier}
+                                disconnected={this.props.statuses.disconnected}
+                                files={this.props.item.files.map(f => { return {name: f.metadata.name, size: f.sizePretty()}})} />
+        :
+          <>
+            <DetailsIAWrap
+              identifier={this.props.identifier}
+              creator={this.props.metadata.creator}
+              name={this.props.metadata.name}
+              item={this.props.item}
+              title={this.props.metadata.title}
+              mediatype={this.props.metadata.mediatype}
+              poster={this.props.poster}
+              subtype={this.props.subtype}
+              playlist={this.props.playlist}
+              source={this.props.source}
+              files={this.props.files}
+              page={this.props.page}
+              disconnected={this.props.statuses.disconnected}
+            />
+            {(!this.props.identifier) ? null :
+              <DetailsAbout metadata={this.props.metadata} files={this.props.files} files_count={this.props.files_count}
+                                   collection_titles={this.state.collection_titles}
+                                   reviews={this.props.reviews}
+                                   description={this.props.description}
+                                   disconnected={this.props.statuses.disconnected} /> }
+           </>
+      }
+      {(!this.props.identifier) ? null :
+          <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
+      {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
+    </>
   )}
 }
 
-export { DetailsIAWrap, DetailsWork }
+
+class DetailsMessage extends IAReactComponent {
+  /**
+   *    identifier=IDENTIFIER optional
+   *    item=ARCHIVEFILE optional
+   *    message=STRING Dont display content, display a message
+   *    statuses={...} disconnected, directories etc returned from call to /info
+   *    noCache=BOOL
+   */
+
+  render() { return (
+    <>
+      {/* Missing donate-banner and scripts & css before it */}
+      <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
+      {/*--Begin page content --*/}
+      <div className="container container-ia">
+        <a name="maincontent" id="maincontent"></a>
+      </div>{/*--//.container-ia--*/}
+      {/*This is the main-content*/}
+      <DetailsError message={this.props.message}/>
+      {(!this.props.identifier) ? null :
+        <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
+      {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
+    </>
+  )}
+}
+
+export { DetailsIAWrap, DetailsWork, DetailsMessage }

@@ -1,8 +1,7 @@
 
 import React from 'react';
 import { ObjectFilter } from '@internetarchive/dweb-archivecontroller/Util.js';
-import IAReactComponent from './IAReactComponent';
-import { AnchorDownload } from '@internetarchive/ia-components/dweb-index.js';
+import { AnchorDownload, IAReactComponent } from '@internetarchive/ia-components/dweb-index.js';
 import {config} from "../Util";
 import {loadStream} from "../ReactSupport";
 
@@ -29,7 +28,6 @@ class AVDweb extends IAReactComponent {
     }
   }
 
-  // TODO-IAUX see https://github.com/internetarchive/dweb-archive/issues/113 refactoring this
   loadcallable(avElement) {
     // On load, set the avElenent and render into it, its done this way since loadcallable is only called once, and not on re-renders
     // TODO this may move to a method on the source (e.g. on ArchiveFile)

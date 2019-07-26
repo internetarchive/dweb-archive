@@ -61,8 +61,8 @@ function AJS_on_dom_loaded() {
 
         AJS.setUpActionTracking(); // Must be before other form submit handlers are assigned
         AJS.setupPopupLink();
-        AJS.nav_tophat_setup();
-        AJS.nav_tophat_wb_setup();
+        // AJS.nav_tophat_setup(); // Not doing nav_tophat_setup because we have no access to tophat via the API
+        // AJS.nav_tophat_wb_setup(); // Not doing nav_tophat_setup because we have no access to tophat via the API
         AJS.setUpCreativeCommonsLicenseLink();
         AJS.setUpSearchForms();
 

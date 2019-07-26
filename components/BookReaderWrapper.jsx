@@ -1,6 +1,6 @@
 const debug = require('debug')("BookReaderWrapper");
 import React from "react";
-import IAReactComponent from './IAReactComponent';
+import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
 import RawBookReaderResponse from '@internetarchive/dweb-archivecontroller/RawBookReaderResponse';
 import {gatewayServer} from '@internetarchive/dweb-archivecontroller/Util'; // For gatewayServr
 

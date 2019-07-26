@@ -232,7 +232,7 @@ export default class React  {
             const addable =
                 (typeof child === "string")      ? document.createTextNode(child.toString())
                     : (child instanceof this.Component)
-                    ? child.render()  // Fake only, (will cause any ref= at top level to be a function)
+                    ? child.renderFake()  // Fake only, (will cause any ref= at top level to be a function)
                     : !(child instanceof HTMLElement)
                     ? document.createElement("span")  // React Elements
                     :                                  child; //XX
