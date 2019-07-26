@@ -1,4 +1,3 @@
-//import ReactDOM from "react-dom";
 import {loadImg} from "./ReactSupport";
 
 const canonicaljson = require('@stratumn/canonicaljson');
@@ -7,8 +6,6 @@ import { homeQuery, ObjectFilter } from "@internetarchive/dweb-archivecontroller
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 // This repository
 import ArchiveBase from './ArchiveBase';
-import React from './ReactFake';
-
 const debug = require('debug')('dweb-archive:Nav');
 
 function pushHistory(...optss) {

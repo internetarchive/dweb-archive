@@ -1,12 +1,9 @@
-//Not needed on client - kept so script can run in both cases
-//import ReactDOMServer from 'react-dom/server';
-//Next line is for client, not needed on server but doesnt hurt
-//import ReactDOM from 'react-dom';
 import { stringify } from '@stratumn/canonicaljson';
 // Other Archive Repos
 import ArchiveItem from '@internetarchive/dweb-archivecontroller/ArchiveItem';
 // This repo
-import React from './ReactFake';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { ReactConfig } from './ReactSupport';
 import {AJS_on_dom_loaded} from './Util';
 import {Page} from "./components/Page";
@@ -88,6 +85,7 @@ export default class ArchiveBase extends ArchiveItem {
       || ["home", "local", "settings"].includes(this.itemid); //SEE-OTHER-ADD-SPECIAL-PAGE
 
     const itemType = this.metadata ? mediatype2Schema[mediatype] : undefined;
+    //TODO-FAKEREACT make the element reusable, so replace  through ReactDOM.render by changing item etc on prebuilt
     const els = (
       <div id="wrap"
         itemScope={typeof itemType !== "undefined"}
@@ -98,8 +96,7 @@ export default class ArchiveBase extends ArchiveItem {
     if (isSearch) {
       document.body.classList.add('bgEEE');
     }
-    React.domrender(els, res);  //Put the els into the page
-    //ReactDOM.render(els, res); // TODO-REACTFAKE this is replacement for line above
+    ReactDOM.render(els, res);
     if (!isSearch) {
       // initialize_flag
       // overlay related but might never be used as dont see toggle-flag-overlay appearing anywhere but might be used in archive.js

@@ -64,7 +64,6 @@ TODO-FAKEREACT this is significantly out of date
     * All these calls 
         * use JSX (a mix of HTML/Javascript) 
         * which webpack compiles to calls to React.createELement
-        * And in ReactFake.js is a React clone that just implments createElement
         * React.createElement has a lot of special case code to handle in particular URLs
             * Over time I expect to put more special case code here, and remove from the individual JSX elements.
 
@@ -87,7 +86,7 @@ Each component of the Dweb is integrated somewhat differently.
 
 ### WEBTORRENT
 * The magnet links are included in metadata
-* ReactFake opens a stream via a call to Transports
+* React opens a stream via a call to Transports
 * dweb-transports/Transports.js > TransportWEBTORRENT.js recognize these magnet links
 * The magnet link also includes a HTTPS fallback which the webtorrent library handles transparantly to us
     

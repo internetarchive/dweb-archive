@@ -5,13 +5,14 @@ import {IAReactComponent, RelatedItems} from '@internetarchive/ia-components/dwe
 //Note this component is a bridge from ArchiveBase.js to a IAUX React Component (that wants not to be dependent on archivecontroller,
 
 export default class RelatedItemsWrapper extends IAReactComponent {
-  /* -- Not used with ReactFake or current IAUX yet
-  static propTypes = {
-      identifier: PropTypes.string,
-      members:    PropTypes.array, // of ArchiveMembers or similar
-      item:       ArchiveItem (essentially something that has a relatedItems({...}) method that can return [member*]
-      noCache:    PropTypes.boolean // True if should skip cache when loading (used by dweb-mirror)
-      disconnected PropTypes.boolean // True if browser cannot see archive.org
+  /**
+   * <RelatedItemsWrapper
+   *    identifier: IDENTIFIER
+   *    members:    [ ARCHIVEMEMBER ]   (or similar objects)
+   *    item:       ARCHIVEITEM         (essentially something that has a relatedItems({...}) method that can return [member*]
+   *    noCache:    BOOL                True if should skip cache when loading (used by dweb-mirror)
+   *    disconnected BOOL               True if browser cannot see archive.org
+   * />
    */
   constructor(props) {
     console.assert(props.item || props.members,"Must pass either item or members")

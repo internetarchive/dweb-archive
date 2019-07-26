@@ -1,7 +1,7 @@
 /**
- * This is a set of support functions of use to both ReactFake and real React
+ * This is a set of support functions of use to React components
  *
- * It knows about Dweb architecture, but not about ReactFake.
+ * It knows about Dweb architecture
  */
 import map from 'async/map';
 import Url from 'url';
@@ -78,7 +78,6 @@ function ReactConfig() {
 }
 
 function _loadImgSrc(el, url, cb) {
-  // Note different from one still in ReactFake
   el.src = url;
   if (cb) cb(undefined, el);  // Set attributes (shouldnt have kids)
 }
@@ -415,7 +414,7 @@ async function p_loadStream(el, urls, { name=undefined, cb=undefined, preferredT
         }
       }
     } else { // No urls
-      console.warn('ReactFake.p_loadStream didnt find any resolvable urls - cant load stream')
+      debug('ERROR: ReactSupport.p_loadStream didnt find any resolvable urls - cant load stream')
     }
   } catch(err) {
     console.error("Uncaught error in p_loadStream",err);
