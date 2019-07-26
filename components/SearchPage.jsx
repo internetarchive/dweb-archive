@@ -1,8 +1,8 @@
 import React from 'react';
-import {AnchorModalGo, AnchorDetails, IAReactComponent, ImageDweb, Tabby} from '@internetarchive/ia-components/dweb-index.js';
-import {NavWrap, ScrollableTileGrid, SearchSwitcher} from "@internetarchive/ia-components/dweb-index";
-import {transportStatusAndProps} from "../ReactSupport";
-import {CherModal} from "./CherModal";
+import { AnchorModalGo, AnchorDetails, IAReactComponent, ImageDweb, Tabby } from '@internetarchive/ia-components/dweb-index.js';
+import { NavWrap, ScrollableTileGrid, SearchSwitcher } from "@internetarchive/ia-components/dweb-index";
+import { transportStatusAndProps, preprocessDescription } from "../ReactSupport";
+import { CherModal } from "./CherModal";
 import { LocalItem } from "./mirror/LocalComponent";
 import { SettingsItem } from "./mirror/SettingsComponent";
 import { AccountWrap } from "../Account.js";
@@ -41,7 +41,7 @@ class CollectionBanner extends IAReactComponent {
    *  imgsrc = this.thumbnailFile()
    *  title=STRING
    *  description =STRING   Note this should have been preprocessed to concatenate any arrays, sanitize the HTML and replace any relative URI's which wont work.
-   *    !this.metadata.description ? undefined : this.preprocessDescription(this.metadata.description).replace(/(..\/)+..\//g, "../"); // Contains HTML (supposedly safe) inserted via innerHTML thing
+   *    !this.metadata.description ? undefined : preprocessDescription(this.metadata.description).replace(/(..\/)+..\//g, "../"); // Contains HTML (supposedly safe) inserted via innerHTML thing
    *  creator=this.metadata.creator title=this.metadata.title   From the metadata API
    *  disconnected=BOOL     True if browser cant see archive.org
    *  />
@@ -418,7 +418,7 @@ class CollectionWrap extends IAReactComponent {
         <CollectionBanner
           identifier={item.itemid}
           imgsrc={item.thumbnailFile()}
-          description={!item.metadata.description ? undefined : item.preprocessDescription(item.metadata.description).replace(/(..\/)+..\//g, "../")}
+          description={!item.metadata.description ? undefined : preprocessDescription(item.metadata.description).replace(/(..\/)+..\//g, "../")}
           creator={item.metadata.creator}
           title={item.metadata.title}
           disconnected={this.props.disconnected}
@@ -434,8 +434,8 @@ class CollectionWrap extends IAReactComponent {
         {/*--TODO-ANALYTICS is missing --*/}
         <CollectionTabby
           identifier={item.itemid}
-          description={item.preprocessDescription(item.metadata.description)}
-          rights={item.preprocessDescription(item.metadata.rights)}
+          description={preprocessDescription(item.metadata.description)}
+          rights={preprocessDescription(item.metadata.rights)}
         />
       </>
     );

@@ -62,25 +62,9 @@ export default class ArchiveBase extends ArchiveItem {
     this.state = {}; // This will be automatic when moves to React
     this.message = message;
   }
-  preprocessDescription(description) {
-    // Now catch some things that often appear in descriptions because it assumes running on archive page e.g. /server/commute/commute.jpg on "commute"
-    // And handle multivalue (array) descriptions by concatenating with <br/>
-
-    return !description ? description
-      : (Array.isArray(description) ? description.join('<br/>') : description)
-        .replace('\n', '<br/>')
-        .replace(/src=(['"])http:\/\/www.archive.org\//gi, 'src=$1' + ReactConfig().root + '/') // src="/  absolute urls
-        .replace(/src=(['"])\//gi, 'src=$1' + ReactConfig().root + '/'); // src="/  absolute urls
-
-  }
 
   renderFake(res) {
-    const els = (
-        <Page item={this} message={this.message}/>
-    );
-    ReactDOM.render(els, res);
+    DwebArchive.page.setState({item: this, message: this.message});
   }
-
-
 }
 

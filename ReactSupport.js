@@ -432,6 +432,17 @@ function loadStream(el, urls, opts = {}, cb) {
   if (href.startsWith("dweb:")) possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href); return false;';
  */
 
+function preprocessDescription(description) {
+  // Now catch some things that often appear in descriptions because it assumes running on archive page e.g. /server/commute/commute.jpg on "commute"
+  // And handle multivalue (array) descriptions by concatenating with <br/>
+
+  return !description ? description
+    : (Array.isArray(description) ? description.join('<br/>') : description)
+      .replace('\n', '<br/>')
+      .replace(/src=(['"])http:\/\/www.archive.org\//gi, 'src=$1' + ReactConfig().root + '/') // src="/  absolute urls
+      .replace(/src=(['"])\//gi, 'src=$1' + ReactConfig().root + '/'); // src="/  absolute urls
+
+}
 
 //Not exporting relativeurl as not used
-export { ReactConfig, resolveUrls, p_resolveUrls, thumbnailUrlsFrom, imgUrlOrStream, loadImg, transportStatusAndProps, loadStream }
+export { ReactConfig, resolveUrls, p_resolveUrls, thumbnailUrlsFrom, imgUrlOrStream, loadImg, transportStatusAndProps, loadStream, preprocessDescription }

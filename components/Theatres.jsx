@@ -39,9 +39,11 @@ class CarouselTheatre extends IAReactComponent {
     this.componentDidUpdate = this.component.DidUpdate.bind(this);
   }
   componentDidMount() {
+    super.componentDidMount();
     this.componentDidMountOrUpdate()
   }
   componentDidUpdate() {
+    super.componentDidUpdate();
     this.componentDidMountOrUpdate()
   }
   componentDidMountOrUpdate() {

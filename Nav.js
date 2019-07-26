@@ -6,6 +6,9 @@ import { homeQuery, ObjectFilter } from "@internetarchive/dweb-archivecontroller
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 // This repository
 import ArchiveBase from './ArchiveBase';
+import {Page} from "./components/Page";
+import ReactDOM from "react-dom";
+import React from "react";
 const debug = require('debug')('dweb-archive:Nav');
 
 function pushHistory(...optss) {
@@ -215,6 +218,13 @@ export default class Nav {
   }
 
   static metafactory(opts) {
+    const destn = document.getElementById('main'); // Blank window (except Nav) as loading
+    const els = (
+      <Page message={"LOADING STARTING"}/>
+    );
+    ReactDOM.render(els, destn);
+    // Assumes rendering is sync
+    console.assert(typeof DwebArchive.page !== "undefined", "Assuming ReactDOM.render is sync");
     let {query, sort, item, identifier, download} = opts;
     identifier = identifier || item;
     opts = ObjectFilter(opts, (k, unusedV) => !["query", "sort", "item", "identifier", "download"].includes(k));

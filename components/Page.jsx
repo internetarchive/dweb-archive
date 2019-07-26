@@ -1,9 +1,9 @@
 import React from "react";
-import {ComboSearchWrap} from "./SearchPage";
-import {DetailsWork, DetailsMessage} from "./DetailsPage";
-import {SaveModal} from "./SaveModal";
-import {IAReactComponent} from "@internetarchive/ia-components/dweb-index.js";
-import {transportStatusAndProps} from "../ReactSupport";
+import { ComboSearchWrap } from "./SearchPage";
+import { DetailsWork, DetailsMessage } from "./DetailsPage";
+import { SaveModal } from "./SaveModal";
+import { IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
+import { transportStatusAndProps, preprocessDescription } from "../ReactSupport";
 
 const mediatype2Schema = { // See DUPLICATEDCODEMEDIATYPE2SCHEMA
   audio: "AudioObject",
@@ -36,12 +36,17 @@ class Page extends IAReactComponent {
     })
   }
 
-  componentDidMount() {
+  loadcallable(el) {
     DwebArchive.page = this;
+  }
+  componentDidMount() {
+    //DwebArchive.page = this;
+    super.componentDidMount();
     this.componentDidMountOrUpdate()
   }
 
   componentDidUpdate() {
+    super.componentDidUpdate();
     this.componentDidMountOrUpdate()
   }
 
@@ -50,12 +55,13 @@ class Page extends IAReactComponent {
     const item = this.state.item;
     const identifier = item && item.itemid;
     const metadata = item && item.metadata;
+    const query = item && item.query;
     let mediatype = metadata && metadata.mediatype;
     //isSearch: includes Search, Collection, Account, Settings, Local
     //!isSearch: is Details (includes DetailsError, DownloadDirectory, DetailsError,
     const isSearch = // See DUPLICATEDCODEISSEARCH
       (!metadata && !this.state.message)
-      || item.query
+      || query
       || ["collection", "account"].includes(mediatype)
       || ["home", "local", "settings"].includes(identifier); //SEE-OTHER-ADD-SPECIAL-PAGE
     if (isSearch && !mediatype) mediatype = "search";
@@ -144,11 +150,12 @@ class Page extends IAReactComponent {
     const identifier = item && item.itemid;
     const metadata = item && item.metadata;
     const mediatype = metadata && metadata.mediatype;
+    const query = item && item.query;
     //isSearch: includes Search, Collection, Account, Settings, Local
     //!isSearch: is Details (includes DetailsError, DownloadDirectory, DetailsError,
     const isSearch = // See DUPLICATEDCODEISSEARCH
       (!metadata && !this.state.message)
-      || item.query
+      || query
       || ["collection", "account"].includes(mediatype)
       || ["home", "local", "settings"].includes(identifier); //SEE-OTHER-ADD-SPECIAL-PAGE
 
@@ -161,6 +168,7 @@ class Page extends IAReactComponent {
       <div id="wrap"
            itemScope={typeof itemType !== "undefined"}
            itemType={itemType ? ("http://schema.org/" + itemType) : undefined}
+           ref={this.load}
       >
         {this.state.message
           ?
@@ -187,7 +195,7 @@ class Page extends IAReactComponent {
               files_count={item && item.files_count}
               reviews={item && item.reviews}
               collection_titles={item && item.collection_titles}
-              description={metadata ? item.preprocessDescription(metadata.description) : undefined}
+              description={metadata ? preprocessDescription(metadata.description) : undefined}
               page={item && item.page}
               noCache={item && item.noCache}
               playlist={item && item.playlist}

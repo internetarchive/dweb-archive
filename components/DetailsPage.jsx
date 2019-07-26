@@ -240,15 +240,16 @@ class DetailsMessage extends IAReactComponent {
 
   render() { return (
     <>
-      {/* Missing donate-banner and scripts & css before it */}
-      <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
-      {/*--Begin page content --*/}
-      <div className="container container-ia">
-        <a name="maincontent" id="maincontent"></a>
-      </div>{/*--//.container-ia--*/}
-      {/*This is the main-content*/}
+      {(!this.props.item) ? null :
+        <>
+          <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
+          <div className="container container-ia">
+            <a name="maincontent" id="maincontent"></a>
+          </div>
+        </>
+      }
       <DetailsError message={this.props.message}/>
-      {(!this.props.identifier) ? null :
+      {(!(this.props.item || this.props.identifier)) ? null :
         <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
       {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
     </>
