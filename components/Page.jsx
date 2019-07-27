@@ -5,7 +5,7 @@ import { SaveModal } from "./SaveModal";
 import { IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
 import { transportStatusAndProps, preprocessDescription } from "../ReactSupport";
 
-const mediatype2Schema = { // See DUPLICATEDCODEMEDIATYPE2SCHEMA
+const mediatype2Schema = {
   audio: "AudioObject",
   etree: "AudioObject",
   image: "VisualArtwork",

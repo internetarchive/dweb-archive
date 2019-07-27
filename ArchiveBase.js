@@ -26,16 +26,6 @@ const searchConfig = {
   rows: 30,  // How many to retrieve per page, smaller numbers load quicker, but then scroll down will have to get next page
 };
 
-const mediatype2Schema = { // See DUPLiCATEDCODEMEDIATYPE2SCHEMA
-  audio: "AudioObject",
-  etree: "AudioObject",
-  image: "VisualArtwork",
-  movies: "VideoObject",
-  texts: "TextDigitalDocument"
-};
-
-
-
 export default class ArchiveBase extends ArchiveItem {
   /*
   Fields:
@@ -63,8 +53,5 @@ export default class ArchiveBase extends ArchiveItem {
     this.message = message;
   }
 
-  renderFake(res) {
-    DwebArchive.page.setState({item: this, message: this.message});
-  }
 }
 

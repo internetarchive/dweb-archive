@@ -40,7 +40,7 @@
         if (query) {
             Nav.nav_search(query, opts, {wanthistory: true});
         } else {
-            Nav.nav_details(item || "home", opts, {wanthistory: true});
+          await Nav.factory(item || "home", opts, {wanthistory: true});
         }
     }
 
