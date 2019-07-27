@@ -139,27 +139,20 @@ export default class Nav {
         document.title = `Settings : ${semiTitle}`; //TODO-FAKEREACT move to <Page>
         renderPage(new ArchiveBase({itemid: identifier, metaapi: {}}));
       } else {
-        //TODO-FAKEREACT 
+        //TODO-FAKEREACT
         //TODO edit this to make function like fetch_metadata but as a static function that can be used without creating temporary details item "d"
-        let d = await new ArchiveBase({itemid: identifier}).fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
-        let metaapi = d.exportMetadataAPI({wantPlaylist: true}); // Cant pass ArchiveBase to the constructors below
-        let message;
-        if (!d.metadata) {
-          message = `item ${identifier} cannot be found or does not have metadata`;
+        let item = await new ArchiveBase({itemid: identifier, page, download, noCache}).fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
+        if (!item.metadata) {
+          item.message = `item ${identifier} cannot be found or does not have metadata`;
         }
-        if (d.metadata.title) {
-          document.title = message || `${d.metadata.title} : ${semiTitle}`;
-        } else {
-          debug(`ERROR Writing title but dont have one, look at %O`, d);
+        if (!item.message && item.metadata && !['texts', 'image', 'audio', 'etree', 'movies', 'collection', 'account'].includes(item.metadata.mediatype)) {
+          item.message = `Unsupported mediatype: ${item.metadata.mediatype}`
         }
-        if (!message && metaapi && metaapi.metadata && !['texts', 'image', 'audio', 'etree', 'movies', 'collection', 'account'].includes(metaapi.metadata.mediatype)) {
-          message = `Unsupported mediatype: ${metaapi.metadata.mediatype}`
+        document.title = item.message || `${item.metadata && item.metadata.title} : ${semiTitle}`;
+        if (!item.message) {
+          await item.fetch({noCache}); //TODO-REACTFAKE is fetch used anywhere else, if not then use fetch_query here
         }
-        const item = new ArchiveBase({itemid: identifier, metaapi, message, noCache, page, download});
-        if (!message) {
-          await item.fetch({noCache});
-        }
-        renderPage({item, message});
+        renderPage({item, message: item.message});
         /* TODO-DWEBNAV this.setCrawlStatus({identifier, crawl: item.crawl}); */
         return item;
       }
