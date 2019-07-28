@@ -73,12 +73,6 @@ function renderPage({item=undefined, message=undefined}) {
   // opts = { item (optional), message (optional) }
   DwebArchive.page.setState({item, message});
 }
-async function fetchAndRenderPage(item, fetchOpts) {
-  // TODO-REACT move this to the constructor of the Page so it does a setState
-  // fetchOpts = {noCache}
-  await item.fetch(fetchOpts)
-  renderPage({item});
-}
 export default class Nav {
   constructor() {
     //super();
@@ -101,7 +95,9 @@ export default class Nav {
     const qq = (typeof (q) === "object") ? q : (typeof (q) === "string") ? {query: q} : undefined;
     opts.query = qq;
     renderPage({message: "Loading search"});
-    const s = await new ArchiveBase(opts).fetch({noCache});
+    const s = new ArchiveBase(opts);
+    await s.fetch_metadata({noCache});
+    await s.fetch_query({noCache}); // Should throw error if fails to fetch //TODO-RELOAD fetch_query ignores noCache currently
     pushHistory(opts, qq); // Note this takes account of wantHistory
     document.title = `${qq.query} ${qq.sort || ""} : ${semiTitle}`;
     renderPage({item: s});
@@ -126,22 +122,25 @@ export default class Nav {
     const destn = document.getElementById('main'); // Blank window (except Nav) as loading
     renderPage({message: "Loading "+identifier});
     window.loopguard = identifier;  // Tested in dweb-transport/httptools, will cancel any old loops - this is a kludge to get around a Chrome bug/feature
+    let item; // Set below, but keep it here for error handling
     try {
       const semiTitle = DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive";
       if (!identifier || (identifier === "home")) {
         document.title = `Home : ${semiTitle}`; //TODO-IAUX when consolidated, this could be done in NavWeb component or even higher
-        fetchAndRenderPage(new ArchiveBase({itemid: "home", query: homeQuery, sort: '-downloads'}), {noCache});
+        item = new ArchiveBase({itemid: "home", query: homeQuery, sort: '-downloads'});
+        await item.fetch_metadata({noCache})
+        await item.fetch_query({noCache})
+        renderPage({item});
         /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
-      } else if (identifier === "local") { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
-        document.title = `Local : ${semiTitle}`; //TODO-FAKEREACT move to <Page>
-        renderPage(new ArchiveBase({itemid: identifier, metaapi: {}}));
-      } else if (identifier === "settings") { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
-        document.title = `Settings : ${semiTitle}`; //TODO-FAKEREACT move to <Page>
-        renderPage(new ArchiveBase({itemid: identifier, metaapi: {}}));
+      } else if (["local","settings"].includes(identifier)) { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
+        document.title = `${identifier} : ${semiTitle}`; //TODO-FAKEREACT move to <Page>
+        item = new ArchiveBase({itemid: identifier, metaapi: {}})
+        renderPage(item);
       } else {
         //TODO-FAKEREACT
         //TODO edit this to make function like fetch_metadata but as a static function that can be used without creating temporary details item "d"
-        let item = await new ArchiveBase({itemid: identifier, page, download, noCache}).fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
+        item = new ArchiveBase({itemid: identifier, page, download, noCache});
+        await item.fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
         if (!item.metadata) {
           item.message = `item ${identifier} cannot be found or does not have metadata`;
         }
@@ -150,7 +149,7 @@ export default class Nav {
         }
         document.title = item.message || `${item.metadata && item.metadata.title} : ${semiTitle}`;
         if (!item.message) {
-          await item.fetch({noCache}); //TODO-REACTFAKE is fetch used anywhere else, if not then use fetch_query here
+          await item.fetch_query({noCache}); // Should throw error if fails to fetch //TODO-RELOAD fetch_query ignores noCache currently
         }
         renderPage({item, message: item.message});
         /* TODO-DWEBNAV this.setCrawlStatus({identifier, crawl: item.crawl}); */
@@ -158,7 +157,7 @@ export default class Nav {
       }
     } catch (err) {
       debug("ERROR: Nav.factory detected error %o", err);
-      renderPage(new ArchiveBase({itemid: identifier, message: err.message}), err.message);
+      renderPage({item, message:err.message}); // Item may or may not be set
     }
   }
 

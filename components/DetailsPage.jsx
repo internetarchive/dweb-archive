@@ -132,9 +132,10 @@ class DetailsError extends IAReactComponent {
    */
   render() {
     return ( // TODO Copy styles from the error in is_dark
-        <div className="dweb-message">
-          {this.props.message}
-        </div>
+      <div style={{margin: "0 20px", textAlign: "center", fontWeight: "bold"}}><p>
+        {this.props.message}
+        </p>
+      </div>
     )
   }
 }
@@ -231,14 +232,19 @@ class DetailsWork extends IAReactComponent {
 
 class DetailsMessage extends IAReactComponent {
   /**
+   * <DetailsMessage
    *    identifier=IDENTIFIER optional
    *    item=ARCHIVEFILE optional
    *    message=STRING Dont display content, display a message
    *    statuses={...} disconnected, directories etc returned from call to /info
    *    noCache=BOOL
+   * />
+   *
+   * Display a message to the user, usually on failure, if possible a header is presented, but that depends on having an item to work with.
    */
 
   render() { return (
+    //TODO make the props.item check more granular - move down into NavWrap and display/hide parts of that.
     <>
       {(!this.props.item) ? null :
         <>

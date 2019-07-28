@@ -97,6 +97,7 @@ class AccountWelcome extends IAReactComponent {
     /**
      * <AccountWelcome item=ARCHIVEITEM />
      * TODO pass in detailed props rather than item
+     * - see similar style/HTML in CommonWelcome CollectionBanner and AccountBanner
      */
     render() {
         

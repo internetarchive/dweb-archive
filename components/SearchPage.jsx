@@ -45,6 +45,9 @@ class CollectionBanner extends IAReactComponent {
    *  creator=this.metadata.creator title=this.metadata.title   From the metadata API
    *  disconnected=BOOL     True if browser cant see archive.org
    *  />
+   *
+   *  Welcome Banners on Collections
+   *  - see similar style/HTML in CommonWelcome CollectionBanner and AccountBanner
    */
     //TODO-DETAILS on prelinger, banner description is getting truncated.
   render () {
