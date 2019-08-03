@@ -16,6 +16,8 @@ const mediatype2Schema = {
 
 class Page extends IAReactComponent {
   /**
+   * Top level component, displays a page, and expects to see .setState({item=IDENTIFIER || message=STRING}) calls
+   *
    * <Page
    *    item=ARCHIVEITEM
    *    message=STRING      // If present display a message instead of an item
@@ -60,10 +62,10 @@ class Page extends IAReactComponent {
     //isSearch: includes Search, Collection, Account, Settings, Local
     //!isSearch: is Details (includes DetailsError, DownloadDirectory, DetailsError,
     const isSearch = // See DUPLICATEDCODEISSEARCH
-      (!metadata && !this.state.message)
-      || query
+      !this.state.message
+      && ( query
       || ["collection", "account"].includes(mediatype)
-      || ["home", "local", "settings"].includes(identifier); //SEE-OTHER-ADD-SPECIAL-PAGE
+      || ["home", "local", "settings"].includes(identifier)); //SEE-OTHER-ADD-SPECIAL-PAGE
     if (isSearch && !mediatype) mediatype = "search";
 
     /*
@@ -154,10 +156,10 @@ class Page extends IAReactComponent {
     //isSearch: includes Search, Collection, Account, Settings, Local
     //!isSearch: is Details (includes DetailsError, DownloadDirectory, DetailsError,
     const isSearch = // See DUPLICATEDCODEISSEARCH
-      (!metadata && !this.state.message)
-      || query
-      || ["collection", "account"].includes(mediatype)
-      || ["home", "local", "settings"].includes(identifier); //SEE-OTHER-ADD-SPECIAL-PAGE
+      !this.state.message
+      && ( query
+        || ["collection", "account"].includes(mediatype)
+        || ["home", "local", "settings"].includes(identifier)); //SEE-OTHER-ADD-SPECIAL-PAGE
 
     const itemType = metadata ? mediatype2Schema[mediatype] : undefined;
     if (isSearch) {
