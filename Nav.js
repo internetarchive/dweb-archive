@@ -135,7 +135,7 @@ export default class Nav {
       } else if (["local","settings"].includes(identifier)) { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
         document.title = `${identifier} : ${semiTitle}`; //TODO-FAKEREACT move to <Page>
         item = new ArchiveBase({itemid: identifier, metaapi: {}})
-        renderPage(item);
+        renderPage({item});
       } else {
         //TODO-FAKEREACT
         //TODO edit this to make function like fetch_metadata but as a static function that can be used without creating temporary details item "d"
