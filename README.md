@@ -131,6 +131,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.87: Yarn upgrade
 * v0.1.86: Componentize finalle eliminate ReactFake; single, setState-able, React Component <Page>; is_dark error message;
 * v0.1.85: Support canSave, disconnected; Componentize Search
 * v0.1.84: Grey - AnchorDownload / DownloadOptions
