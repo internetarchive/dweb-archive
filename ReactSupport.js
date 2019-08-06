@@ -296,9 +296,13 @@ function transportStatusAndProps(cb) {
       cb(err);
     } else {
       const httpstatus = info.transportStatuses.find(s=> s.name==='HTTP');
+      // Can mirror see gateway (used for Reload button on dweb-mirror)
+      const mirror2gateway = DwebArchive.mirror && httpstatus && (httpstatus.status === 0)
       cb(null, {
-        mirror2gateway: DwebArchive.mirror && httpstatus && (httpstatus.status === 0), // Can mirror see gateway
-        disconnected: !(DwebArchive.mirror && httpstatus && (httpstatus.status === 0)), //TODO may be more nuanced but prob same as above
+        mirror2gateway,
+        // If using mirror, and mirror offline dont display stuff mirror doesnt have
+        // if !mirror (e.g. dweb.archive.org) never disconnected as can try IPFS/WebTorrent etc
+        disconnected: DwebArchive.mirror && !mirror2gateway,
         transportStatuses: info.transportStatuses,  // Now set to those of Mirror
         directories: info.directories // For save modal
       });
