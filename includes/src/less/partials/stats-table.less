@@ -1,7 +1,7 @@
 /**
  * A table of item/collection stats.
  *
- * See: AJS.RegionsTable in archive.js
+ * See: Geo.RegionsTable in geo.js
  */
 
 @dark-grey: rgb(170, 170, 170);
@@ -36,4 +36,90 @@
     width: 1%;
     text-align: right;
   }
+}
+
+/**
+ * Stats tables in /services/views
+ */
+
+#dltbl, #table-collection, #table-contributor {
+  .deprecated {
+    color: #ccc;
+  }
+}
+
+.rundates {
+  .form-group {
+    margin-left: 0;
+    margin-right: 1rem;
+    select.form-control {
+      width: auto;
+    }
+  }
+  legend {
+    font-size: 1.8rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  margin-bottom: 1rem;
+}
+
+.rundates .contributor {
+  .form-group {
+    margin-bottom: 5px;
+  }
+}
+
+.media-type-link {
+  padding-left: .3rem;
+  padding-right: .7rem;
+}
+
+table {
+  .tablesorter, .table-stats {
+    td {
+      text-align:right;
+    }
+  }
+  .tablesorter, .table-stats {
+    td.tal {
+      text-align:left;
+    }
+  }
+}
+
+/**
+ * CSS for new version jquery.tablesorter.min.js only
+ * new version in /node_modules/... v2.31.1
+ * unknown version in /includes
+ *
+ * Both versions are used in codebase.
+ * This new version only used for stats in /services/views/
+ */
+
+ :not(.sorter-false).tablesorter-headerUnSorted,
+ .tablesorter-headerAsc,
+ .tablesorter-headerDesc {
+  cursor: pointer;
+ }
+
+:not(.sorter-false).tablesorter-headerUnSorted .tablesorter-header-inner {
+  padding-right: 15px;
+  background-repeat: no-repeat;
+  background-position: center right;
+  background-image: url(/includes/bg.gif);
+}
+
+.tablesorter-headerAsc .tablesorter-header-inner {
+  padding-right: 15px;
+  background-repeat: no-repeat;
+  background-position: center right;
+  background-image: url(/includes/asc.gif);
+  }
+
+.tablesorter-headerDesc .tablesorter-header-inner {
+  padding-right: 15px;
+  background-repeat: no-repeat;
+  background-position: center right;
+  background-image: url(/includes/desc.gif);
 }

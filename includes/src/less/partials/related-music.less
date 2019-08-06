@@ -1,0 +1,138 @@
+@import 'colors.less';
+@import 'typography.less';
+
+.related-music-container {
+
+  .alert {
+    color: black;
+  }
+
+  #related-music-more-info-btn {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  #related-music-more-info-content {
+    display: none;
+  }
+
+  .related-music-table {
+    width: 100%;
+
+    th {
+      font-weight: bold;
+      color: @grey20;
+      text-align: center;
+      font-size: @ia-font-size-medium;
+      padding: 0.5rem 0.5rem;
+      white-space: pre; // don't let the headers wrap
+
+      &:first-child {
+        text-align: left;
+        padding: 0.5rem 0;
+      }
+    }
+
+    .related-track-row {
+      .track-artist {
+        font-size: 0.9em;
+      }
+
+      .related-image {
+        padding: 0.5rem;
+
+        &.empty {
+          .img-container {
+            background-color: @x-light-grey;
+          }
+
+          .badge {
+            background-color: @grey40;
+          }
+        }
+
+        &.loading {
+          .loading-indicator {
+            display: block;
+          }
+        }
+
+        .badged-image {
+          width: 5rem;
+          height: 5rem;
+          margin: auto;
+          position: relative;
+
+          // there is a bug in chrome that causes `mix-blend-mode` to not work on top of transparent containers
+          // so we have to set this to white for it to work properly
+          // https://bugs.chromium.org/p/chromium/issues/detail?id=711955
+          background-color: white;
+        }
+
+        .badge {
+          background-color: @linkcolor;
+          float: right;
+          z-index: 10;
+          position: relative;
+          right: 0;
+          top: -0.5rem;
+        }
+
+        .img-container {
+          background-color: black;
+          width: 4rem;
+          height: 4rem;
+          position: relative;
+
+          &.is-waveform {
+            border-radius: 2rem;
+            background-color: #224577;
+
+            .related-album-image {
+              mix-blend-mode: screen;
+            }
+          }
+        }
+
+        .loading-indicator {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          height: 0.25rem;
+          width: 100%;
+          overflow: hidden;
+          background-color: @grey67;
+          display: none;
+
+          &:before {
+            display: block;
+            position: absolute;
+            content: "";
+            left: -4rem;
+            width: 4rem;
+            height: 100%;
+            background-color: #2980b9;
+            animation: loading 2s linear infinite;
+          }
+        }
+
+        .related-album-image {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          margin: auto;
+          max-height: 4rem;
+        }
+      }
+    }
+  }
+}
+
+@keyframes loading {
+  from {left: -4rem; width: 30%;}
+  50% {width: 30%;}
+  70% {width: 70%;}
+  80% { left: 50%;}
+  95% {left: 120%;}
+  to {left: 100%;}
+}

@@ -1,0 +1,235 @@
+@margin-rem2: 2rem;
+@margin-rem3: 3rem;
+@margin-rem06: 0.6rem;
+
+.container.container-ia {
+  @media screen and (max-width: @xs-min) {
+    .smaller {
+      display: block;
+    }
+  }
+}
+
+/* Handle TV Archive menu z-index */
+.navbar-fixed-position #favorite-modal {
+  z-index: @navZ + 1;
+}
+
+.signup-form-section,
+.login-form-section {
+  max-width: 60rem;
+  margin: 0 auto 5rem;
+  float: none;
+
+  .signup-form {
+    label {
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    label.regular {
+      margin-bottom: @margin-rem06;
+
+      .input-checkbox {
+        vertical-align: middle;
+        margin: 0;
+        position: relative;
+        margin-top: -3px;
+      }
+    }
+  }
+
+  @media (max-width: @md-min) and (min-width: @sm-min) {
+    max-width: 45rem;
+    width: 100%;
+  }
+
+  @media screen and (max-width: @sm-min) {
+    max-width: 43rem;
+    width: 100%;
+  }
+
+   @media screen and (max-width: @xs-min) {
+    max-width: 30rem;
+    width: 100%;
+  }
+
+  .login-header,
+  .signup-header {
+    img {
+      height: 8rem;
+      margin: @margin-rem3 0;
+    }
+
+    h1 {
+      margin: 0 0 0.6rem 0;
+      font-size: 2.4rem;
+      color: @body-text-color;
+    }
+
+    p {
+      font-size: 1.4rem;
+      margin-bottom: @margin-rem2;
+    }
+  }
+
+  .signup-form-element,
+  .login-form-element {
+    label {
+      width: 100%;
+      margin-bottom: 0;
+      font-size: 1.6rem;
+      color: @body-text-color;
+    }
+
+    label.regular {
+      font-size: 1.4rem;
+      font-weight: normal;
+      margin-bottom: @margin-rem06;
+    }
+
+    .form-element {
+      width: 90%;
+      border: 0.1rem solid @input-box-border;
+      height: 3rem;
+      padding: 5px;
+      margin-top: 5px;
+
+      @media screen and (max-width: @xs-min) {
+        width: 85%;
+      }
+    }
+
+    .terms {
+      margin-left: 0;
+      font-size: 10pt;
+      margin-bottom: 5px;
+    }
+
+    .loading-img {
+      margin-bottom: 5px;
+    }
+
+    .loading-img {
+      display: initial;
+      padding-left: 1rem;
+      background-repeat: no-repeat;
+      margin-left: 1.5rem;
+      background-size: contain;
+      background-position: 0px 3px;
+    }
+
+    .eye-img {
+      a {
+        display: block;
+      }
+
+      span a {
+        display: inline-block;
+      }
+    }
+
+    .input-button,
+    .input-submit {
+      line-height: normal;
+      border: 0.1rem solid @submit-button-border;
+      padding: 6px 25px;
+      margin-top: 1rem;
+      margin-bottom: @margin-rem2;
+      display: block;
+      background-color: @submit-button-fill;
+
+      &[disabled] {
+        cursor: progress;
+        background-color: gray;
+        border: .1rem solid gray;
+      }
+    }
+
+    label {
+      font-size: 1.6rem;
+      color: @body-text-color;
+    }
+
+    .reset-password {
+      text-decoration: none;
+      color: @linkcolor;
+      font-size: 1.4rem;
+    }
+
+    .reset-password,
+    .login-error {
+      margin-top: @margin-rem06;
+      margin-bottom: @margin-rem2;
+      display: inherit;
+    }
+
+    .login-error {
+      font-size: 1.4rem;
+      color: @input-box-error;
+    }
+
+    .eye-img img {
+      height: 1.6rem;
+    }
+
+    img.password_icon {
+      padding-left: 1rem;
+    }
+
+    fieldset {
+      margin-top: 2rem;
+    }
+
+    .error-field {
+      fill: #FFFFFF;
+      border: 0.3rem solid @input-box-error;
+    }
+
+    .announcements {
+      margin: 0;
+    }
+
+    .smaller {
+      font-size: 0.8em;
+      font-weight: normal;
+    }
+
+    .lighter {
+      color: @grey40;
+    }
+
+    input.submit-to-signup {
+      display: inline;
+      margin: 0 10px 0 0;
+    }
+  }
+}
+
+.box {
+  p {
+    margin-top: 1rem;
+  }
+}
+
+.cookie-warning {
+  padding: 10px;
+  background: @render-error-fill;
+  border: 1px solid @render-error-border;
+  margin-bottom: 2rem;
+}
+
+/* favorite-modal but only for login */
+#favorite-modal.login-modal {
+  .login-header {
+    border: 0;
+    padding: 0;
+    min-height: 0;
+  }
+  .modal-title {
+    display: none;
+  }
+  .modal-header {
+    border: 0;
+  }
+}

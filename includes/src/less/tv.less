@@ -286,7 +286,7 @@ body.tvpress {
     max-width: 1600px;
 
     .ikind {
-      visibility:initial !important;
+      visibility:visible !important;
       margin:0 15px; // space for carousel L/R buttons
       .item-ia {
         position:relative !important;
@@ -340,7 +340,7 @@ body.tvhome {
       margin-right:0;
 
       .ikind {
-        visibility:initial !important;
+        visibility:visible !important;
         margin:0 15px; // space for carousel L/R buttons
         .item-ia {
           position:relative !important;
@@ -594,10 +594,10 @@ body.tv911 {
       width:20px;
       height:20px;
       border:0 !important;
-      background: url(./images/911-close-window-icon-on.png) top left no-repeat;
+      background: url(/images/911-close-window-icon-on.png) top left no-repeat;
     }
     &:hover img{
-      background: url(./images/911-close-window-icon-off.png) top left no-repeat;
+      background: url(/images/911-close-window-icon-off.png) top left no-repeat;
     }
   }//.closer
 
@@ -778,7 +778,7 @@ body.tv911 {
     position:absolute;
     top:17px;/*30 - 22 + 9*/
     z-index: 5;
-    background-image:url(./images/tv-cone-off.png);
+    background-image:url(/images/tv-cone-off.png);
     background-repeat:no-repeat;
     width:16px;
     height:22px;
@@ -837,7 +837,7 @@ body.tv911 {
     border-bottom:1px solid @grey4;
     color: #ddd;
     text-align: left;
-    background:@dark2 url(./images/tvguide.png) bottom left no-repeat;// php -r 'foreach (range(12198,170,-84) as $i){ if (!$c) $c="convert -size ".($i+1)."x2  xc:transparent -fill \"@grey4\"";  $c.= " -draw \"point $i,1\" -draw \"point $i,0\" -draw \"point ".($i-1).",1\" -draw \"point ".($i+1).",1\"";   $n++; }  `$c ~/www/images/tvguide.png`;'
+    background:@dark2 url(/images/tvguide.png) bottom left no-repeat;// php -r 'foreach (range(12198,170,-84) as $i){ if (!$c) $c="convert -size ".($i+1)."x2  xc:transparent -fill \"@grey4\"";  $c.= " -draw \"point $i,1\" -draw \"point $i,0\" -draw \"point ".($i-1).",1\" -draw \"point ".($i+1).",1\"";   $n++; }  `$c ~/www/images/tvguide.png`;'
 
     div.tt {
       .topinblock;
@@ -921,7 +921,7 @@ body.tv911 {
       }
       div.blank {
         background-repeat:repeat;
-        background-image:url(./images/tvop100.png);/* convert -size 1x1 'xc:@dark1' tvop100.png */
+        background-image:url(/images/tvop100.png);/* convert -size 1x1 'xc:@dark1' tvop100.png */
       }
       div img { /*for dark cells*/
         width:80px;
@@ -1053,7 +1053,7 @@ body.tv911 {
   }
 
   // whittled down from http://tayles.tumblr.com/post/321497631/flags-css-sprite
-  .flag{width:16px;height:11px;line-height:11px;background:url(./images/flags_sprite.png) no-repeat}
+  .flag{width:16px;height:11px;line-height:11px;background:url(/images/flags_sprite.png) no-repeat}
   .flag.ca{background-position:0 -385px}
   .flag.cn{background-position:0 -506px}
   .flag.fr{background-position:-16px -253px}
@@ -1697,7 +1697,7 @@ body.clipstream {
     .timedot {
       left:0;
       right:0;
-      background:transparent center 0px no-repeat url(./images/timedot.png);
+      background:transparent center 0px no-repeat url(/images/timedot.png);
     }
     .timequo {
       .roundboxer(11px);
@@ -2019,11 +2019,11 @@ body.clipstream {
           height:50px;
         }
 
-        #handleL { background-image:url(./images/quotepinL.png); }
-        #handleR { background-image:url(./images/quotepinR.png); }
+        #handleL { background-image:url(/images/quotepinL.png); }
+        #handleR { background-image:url(/images/quotepinR.png); }
         &.commercial-making {
-          #handleL { background-image:url(./images/commercialpinL.png); } //xxxphl update once iconochive-tv-commercial updated
-          #handleR { background-image:url(./images/commercialpinR.png); }
+          #handleL { background-image:url(/images/commercialpinL.png); } //xxxphl update once iconochive-tv-commercial updated
+          #handleR { background-image:url(/images/commercialpinR.png); }
         }
 
         &.big {
@@ -2072,8 +2072,8 @@ body.clipstream {
         > a > div {
           width:100px;
           height:33px;
-          background: transparent 0px 0px no-repeat url(./images/done.png);
-          &:hover                { background-image:url(./images/done-hover.png); }
+          background: transparent 0px 0px no-repeat url(/serve/images/done.png);
+          &:hover                { background-image:url(/serve/images/done-hover.png); }
         }
       }//.quote-done
       .commercial-maker {
@@ -2197,7 +2197,7 @@ body.clipstream {
 
   .opscreen {
     /* for x in 50 60 70 77 80; do convert -size 1x1 xc:none -draw "fill #080000 fill-opacity 0.$x rectangle 0,0 1,1" www/images/tv2op${x}.png; done */
-    background-image:url(./images/tv2op60.png);
+    background-image:url(/images/tv2op60.png);
     background-repeat:repeat;
     display:none;
 
@@ -2375,11 +2375,11 @@ body.tv {
     }//.ptrL, .ptrR
 
     .ptrL {
-      background: @dark1 center center no-repeat url(./images/tvTriPtrL6.png) !important;
+      background: @dark1 center center no-repeat url(/serve/images/tvTriPtrL6.png) !important;
       margin-left:-8px;
     }
     .ptrR {
-      background: @dark1 center center no-repeat url(./images/tvTriPtrR6.png) !important;
+      background: @dark1 center center no-repeat url(/serve/images/tvTriPtrR6.png) !important;
       margin-left:0;
     }
 
@@ -2526,7 +2526,7 @@ body.tvclip {
     top: 0;
     bottom: 0;
     left:0;
-    background-image: url(./images/tv2op50.png);
+    background-image: url(/images/tv2op50.png);
     background-repeat: repeat;
     > div > a > div {
       position: absolute;

@@ -15,9 +15,14 @@
 // These variables document our various shades of true gray (completely desaturated), with names
 // based on their lightness. So @gray40 is a color with no hue and 40% lightness. We have way
 // too many grays, of course, but consolidating them is the first step to recovery.
+// Suggestion: instead of moving all of the hex grays here, how about the hsl
+// function that will return an HSL based on the percentage supplied?
+// eg: color: hsl(0, 0, 20%); will output color: #333333;
+// http://lesscss.org/functions/#color-definition-hsl
 @grey20: #333333;
 @grey40: #666666;
 @grey46: rgb(118, 118, 118); // Lightest AA accessible gray http://uxmovement.com/content/why-your-gray-text-should-never-exceed-46-brightness/
+@grey67: #aaaaaa;
 
 /* Using the lovely Solarized Color Palette - http://ethanschoonover.com/solarized */
 @white1 : #fdf6e3; //(these are LESS variables) (first 8 are monotone/grayscales)
@@ -54,6 +59,7 @@
 @white: #ffffff;
 @seashell: #f1f1f1;
 @athens-gray: #f3f4f6;
+@bitcoin-orange: #F7941E;
 
 @linkcolor      : #428bca; // bootstrap default <a> color
 @linkhovercolor : #2a6496;
@@ -67,3 +73,13 @@
 @manilla : #FCF5E6;
 
 @gray-bento: #e9e9e9;
+
+@input-box-border: #D2D2D2;
+@input-box-error: #E51C23;
+@submit-button-fill: #428BCA;
+@submit-button-border: #347EBD;
+
+@donate-feedback-container-fill: #EEF7FB;
+@input-box-border: #7b7e80;
+@render-error-border: #ddaaaa;
+@render-error-fill: #ffdddd;

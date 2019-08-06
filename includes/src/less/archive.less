@@ -1,10 +1,10 @@
 // Using ~ to pull from node_modules
-@import '../../node_modules/ia-design-system/src/styles/index.less';
+@import '~@internetarchive/ia-design-system/src/styles/index.less';
 
 @import "bootstrap/bootstrap.less";
 
 //  CUSTOM FONT-BASED GLYPHS (SYMBOLS) FROM KRISTEN AND DAVID!
-@import "fonts/Iconochive.less";
+@import "../fonts/Iconochive.less";
 //@import "iconochive-css.css";
 
 // Mixins/Variables
@@ -23,7 +23,9 @@
 @import 'partials/accordion.less';
 @import 'partials/choice-fieldset.less';
 @import 'partials/copyable-text.less';
+@import 'partials/facets.less';
 @import 'partials/hero.less';
+@import 'partials/icons.less';
 @import 'partials/loading-message.less';
 @import 'partials/qr-code.less';
 @import 'partials/simple-filter-form.less';
@@ -34,6 +36,8 @@
 @import 'partials/cryptocurrency-logo.less';
 @import 'partials/cryptocurrency-options.less';
 @import 'partials/directory-listing-table.less';
+@import 'partials/disability-eligibility.less';
+@import 'partials/item-create.less';
 @import 'partials/item-details-about.less';
 @import 'partials/item-details-archive-info.less';
 @import 'partials/item-details-metadata.less';
@@ -41,11 +45,12 @@
 @import 'partials/item-stats-summary.less';
 @import 'partials/item-upload-info.less';
 @import 'partials/related-items.less';
+@import 'partials/related-music.less';
 @import 'partials/search-options.less';
-@import 'partials/share-submit-form.less';
 @import 'partials/signup-form.less';
 @import 'partials/simple-page-navigation-controls.less';
 @import 'partials/social-sharing-links.less';
+@import 'partials/stats-graph.less';
 @import 'partials/stats-table.less';
 @import 'partials/table-with-actions.less';
 @import 'partials/wikipedia-summary.less';
@@ -58,15 +63,26 @@
 @import 'partials/item-edit-status.less';
 @import 'partials/simple-lists-admin.less';
 @import 'partials/search-results-page.less';
+@import 'partials/universal-access.less';
+@import 'partials/news-stories.less';
+@import 'partials/login-signup.less';
+@import 'partials/donate.less';
+
+// IAUX includes
+@import '~@internetarchive/ia-components/index.less';
+
+// Dark mode idea - not in use now
+// @import 'partials/dark.less';
+
 
 [class^="iconochive-"], [class*=" iconochive-"] {
   font-size:125%; //hack for now!
 }
 /* need these rules for now since they are used *inside* other rules below... */
 .iconochive-quote        {.glyphicon;font-family:'Iconochive-Regular'!important; &:before{font-size:125% !important;content: "\275d"}}//ugh!
-.iconochive-remove-circle{.glyphicon;font-family:'Iconochive-Regular'!important; &:before{font-size:125% !important;content: "\274e"}}//ugh!
+.iconochive-remove-circle{.glyphicon;font-family:'Iconochive-Regular'!important; &:before{content: "\274e"}}//ugh!
 .iconochive-search-star  {.glyphicon;font-family:'Iconochive-Regular'!important; &:before{font-size:125% !important;content: "\273d"}}//ugh!
-.iconochive-share        {.glyphicon;font-family:'Iconochive-Regular'!important; &:before{font-size:125% !important;content:"\1f381"}}//ugh!
+.iconochive-share        {.glyphicon;font-family:'Iconochive-Regular'!important; &:before{content:"\1f381"}}//ugh!
 .iconochive-tv-commercial{.glyphicon;font-family:'Iconochive-Regular'!important; &:before{font-size:125% !important;content:"\1f4b0"}}//ugh!
 
 
@@ -237,9 +253,11 @@ div.well {
 
 
 body.navia {
-  :-moz-full-screen { background:url(./images/black.png) } //fix for firefox fullscreen videos (!)
+  :-moz-full-screen { background:url(/images/black.png) } //fix for firefox fullscreen videos (!)
 
   #navwrap1 {
+    position: relative;
+    z-index: 1000;
     .ease(height, @nav-tophat-time);
     height: @navbarOuterHT;
     width: 100%;
@@ -316,11 +334,55 @@ body.navia {
         @media (max-width: @xs-max) {
           height:@navbarHT-xs;
         }
+
+        // Temp vertically center Upload button and label, replacing padding usage
+        // TODO: Fix the nav bar alignment generally, e.g. via flexbox
+        > .nav-upload {
+          display: flex;
+          align-items: center;
+          padding: 0;
+          height: 100%;
+
+          .iconochive-upload {
+            margin-right: 3px;
+          }
+        }//.nav-upload
+
+        // Temp vertically center user avatar and name, replacing padding usage
+        // TODO: Fix the nav bar alignment generally, e.g. via flexbox
+        > .nav-user {
+          display: flex;
+          align-items: center;
+          padding: 0;
+          height: 100%;
+
+          > .avatar {
+            width: 30px;
+            height: 30px;
+            margin-right: 3px;
+            @media (max-width: @xs-max) {
+              width: 20px;
+              height: 20px;
+              margin-right: 0;
+            }
+          }
+        }//.nav-user
+
       }//> li
 
       @media (max-width: @xs-max) {
         min-width:320px;
         margin-right:-30px;
+
+        .open > .dropdown-menu > li > a {
+          color: inherit;
+        }
+      }
+
+      .open > a,
+      .open > a:hover,
+      .open > a:focus {
+        background-color: initial;
       }
     }//.navbar-nav
 
@@ -364,30 +426,12 @@ body.navia {
       }//@media (max-width: @xs-max)
     }//.dropdown-ia
 
-
-    .mypic {
-      padding-right:0;
-      padding-bottom:0 !important;
-      img {
-        width:30px;
-        height:30px;
-        margin-right:3px;
-        @media (max-width: @xs-max) { width:20px; height:20px; margin-right:0 }
-      }
-    }//.mypic
     .mydrop {
       @fade-duration: 0.15s;
-
       .nav-dropdown();
-      .fade-out(@fade-duration);
-
-      display: block;
-
       position: absolute;
-
       color: @body-text-color;
       border: 0;
-      top: calc(100% + 18px);
 
       &.active {
         .fade-in(@fade-duration);
@@ -487,7 +531,8 @@ body.navia {
         max-width: 100%;
         font-size: 16px;
         background-color: transparent;
-      } //input[type=text]
+        color: black;
+      } //input[name=search]
 
       input[type=submit]{
         position:absolute;
@@ -526,48 +571,22 @@ body.navia {
       float: none;
     }
 
-    #nav-abouts {
-      position: static;
-      margin: 0;
-      padding-top: 8px;
-      width:100%;
-      background-color:#353535;
-      text-align:center;
-
-      li {
-        .topinblock;
-        margin:0 10px;
-        font-size:12px;
-        height:20px;
-        color: #999 !important;
-        line-height:1.0;
-        margin-left:15px;
-        margin-right:15px;
-        a {
-          display:block;
-          line-height:1.0;
-          padding-bottom:3px;
-          color: #aaa !important;
-          text-decoration:none !important;
-          cursor:pointer;
-          &:hover {
-            color: white !important;
-          }
-        }//a
-        @media (max-width: @sm-max){
-          margin-left:9px;
-          margin-right:9px;
+    #internet-archive {
+      position: absolute;
+      top: 10px;
+      width: 100%;
+      height: 30px;
+      text-align: center;
+      img {
+        display: none;
+        position: absolute;
+        right: 50%;
+        margin-right: 20px;
+        + img {
+          margin-right: -105px;
         }
-        @media (max-width: 820px){
-          margin-left:7px;
-          margin-right:7px;
-        }
-      }//li
-      @media (max-width: @xs-max) {
-        display:none !important;
       }
-    }//#nav-abouts
-
+    }
 
     .nav-hamburger {
       .navbar-toggle {
@@ -597,6 +616,47 @@ body.navia {
     }//@media
   }//.navbar
 
+#nav-abouts {
+  position: static;
+  margin: 0;
+  padding-top: 8px;
+  width: 100%;
+  background-color: #353535;
+  text-align: center;
+
+  li {
+    .topinblock;
+    margin: 0 10px;
+    font-size: 12px;
+    height: 20px;
+    color: #999 !important;
+    line-height: 1.0;
+    margin-left: 15px;
+    margin-right: 15px;
+    a {
+      display: block;
+      line-height: 1.0;
+      padding-bottom: 3px;
+      color: @grey67 !important;
+      text-decoration: none !important;
+      cursor: pointer;
+      &:hover {
+        color: white !important;
+      }
+    }//a
+    @media (max-width: @sm-max){
+      margin-left: 9px;
+      margin-right: 9px;
+    }
+    @media (max-width: 820px){
+      margin-left: 7px;
+      margin-right: 7px;
+    }
+  }//li
+  @media (max-width: @xs-max) {
+    display: none !important;
+  }
+}//#nav-abouts
 
 
   #nav-tophat {
@@ -666,12 +726,12 @@ body.navia {
     }//.row
 
     .widgets {
-      text-align:center;
-      max-width:160px;
+      text-align: center;
+      max-width: 160px;
 
       center {
-        margin-top:35px;
-        margin-bottom:10px;
+        margin-top: 35px;
+        margin-bottom: 10px;
       }
     }//.widgets
     .col-xs-7 .widgets.web { // bleah!
@@ -802,6 +862,17 @@ body.navia {
         display: block !important;
       }
     }//&.advanced
+
+    &.searchbar-home {
+      z-index: 3;
+      margin-top: 20px;
+    }
+
+    &.searchbar-faqs,
+    &.searchbar-forums,
+    &.searchbar-TV {
+      z-index: 3;
+    }
   }//.searchbar
 
   #nav-search .searchbar.advanced {
@@ -907,8 +978,19 @@ body.navia {
   padding: 10px;
 }
 
-.carousel-control .icon-prev, .carousel-control .icon-next, .carousel-control .glyphicon-chevron-left, .carousel-control .glyphicon-chevron-right {
-  transform: translate(-50%, -50%);
+.carousel-control {
+  .icon-prev,
+  .icon-next,
+  .glyphicon-chevron-left,
+  .glyphicon-chevron-right {
+    transform: translate(-50%, -50%);
+  }
+  .iconochive-left,
+  .iconochive-right {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 }
 
 /* SOME CHANGES TO BOOTSTRAP DEFAULTS */
@@ -1209,7 +1291,7 @@ div.stamped {
 
 #opscreen1, #opscreen2, #opscreen1M {
   /* for x in 30 50 60 70 77 80; do convert -size 1x1 xc:none -draw "fill #080000 fill-opacity 0.$x rectangle 0,0 1,1" www/images/tv2op${x}.png; done */
-  background-image:url(./images/tv2op70.png);
+  background-image:url(/images/tv2op70.png);
   background-repeat:repeat;
   display:none;
   position:fixed;
@@ -1282,18 +1364,65 @@ body.ia-module {
 
   .iconochive-favorite.size-75-percent { font-size:75%; }
 
+  .well {
+    margin-top: 20px;
+  }
+
+  .thats-left.item-details-metadata {
+    padding-right: .5rem;
+  }
+
+  .metadata-list,
+  .metadata-expandable-list {
+    display: table;
+    width: 100%;
+
+    .table-row {
+      display: table-row;
+      max-width: 100%;
+    }
+
+    .show-more-button__text {
+      display: block;
+    }
+  }
+
   .key-val-big {
-    font-size:16px;
-    font-weight:200;
+    font-size: 1.6rem;
+    font-weight: 200;
   }
+
   span.key {
-    font-size:16px;
-    font-weight:200;
+    font-size: 1.6rem;
+    font-weight: 200;
+    padding-right: 0px;
+    @media (max-width: 390px) {
+      padding-left: 0px;
+    }
+
   }
+
+  span.key.cell {
+    margin-left: 1rem;
+    text-indent: -1rem;
+  }
+
   span.value {
-    font-size:16px;
-    font-weight:200;
-    color:#aaa;
+    font-size: 1.6rem;
+    font-weight: 200;
+    color: @grey67;
+    padding-left: .55rem;
+    padding-right: 0px;
+  }
+
+  span.cell {
+    display: table-cell;
+    word-wrap: break-word; /* IE */
+    overflow-wrap: break-word;
+  }
+
+  button.show-more-button {
+    margin-left: 15px;
   }
 
   .boxy {
@@ -1470,7 +1599,6 @@ body.ia-module {
 
     @media (max-width: @xs-max) {
       margin: 0;
-      padding-right: 0; // removed right padding on mobile device
     }
 
   }//#searchform
@@ -1567,16 +1695,15 @@ body.ia-module {
   @facets-gutter:12px;
   .facets-toggle(@width-trigger) {
     @media (max-width: @width-trigger) {
-      // FACETS HIDDEN
+      // Mobile facets
       .columns-items {
         width:100%;
         border-left:0;
         margin-left:0 !important;
       }
-      .columns-facets { display:none; }
     }//@media
     @media (min-width: (@width-trigger + 1)) {
-      // FACETS SHOWING
+      // Tablet + facets
       .columns-items {
         //NOTE: border is in *items* not *facets* because items can stretch vertically *much more* length-wise (and want border line all the way down ideally)
         border-left:1px solid @gray-bento;
@@ -1609,7 +1736,7 @@ body.ia-module {
             .monospace;
             font-size:18px;
             text-align:center;
-            color:#aaa;
+            color:@grey67;
             padding:10px 0;
             a {
               color:black !important;
@@ -1769,66 +1896,7 @@ body.ia-module {
     margin-left:20px;
   }
 
-  .columns-facets {
-    position:relative;
-    float:left;
-    width: @facets-width - @facets-gutter - 1px/*bento right width*/;
-    padding-right:@facets-gutter;
-    min-height:1px;
-
-    font-size:14px;
-    word-wrap: break-word !important;
-
-    .filter- {
-      display:inline-block;
-      float:right;
-      margin-left:0;
-      margin-top:-4px;
-    }
-    .facet-mediatype {
-      font-size:15px;
-      line-height:1.5;
-      a {
-        color:#333;
-        text-decoration:none !important;
-        cursor:pointer;
-      }
-    }//.facet-mediatype
-    .facet-firstTitle {
-      .monospace;
-      line-height:1.0;
-      font-size:11px;
-    }
-    h5 {
-      .small-label;
-      margin-top:20px;
-      padding-bottom:3px;
-      border-bottom:1px solid @gray-bento;
-    }
-    a {
-      color: @linkcolor;
-      text-decoration: none;
-
-      .iconochive-right-solid {
-        margin-left:5px;
-      }
-
-      &.collection-facet {
-        color: @body-text-color;
-        text-decoration: underline;
-      }
-    }//a
-    .iconochive-rss {
-      .topinblock;
-      font-size:18px;
-      padding-top:3px;
-      padding-left:5px;
-      color:#333;
-    }
-  }//.columns-facets
-
-
-  .columns-items, .columns-facets {
+  .columns-items {
     padding-top:25px;
     .co-top-row {
       min-height:55px;
@@ -1836,7 +1904,6 @@ body.ia-module {
     }
     h3.co-top-row {
       margin-top:0;
-      margin-right:-20px;
       padding-top:5px;
     }
     .micro-label {
@@ -1844,6 +1911,11 @@ body.ia-module {
       margin-top:6px;
     }
   }//.columns-items, .columns-facets
+  @media (max-width: @facet-mobile-breakpoint) {
+    .columns-items {
+      padding: 1rem;
+    }
+  }
 
   #confirm-modal-body .favorite-failure-message {
     margin: 20px;
@@ -1900,6 +1972,8 @@ body.ia-module {
       .farow {
         width:100%;
         display:inline-block;
+        margin-bottom: 0;
+        font-weight: 500;
         .facell {
           &.fin {
             background-color:rgb(252,194, 76)/*@yellow-em*/;
@@ -1989,23 +2063,6 @@ body.ia-module {
     .forum-poster {
       text-decoration:underline;
     }
-
-    &.removable {
-      .item-img {
-        .opac50;
-      }
-      .xer {
-        .iconochive-remove-circle;
-        color: @red;
-        width: 80px;
-        height: 80px;
-        position: absolute;
-        right: 0;
-        top: -20px;
-        font-size: 80px;
-        &:hover { .opac80; cursor:pointer; }
-      }//.xer
-    }//&.removable
   }//.item-ia
 
   &.lists {
@@ -2115,15 +2172,13 @@ body.ia-module {
       }//.results .item-ia
     }//@media
 
-    // for portrait/narrow phones, dont show facets.  but in **landscape** narrow/phones, we do want facets...
-    // so target ~567px where can fit two rows of tiles *and* facets
-    // (iphone4 is 320x480)
-    // (iphone5 is 320x568)
-    .facets-toggle(567px);
+    // render portrait mobile formatting of facets
+    .facets-toggle(@facet-mobile-breakpoint);
   }//&.tiles
 
   &.tiles.top { // basically, no facets on top/home page
     .facets-toggle(4000px);
+    .columns-facets { display:none; }
   }
 
 
@@ -2149,13 +2204,14 @@ body.ia-module {
     // So we instead group: C2 C3 C4 into table column "C234" and then (max-/)width the C2 C3 C4
     // inside them for column exactness, allowing "SHOW DETAILS" to take up full C234 column.
     .C1,.C234,.C5 {
-      display: table-cell !important;
+      display: table-cell;
+      vertical-align: middle;  // List view elements should display in middle
     }
     .C1,.C2,.C3,.C4,.C5 {
       .truncate;
-      padding:3px 5px;
-      margin:0;
-      vertical-align:top;
+      padding: 5px 5px;
+      margin: 0;
+      vertical-align: middle;  // List view elements should display in middle
       @media (max-width: @xs-max) {
         font-size:11px;
         padding-right:5px; // override the .C1,.C3 10px (above)
@@ -2206,22 +2262,22 @@ body.ia-module {
         @media (min-width: @sm-min) { white-space:nowrap; text-overflow:ellipsis; } // only waste space for ".." in [sm]++!
       }
 
-      .views {
+      .views, .numup {
         color:#bbb;
         text-align:right;
       }
 
       .mt-icon {
-        padding-top:2px !important;
         font-size:18px;
         > span {
-          color:#aaa;
+          color:@grey67;
+          vertical-align: middle;
         }
       }//.mt-icon
       &:hover .mt-icon {
         .colorMT;
       }
-      .stat, > a, .tile-img, .item-parent, .item-crawl, .num-items, .xer {
+      .stat, > a, .tile-img, .item-parent, .num-items {
         display:none;
       }
     }//.item-ia
@@ -2302,11 +2358,11 @@ body.ia-module {
       font-size:12px;
 
       .C1,.C5 {
-        display: table-cell !important;
+        display: table-cell;
       }
       .C234 {
         .breaker-breaker;
-        display: table-cell !important;
+        display: table-cell;
         padding:0 5px 15px 5px;
         width:100%;
         span {
@@ -2672,7 +2728,7 @@ body.ia-module {
   }
 
 
-  .actions-ia {
+  .actions-ia, .actions-ia-flags {
     position:absolute;
     left: -56px;
 
@@ -2699,6 +2755,19 @@ body.ia-module {
     }//@media
   }//.actions-ia
 
+  .actions-ia-flags {
+    position: absolute;
+    left: 100%;
+    top: 10px;
+    width: 7em;
+    a {
+      text-align: left;
+    }
+    table td {
+      width: 100%;
+      font-size: 12px;
+    }
+  }//.actions-ia-flags
 
   #new-list-form{
     max-width:600px;
@@ -2930,7 +2999,7 @@ body.ia-module {
       background-color: screen(@mycolor, #ccc); // lightened version!
     }
 
-    #favorite-button:hover, #favorite-button:focus, #favorite-button.favorited {
+    .favorite-button:hover, .favorite-button.favorited {
       @mycolor:#F0B534;
       color: @mycolor !important;
       border:2px solid @mycolor;
@@ -3255,10 +3324,9 @@ body.navia.NAV3 {
     width:@TILE_WIDTH;
 
 
-    .item-parent, .item-crawl {
+    .item-parent {
       @parent-img-wd: 45px;
       @parent-img-wd-border: 2px;
-      @crawl-img-wd: 22px;
 
       .ease(margin-top,0.3s);
       position:absolute;
@@ -3268,36 +3336,20 @@ body.navia.NAV3 {
       margin-left:-10px;
       text-align:left;
 
-      .item-parent-img, .item-crawl-img {
+      .item-parent-img {
         .ease(opacity,0.3s);
         .opac0;
         .roundboxer(round(@parent-img-wd / 2 - 1));
         box-shadow: 0 0 10px @base-border-color;
         background-color:white;
         border:@parent-img-wd-border solid #ddd;
+        width:@parent-img-wd;
+        height:@parent-img-wd;
         overflow:hidden;
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center center;
       }//.item-parent-img
-      .item-parent-img {
-        width:@parent-img-wd;
-        height:@parent-img-wd;
-      }
-      .item-parent-img img {
-        width: @parent-img-wd - 5;
-        height: @parent-img-wd - 5;
-        margin-top: 1px;
-        margin-bottom: 1px;
-      }
-      .item-crawl-img {
-        position: absolute;
-        right: -(@TILE_WIDTH+10);
-        bottom: -(round(@crawl-img-wd /2));
-        width:@crawl-img-wd;
-        height:@crawl-img-wd;
-        .opac100;
-      }
 
       .item-parent-ttl {
         .ease(opacity,0.4s);
@@ -3537,7 +3589,7 @@ body.navia.NAV3 {
 
         > span {
           font-size:10px;
-          color:#aaa;
+          color:@grey67;
         }
       }//> h5
 
@@ -3547,7 +3599,7 @@ body.navia.NAV3 {
         line-height:1.0;
         padding:0 7px 7px 7px;
         color:#666;
-        border-bottom:1px solid #aaa;
+        border-bottom:1px solid @grey67;
       }
     }//&.account-ia
 
@@ -3688,22 +3740,37 @@ body.top {
     box-shadow: 1px 1px 2px @base-border-color;
     margin-top:10px;
 
-    .the-logo {
+    .hero-left {
       text-align:center;
       padding-bottom:15px;
       padding-top:40px;
       font-size:116px;
-    }
+    }//.hero-left
 
-    .non-logo {
+    .hero-center {
       @media (min-width: @sm-min) {
-        border-left:1px solid #aaa;
+        border-left:1px solid @grey67;
+        border-right:1px solid @grey67;
         padding-left:40px;
         padding-right:40px;
       }//@media
-    }//.non-logo
+    }//.hero-center
+
+    .hero-right {
+      @media (min-width: @sm-min) {
+        padding-left:40px;
+        padding-right:40px;
+      }//@media
+    }//.hero-right
 
     @media (max-width: @xs-max) { margin-top:0 !important; }
+
+    .preamble-whoweare {
+      color: @grey20;
+      font-size: 26px;
+      line-height: 1.1;
+      font-weight: 300;
+    }
   }//.row.preamble
 
   center.mt-big {
@@ -3753,6 +3820,7 @@ body.top {
     text-align:center;
     background-color:@navbg;
     padding:3px 0;
+    color : @white;
     a { color:white; }
   }//#ToS
 
@@ -3976,7 +4044,7 @@ body.navia {
 
       @media (max-width: @xs-max) {
         width:15px !important;
-        right:2px !important;
+        right:15px !important;
         text-align:right !important;
         a > div {
           font-size:12px;
@@ -4086,19 +4154,26 @@ body.navia {
   }
 
   &.jwaudio {
+    @CONTROLBAR_HEIGHT: 44px;
     .jw-controls {
       // move the controls to _under_ the waveform imagery
       height: initial;
       top: initial;
       bottom: 0;
+      background: black;
     }
-    .jw-preview {
-      display: initial; // for seeing waveformer
-      background: transparent no-repeat 50% 50%;
-      background-size: 100% 100%;
+    .jw-wrapper { // to see waveformer v8.8+
+      background-color: transparent;
     }
-    .jw-controls, .jw-controls-backdrop {
-      background: initial; // for seeing waveformer
+    .jw-preview { // to see waveformer
+      display: block; // not 'initial' because IE11
+      // make waveformer be visually nonoverlapping the controlbar
+      background: transparent no-repeat 50% 0%;
+      background-size: 100% 100%; // fallback for older browsers w/o calc() - bottom gets occluded
+      background-size: 100% ~"calc(100% - @{CONTROLBAR_HEIGHT})";
+    }
+    .jw-controls-backdrop { // to see waveformer
+      background: initial;
     }
     .jw-icon {
       &[button=btn-prv], &[button=btn-nxt], &[button=btn-shr], &[button=btn-ia], &[button=btn-cast]  {
@@ -4121,24 +4196,6 @@ body.navia {
         height: 30px;
       }
     }//&.embedded
-
-    &.responsive {
-      // (JW8) this is _JUST_ to get audio volume slider to show on audio /details/ page!
-      .jw-icon-volume {
-        // reverse hacking (facepalm) shows markup for two audio icons -- toggle their visibility!
-        display: flex !important;
-        &.jw-icon-inline {
-          display: none !important;
-        }
-        .jw-volume-tip {
-          // make slider bottom be close to button
-          padding-bottom: 0;
-        }
-      }//.jw-icon-volume
-      .jw-controls {
-        overflow: initial;
-      }
-    }//&.responsive
   } //&.jwaudio
 
 
@@ -4355,6 +4412,19 @@ body.navia {
   &.bgEEE {
     background-color:#eee !important;
   }
+
+  .terms-of-service {
+    width: 100%;
+    height: 20px;
+    font-weight: normal;
+    font-size: 11px;
+    text-align: center;
+    background-color: #333;
+    padding: 3px 0;
+    font-family: sans-serif;
+    color : @white;
+    a { color: @white; }
+  }// .terms-of-service
 }//body.navia
 
 
@@ -4431,6 +4501,7 @@ form.iaform .formElement {
 /* ------------- Catalog table ---------------------*/
 table.cat {
   font-size: 8pt;
+  margin-bottom: 2em;
 
   // make it so this block doesnt apply to nested tables
   > tbody > tr {
@@ -4438,8 +4509,8 @@ table.cat {
       white-space: nowrap !important;
       padding:0 2px;
     }
-    &:nth-child(odd)  { background-color:#c4aa66; }
-    &:nth-child(even) { background-color:#d4ba76; }
+    &:nth-child(odd)  { background-color:#ccc; }
+    &:nth-child(even) { background-color:#ddd; }
   }// > tbody > tr
 
   tr td a           { color: #00c; }
@@ -4453,18 +4524,25 @@ table.cat {
 
   tr:hover         { border-color:black; }
 
-  tr.admin0:nth-child(odd)      { background-color:#c0f0c0;  &:hover { background-color:#00ee00; }}
-  tr.admin0:nth-child(even)     { background-color:#d0f0d0;  &:hover { background-color:#00ee00; }}
-  tr.admin1:nth-child(odd)      { background-color:#c0c0f0;  &:hover { background-color:#8080ff; }}
-  tr.admin1:nth-child(even)     { background-color:#d0d0f0;  &:hover { background-color:#8080ff; }}
-  tr.admin2:nth-child(odd)      { background-color:#f08080;  &:hover { background-color:#ff0000; }}
-  tr.admin2:nth-child(even)     { background-color:#f06060;  &:hover { background-color:#ff0000; }}
-  tr.adminH:nth-child(odd)      { background-color:#e0c0e0;  &:hover { background-color:#ffc0ff; }}
-  tr.adminH:nth-child(even)     { background-color:#d0b0d0;  &:hover { background-color:#ffc0ff; }}
+  tr.taskWaiting:nth-child(odd)     { background-color:#c0f0c0;  &:hover { background-color:#00ee00; }}
+  tr.taskWaiting:nth-child(even)    { background-color:#d0f0d0;  &:hover { background-color:#00ee00; }}
+  tr.taskRunning:nth-child(odd)     { background-color:#c0c0f0;  &:hover { background-color:#8080ff; }}
+  tr.taskRunning:nth-child(even)    { background-color:#d0d0f0;  &:hover { background-color:#8080ff; }}
+  tr.taskNeedsAdmin:nth-child(odd)  { background-color:#f08080;  &:hover { background-color:#ff0000; }}
+  tr.taskNeedsAdmin:nth-child(even) { background-color:#f06060;  &:hover { background-color:#ff0000; }}
+  tr.taskParked:nth-child(odd)      { background-color:#d4ba76;  &:hover { background-color:#deb887; }}
+  tr.taskParked:nth-child(even)     { background-color:#c4aa66;  &:hover { background-color:#deb887; }}
+  tr.taskOther:nth-child(odd)       { background-color:hsl(180,50%,50%);  &:hover { background-color:hsl(180,88%,50%); }}
+  tr.taskOther:nth-child(even)      { background-color:hsl(180,50%,63%);  &:hover { background-color:hsl(180,88%,50%); }}
+  tr.taskHistorical:nth-child(odd)  { background-color:#e0c0e0;  &:hover { background-color:#ffc0ff; }}
+  tr.taskHistorical:nth-child(even) { background-color:#d0b0d0;  &:hover { background-color:#ffc0ff; }}
 
   .off             { background-color: yellow !important; }
+  .disk-off        { background-color: orange !important; }
   span.hilite      { background-color: lightyellow; }
 
+  &.summary td { width: 50%; }
+  td.count { text-align: end; }
 
   // catalog page hovering: (only for non-JSON mode)
   .catHidden, .catHidden{
@@ -4505,7 +4583,7 @@ table.catJ {
     color:white;
   }
   a.btn-default {
-    background-color:#aaa;
+    background-color:@grey67;
     color:white;
     &:hover {
       background-color:#999;
@@ -4563,8 +4641,8 @@ body.catalog {
 
   .steppum  {font-family:Steppum; font-size:400%; }
   .steppum b{font-family:Flip !important; padding-right:40px; }
-  @font-face{font-family:Steppum;src:url("./fonts/steppum fo rotsap.otf");}
-  @font-face{font-family:Flip   ;src:url("./fonts/steppum fo rotsap flipped.otf");}
+  @font-face{font-family:Steppum;src:url("/includes/fonts/steppum fo rotsap.otf");}
+  @font-face{font-family:Flip   ;src:url("/includes/fonts/steppum fo rotsap flipped.otf");}
 
   .popover { min-width:340px; word-wrap:break-word; }
 
@@ -4757,6 +4835,7 @@ body.editxml {
       &:after{ content: "X" }
     }
   }//.ui-dialog
+
   table.formConstructor {
     .charect {
       font-style:normal;
@@ -4895,96 +4974,6 @@ body.bookmarks {
 
 
 
-/*******************    HTTP UPLOADER/EDITOR  STUFF    *********************/
-body.editbody  {
-  #createhelp {
-    width:600px;
-    margin:auto;
-
-    .btn {
-      width:162px;
-      margin:10px 10px 0 0;
-    }
-    .btn-success {
-      width:220px;
-      font-size:28px;
-    }
-
-    #sharer {
-      width:158px;
-      height:25px;
-      margin:10px 3px 0 3px;
-      padding:0;
-      overflow-y:hidden;
-    }
-
-    #spanButtonPlaceHolder {
-      height:27px;
-    }
-  }//#createhelp
-
-
-  #addmore {
-    display:none;
-    z-index:10000;
-    font-size:90%;
-    padding: 10px 0 0 10px;
-  }
-
-  table.info tr td {
-    padding:15px;
-  }
-
-  div.pnl1 {
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-
-  div.pnl2 {
-    padding-top:20px;
-    padding-bottom:15px;
-  }
-
-  .req { color:red; padding:3px;  }
-
-  p.note         {font-size:9pt;font-style:italic;padding:0 50 0 30;}
-  p.note:first-letter{margin-left:-10px; font-size:120%;}
-
-  div#overlay {
-    .ghost;
-    position:absolute;
-    top:0;
-    left:0;
-    width:100px;
-    height:100px;
-    z-index:1000;
-    background-color:#000;
-  }
-
-  div#overlay[id] {
-    position:fixed;
-  }
-
-  table.slick {
-    margin:0;
-    border-collapse: collapse;
-  }
-
-  td.slick {
-    padding:10px;
-    vertical-align:top;
-  }
-
-  #noflash {
-    width:350px;
-  }
-}//body.editbody
-/*******************    HTTP UPLOADER/EDITOR  STUFF    *********************/
-
-
-
 
 /*******************    DETAILS(.JS)  STUFF    *********************/
 
@@ -5017,7 +5006,6 @@ td.key {
 
 span.key {
   font-weight: bold;
-  white-space: nowrap;
 }
 
 
@@ -5059,6 +5047,16 @@ body.responsive {
   &.responsive-playing .jwplayer {
     background-color: transparent !important;
   }
+
+  .audio-with-youtube-spotify {
+    // dont show time elapsed / duration for xs breakpoints
+    .jw-text-duration, .jw-text-elapsed {
+      display: none;
+    }
+    .jw-text-countdown {
+      display: none !important;
+    }
+  }//.audio-with-youtube-spotify
 }//body.responsive
 
 
@@ -5221,7 +5219,7 @@ body.segments {
 } //body.segments
 
 
-/******  ARCHIVE EXTRACTOR (zipview.php, etc.) STUFF  ******/
+/******  ARCHIVE EXTRACTOR (view_archive.php) STUFF  ******/
 table.archext {
   border-collapse: collapse;
   caption {
@@ -5302,11 +5300,11 @@ body.tvAD {
 /*****************  ZOTERO ITEMS STUFF  ********************/
 body.zotero table.zotero {
   width:100%;
-  border:2px solid #aaa;
+  border:2px solid @grey67;
   border-collapse:collapse;
 
   tr {
-    border-bottom:2px solid #aaa;
+    border-bottom:2px solid @grey67;
 
     &.av {
       display:none;
@@ -5341,548 +5339,26 @@ body.wayback {
   }
 }//body.wayback
 
-
 .textarea-invert-readonly {
   color:white !important;
   background-color:rgb(75,72,72) !important;
   cursor:pointer !important;
 }
 
-
-/***** Donate Page *****/
-body.donatePage{
-  background-color: @x-light-grey;
-  font-size: 14px;
-  color: black;
-
-  .donate-button() {
-    border-radius: 7px;
-    text-align: center;
-  }
-
-  div.donate {
-
-    .donate-header {
-      font-size: @ia-font-size-larger;
-      font-weight: bold; //HelveticaNeue-Medium;
-      color: white;
-      margin: 0;
-      .line-height(3rem, @ia-font-size-larger);
-    }
-    .letter-title {
-      font-size: 20px;
-      color: @dark-grey;
-      font-weight: 200; //HelveticaNeue-Light;
-    }
-    .other-header {
-      font-size: 20px;
-      color: @bright-blue;
-      font-weight: 200; //HelveticaNeue-Light;
-    }
-    hr {
-      border-top: 1px solid @light-grey;
-    }
-    .highlight {
-      background-color: @bright-yellow;
-      padding: 2px;
-    }
-
-    .donate-form-section {
-      @media (min-width:@lg-min) {
-        min-height: 631px;
-      }
-      background-color: #FFFFFF;
-      .helper {
-        display: inline-block;
-        height: 100%;
-        width: 0;
-        vertical-align: middle;
-      }
-      .vertical-align-middle,
-      .helper + input,
-      .helper + img,
-      .helper + a {
-        margin-top: auto;
-        margin-bottom: auto;
-        text-align: center;
-        vertical-align: middle;
-        display: inline-block;
-      }
-
-      ul {
-        list-style-type: none;
-        padding: 0;
-        text-align: center;
-        //margin=
-      }
-      li {
-        display: inline-block;
-        border-radius: 5px;
-        text-align: center;
-        vertical-align: middle;
-        max-height:90px;
-
-        label, input {
-          //display: inline-block;
-          //vertical-align: middle;
-          font-weight: normal;
-          @media (max-width:@xs-max) { //xs
-            font-size: 14px;
-          }
-          @media (min-width:@sm-min) { // sm
-            font-size: 16px;
-          }
-          cursor: default;
-        }
-        label {
-          text-align: center;
-          vertical-align: middle;
-          display: inline-block;
-        }
-      }
-
-      input[type="radio"] {
-        // copied from sr-only.  NEEDS to be 'here' for screen readers and focus-ability
-        position: absolute;
-        left: -10000px;
-        top: auto;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-      }
-      input[type="radio"]:focus +label {
-        outline: 3px lightblue solid;
-      }
-
-      // Gray/yellow tile in donation form, default state.
-      .donation-tile() {
-        padding: 5px;
-
-        background: @light-grey;
-        border: 3px solid @light-grey;
-        border-radius: 5px;
-        color: @darker-grey;
-      }
-
-      // Gray/yellow tile in donation form, hover state.
-      .donation-tile-hover() {
-        background: @dull-yellow;
-        border-color: @dull-yellow;
-      }
-
-      // Gray/yellow tile in donation form, checked state.
-      .donation-tile-checked() {
-        background: @bright-yellow;
-        border-color: @bright-yellow;
-      }
-
-      .donation-radio-list {
-        [type="radio"] + label {
-          .donation-tile();
-          width: 100%;
-        }
-
-        [type="radio"]:focus + label,
-        [type="radio"] + label:hover {
-          .donation-tile-hover();
-        }
-
-        [type="radio"]:checked + label {
-          .donation-tile-checked();
-        }
-      }
-
-      .donationtype {
-        @horizontal-spacing: 6px;
-
-        // Works slightly differently in UC Browser.
-        // Falls back to left-aligned in non-flexbox browsers.
-        display: -webkit-box;
-        display: flex;
-        -webkit-box-pack: center;
-        justify-content: center;
-
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 320px;
-        padding: 0 10px;
-
-        text-align: left;
-
-        // Modify spacing to line up with other elements.
-        @media (min-width: @md-min) {
-          padding-left: 3px;
-          padding-right: 3px;
-        }
-
-        @media (min-width: @lg-min) {
-          padding-left: 7px;
-          padding-right: 7px;
-        }
-
-        > * {
-          text-align: center;
-
-          + * {
-            margin-left: @horizontal-spacing;
-          }
-        }
-
-        label {
-          height: 100%;
-        }
-
-        li {
-          height: 60px;
-          margin-top: 3px;
-          margin-bottom: 3px;
-        }
-
-        // Just Once takes up 2/5 of the space.
-        .donationtype-once {
-          -webkit-box-flex: 2;
-          // Fallback flex-basis for browsers without calc()
-          flex: 2 1 39.75%;
-          flex-basis: calc(~'40% -' @horizontal-spacing / 2);
-        }
-
-        // Give Monthly takes up 3/5 of the space.
-        .donationtype-monthly {
-          -webkit-box-flex: 3;
-          // Fallback flex-basis for browsers without calc()
-          flex: 3 1 60.25%;
-          flex-basis: calc(~'60% -' @horizontal-spacing / 2);
-        }
-      }
-
-      .donationlevel {
-        margin-bottom: 12px;
-        max-width: 320px;
-        margin-right: auto;
-        margin-left: auto;
-        li {
-          margin: 3px 1px;
-        }
-
-        [type="radio"] + label {
-          width: 55px;
-          height: 55px;
-          margin-bottom: 5px;
-          border: 0;
-        }
-
-        .donationlevel-custom-amount-field {
-          .donation-tile();
-          width: 180px;
-          height: 55px;
-          margin-bottom: 5px;
-          padding: 0;
-          border: 0;
-        }
-
-        [type="radio"]:focus + .donationlevel-custom-amount-field,
-        .donationlevel-custom-amount-field:hover {
-          .donation-tile-hover();
-        }
-
-        [type="radio"]:checked + .donationlevel-custom-amount-field {
-          .donation-tile-checked();
-        }
-
-        #other_amt input#amount_custom {
-          width: 50px;
-          text-align: right;
-        }
-
-      }
-      .service {
-        .button-wrap:before,
-        .button-wrap_before {
-          display: inline-block;
-          height: 100%;
-          width: 0;
-          vertical-align: middle;
-        }
-        .button-wrap{
-          .donate-button();
-
-          max-width: 320px;
-          height: 62px;
-          background-color: @light-grey;
-          border: 1px solid @athens-gray;
-          margin: 7px auto;
-          cursor: pointer;
-        }
-        .button-wrap:hover,
-        .button-wrap:focus,
-        .button-wrap-hover {
-          /* can be treated like a fallback */
-          background-color: @seashell;
-
-          /* will be "on top", if browser supports it */
-          background-image: linear-gradient(@white, @seashell);
-
-          /* these will reset other properties, like background-position, but it does know what you mean */
-          background: @seashell;
-          background: linear-gradient(@white, @seashell);
-        }
-        form {
-          text-align: center;
-        }
-        .button-wrap input[type="image"],
-        .button-wrap img {
-          max-height: 36px;
-          //display: block;
-          vertical-align: middle;
-          margin: auto;
-        }
-        #stripeOneTime.button-wrap img, #stripeMonthly.button-wrap img {
-          max-height: 50px;
-        }
-        #subscription_buttons {
-          display: none;
-        }
-        .button-wrap[id^=stripe] button { // stripe
-          border: none;
-          background: none;
-          max-height: 50px;
-        }
-
-        #cryptoOneTime.button-wrap a { // crypto call-to-action link
-          text-decoration: none;
-
-          img {
-            max-height: 1.6rem;
-          }
-
-          span {
-            color: #282828;
-            display: block;
-            font-size: 1.6rem;
-            font-weight: 600;
-            line-height: 1.6rem;
-            margin-bottom: 0.6rem;
-            text-decoration: none;
-          }
-        }
-      }
-    }
-    .letter {
-      @media (max-width:@md-max) {
-        min-height: 719px;
-      }
-
-      .blurb strong.blue{
-        color: @bright-blue;
-      }
-
-      figure {
-        float: right;
-        margin-bottom: 15px;
-      }
-
-      figcaption {
-        font-style: italic;
-        font-size: 10px;
-        text-align: center;
-      }
-
-      .portrait img{
-        display: inline-block;
-        max-height: 250px;
-        margin-left: 15px;
-        border-radius: 5px;
-      }
-
-      .exhortation {
-        font-style: italic;
-      }
-    }
-
-    .cheers {
-      text-align: center;
-      margin: 29px auto 36px auto;
-      max-width: 500px;
-    }
-    div[class*="col-"]{
-      padding-bottom: 7px;
-      padding-top: 7px;
-    }
-    .white-box {
-      background-color: white;
-      padding: 24px;
-
-      hr { // horizontal rule around cryptocurrency call-to-action link
-        margin: 27px -24px;
-      }
-    }
-    .blue-box {
-      background-color: @bright-blue;
-      padding: 24px;
-    }
-  }
-
-  .donation-faqs-note {
-    text-align: center;
-  }
-}//body.donatePage
-
-body.donateThankYou {
-  @dark-grey-blue: #3c7489;
-  @pale-slate: #C9C5CA;
-
-  main {
-    background-color: @bright-blue;
-    font-weight: 200;
-    color: white;
-    text-align: center;
-
-    // Fallback for browsers without calc()
-    min-height: 100%;
-    min-height: calc(~'100% -' @navbarOuterHT);
-
-    @media (max-width: @xs-max) {
-      min-height: calc(~'100% -' @navbarHT-xs);
-    }
-
-    @media (max-width:@xs-max) {
-      font-size: 20px;
-    }
-
-    @media (min-width:@sm-min) {
-      font-size: 18px;
-    }
-  }
-
-  h2 {
-    font-size: 20px;
-    color: @dark-grey-blue;
-    font-weight: 200; //HelveticaNeue-Light;
-    margin-top: 0;
-    margin-bottom: 25px;
-  }
-
-  .donateThankYou-shareSection {
-    display: inline-block;
-    margin-bottom: 50px;
-    padding: @body-line-height * 1rem @body-line-height * 5rem;
-
-    background: white;
-    border-radius: 5px;
-
-    > * {
-      vertical-align: middle;
-    }
-
-    h2 {
-      margin-bottom: 0.5em;
-    }
-
-    .facebook-share-link,
-    .twitter-share-link {
-      font-size: 5rem;
-    }
-  }
-
-  .thanks {
-    @media (max-width:@xs-max) {
-      margin-bottom: 20px;
-      //margin-top: 30px;
-    }
-    @media (min-width:@sm-min) {
-      margin-bottom: 45px;
-      //margin-top: 50px;
-    }
-
-    h1 {
-      font-size: 36px;
-      font-weight: bold;
-      margin-bottom: 0;
-    }
-
-    p.big-n-thin {
-      font-size: 30px;
-      margin-bottom:15px;
-    }
-    .max-width {
-      margin-right: auto;
-      margin-left: auto;
-      max-width: 400px;
-    }
-
-    .logo {
-      max-width: 210px;
-      display: block;
-      margin: 50px auto;
-    }
-
-
-  }
-
-  .explore {
-    margin-bottom: 45px;
-
-    a{
-      padding: 15px 20px;
-      border-radius: 5px;
-      background-color: #F9BF3B;
-      color: white;
-    }
-    a:hover {
-      text-decoration: none;
-    }
-  }
-
-  .white-box {
-    background-color: white;
-    color: black;
-    padding: 25px;
-    text-align: left;
-    margin-bottom: 50px;
-    border-radius: 5px;
-
-    form {
-
-      label {
-        font-weight: bold;
-      }
-      input[type='text'], textarea {
-        border: 2px solid @pale-slate;
-        border-radius: 5px;
-        margin-bottom: 25px;
-        width: 100%;
-      }
-      textarea {
-        min-height: 150px;
-      }
-      input[type='checkbox'] {
-        margin-bottom: 25px;
-      }
-      .submit {
-        width: 150px;
-        background-color: @dark-grey-blue;
-        color: white;
-        border-radius: 5px;
-      }
-    }
-  }
-}//body.donateThankYou
-
-
 /* pairs with optional additional include:  jquery.tablesorter.min.js */
 table.tablesorter thead tr {
   .header {
-    background-image: url(./bg.gif);
+    background-image: url(/includes/bg.gif);
     background-repeat: no-repeat;
     background-position: center right;
     cursor: pointer;
     padding-right: 15px;
   }
   .headerSortUp {
-    background-image: url(./asc.gif);
+    background-image: url(/includes/asc.gif);
   }
   .headerSortDown {
-    background-image: url(./desc.gif);
+    background-image: url(/includes/desc.gif);
   }
 }
 /* pairs with optional additional include:  jquery.tablesorter.min.js */
@@ -6130,4 +5606,95 @@ body.playset {
 /* Extra specificity to beat an existing style */
 body.navia .navbar #nav-search .search-options__advanced-search-link {
   position: static;
+}
+
+/* External link icon */
+.external-link-icon {
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-image: linear-gradient(transparent,transparent),url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22%3E %3Cpath fill=%22%23fff%22 stroke=%22%2336c%22 d=%22M1.5 4.518h5.982V10.5H1.5z%22/%3E %3Cpath fill=%22%2336c%22 d=%22M5.765 1H11v5.39L9.427 7.937l-1.31-1.31L5.393 9.35l-2.69-2.688 2.81-2.808L4.2 2.544z%22/%3E %3Cpath fill=%22%23fff%22 d=%22M9.995 2.004l.022 4.885L8.2 5.07 5.32 7.95 4.09 6.723l2.882-2.88-1.85-1.852z%22/%3E %3C/svg%3E");
+  padding-right: 13px;
+}
+
+p.transaction-id {
+    margin-bottom: 0;
+}
+
+// when the page we're on has a wysiwyg editor that is maximized (so that it occupies the full viewport)
+body.has-maximized-editor {
+  // we hide the page's scrollbars
+  overflow: hidden;
+
+  // and ensure that the navbar is visible above the editor
+  #navwrap1 {
+    position: fixed;
+    top: 0;
+  }
+
+  // and embiggen the editor to cover all of the viewport except that part occupied by the navbar
+  .wysiwyg.maximized {
+    position: fixed;
+    top: @navbarOuterHT;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    .resizer {
+      width: 100%;
+      height: 100%;
+      iframe {
+        padding: 0 1em;
+      }
+    }
+    .ui-resizable-handle {
+      display: none;
+    }
+  }
+}
+
+.flags-admin .container > div {
+  position: fixed;
+  top: @navbarOuterHT;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 0;
+  max-width: initial;
+  h1 {
+    margin: 8px;
+    height: 20px;
+    font-size: larger;
+    font-variant: small-caps;
+    .identifier {
+      font-variant: initial;
+    }
+    .buttons {
+      float: right;
+    }
+  }
+  .ReactTable {
+    height: calc(~"100% - 36px");
+    .rt-tr-group {
+      /* this prevents the rows from becoming taller when there are fewer
+         than needed to fill up the screen */
+      flex: none;
+    }
+    .rt-tr {
+      &.selected, &.selected:hover {
+        background-color: Highlight;
+        color: HighlightText;
+        &.-odd {
+        }
+        &.-even {
+        }
+      }
+    }
+    .rt-thead.-filters input {
+      /* the existing styles color these textboxes with a white background,
+         which causes the text in them to be invisible on a machine
+         with a dark theme (which defaults to white text on a black
+         background) */
+      color: black;
+      background-color: white;
+    }
+  }
 }

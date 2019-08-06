@@ -1,0 +1,97 @@
+@import 'base.less';
+@import 'colors.less';
+@import 'layouts.less';
+@import 'typography.less';
+
+/**
+ * Page providing information on universal access, specifically re: disabilities
+ *
+ * See: Views\UniversalAccessPage
+ */
+
+.universal-access, .universal-access-verify {
+  .container-ia {
+    max-width: @vertical-rhythm * 34;
+    text-align: left;
+
+    .layout-one-column-spaced();
+  }
+
+  header {
+    margin-top: 20px;
+    position: relative;
+  }
+
+  > * {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.universal-access-verify-options {
+  .layout-one-column-spaced(@vertical-rhythm / 2);
+
+  &__provider-actions {
+    margin-left: 3rem;
+
+    form {
+      width: 30rem;
+    }
+
+    label {
+      display: block;
+    }
+
+    input {
+      display: block;
+      border: @border-width-sm solid @grey46;
+      border-radius: @border-radius-md;
+      margin-top: @vertical-rhythm / 4;
+      padding: (@vertical-rhythm / 4) (@vertical-rhythm / 2);
+      width: 100%;
+    }
+
+    input[type='submit'] {
+      display: inline;
+      margin-right: 1rem;
+    }
+
+    .submit-button {
+      width: 8rem;
+    }
+
+    .layout-one-column-spaced();
+  }
+
+  .accordion {
+    summary {
+      line-height: @vertical-rhythm * 1.5;
+
+      .selector-heading({
+        font-size: @ia-font-size-md-large;
+        // Align disclosure triangle
+        vertical-align: top;
+      });
+    }
+
+    details {
+      // Select all headings that are direct descendants
+      .selector-heading({
+        font-size: 1em;
+        font-weight: 500;
+
+        + * {
+          margin-top: @vertical-rhythm / 2;
+        }
+      }, ~'>');
+    }
+  }
+}
+
+.header-logo {
+  display: block;
+  position: absolute;
+  left: -120px;
+  width: 100px;
+  height: 100px;
+}

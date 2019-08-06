@@ -6,12 +6,66 @@
 .item-details-metadata {
   #descript,
   .content,
-  .metadata-expandable-list {
+  .metadata-expandable-list,
+  .track-list {
     // Margin set to match vertical rhythm based on text line-height.
-    margin: 1.43em 0;
+    margin-top: 1.43em;
+    margin-bottom: 1.43em;
+  }
+
+  #descript,
+  .content,
+  .track-list,
+  #reviews {
+    margin-right: 5rem;
+    @media (max-width: @md-min) {
+      margin-right: 2.5rem;
+    }
+    @media (max-width: 390px) {
+      padding-left: 0px;
+    }
+  }
+
+  p.statusMessage {
+    margin-right: 5rem;
+    @media (max-width: @md-min) {
+      margin-right: 2.5rem;
+    }
+    @media (max-width: 390px) {
+      padding-left: .9rem;
+      margin-right: .9rem;
+    }
   }
 
   h2 + .content {
     margin-top: 0;
+  }
+  dl.metadata-definition {
+    padding-left: 1.5rem;
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 200;
+  }
+  dt,
+  dd {
+    display: inline-block;
+    vertical-align: top;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  dt {
+    width: 33.333333%;
+    font-weight: 200;
+  }
+  dd {
+    width: 58.333333%;
+    color: @grey67;
+  }
+  h1 + dl.metadata-definition {
+    padding: 0;
+    dt,
+    dd {
+      display: inline;
+    }
   }
 }
