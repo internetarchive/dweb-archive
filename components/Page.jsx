@@ -165,6 +165,9 @@ class Page extends IAReactComponent {
     if (isSearch) {
       document.body.classList.add('bgEEE');
     }
+    if (identifier === "home") {
+      document.body.classList.add('top');
+    }
     return (
       // TODO-FAKEREACT The outer Div is one level up to keep ReactFake happy
       <div id="wrap"

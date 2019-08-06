@@ -6,6 +6,7 @@ import { CherModal } from "./CherModal";
 import { LocalItem } from "./mirror/LocalComponent";
 import { SettingsItem } from "./mirror/SettingsComponent";
 import { AccountWrap } from "../Account.js";
+import { HomeBanner } from "./Home.jsx";
 
 
 /**
@@ -354,8 +355,12 @@ class SearchRowColumnsItems extends IAReactComponent {
           {/*--<div className="columns-facets"></div> TODO-DETAILS-FACETS column goes here--*/}
           <div className="columns-items"
                style={{marginLeft: "0px"}}>{/*--TODO-DETAILS-FACETS delete the margin-left when add the facet column --*/}
-            <SearchSortBar identifier={this.props.item.itemid} query={this.props.item.query}/>
-            <div className="sortbar-rule"></div>
+            {["home"].includes(this.props.item.itemid) ? null :
+              <>
+              <SearchSortBar identifier={this.props.item.itemid} query={this.props.item.query}/>
+              <div className="sortbar-rule"></div>
+              </>
+            }
             <ScrollableTileGrid item={this.props.item} disconnected={this.props.disconnected}/>
           </div>
         </div>
@@ -378,18 +383,20 @@ class SearchWrap extends IAReactComponent {
                  disconnected={this.props.disconnected}
                  canSave={true}
         />
-        <div className="container container-ia">
-          <a name="maincontent" id="maincontent"></a>
-        </div>
-        {identifier === "home"
-          ? <center style={{margin: "35px"}}><span style={{fontSize: "125px"}} className="iconochive-logo"></span></center>
-          : <SearchBanner query={this.props.item.query} disconnected={this.props.disconnected}/>
-        }
-        <div className="container container-ia nopad">
-          <SearchRowColumnsItems item={this.props.item} disconnected={this.props.disconnected}/>
-        </div>
+        <main id="maincontent">
+          <div className="container container-ia">
+          {identifier === "home"
+            ? <HomeBanner/>
+            /* ? <center style={{margin: "35px"}}><span style={{fontSize: "125px"}} className="iconochive-logo"></span></center> */
+            : <SearchBanner query={this.props.item.query} disconnected={this.props.disconnected}/>
+          }
+            <div className="container container-ia nopad">
+              <SearchRowColumnsItems item={this.props.item} disconnected={this.props.disconnected}/>
+            </div>
+          </div>
+        </main>
         {/*--TODO-ANALYTiCS is missing --*/}
-      </>
+      </>``
     );
   }
 }
@@ -415,19 +422,24 @@ class CollectionWrap extends IAReactComponent {
                  disconnected={this.props.disconnected}
                  canSave={true}
         />
-        <div className="container container-ia">
-          <a name="maincontent" id="maincontent"></a>
-        </div>
-        <CollectionBanner
-          identifier={item.itemid}
-          imgsrc={item.thumbnailFile()}
-          description={!item.metadata.description ? undefined : preprocessDescription(item.metadata.description).replace(/(..\/)+..\//g, "../")}
-          creator={item.metadata.creator}
-          title={item.metadata.title}
-          disconnected={this.props.disconnected}
-        />
-        <CherModal identifier={item.itemid} creator={item.metadata.creator} mediatype={item.metadata.mediatype}
-                   title={item.metadata.title}/>
+        <main id="maincontent">
+          <div className="container container-ia">
+        {["home"].includes(item.itemid)
+          ? <HomeBanner/>
+          :
+          <CollectionBanner
+            identifier={item.itemid}
+            imgsrc={item.thumbnailFile()}
+            description={!item.metadata.description ? undefined : preprocessDescription(item.metadata.description).replace(/(..\/)+..\//g, "../")}
+            creator={item.metadata.creator}
+            title={item.metadata.title}
+            disconnected={this.props.disconnected}
+          />
+        }
+        {["home"].includes(item.itemid) ? null :
+          <CherModal identifier={item.itemid} creator={item.metadata.creator} mediatype={item.metadata.mediatype}
+                     title={item.metadata.title}/>
+        }
         <div className="container container-ia nopad">
           <div id="tabby-collection" className="tabby-data in">
             <SearchRowColumnsItems item={item} disconnected={this.props.disconnected}/>
@@ -435,11 +447,15 @@ class CollectionWrap extends IAReactComponent {
         </div>
         {/*TODO take a closer look at scripts on originals/prelinger lines 7360-7399*/}
         {/*--TODO-ANALYTICS is missing --*/}
-        <CollectionTabby
-          identifier={item.itemid}
-          description={preprocessDescription(item.metadata.description)}
-          rights={preprocessDescription(item.metadata.rights)}
-        />
+        {["home"].includes(item.itemid) ? null :
+          <CollectionTabby
+            identifier={item.itemid}
+            description={preprocessDescription(item.metadata.description)}
+            rights={preprocessDescription(item.metadata.rights)}
+          />
+        }
+          </div>
+        </main>
       </>
     );
   }
