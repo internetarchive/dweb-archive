@@ -1,5 +1,3 @@
-import {loadImg} from "./ReactSupport";
-
 const canonicaljson = require('@stratumn/canonicaljson');
 // Other IA repositories
 import { homeQuery, ObjectFilter } from "@internetarchive/dweb-archivecontroller/Util";

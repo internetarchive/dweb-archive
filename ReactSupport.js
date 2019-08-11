@@ -15,6 +15,7 @@ import {gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
 import prettierBytes from "prettier-bytes";
 import throttle from "throttleit";
 const debug = require('debug')('dweb-archive:ReactSupport');
+var streamToBlobURL = require('stream-to-blob-url'); //TODO-BOOKREADER try as import
 
 /*
 
@@ -163,7 +164,10 @@ async function thumbnailUrlsFrom(identifier) {
 }
 
 async function bufferedFile(name, urls) {
-  // fetch the file to a buffer and return the function to slice from it
+  /**
+   * fetch the file to a buffer and return the function to slice from it
+   * returns: { name, createReadStream: f(opts => buffer)}
+   */
   //TODO-MULTI-GATEWAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
   const buff = await DwebTransports.p_rawfetch(urls, {timeoutMS: 5000, relay: false});  //Maybe should not time out since streams will almost always get used, and in this case could be a large file and last resort to use a download url.
   // Logged by Transports
@@ -202,14 +206,19 @@ async function resolveImageUrls(urls) {
 
 }
 async function imgUrlOrStream(el, name, urls, cb) {
-  /*
-  This is asynchronous converts urls in various formats to either a "file" data structure or a url (which may be a blob URL)
-  * Step 1: canonicalize URLs
-  * Step 2: Split into file / magnet / stream / other
-  * Step 3: Setup to fetch (or in some cases fetch, buffer and pass pointer to buffer)
-  * After: URL stuffed into img.src, or file passed to Render.render
+  /**
+   *
+   * This is asynchronous converts urls in various formats to either a "file" data structure or a url
+   * Note that it uses this multi-type response because consumer can then optimise display for a URL if appropriate
+   *
+   * Step 1: canonicalize URLs
+   * Step 2: Split into file / magnet / stream / other
+   * Step 3: Setup to fetch (or in some cases fetch, buffer and pass pointer to buffer)
+   * returns: { name, createReadStream: f(opts=>buff) } OR URL (which may be a blob URL)
+   * After: URL stuffed into img.src, or file passed to Render.render
+   */
 
-  //TODO rewrite this to use callbacks internally
+  //TODO rewrite this to use callbacks internally instead of await
   Some cases of interest
   /services/img/foo with rel=["dweb:/arc/archive.org/"] > "dweb:/arc/archive.org/services/img/  special case > metadata>thumbnailimg
    */
@@ -250,7 +259,7 @@ async function imgUrlOrStream(el, name, urls, cb) {
             // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
           }
           : // Otherwise fetch the file to buffer and return file for rendermedia
-          await bufferedFile(name, urls)
+          await bufferedFile(name, urls)  // { name, createReadStream: f(opts=>buff) }
     );
   } catch(err) {
     debug("ERROR: Unable to imgUrlOrStream %s %s %s", name, urls, err.message);
@@ -267,9 +276,20 @@ function loadImg(el, name, urls, cb) { // Fork of p_loadImg to use Render instea
   */
   imgUrlOrStream(el, name, urls, (err, res) => { // Errors handled inside, and error image url returned
     if (typeof res === "string") {
-      _loadImgSrc(el, res, cb);
-    } else {
-      RenderMedia.render(res, el, cb);
+      _loadImgSrc(el, res, name, cb); //TODO-BOOKREADER pass alt
+    } else { //res is {name, createReadStream: f(opts=>buff)
+
+      //TODO-BOOKREADER check how extname used, possibly just to fake mime
+      var extname = path.extname(res.name).toLowerCase()
+      streamToBlobURL(res.createReadStream(),
+        exports.mime[extname], //TODO-BOOKREADER replace exports from rendermedia into DAC/Util/formats
+        (err, url)  => {
+          if (err) {
+            cb(err);
+          } else {
+            _loadImgSrc(el, url, alt=xxx, cb);
+          }
+      });
     }
   });
 }
