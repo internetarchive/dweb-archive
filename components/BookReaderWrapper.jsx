@@ -55,6 +55,7 @@ class BookReaderWrapper extends IAReactComponent {
             enableBookTitleLink: false,
             bookUrlText: null,
             initialSearchTerm: null,
+            //getPageURI: {}, //TODO-BOOKREADER make this use dweb to fetch see getImageURI
             imagesBaseURL: (DwebArchive.mirror ? protocolServer+"/archive/" : "https://archive.org/") + "bookreader/BookReader/images/", //TODO-BOOK support /archive/bookreader/BookReader/images on dweb.me
             onePage: {autofit: "auto"},
             thumbnail:  (DwebArchive.mirror ? `//${serverPort}/arc/archive.org/` : "https://archive.org") + `download/${this.state.identifier}/page/cover_t.jpg`   // Unfortunately bookread.js appends protocol so we cant control it here

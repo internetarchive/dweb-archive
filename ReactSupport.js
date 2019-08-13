@@ -4,10 +4,12 @@
  * It knows about Dweb architecture
  */
 import map from 'async/map';
+import path from 'path';
 import Url from 'url';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 import ArchiveFile from "@internetarchive/dweb-archivecontroller/ArchiveFile";
 import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";
+import {formats} from "@internetarchive/dweb-archivecontroller/Util";
 import from2 from "from2";
 import RenderMedia from "render-media";
 import waterfall from "async/waterfall";
@@ -47,7 +49,7 @@ This file contains a lot of processing of names, here is a summary, taking note 
                          TODO could be gateway/URL TODO probably gets /arc/aaa wrong
     PPP://AAA/BBB     -> PPP://AAA/BBB
 
-  resolveImageUrls - asynchronous used by imgUrlOrStream
+  resolveImageUrls - asynchronous used by _imgUrlOrStream
     ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/arc/archive.org/download/IDENTIFIER/FILENAME ] (possible extra roundtrip if not populated, exclude magnet if __ia_thumb.jpg)
     [url*]  -> [ p_resolveUrls(url)*]
     ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/arc/archive.org/thumbnail/IDENTIFIER
@@ -77,12 +79,6 @@ function ReactConfig() {
     tabbyrootinsert: "/arc/archive.org", // Insert before tabby links to gets to https://dweb.me/arc/archive.org/details/foo?bar in origin dweb.me with url /details/foo?bar
   };
 }
-
-function _loadImgSrc(el, url, cb) {
-  el.src = url;
-  if (cb) cb(undefined, el);  // Set attributes (shouldnt have kids)
-}
-
 
 function relativeurl(r, url) {
   /* Convert a relative url into a real one based on a possible base URL
@@ -205,7 +201,7 @@ async function resolveImageUrls(urls) {
   urls = [].concat(...urls); // Flatten any urls expanded above
 
 }
-async function imgUrlOrStream(el, name, urls, cb) {
+async function _imgUrlOrStream(name, urls, cb) {
   /**
    *
    * This is asynchronous converts urls in various formats to either a "file" data structure or a url
@@ -216,7 +212,6 @@ async function imgUrlOrStream(el, name, urls, cb) {
    * Step 3: Setup to fetch (or in some cases fetch, buffer and pass pointer to buffer)
    * returns: { name, createReadStream: f(opts=>buff) } OR URL (which may be a blob URL)
    * After: URL stuffed into img.src, or file passed to Render.render
-   */
 
   //TODO rewrite this to use callbacks internally instead of await
   Some cases of interest
@@ -252,6 +247,7 @@ async function imgUrlOrStream(el, name, urls, cb) {
         : ((DwebTransports.type === "ServiceWorker") && magneturl) //TODO-MIRROR could possible pick up here as well
         ? magneturl.replace('magnet:', `${window.origin}/magnet/`)
         : streamUrls.length
+          //TODO merge getImageURI and _imgUrlOrStream but careful as mixing cb's and awaits. its not as obvious as it looks.
           ? {
             name: name,
             // Initiate a stream, & return a f({start, end}) => readstream
@@ -259,41 +255,46 @@ async function imgUrlOrStream(el, name, urls, cb) {
             // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
           }
           : // Otherwise fetch the file to buffer and return file for rendermedia
+          //TODO this is inefficient, its going to fetch in one go, store in buffer return stream to buffer then to blob ... short cut it but do incrementally as problems with this code before
           await bufferedFile(name, urls)  // { name, createReadStream: f(opts=>buff) }
     );
   } catch(err) {
-    debug("ERROR: Unable to imgUrlOrStream %s %s %s", name, urls, err.message);
+    debug("ERROR: Unable to _imgUrlOrStream %s %s %s %o", name, urls, err.message, err);
     cb(null, "/images/Broken_document.png");
   }
 }
+
+function getImageURI(name, urls, cb) { // Fork of p_loadImg to use Render instead of append
+  /*
+  TODO maybe merge _imgUrlOrStream into here if only place used
+  */
+  _imgUrlOrStream(name, urls,  // Errors handled inside, and error image url returned
+    (unusedErr, res) => {
+      if (typeof res === "string") {
+        cb(null, res);
+      } else { //res is {name, createReadStream: f(opts=>buff)
+        const mimetype = formats("ext", path.extname(name).toLowerCase(), {first: true}).mimetype;
+        streamToBlobURL(res.createReadStream(), // entire file as buffer
+          mimetype, cb)
+      }
+    });
+}
+
 
 function loadImg(el, name, urls, cb) { // Fork of p_loadImg to use Render instead of append
   /*
   This is the asynchronous part of loadImg, runs in the background to update the image.
   Previous version got a static (non stream) content and puts in an existing IMG tag but this fails in Firefox
-  This version appends to a tag using RenderMedia.append which means using a stream
-  Note it can't be inside load_img which has to be synchronous and return a jsx tree.
   */
-  imgUrlOrStream(el, name, urls, (err, res) => { // Errors handled inside, and error image url returned
-    if (typeof res === "string") {
-      _loadImgSrc(el, res, name, cb); //TODO-BOOKREADER pass alt
-    } else { //res is {name, createReadStream: f(opts=>buff)
-
-      //TODO-BOOKREADER check how extname used, possibly just to fake mime
-      var extname = path.extname(res.name).toLowerCase()
-      streamToBlobURL(res.createReadStream(),
-        exports.mime[extname], //TODO-BOOKREADER replace exports from rendermedia into DAC/Util/formats
-        (err, url)  => {
-          if (err) {
-            cb(err);
-          } else {
-            _loadImgSrc(el, url, alt=xxx, cb);
-          }
-      });
+  getImageURI(name, urls, (err, url) => {
+    if (err) {
+      cb(err);
+    } else {
+      el.src = url;
+      if (!el.alt) el.alt = name; // Only set if consumer hasn't already set
     }
   });
 }
-
 
 function transportStatusAndProps(cb) {
   // TODO-DWEBNAV need to tell Transports to set this status when changes
@@ -469,4 +470,4 @@ function preprocessDescription(description) {
 }
 
 //Not exporting relativeurl as not used
-export { ReactConfig, resolveUrls, p_resolveUrls, thumbnailUrlsFrom, imgUrlOrStream, loadImg, transportStatusAndProps, loadStream, preprocessDescription }
+export { ReactConfig, resolveUrls, p_resolveUrls, thumbnailUrlsFrom, getImageURI, loadImg, transportStatusAndProps, loadStream, preprocessDescription }
