@@ -297,24 +297,34 @@ function loadImg(el, name, urls, cb) { // Fork of p_loadImg to use Render instea
 }
 
 function transportStatusAndProps(cb) {
+  /**
+   * This function checks on the status of the transport layer,
+   * and returns an object with various status indicators that the UI can use.
+   *
+   */
   // TODO-DWEBNAV need to tell Transports to set this status when changes
   waterfall([
-    cb => DwebTransports.p_statuses(cb),      // e.g. [ { name: HTTP: status: 0 }* ]
-    (transportStatuses, cb) => {
+    cb1 => DwebTransports.p_statuses(cb1),      // e.g. [ { name: HTTP: status: 0 }* ]
+    (transportStatuses, cb2) => {
       const httpStatus = transportStatuses.find(s=> s.name==='HTTP');
       if (DwebArchive.mirror) {
-        if (httpStatus) { httpStatus.name = "MIRROR"; }
+        if (httpStatus) {
+          httpStatus.name = "MIRROR";
+        }
       }
-      if (!(DwebArchive.mirror && (httpStatus.status === 0))) {
-        cb(null, {transportStatuses});
+      if (!(DwebArchive.mirror && httpStatus.status === 0)) {
+        cb2(null, {transportStatuses}); // Note this could be effectively "MIRROR" failed
+      } else if (httpStatus.info) { // If DwebTransports is getting info then no need to request again
+        cb2(null, httpStatus.info)
       } else {
-        const infoUrl = [gatewayServer(), "info"].join('/');
-        DwebTransports.httptools.p_GET(infoUrl, {}, cb)
+        const infoUrl = [Object(_internetarchive_dweb_archivecontroller_Util__WEBPACK_IMPORTED_MODULE_6__["gatewayServer"])(), "info"].join('/');
+        DwebTransports.httptools.p_GET(infoUrl, {}, cb2);
       } // Note an error in contacting Mirror will skip to end and not update
-    }
-  ],(err, info) => {  // Process result of one or both info calls into states that indicate e.g. whether online etc
+    }], (err, info) => {
     if (err) {
-      cb(err);
+      // The only likely errors are going to be a failure to reach the mirror, so return as such
+      debug('transportStatusAndProps interpreting error as failure: %s', err.message );
+      cb(null, {mirror2gateway: false, disconnected: true, transportStatuses: [{name: "MIRROR", status: 1}]})
     } else {
       const httpstatus = info.transportStatuses.find(s=> s.name==='HTTP');
       // Can mirror see gateway (used for Reload button on dweb-mirror)

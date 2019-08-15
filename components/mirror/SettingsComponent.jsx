@@ -142,20 +142,18 @@ class SettingsCrawlsComponent extends IAReactComponent {
 class SettingsInfo extends IAReactComponent {
   constructor(props) {
     super(props);
-    if (!this.info) {
-      const urlInfo = [gatewayServer(), "info"].join('/');
-      waterfall([
-          cb => DwebTransports.httptools.p_GET(urlInfo, {}, cb),
-          // There may be more here , if not then simplify waterfall
-        ],(err, info) => { // [ArchiveMember*] includes specials like local &/or home
-          if (err) {
-            debug("ERROR: fetch of info failed %O", err);
-          } else {
-            this.setState({info});
-          }
+    const urlInfo = [gatewayServer(), "info"].join('/');
+    waterfall([
+        cb => DwebTransports.httptools.p_GET(urlInfo, {}, cb),
+        // There may be more here , if not then simplify waterfall
+      ],(err, info) => { // [ArchiveMember*] includes specials like local &/or home
+        if (err) {
+          debug("ERROR: fetch of info failed %O", err);
+        } else {
+          this.setState({info});
         }
+      }
       );
-    }
   }
 
   render() {

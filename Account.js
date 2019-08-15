@@ -1,7 +1,6 @@
 import React from 'react';
 import {IAReactComponent, ImageDweb, Tabby, NavWrap} from "@internetarchive/ia-components/dweb-index.js";
 import {SearchRowColumnsItems} from "./components/SearchPage";
-import {transportStatusAndProps} from "./ReactSupport";
 
 
 class AccountTabbyPosts extends IAReactComponent {

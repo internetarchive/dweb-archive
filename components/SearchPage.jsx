@@ -1,7 +1,7 @@
 import React from 'react';
 import { AnchorModalGo, AnchorDetails, IAReactComponent, ImageDweb, Tabby } from '@internetarchive/ia-components/dweb-index.js';
 import { NavWrap, ScrollableTileGrid, SearchSwitcher } from "@internetarchive/ia-components/dweb-index";
-import { transportStatusAndProps, preprocessDescription } from "../ReactSupport";
+import { preprocessDescription } from "../ReactSupport";
 import { CherModal } from "./CherModal";
 import { LocalItem } from "./mirror/LocalComponent";
 import { SettingsItem } from "./mirror/SettingsComponent";

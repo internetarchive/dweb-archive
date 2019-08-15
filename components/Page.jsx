@@ -31,13 +31,16 @@ class Page extends IAReactComponent {
     this.setState({item: this.props.item, message: this.props.message, statuses: {}});
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
+    this.checkAndUpdateStatus();
+  }
+
+  checkAndUpdateStatus() {
     transportStatusAndProps((err, statuses) => { // { transportStatuses, mirror2gateway, disconnected, directories }
       if (!err) {
         this.setState({statuses}); // disconnected etc
       }
     })
   }
-
   loadcallable(el) {
     DwebArchive.page = this;
   }
@@ -47,8 +50,11 @@ class Page extends IAReactComponent {
     this.componentDidMountOrUpdate()
   }
 
-  componentDidUpdate() {
-    super.componentDidUpdate();
+  componentDidUpdate(oldProps, oldState, snapshot) {
+    super.componentDidUpdate(oldProps, oldState, snapshot);
+    if ((this.state.item !== oldState.item) || (this.state.message !== oldState.message)) {
+      this.checkAndUpdateStatus();
+    }
     this.componentDidMountOrUpdate()
   }
 
