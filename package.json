@@ -10,6 +10,7 @@
   },
   "description": "Archive UI to run in Browser",
   "dependencies": {
+    "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.4.2",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.4.3",
@@ -33,7 +34,6 @@
     "throttleit": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-class-properties": "^7.3.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.3.4",
     "@babel/plugin-transform-runtime": "^7.3.4",
@@ -60,5 +60,5 @@
     "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist; ln -s ../node_modules/@internetarchive/dweb-objects/dist/dweb-objects-bundle.js dist;",
     "getbookreader": "for i in BookReaderHelpers.js BookReaderJSIA.js LendingFlow.js; do curl -o dist/bookreader/$i https://archive.org/bookreader/$i; done"
   },
-  "version": "0.1.89"
+  "version": "0.1.90"
 }
