@@ -131,6 +131,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.89: Transportstatus; CSS; Image loading refactor
 * v0.1.88: Bugs - presuming disconnected, and Home page; Recompile less
 * v0.1.87: Yarn upgrade
 * v0.1.86: Componentize finalle eliminate ReactFake; single, setState-able, React Component <Page>; is_dark error message;
