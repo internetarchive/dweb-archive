@@ -16,23 +16,25 @@ class AVDweb extends IAReactComponent {
       tagProps: ObjectFilter(this.props, (k, unusedV) => (!AudioDweb.specificParms.includes(k) && !['children'].includes(k)))
     });
   }
-
-  loadStreamIfChanged() {
-    // Load the source into the avElement, which should previously have been set at load
-    if (this.avElement && (this.lastsource !== this.props.source)) {
-      this.lastsource = this.props.source;
-      loadStream(this.avElement, this.props.source, {
-        name: this.props.source.metadata.name,
-        preferredTransports: config.preferredAVtransports
-      });  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
-    }
+  loadAV() {
+    loadStream(this.avElement, this.props.source, {
+      name: this.props.source.metadata.name,
+      preferredTransports: config.preferredAVtransports
+    });
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.source !== this.props.source) {
+      this.loadAV();
+    };  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
+  }
+  componentDidMount() {
+      this.loadAV();
+  }
   loadcallable(avElement) {
     // On load, set the avElenent and render into it, its done this way since loadcallable is only called once, and not on re-renders
     // TODO this may move to a method on the source (e.g. on ArchiveFile)
     this.avElement = avElement;
-    this.loadStreamIfChanged();
   }
 
 }
@@ -50,7 +52,6 @@ class AudioDweb extends AVDweb {
 
   render() {
     // noinspection HtmlRequiredAltAttribute
-    this.loadStreamIfChanged(); // During first render this.avEleent won't be set, so will be rendered by load, subsequent renders will trigger it
     return (
       typeof DwebArchive !== 'undefined'
         ? <audio ref={this.load} data-trackname={this.props.source.metadata.name} {...this.state.tagProps} />

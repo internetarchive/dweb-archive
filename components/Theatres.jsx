@@ -17,6 +17,9 @@ class BookReaderTheatre extends IAReactComponent {
   // Props: mediatype, identifier, creator, title, item
   render() {
     return (
+      <>
+        {/* TODO this link is broken figure out what it should be as its not rlative to here */}
+        <link href="/archive/bookreader/BookReader-ia.css" rel="stylesheet" type="text/css"/>
         <div id="theatre-ia" className="container">
           <div className="row">
             <div className="xs-col-12">
@@ -28,6 +31,7 @@ class BookReaderTheatre extends IAReactComponent {
             </div>
           </div>
         </div>
+      </>
     );
   }
 }
@@ -42,8 +46,8 @@ class CarouselTheatre extends IAReactComponent {
     super.componentDidMount();
     this.componentDidMountOrUpdate()
   }
-  componentDidUpdate() {
-    super.componentDidUpdate();
+  componentDidUpdate(oldProps, oldState, snapshot) {
+    super.componentDidUpdate(oldProps, oldState, snapshot);
     this.componentDidMountOrUpdate()
   }
   componentDidMountOrUpdate() {
@@ -110,7 +114,7 @@ class AudioTheatre extends IAReactComponent {
     this.setState({trackPlaying: this.props.initialPlay});
   }
   render() {
-    let trackCount = 0; // First count is called 1, so initialCount=1 plays first track
+    let trackCount = 0; // First count is called 1, so initialPlay=1 plays first track
     return (
     <div id="theatre-ia" className="container">
       <div className="row">
@@ -124,6 +128,7 @@ class AudioTheatre extends IAReactComponent {
             </div>
             <div className="col-xs-12 col-sm-6 col-md-7 col-lg-8">
               <div id="audioContainer" style={{textAlign: "center"}}>
+                <ImageDweb source={this.props.playlist[this.state.trackPlaying-1].imageurls} className="img-responsive" style={{backgroundColor:"white"}}/>
                 <AudioDweb id="streamContainer" controls
                            source={this.props.playlist[this.state.trackPlaying-1].sources[0].urls}/>
               </div>

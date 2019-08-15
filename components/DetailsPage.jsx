@@ -188,42 +188,40 @@ class DetailsWork extends IAReactComponent {
       {/* Missing donate-banner and scripts & css before it */}
       <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
       {/*--Begin page content --*/}
-      <div className="container container-ia">
-          <a name="maincontent" id="maincontent"></a>
-      </div>{/*--//.container-ia--*/}
-      {/*This is the main-content*/}
-      { this.props.download
-        ?
-          <DownloadDirectoryDiv identifier={this.props.identifier}
-                                disconnected={this.props.statuses.disconnected}
-                                files={this.props.item.files.map(f => { return {name: f.metadata.name, size: f.sizePretty()}})} />
-        :
-          <>
-            <DetailsIAWrap
-              identifier={this.props.identifier}
-              creator={this.props.metadata.creator}
-              name={this.props.metadata.name}
-              item={this.props.item}
-              title={this.props.metadata.title}
-              mediatype={this.props.metadata.mediatype}
-              poster={this.props.poster}
-              subtype={this.props.subtype}
-              playlist={this.props.playlist}
-              source={this.props.source}
-              files={this.props.files}
-              page={this.props.page}
-              disconnected={this.props.statuses.disconnected}
-            />
-            {(!this.props.identifier) ? null :
-              <DetailsAbout metadata={this.props.metadata} files={this.props.files} files_count={this.props.files_count}
-                                   collection_titles={this.state.collection_titles}
-                                   reviews={this.props.reviews}
-                                   description={this.props.description}
-                                   disconnected={this.props.statuses.disconnected} /> }
-           </>
-      }
-      {(!this.props.identifier) ? null :
-          <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
+      <main id="maincontent">
+        { this.props.download
+          ?
+            <DownloadDirectoryDiv identifier={this.props.identifier}
+                                  disconnected={this.props.statuses.disconnected}
+                                  files={this.props.item.files.map(f => { return {name: f.metadata.name, size: f.sizePretty()}})} />
+          :
+            <>
+              <DetailsIAWrap
+                identifier={this.props.identifier}
+                creator={this.props.metadata.creator}
+                name={this.props.metadata.name}
+                item={this.props.item}
+                title={this.props.metadata.title}
+                mediatype={this.props.metadata.mediatype}
+                poster={this.props.poster}
+                subtype={this.props.subtype}
+                playlist={this.props.playlist}
+                source={this.props.source}
+                files={this.props.files}
+                page={this.props.page}
+                disconnected={this.props.statuses.disconnected}
+              />
+              {(!this.props.identifier) ? null :
+                <DetailsAbout metadata={this.props.metadata} files={this.props.files} files_count={this.props.files_count}
+                                     collection_titles={this.state.collection_titles}
+                                     reviews={this.props.reviews}
+                                     description={this.props.description}
+                                     disconnected={this.props.statuses.disconnected} /> }
+             </>
+        }
+        {(!this.props.identifier) ? null :
+            <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
+      </main>
       {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
     </>
   )}
