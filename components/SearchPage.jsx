@@ -254,7 +254,7 @@ class SearchBanner extends IAReactComponent {
      *    query=STRING     query string
      *    disconnected=BOOL True if browser cannot see archive.org
      * />
-     * //TODO lookout direct URL in middle of this, rather than Nav_search
+     * //TODO lookout direct URL in middle of this, rather than navSearch
      */
   render() {
       const query = this.props.query;
@@ -396,7 +396,7 @@ class SearchWrap extends IAReactComponent {
           </div>
         </main>
         {/*--TODO-ANALYTiCS is missing --*/}
-      </>``
+      </>
     );
   }
 }

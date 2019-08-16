@@ -16,7 +16,7 @@ function pushHistory(...optss) {
     // when loaded from file, non SW window.location.origin = document.location.origin = "file://" and document.baseURI is unset
 
     // Combine possibly multiple objects (simplifies calling)
-  const optsFunctional = ["wanthistory", "noCache"]; // opts used by nav_search and factory, dont save or restore
+  const optsFunctional = ["wanthistory", "noCache"]; // opts used by navSearch and factory, dont save or restore
   const optsCombined = Object.assign({}, ...optss.map(opts => opts instanceof URLSearchParams ? URLSearchParamsEntries(opts) : opts));
   const opts = ObjectFilter(optsCombined,  // Set of opts want in history etc
     (k,v) => ((typeof v !== "undefined") && (v !== null) && !optsFunctional.includes(k)));
@@ -76,28 +76,25 @@ export default class Nav {
     //super();
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  static async nav_searchOnClick(q) {
-    // Shortcut while onclick_search is passing a string
-    return this.nav_search(q, {wanthistory: true});
-  }
-
-  static async nav_search(q, opts = {}) {
-    /*
-    Navigate to a search
-    q = query (string to search for) or object e.g. {query: foo, sort: -date} as passed to new Search()
+  static async navSearch(q, opts = {}) {
+    /**
+     * Navigate to a search
+     *
+     * q = string to search for e.g. 'foo'
+     *     or object e.g. {collection: foo, title: bar}
+     *     or string representing search in form URL wants e.g. 'collection:"foo" AND title:"bar"'
+     * opts = {sort, rows, noCache}
      */
     debug("Navigating to Search for %s", q);
     const semiTitle = DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive";
     const {noCache=false} = opts;
-    const qq = (typeof (q) === "object") ? q : (typeof (q) === "string") ? {query: q} : undefined;
-    opts.query = qq;
+    opts.query = q;
     renderPage({message: "Loading search"});
-    const s = new ArchiveBase(opts);
+    const s = new ArchiveBase(opts);          // Wants {query, sort, rows, noCache}
     await s.fetch_metadata({noCache});
     await s.fetch_query({noCache}); // Should throw error if fails to fetch //TODO-RELOAD fetch_query ignores noCache currently
-    pushHistory(opts, qq); // Note this takes account of wantHistory
-    document.title = `${qq.query} ${qq.sort || ""} : ${semiTitle}`;
+    pushHistory(opts); // Note this takes account of wantHistory //TODO-SEARCH test this works see window.onpopstate
+    document.title = `${s.query} ${s.sort || ""} : ${semiTitle}`;
     renderPage({item: s});
   }
 
@@ -105,6 +102,13 @@ export default class Nav {
     // Build the onclick part of a search, q can be a string or an object e.g. {creator: "Foo bar", sort: "-date"}
     // Its passed an object in various places
     return `Nav.nav_searchOnClick(${canonicaljson.stringify(q)}); return false`;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  static async nav_searchOnClick(encodedQ) {
+    // Shortcut while onclick_search is passing a string
+    const {query, sort} = canonicaljson.parse(encodedQ); // Undo encoding { query, sort }
+    return this.navSearch(query, {sort, wanthistory: true}); //TODO-SEARCH test on Date switcher bar
   }
 
   static async factory(identifier, ...optss) { //TODO-REACTFAKE I think this is what becomes the resettable page with the logic in its render
@@ -173,6 +177,16 @@ export default class Nav {
   }
 
   static metafactory(opts) {
+    /**
+     * Create object based on options passed in URL - this is only called from archive.html
+     *
+     * opts {
+     *  query:  query as string "foo", object {collection:foo, title:bar} or string 'collection:"foo" AND title:"bar"'
+     *  sort: STRING
+     *  identifier||item: STRING (item is deprecated)
+     *  download:  True or 1 if want download directory instead
+     *  Anything else is passed to factory
+     */
     const destn = document.getElementById('main'); // Blank window (except Nav) as loading
     const els = (
       <Page message={"LOADING STARTING"}/>
@@ -180,19 +194,19 @@ export default class Nav {
     ReactDOM.render(els, destn);
     // Assumes rendering is sync
     console.assert(typeof DwebArchive.page !== "undefined", "Assuming ReactDOM.render is sync");
-    let {query, sort, item, identifier, download} = opts;
+    let {query, item, identifier, download} = opts;
     identifier = identifier || item;
-    opts = ObjectFilter(opts, (k, unusedV) => !["query", "sort", "item", "identifier", "download"].includes(k));
+    opts = ObjectFilter(opts, (k, unusedV) => !["query", "item", "identifier", "download"].includes(k));
     opts.wanthistory = true;
     if (query) {
       // noinspection JSIgnoredPromiseFromCall
-      this.nav_search({query, sort}, opts); // Intentionally passing transport, paused, etc that are used above
+      this.navSearch(query, opts); // Intentionally passing transport, paused, etc that are used above
     } else if (download) { // Note only works for downloading items, not files - can add later if reqd
       // noinspection JSIgnoredPromiseFromCall
       this.factory(identifier, opts, {download: 1});
     } else {
       // noinspection JSIgnoredPromiseFromCall
-      Nav.factory(identifier || "home", opts);
+      this.factory(identifier || "home", opts);
     }
   }
 }
@@ -204,7 +218,7 @@ window.onpopstate = function(event) {
     const stateOpts = Object.assign({}, event.state, {wanthistory: false});
     if (event.state && event.state.query) {
       // noinspection JSIgnoredPromiseFromCall
-      Nav.nav_search(event.state.query, stateOpts);
+      Nav.navSearch(event.state.query, stateOpts);
     } else {
       // noinspection JSIgnoredPromiseFromCall
       Nav.factory(identifier || "home", stateOpts);

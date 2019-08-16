@@ -19,6 +19,7 @@ function _onefield(key, value) {
 }
 
 function queryFrom(query) {
+  // Turn query as object into a viable query string for a Url (but not yet urlencoded)
   return Object.entries(query).map(kv => _onefield(kv[0], kv[1])).join(' AND '); // k1:v1 AND k2:v2
 }
 // End of DUPLICATEDCODE#0003
@@ -27,12 +28,10 @@ const searchConfig = {
 };
 
 export default class ArchiveBase extends ArchiveItem {
-  /*
-  Fields:
-  item    Metadata for item, undefined for a search.
-  itemtype    Schema.org for this eg. "http://schema.org/TextDigitalDocument"
-  query   query part of search either as object {creator: foo} or string "foo"
-  TODO-DOCS rest of fields now merged in Details nad Search
+  /**
+   * Subclass of ArchiveItem that can also handle a search and other parameterisation of display
+   * Fields:
+   *
    */
   constructor({ and='', download=false, itemid = undefined, message=undefined, metaapi = undefined, noCache=false, page=1,
                 query=undefined, rows=searchConfig.rows, sort=''}={}) {

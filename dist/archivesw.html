@@ -38,7 +38,7 @@
         await DwebTransports.p_connect({statuselement: document.getElementById("statuselement"), transports: searchparams.getAll("transport"), paused: searchparams.getAll("paused")});
         const opts = Nav.setState(searchparams); // Save persistent state
         if (query) {
-            Nav.nav_search(query, opts, {wanthistory: true});
+            Nav.navSearch(query, opts, {wanthistory: true});
         } else {
           await Nav.factory(item || "home", opts, {wanthistory: true});
         }
