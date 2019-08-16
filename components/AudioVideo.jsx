@@ -74,7 +74,6 @@ class VideoDweb extends AVDweb {
 
   render() {
     // noinspection HtmlRequiredAltAttribute
-    this.loadStreamIfChanged();
     return (
       typeof DwebArchive !== 'undefined'
       ? <video id="streamContainer" poster={this.props.poster} controls ref={this.load} {...this.state.tagProps}></video>
