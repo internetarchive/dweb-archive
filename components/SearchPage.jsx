@@ -7,6 +7,7 @@ import { LocalItem } from "./mirror/LocalComponent";
 import { SettingsItem } from "./mirror/SettingsComponent";
 import { AccountWrap } from "../Account.js";
 import { HomeBanner } from "./Home.jsx";
+const debug = require('debug')('SearchPage');
 
 
 /**
@@ -249,13 +250,31 @@ class SearchSortBar extends IAReactComponent {
   }
 }
 class SearchBanner extends IAReactComponent {
-    /**
-     * <SearchBanner
-     *    query=STRING     query string
-     *    disconnected=BOOL True if browser cannot see archive.org
-     * />
-     * //TODO lookout direct URL in middle of this, rather than navSearch
-     */
+  /**
+   * <SearchBanner
+   *    query=STRING     query string
+   *    disconnected=BOOL True if browser cannot see archive.org
+   * />
+   * //TODO lookout direct URL in middle of this, rather than navSearch
+   */
+
+  constructor(props) {
+    super(props); // None
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(event) {
+    this.setState({ value: event.target.value });
+  }
+  onSubmit(event) {
+    // TODO-IAUX this is dweb-archive only, needs a version that works in raw IAUX
+    debug('Search submitted %s',this.state.value);
+    // noinspection JSUnresolvedFunction,JSUnresolvedVariable
+    Nav.navSearch(this.state.value, {wanthistory: true});
+    event.preventDefault();
+  }
+
   render() {
       const query = this.props.query;
       return (
@@ -268,47 +287,50 @@ class SearchBanner extends IAReactComponent {
                     </div>
                     <div className="col-sm-8 col-md-8 col-lg-9">
                         <div className="searchbar" style={{marginBottom: "10px", marginRight: "60px"}}>
-                            {/*--TODO-DETAILS change this form into a advancedsearch query--*/}
+                          {/*--TODO-DETAILS make the advnced stuff work with onSubmit*/}
                             <form className="form search-form js-search-form"
                                   id="searchform"
                                   method="get"
                                   role="search"
                                   action="https://archive.org/searchresults.php"
+                                  onSubmit={DwebArchive ? this.onSubmit : undefined}
                                   data-event-form-tracking="Search|SearchForm"
                                   data-wayback-machine-search-url="https://web.archive.org/web/*/"> {/* TODO-WAYBACK*/}
                                 <div className="form-group" style={{position: "relative"}}>
-                                    <div style={{position: "relative"}}>
-                                        <span aria-hidden="true">
-                                          <span className="iconochive-search"
-                                                style={{position: "absolute", left: "4px", top: "7px", color: "#999", fontSize: "125%"}}
-                                                aria-hidden="true"></span><span className="sr-only">search</span>            </span>
-                                        <input className="form-control input-sm roundbox20 js-search-bar" size="25"
-                                               name="search"
-                                               placeholder="Search" type="text" defaultValue={this.props.query}
-                                               style={{fontSize: "125%", paddingLeft: "30px"}}
-                                               onClick={()=>$(this).css('padding-left','').parent().find('.iconochive-search').hide()}
-                                               aria-controls="search_options"
-                                               aria-label="Search the Archive. Filters and Advanced Search available below."
-                                        />
-                                    </div>
-
+                                  <div style={{position: "relative"}}>
+                                      <span aria-hidden="true">
+                                        <span className="iconochive-search"
+                                              style={{position: "absolute", left: "4px", top: "7px", color: "#999", fontSize: "125%"}}
+                                              aria-hidden="true"></span><span className="sr-only">search</span>            </span>
+                                      <input className="form-control input-sm roundbox20 js-search-bar" size="25"
+                                             name="search"
+                                             placeholder="Search" type="text" defaultValue={this.props.query}
+                                             style={{fontSize: "125%", paddingLeft: "30px"}}
+                                             onClick={()=>$(this).css('padding-left','').parent().find('.iconochive-search').hide()}
+                                             aria-controls="search_options"
+                                             aria-label="Search the Archive. Filters and Advanced Search available below."
+                                             onChange={this.onChange}
+                                      />
+                                  </div>
+                                  {true ? null : //TODO figure out whether options relevant on dweb | offline
                                     <div
-                                      id="search_options"
-                                      className="search-options js-search-options is-open"
-                                      aria-expanded="true"
-                                      aria-label="Search Options"
-                                      data-keep-open-when-changed="true"
+                                    id="search_options"
+                                    className="search-options js-search-options is-open"
+                                    aria-expanded="true"
+                                    aria-label="Search Options"
+                                    data-keep-open-when-changed="true"
                                     >
-                                        <fieldset>
-                                            <label><input type="radio" name="sin" value="" defaultChecked/>Search
-                                                metadata</label>
-                                            <label><input type="radio" name="sin" value="TXT"/>Search full text of books</label>
-                                            <label><input type="radio" name="sin" value="TV"/>Search TV captions</label>
-                                            <label><input type="radio" name="sin" value="WEB"/>Search archived web sites</label>
-                                        </fieldset>
-                                        {/* We are using advanced search, so no point in this link
+                                    <fieldset>
+                                    <label><input type="radio" name="sin" value="" defaultChecked/>Search
+                                    metadata</label>
+                                    <label><input type="radio" name="sin" value="TXT"/>Search full text of books</label>
+                                    <label><input type="radio" name="sin" value="TV"/>Search TV captions</label>
+                                    <label><input type="radio" name="sin" value="WEB"/>Search archived web sites</label>
+                                    </fieldset>
+                                    {/* We are using advanced search, so no point in this link
                                         <a href={searchURL} className="search-options__advanced-search-link">Advanced Search</a> */}
                                     </div>
+                                  }
 
                                     <button className="btn btn-gray label-primary input-sm"
                                             style={{position: "absolute", right: "-60px", top: 0}}
