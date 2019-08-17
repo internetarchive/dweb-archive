@@ -392,7 +392,10 @@ class SearchRowColumnsItems extends IAReactComponent {
 class SearchWrap extends IAReactComponent {
   /**
    * <SearchWrap
-   *    item=this
+   *   item=this
+   *   transportStatuses=[{name: STRING, status: INT} Status of connected transports
+   *   mirror2gateway=BOOL  True if connected to a mirror that can see its upstream gateway
+   *   disconnected=BOOL    True if disconnected from upstream (so disable UI dependent on upstream)
    * />
    */
   render() {
@@ -426,6 +429,9 @@ class CollectionWrap extends IAReactComponent {
   /**
    * <CollectionWrap
    *    item=this
+   *   transportStatuses=[{name: STRING, status: INT} Status of connected transports
+   *   mirror2gateway=BOOL  True if connected to a mirror that can see its upstream gateway
+   *   disconnected=BOOL    True if disconnected from upstream (so disable UI dependent on upstream)
    * />
    */
   render() {
