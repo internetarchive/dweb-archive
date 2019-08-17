@@ -129,6 +129,13 @@ class SettingsCrawlsComponent extends IAReactComponent {
               <div style={{position: "relative"}}>
                 <div>
                   <h4>Crawls</h4>
+                  <div className="wantde">
+                    <div className="en fr de">
+                      <p lang="fr">Je Suis Francais</p>
+                      <p lang="en">I'm English</p>
+                      <p lang="de">Ich bin deutches</p>
+                    </div>
+                  </div>
                   <ul>
                     {this.state.crawls.map(crawl => <SettingsCrawlLI key={crawl.name} id={crawlid++} crawl={crawl}/>) }
                   </ul>

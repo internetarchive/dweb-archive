@@ -169,3 +169,26 @@ body.navia .navbar #nav-dweb a img {
     font-size:larger;
     font-weight: bolder;
 }
+
+
+/*
+Which language we want is specified by adding language class to body
+
+For each language define four items
+Turn it off when in a group that includes it
+Then turn it on if body tag specifies it - note this is less specific than the above
+Specify a default language - turn that off if we have the desired language
+Now turn it on if we dont have the desired language - note this is less specific than the above
+*/
+body.fr .fr :lang(fr) { background-color: yellow}
+.fr :lang(fr) { background-color: red}
+body.fr .fr :lang(en) { background-color: red }
+body.fr :lang(en) { background-color: yellow}
+
+body.de .de :lang(de) { background-color: yellow}
+.de :lang(de) { background-color: red}
+body.de .de :lang(en) { background-color: red }
+body.de :lang(en) { background-color: yellow}
+
+body.en .en :lang(en) { background-color: yellow}
+.en :lang(en) { background-color: red}
