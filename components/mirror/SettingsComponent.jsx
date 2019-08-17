@@ -176,6 +176,12 @@ class SettingsInfo extends IAReactComponent {
 }
 
 class SettingsItem extends IAReactComponent {
+  /**
+   * TODO more docs needed
+   *   transportStatuses=[{name: STRING, status: INT} Status of connected transports
+   *   mirror2gateway=BOOL  True if connected to a mirror that can see its upstream gateway
+   *   disconnected=BOOL    True if disconnected from upstream (so disable UI dependent on upstream)
+   */
   constructor(props) {
     super(props); // item
   }

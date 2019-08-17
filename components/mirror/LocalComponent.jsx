@@ -21,12 +21,15 @@ function canonicalizeTasks(tasks) {
       : task ));
 }
 
-//util_apply(f, cb) => return function(err, interim) { let donecb=false; if (err) { cb(err); } else { try { var res = f(interim); donecb=true; cb(null, interim) } catch(err) { cb(err) }}}
 class LocalGridRowComponent extends IAReactComponent {
-  /*  static propTypes = {
-          members: PropTypes.array,
-      };
-  */
+  /**
+   * <LocalGridRowComponent
+   *   members=[ArchiveMember]  Array of members in the crawl
+   * />
+   *
+   * Renders a grid of members that are in the crawl
+   */
+
   constructor(props) {
     super(props);
   }
@@ -49,6 +52,16 @@ class LocalGridRowComponent extends IAReactComponent {
 }
 
 class LocalItem extends IAReactComponent {
+  /**
+   * Display an item representing local content
+   *
+   * <LocalItem
+   *   item=ARCHIVEITEM   Display the membersFav of this item
+   *   transportStatuses=[{name: STRING, status: INT} Status of connected transports
+   *   mirror2gateway=BOOL  True if connected to a mirror that can see its upstream gateway
+   *   disconnected=BOOL    True if disconnected from upstream (so disable UI dependent on upstream)
+   * />
+   */
   constructor(props) {
     super(props); // item
     this.state.members = this.props.item.membersFav || []; // Lets assume they are in membersFav not membersSearch
@@ -92,7 +105,7 @@ class LocalItem extends IAReactComponent {
           }
         }
       );
-      // TODO-UXLOCAL handle default things like configmerged.apps.crawl.opts.defaultDetailsSearch
+      // TODO-UXLOCAL handle default things like configmerged.apps.crawl.opts.defaultDetailsSearch see dweb-mirror issue#140
     }
   }
 
