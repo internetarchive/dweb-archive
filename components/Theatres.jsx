@@ -39,8 +39,8 @@ class CarouselTheatre extends IAReactComponent {
   // Props: identifier, slides, creator, mediatype, title disconnected
   constructor(props) {
     super(props);
-    this.componentDidMount = this.component.DidMount.bind(this);
-    this.componentDidUpdate = this.component.DidUpdate.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentDidUpdate = this.componentDidUpdate.bind(this);
   }
   componentDidMount() {
     super.componentDidMount();

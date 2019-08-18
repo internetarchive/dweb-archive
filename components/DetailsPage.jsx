@@ -12,7 +12,7 @@ class DetailsIAWrap extends IAReactComponent {
   /**
    * <DetailsIAWrap
    *  identifier, mediatype, name, title, creator     Fields form Metadata API
-   *  item=ARCHIVEITEM  // Currently Needed if its a bookreader,
+   *  item=ARCHIVEITEM  // Currently Needed if its a bookreader, or a carousel
    *  poster=URL        // Poster for videos, mostly for search engines
    *  playlist={...}    // As stored in item from playlist API
    *  files=
@@ -68,7 +68,7 @@ class DetailsIAWrap extends IAReactComponent {
             ?
             <CarouselTheatre
               identifier={this.props.identifier}
-              slides={this.props.files4carousel().map(f => ({filename: f.metadata.name, source: f}))}
+              slides={this.props.item.files4carousel().map(f => ({filename: f.metadata.name, source: f}))}
               creator={this.props.creator}
               mediatype={this.props.mediatype}
               title={this.props.title}
