@@ -94,7 +94,7 @@ export default class Nav {
     await s.fetch_metadata({noCache});
     await s.fetch_query({noCache}); // Should throw error if fails to fetch //TODO-RELOAD fetch_query ignores noCache currently
     pushHistory(opts); // Note this takes account of wantHistory //TODO-SEARCH test this works see window.onpopstate
-    document.title = `${s.query} ${s.sort || ""} : ${semiTitle}`;
+    document.title = `${s.query} ${(s.sort.join(' ')} : ${semiTitle}`;
     renderPage({item: s});
   }
 

@@ -34,7 +34,7 @@ export default class ArchiveBase extends ArchiveItem {
    *
    */
   constructor({ and='', download=false, itemid = undefined, message=undefined, metaapi = undefined, noCache=false, page=1,
-                query=undefined, rows=searchConfig.rows, sort=''}={}) {
+                query=undefined, rows=searchConfig.rows, sort=[]}={}) {
     super({itemid, metaapi, sort});
     this.and = and;
     this.download = download; // True if want download directory
@@ -42,7 +42,7 @@ export default class ArchiveBase extends ArchiveItem {
     this.page = page;
     if (metaapi && metaapi.metadata && (metaapi.metadata.mediatype === "account")) {
       query = `uploader:"${metaapi.uploader}"`;
-      sort = '-publicdate';
+      sort = ['-publicdate'];
     }
     this.query = (typeof(query) === "object")
       ? queryFrom(query)  // form { creator: "Foo bar" ... }
