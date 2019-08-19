@@ -131,6 +131,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.91: Refactor search; fix bugs in ... video from 0.1.90; carousel;  
 * v0.1.90: yarn upgrade; undo regression to CSS from archive less
 * v0.1.89: Transportstatus; CSS; Image loading refactor
 * v0.1.88: Bugs - presuming disconnected, and Home page; Recompile less
