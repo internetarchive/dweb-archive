@@ -13,6 +13,9 @@ export default class RelatedItemsWrapper extends IAReactComponent {
    *    noCache:    BOOL                True if should skip cache when loading (used by dweb-mirror)
    *    disconnected BOOL               True if browser cannot see archive.org
    * />
+   * State:
+   *    members:  [ARCHIVEMEMBER]       Set from props
+   *    loading:  BOOL                  True when loading
    */
   constructor(props) {
     console.assert(props.item || props.members,"Must pass either item or members")
@@ -20,9 +23,10 @@ export default class RelatedItemsWrapper extends IAReactComponent {
     this.state.members = this.props.members; // Maybe undefined, but has to be in .state so can change
     // called via ref=this.load when the component is loaded, triggers async load via API if .members undefined
     if (this.props.identifier && this.props.item && !this.state.members) {
+      this.setState({loading: true});
       this.props.item.relatedItems({wantStream:false, wantMembers:true, noCache: this.props.noCache}, (err, members) => {
         if (!err) { // If there is an error then fetch_json will have reported it, and can just ignore it here and not display
-          this.setState({members: members});
+          this.setState({members: members, loading: false});
         }
       });
     }
