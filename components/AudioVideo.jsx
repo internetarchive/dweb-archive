@@ -9,13 +9,6 @@ const debug = require('debug')('Video Components');
 
 class AVDweb extends IAReactComponent {
   /* Local Superclass of AudioDweb and VideoDweb as similar structure */
-  constructor(props) {
-    super(props); //
-    this.setState({
-      specificProps: ObjectFilter(this.props, (k, unusedV) => AudioDweb.specificParms.includes(k)),
-      tagProps: ObjectFilter(this.props, (k, unusedV) => (!AudioDweb.specificParms.includes(k) && !['children'].includes(k)))
-    });
-  }
   loadAV() {
     loadStream(this.avElement, this.props.source, {
       name: this.props.source.metadata.name,
@@ -49,6 +42,13 @@ class AudioDweb extends AVDweb {
    * />
    *  Render an audio but fetching from Dweb if available
    */
+   constructor(props) {
+     super(props); //
+     this.setState({
+       specificProps: ObjectFilter(this.props, (k, unusedV) => AudioDweb.specificParms.includes(k)),
+       tagProps: ObjectFilter(this.props, (k, unusedV) => (!AudioDweb.specificParms.includes(k) && !['children'].includes(k)))
+     });
+   }
 
   render() {
     // noinspection HtmlRequiredAltAttribute
@@ -69,20 +69,30 @@ class VideoDweb extends AVDweb {
    * <VideoDweb
    *    EITHER source=  ArchiveFile
    *    OR src=URL
+   *    poster: ArchiveFile or URL
+   *    any other props passed to video tag esp controls=BOOL
    * />
    */
+  constructor(props) {
+    super(props); //
+    this.setState({
+      specificProps: ObjectFilter(this.props, (k, unusedV) => VideoDweb.specificParms.includes(k)),
+      tagProps: ObjectFilter(this.props, (k, unusedV) => (!VideoDweb.specificParms.includes(k) && !['children'].includes(k)))
+    });
+  }
 
   render() {
     // noinspection HtmlRequiredAltAttribute
+    const p = ["undefined","string"].includes(typeof this.props.poster) ? this.props.poster : this.props.poster.httpUrl();
     return (
       typeof DwebArchive !== 'undefined'
-      ? <video id="streamContainer" poster={this.props.poster} controls ref={this.load} {...this.state.tagProps}></video>
-      : <video id="streamContainer" poster={this.props.poster} controls src={this.props.src} {...this.state.tagProps}></video>
+      ? <video id="streamContainer" data-poster={p} poster={p} controls ref={this.load} {...this.state.tagProps}></video>
+      : <video id="streamContainer" data-poster={p} poster={p} controls src={this.props.src} {...this.state.tagProps}></video>
     );
   }
 }
 // Parameters not to pass down to video tag automatically
-VideoDweb.specificParms = ['src', 'source']; // Known in use includes:
+VideoDweb.specificParms = ['src', 'source', 'poster']; // Known in use includes:
 
 export { AudioDweb, VideoDweb};
 

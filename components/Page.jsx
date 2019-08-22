@@ -198,7 +198,7 @@ class Page extends IAReactComponent {
               identifier={identifier}
               subtype={metadata && (["texts"].includes(mediatype)) ? item.subtype() : undefined}
               poster={(metadata && ["movies"].includes(mediatype))
-                ? item.videoThumbnailFile().httpUrl()
+                ? item.videoThumbnailFile()
                 : (["audio", "etree"].includes(mediatype))
                   ? item.thumbnailFile()
                   : undefined}

@@ -9,11 +9,29 @@ import {IAReactComponent, NavWrap} from "@internetarchive/ia-components/dweb-ind
 
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 
+/*
+Crawl is: {
+  name: STRING
+  queue: {
+    paused:  BOOL,
+    length, running, completed: INT
+    workerslist: [  parent: [STRING], debugname, reqUrl || file: {metadata.size} ]
+    opts: {}
+    initialItemTaskList: []
+    errors: []
+  }}
+*/
+
 class SettingsCrawlLI extends IAReactComponent {
-  /*  static propTypes = {
-        crawl: PropTypes.object
-      };
-  */
+  /**
+   * Renders information about one crawl
+   *
+   * <SettingsCrawlLI
+   *  id = STRING
+   *  crawl = CRAWL
+   * />
+   */
+
   constructor(props) {
     super(props);
     this.setState({crawl: this.props.crawl})
@@ -94,10 +112,14 @@ class SettingsCrawlLI extends IAReactComponent {
 }
 //util_apply(f, cb) => return function(err, interim) { let donecb=false; if (err) { cb(err); } else { try { var res = f(interim); donecb=true; cb(null, interim) } catch(err) { cb(err) }}}
 class SettingsCrawlsComponent extends IAReactComponent {
-  /*  static propTypes = {
-        crawls: PropTypes.array
-      };
-  */
+  /**
+   * Render information about all crawls
+   *
+   * <SettingsCrawlsComponent
+   *    crawls = [ CRAWL ]
+   * />
+   */
+
   constructor(props) {
     super(props);
     this.state.crawls = this.props.crawls; // Maybe undefined
@@ -140,6 +162,15 @@ class SettingsCrawlsComponent extends IAReactComponent {
 }
 
 class SettingsInfo extends IAReactComponent {
+  /**
+   * Fetch and render information about the connection to the mirror
+   *
+   * <SettingsInfo />
+   *
+   * Behavior
+   *   Fetches info from server adn displays (currently) just the directories
+   */
+
   constructor(props) {
     super(props);
     const urlInfo = [gatewayServer(), "info"].join('/');
@@ -177,10 +208,17 @@ class SettingsInfo extends IAReactComponent {
 
 class SettingsItem extends IAReactComponent {
   /**
-   * TODO more docs needed
-   *   transportStatuses=[{name: STRING, status: INT} Status of connected transports
-   *   mirror2gateway=BOOL  True if connected to a mirror that can see its upstream gateway
-   *   disconnected=BOOL    True if disconnected from upstream (so disable UI dependent on upstream)
+   * A page for displaying settings
+   *
+   * <SettingsItem
+   *  item=ARCHIVEITEM  The Settins item,
+   *  transportStatuses=[{name: STRING, status: INT} Status of connected transports
+   *  mirror2gateway=BOOL  True if connected to a mirror that can see its upstream gateway
+   *  disconnected=BOOL    True if disconnected from upstream (so disable UI dependent on upstream)
+   * />
+   *
+   * Behavior:
+   *   on render: displays information about settings, has effect in SettingsInfo of fetching that information
    */
   constructor(props) {
     super(props); // item
