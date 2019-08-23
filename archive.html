@@ -88,7 +88,7 @@
       if (mirror && !(mirror === null) && !mirror.startsWith('http')) { mirror = "http://"+mirror; }
       // Save the persistent (cross-window) state (transport & mirror & paused), and returns any other searchparams not saved
       const opts = Nav.setState(searchparams, {mirror: mirror});
-      DwebArchive.mirror = mirror; // So DwebArchive can check it locally, must be before gatewayServer call below
+      DwebArchive.mirror = mirror || null; // So DwebArchive can check it locally, must be before gatewayServer call below (null check turns "" into null)
       const pathParts = location.pathname.split('/');
       const k = ['details', 'download'].find(kPossible => pathParts.includes(kPossible));
       opts.identifier = k
