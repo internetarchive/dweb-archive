@@ -189,6 +189,7 @@ class DetailsWork extends IAReactComponent {
       <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
       {/*--Begin page content --*/}
       <main id="maincontent">
+        <div class="container container-ia"></div>
         { this.props.download
           ?
             <DownloadDirectoryDiv identifier={this.props.identifier}
@@ -221,6 +222,7 @@ class DetailsWork extends IAReactComponent {
         }
         {(!this.props.identifier) ? null :
             <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
+        <div className="terms-of-service"><a className="stealth" href="https://archive.org/about/terms.php">Terms of Service (last updated 12/31/2014)</a></div>
       </main>
       {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
     </>
