@@ -189,7 +189,7 @@ class DetailsWork extends IAReactComponent {
       <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
       {/*--Begin page content --*/}
       <main id="maincontent">
-        <div class="container container-ia"></div>
+        <div className="container container-ia"></div>
         { this.props.download
           ?
             <DownloadDirectoryDiv identifier={this.props.identifier}
