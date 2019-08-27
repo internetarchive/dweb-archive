@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ObjectFilter } from '@internetarchive/dweb-archivecontroller/Util.js';
 import { AnchorDownload, IAReactComponent } from '@internetarchive/ia-components/dweb-index.js';
@@ -7,9 +6,21 @@ import {loadStream} from "../ReactSupport";
 
 const debug = require('debug')('Video Components');
 
+/**
+ * This file provides wrapped Audio and Video components that can be driven from Dweb content -
+ * Its similar to ImageDweb (in ia-components).
+ * the source or src parameter is used to specify where to load content from, with other parameters passed alog
+ */
+
 class AVDweb extends IAReactComponent {
-  /* Local Superclass of AudioDweb and VideoDweb as similar structure */
+  /**
+   *  Local Superclass of AudioDweb and VideoDweb as similar structure
+   *
+   *  Behavior (common to both)
+   *  On Mount or on Update that changes source it retrieves a stream and loads it into the element
+   */
   loadAV() {
+    /* Load element from source */
     loadStream(this.avElement, this.props.source, {
       name: this.props.source.metadata.name,
       preferredTransports: config.preferredAVtransports
@@ -17,16 +28,17 @@ class AVDweb extends IAReactComponent {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
+    /* Iff this update changed source then reload AV element with new source */
     if (prevProps.source !== this.props.source) {
       this.loadAV();
     };  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
   }
   componentDidMount() {
+    /* When mount this component, load AV element with source */
       this.loadAV();
   }
   loadcallable(avElement) {
-    // On load, set the avElenent and render into it, its done this way since loadcallable is only called once, and not on re-renders
-    // TODO this may move to a method on the source (e.g. on ArchiveFile)
+    // On load, set the avElenent so it can be rendered into, its done this way since loadcallable is only called once, and not on re-renders
     this.avElement = avElement;
   }
 
@@ -38,7 +50,8 @@ class AudioDweb extends AVDweb {
    *    EITHER
    *      source  Flexible dweb parameter include ArchiveFile, ArchiveMember, relative urls, dweb: names, and arrays of alternatives (see dweb-archive/ReactSupport)
    *    OR
-   *      parameters to <Audio> tag
+   *      src
+   *    other properties passed to <Audio> tag
    * />
    *  Render an audio but fetching from Dweb if available
    */
@@ -67,10 +80,12 @@ class VideoDweb extends AVDweb {
   /** Video that can, but doesnt have to be loaded via Dweb
    *
    * <VideoDweb
-   *    EITHER source=  ArchiveFile
-   *    OR src=URL
+   *    *    EITHER
+   *      source  Flexible dweb parameter include ArchiveFile, ArchiveMember, relative urls, dweb: names, and arrays of alternatives (see dweb-archive/ReactSupport)
+   *    OR
+   *      src
    *    poster: ArchiveFile or URL
-   *    any other props passed to video tag esp controls=BOOL
+   *    other properties passed to Video tag esp controls=BOOL
    * />
    */
   constructor(props) {
