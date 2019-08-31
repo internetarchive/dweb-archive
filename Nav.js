@@ -111,7 +111,7 @@ export default class Nav {
     return this.navSearch(query, {sort, wanthistory: true}); //TODO-SEARCH test on Date switcher bar
   }
 
-  static async factory(identifier, ...optss) { //TODO-REACTFAKE I think this is what becomes the resettable page with the logic in its render
+  static async factory(identifier, ...optss) {
     /* Fetch and render an ArchiveItem
       wanthistory:    if set build a new entry in history
       download:       Want the download directory version of the details page
