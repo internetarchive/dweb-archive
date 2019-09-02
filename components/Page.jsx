@@ -59,7 +59,7 @@ class Page extends IAReactComponent {
   }
 
   componentDidMountOrUpdate() {
-    //TODO-FAKEREACT merge much of this into specific components at deeper level.
+    //TODO merge much of this into specific components at deeper level.
     const item = this.state.item;
     const identifier = item && item.itemid;
     const metadata = item && item.metadata;
@@ -178,7 +178,7 @@ class Page extends IAReactComponent {
       document.body.classList.add('top');
     }
     return (
-      // TODO-FAKEREACT The outer Div is one level up to keep ReactFake happy
+      //There is one more div outside this - in archive.html, that <Page> gets rendered into
       <div id="wrap"
            itemScope={typeof itemType !== "undefined"}
            itemType={itemType ? ("http://schema.org/" + itemType) : undefined}
