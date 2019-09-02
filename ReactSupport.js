@@ -360,7 +360,7 @@ async function _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined
   if (window.WEBTORRENT_FILE) {    //TODO-SW need to get status back from WebTorrent
     const torrent = window.WEBTORRENT_TORRENT;
     const torrentFile = window.WEBTORRENT_FILE;
-
+    //TODO make this into a react component and update it via setState
     const updateSpeed = () => {
       if (window.WEBTORRENT_FILE === torrentFile) {    // Check still displaying ours
         const webtorrentStats = document.querySelector('#webtorrentStats'); // Not moved into updateSpeed as not in document when this is run first time
@@ -373,7 +373,7 @@ async function _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined
               <b>Upload speed:</b> {prettierBytes(torrent.uploadSpeed)}/s
                             </span>
           );
-          deletechildren(webtorrentStats);
+          while (webtorrentStats.lastChild) {webtorrentStats.removeChild(webtorrentStats.lastChild)};
           webtorrentStats.appendChild(els);
         }
       }
