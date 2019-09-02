@@ -356,11 +356,11 @@ async function _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined
 
   // Enabled autoplay even though its being ignored - see https://github.com/internetarchive/dweb-archive/issues/41
   RenderMedia.render(file, el, {autoplay: true}, cb);  // Render into supplied element, will set window.WEBTORRENT_TORRENT if uses WebTorrent
-
+  //TODO make this into a react component and update it via setState
+  /*
   if (window.WEBTORRENT_FILE) {    //TODO-SW need to get status back from WebTorrent
     const torrent = window.WEBTORRENT_TORRENT;
     const torrentFile = window.WEBTORRENT_FILE;
-    //TODO make this into a react component and update it via setState
     const updateSpeed = () => {
       if (window.WEBTORRENT_FILE === torrentFile) {    // Check still displaying ours
         const webtorrentStats = document.querySelector('#webtorrentStats'); // Not moved into updateSpeed as not in document when this is run first time
@@ -378,7 +378,7 @@ async function _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined
         }
       }
     };
-
+    */
     torrent.on('download', throttle(updateSpeed, 250));
     torrent.on('upload', throttle(updateSpeed, 250));
     setInterval(updateSpeed, 1000);
