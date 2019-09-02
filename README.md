@@ -97,6 +97,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.94: document.title refactor and remove dependency on dweb-objects.deletechildren
 * v0.1.93: download links issue; accounts updloads display; naming refactor
 * v0.1.92: Remove incorrect Loading on no items; missing thumbnails; mirror="", align metadata display; image bug 
 * v0.1.91: Refactor search; fix bugs in ... video from 0.1.90; carousel;  
