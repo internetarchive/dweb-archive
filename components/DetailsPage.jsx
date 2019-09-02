@@ -183,7 +183,10 @@ class DetailsWork extends IAReactComponent {
     }
   }
 
-  render() { return (
+  render() {
+    const semiTitle = DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive";
+    document.title = `${this.props.identifier} : ${semiTitle}`;
+    return (
     <>
       {/* Missing donate-banner and scripts & css before it */}
       <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />

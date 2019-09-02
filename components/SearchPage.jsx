@@ -501,6 +501,7 @@ class ComboSearchWrap extends IAReactComponent {
      */
     // Note also used by Home, but not by Account
     const item = this.props.item;
+    document.title = `${item.query} ${item.sort.join(' ')} : ${DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive"}`
     const mediatype = item.metadata ? item.metadata.mediatype : "search";
     const identifier = item.itemid;
     return (
