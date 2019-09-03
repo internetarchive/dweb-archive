@@ -231,17 +231,8 @@ class ImageTheatre extends IAReactComponent {
                       target="_blank"
                       disconnected={this.props.disconnected}
                     >
-                      {/* There is a bizarre firefox only bug https://bugzilla.mozilla.org/show_bug.cgi?id=1576523
-                      that means if we set carousel-image which ONLY sets maxWidth and maxHeight then this fails
-                      but if we set it in the style - even prior to the src getting loaded with a blob - it works */}
-                      <ImageDweb
-                        className="rot0 carousel-image"
-                        source={this.props.source}
-                        src={this.props.src}
-                        id="streamContainer"
-                        alt={this.props.alt}
-                        />
-
+                      {/* --Separate window so dont break DWeb--*/}
+                      <ImageDweb className="rot0 carousel-image" source={this.props.source} id="streamContainer" src={this.props.src} alt={this.props.alt} />
                     </AnchorDownload>
                     <div className="carousel-caption">
                       {this.props.caption}

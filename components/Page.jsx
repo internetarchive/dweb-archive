@@ -117,13 +117,10 @@ class Page extends IAReactComponent {
         AJS.tiles_wrap_throttler = setTimeout(AJS.tiler, 250);
       });
     }
-    /*
-    Moved to ImageDweb component as Firefox bug causes it to fire prematurely here as img.complete returns true
     if (["image"].includes(mediatype)) {
       AJS.theatresize();
       AJS.carouselsize('#ia-carousel', true);
-    }
-   */
+    };
     if (!isSearch) { // This is common to Text, AV and image - though some have stuff before this and some a
       AJS.tilebars(); // page load
       $(window).on('resize  orientationchange', function (unusedEvt) { //TODO-JQUERY remove dependency window.on probably works fine
