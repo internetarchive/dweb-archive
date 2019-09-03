@@ -378,12 +378,12 @@ async function _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined
         }
       }
     };
-    */
     torrent.on('download', throttle(updateSpeed, 250));
     torrent.on('upload', throttle(updateSpeed, 250));
     setInterval(updateSpeed, 1000);
     updateSpeed(); //Do it once
   }
+  */
 }
 async function _p_loadStreamFetchAndBuffer(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) {
   /*

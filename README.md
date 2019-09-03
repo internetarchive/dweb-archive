@@ -13,6 +13,7 @@ to support the decentralized web.
 * to avoid single points of failure where possible
 
 ## Installation
+THESE INSTRUCTIONS PROBABLY WONT WORK - MORE RECENT ARE IN THE dweb-mirror repo
 ### All cases
 ```
 git clone https://git@github.com/internetarchive/dweb-archive.git
