@@ -14,7 +14,6 @@ import from2 from "from2";
 import RenderMedia from "render-media";
 import waterfall from "async/waterfall";
 import {gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
-import prettierBytes from "prettier-bytes";
 import throttle from "throttleit";
 const debug = require('debug')('dweb-archive:ReactSupport');
 var streamToBlobURL = require('stream-to-blob-url'); //TODO-BOOKREADER try as import
@@ -456,12 +455,13 @@ async function p_loadStream(el, urls, { name=undefined, cb=undefined, preferredT
     throw err;
   }
 }
+/* Obsoleted as moved into AudioVideo.jsx
 function loadStream(el, urls, opts = {}, cb) {
   p_loadStream(el, urls, opts)
   .then((res)=>{ try { cb(null,res)} catch(err) { debug("Uncaught error %O",err)}})
     .catch((err) => cb(err)); // Unpromisify pattern v5-cbOnly
 }
-
+*/
 /*
  * This section came from ReactFake and dont appear to be handled, but might not be needed.
   if (href.startsWith("dweb:")) possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href); return false;';
@@ -480,4 +480,4 @@ function preprocessDescription(description) {
 }
 
 //Not exporting relativeurl as not used
-export { ReactConfig, resolveUrls, p_resolveUrls, thumbnailUrlsFrom, getImageURI, loadImg, transportStatusAndProps, loadStream, preprocessDescription }
+export { ReactConfig, resolveUrls, p_resolveUrls, thumbnailUrlsFrom, getImageURI, loadImg, p_loadStream, transportStatusAndProps, preprocessDescription }

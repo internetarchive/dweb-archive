@@ -3,7 +3,7 @@ import { CherModal } from './CherModal';
 import { BookReaderWrapper } from './BookReaderWrapper';
 import { AnchorDownload, Carousel, IAReactComponent, ImageDweb }  from '@internetarchive/ia-components/dweb-index.js';
 import TheatreControls from "./TheatreControls";
-import { AudioDweb, VideoDweb } from "./AudioVideo";
+import { AudioDweb, VideoDweb, WebTorrentStats } from "./AudioVideo";
 import {config} from "../Util";
 
 /**
@@ -183,7 +183,7 @@ class VideoTheatre extends IAReactComponent {
             {/* This videothumbnailurl is http since if getting decentralized there is little value compared to loading video itself */}
             <VideoDweb id="streamContainer" source={this.props.source} poster={this.props.poster} controls></VideoDweb>
           </div>
-          <div id="webtorrentStats" style={{color: "white", textAlign: "center"}}></div>
+          <WebTorrentStats style={{color: "white", textAlign: "center"}} torrentfile={window.WEBTORRENT_FILE} torrent={window.WEBTORRENT_TORRENT}/>
           <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype}
                      title={this.props.title}/>
         </div>

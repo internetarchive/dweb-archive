@@ -1,8 +1,9 @@
 import React from 'react';
+import prettierBytes from "prettier-bytes";
 import { ObjectFilter } from '@internetarchive/dweb-archivecontroller/Util.js';
 import { AnchorDownload, IAReactComponent } from '@internetarchive/ia-components/dweb-index.js';
 import {config} from "../Util";
-import {loadStream} from "../ReactSupport";
+import {p_loadStream} from "../ReactSupport";
 
 const debug = require('debug')('Video Components');
 
@@ -20,11 +21,11 @@ class AVDweb extends IAReactComponent {
    *  On Mount or on Update that changes source it retrieves a stream and loads it into the element
    */
   loadAV() {
-    /* Load element from source */
-    loadStream(this.avElement, this.props.source, {
+    p_loadStream(this.avElement, this.props.source, {
       name: this.props.source.metadata.name,
       preferredTransports: config.preferredAVtransports
     });
+
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -109,5 +110,51 @@ class VideoDweb extends AVDweb {
 // Parameters not to pass down to video tag automatically
 VideoDweb.specificParms = ['src', 'source', 'poster']; // Known in use includes:
 
-export { AudioDweb, VideoDweb};
+class WebTorrentStats extends IAReactComponent {
+  /**
+   * <WebTorrentStats
+   *  torrent=TORRENT
+   *  torrentfile=TORRENTFILE
+   * />
+   */
+  constructor(props) {
+    super(props);
+    this.updateSpeed = this.updateSpeed.bind(this);
+    this.setup();
+    // This might be wrong if torrent is updated and constructor not called again, if so move to ComponentDidUpdate
+  }
+
+  updateSpeed() {
+    // Check if still displaying this file before updating stats (torrent might still download in background)
+    if (window.WEBTORRENT_FILE === this.props.torrentfile) {
+      this.setState({
+        numPeers: this.props.torrent.numPeers,
+        downloadSpeed: this.props.torrent.downloadSpeed,
+        uploadSpeed: this.props.torrent.uploadSpeed,
+        progress: this.props.torrentfile.progress
+      });
+    }
+  }
+  setup() {
+    if (this.props.torrent) {
+      this.props.torrent.on('download', throttle(this.updateSpeed, 250));
+      this.props.torrent.on('upload', throttle(this.updateSpeed, 250));
+      setInterval(this.updateSpeed, 1000);
+      this.updateSpeed(); //Do it once
+    }
+  }
+
+
+render() {
+    return (
+      <span>
+        <b>Peers:</b> {this.numPeers}{' '}
+        <b>Progress:</b> {Math.min(100 * this.progress || 0, 100).toFixed(1)}%{' '}
+        <b>Download speed:</b> {prettierBytes(this.downloadSpeed || 0)}/s{' '}
+        <b>Upload speed:</b> {prettierBytes(this.uploadSpeed || 0)}/s
+      </span>
+      )
+  }
+}
+export { AudioDweb, VideoDweb, WebTorrentStats};
 
