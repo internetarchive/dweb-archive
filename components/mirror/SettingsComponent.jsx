@@ -21,6 +21,16 @@ Crawl is: {
     errors: []
   }}
 */
+class I8span extends IAReactComponent {
+  /**
+   * <I8span en="Yes" fr="Out" de="Da" es="Yo" />
+   */
+  render() {
+    return <span className={Object.keys(this.props).join(" ")}>
+      { Object.entries(this.props).map(kv => <span key={kv[0]} lang={kv[0]}>{kv[1]}</span>) }
+    </span>
+  }
+}
 
 class SettingsCrawlLI extends IAReactComponent {
   /**
@@ -63,14 +73,15 @@ class SettingsCrawlLI extends IAReactComponent {
         }
         {/*<span className="playbutton" onClick={this.empty}>{'X'}</span> -- Not currently showing X*/}
       <ul> {/*TODO Make collapsable*/}
-        <li><span>Queue: </span>
-          <span>Waiting: {crawl.queue.length}; </span>
-          <span>Running: {crawl.queue.running}; </span>
-          <span>Completed: {crawl.queue.completed}; </span>
+        <li>
+          <I8span en="Queue:" fr="Queue:" de="Warteschlange:" es="Cola:"/>"
+          <I8span en="Waiting:" fr="Attendre:" de="Warten:" es="Esperando"/><span>{crawl.queue.length}; </span>
+          <span en="Running:" fr="Fonctionnement:" de="Laufen:" es="Corriendo"/><span>{crawl.queue.running}; </span>
+          <span  en="Completed:" fr="Terminé:" de="Abgeschlossen:" es="Terminado"/><span>{crawl.queue.completed}; </span>
           {/*Expand workersList*/}
         </li>
         {(!crawl.queue.workersList.length) ? null :
-          <li><span>Working on: </span>
+          <li><I8span en="Working on" fr="Travaille sur" de="Arbeiten an" es="Trabajando en"/>
             <ul>
               {crawl.queue.workersList.map(worker =>
                 <li key={worker.debugname}>
@@ -85,7 +96,9 @@ class SettingsCrawlLI extends IAReactComponent {
             </ul>
           </li>
         }
-        <li><span>Options: </span>
+
+        <li><I8span en="Options: " de="Optionen: " es="Opciones: " fr="Options: "/>
+          {/*TODO-MULTILINGUAL need to think this through probably best in english as relate to file*/}
           { ["concurrency", "limitTotalTasks"].map( // Integers
             k => <span key={k}>{`${k}: ${crawl.opts[k]}; `}</span>) }
           { ["maxFileSize"].map( // Bytes
@@ -93,12 +106,13 @@ class SettingsCrawlLI extends IAReactComponent {
           {["skipFetchFile", "skipCache"].map( //Booleans
             k => crawl.opts[k] ? <span key={k}>{k} </span> : null ) }
         </li>
-        <li><span>Seed: </span>
+
+        <li><I8span en="Seed: " de="Samen: " es="Semilla: " fr="Graine: "/>
           {crawl.initialItemTaskList.map(task =>
             <span key={task.identifier}>{task.identifier + (task.level === "details" ? "" : (": "+task.level))+"; "}</span>)}
         </li>
         { (!crawl.errors.length) ? null :
-          <li><span>Errors: </span>
+          <li><I8span en="Errors: " de="Fehler: " es="Errores: " fr="Erreurs"/>
             <ul>
               {crawl.errors.map(err =>
                 <li key={err.date}>{err.date} {err.task.debugname}: {err.error.message + "; "}</li>)}
@@ -144,20 +158,13 @@ class SettingsCrawlsComponent extends IAReactComponent {
     // Build a list of crawls
     let crawlid = 0;
     return (!this.state.crawls)
-        ? <span>Loading ...</span>
+        ? <span><I8span en="Loading" de="Wird geladen" es="Cargando" fr="Chargement"/> ...</span>
         :
           <div className="row">
             <div className="columns-items" style={{"marginLeft": "0px"}}>
               <div style={{position: "relative"}}>
                 <div>
-                  <h4>Crawls</h4>
-                  <div className="wantde">
-                    <div className="en fr de">
-                      <p lang="fr">Je Suis Francais</p>
-                      <p lang="en">I'm English</p>
-                      <p lang="de">Ich bin deutches</p>
-                    </div>
-                  </div>
+                  <h4><I8span en="Crawls" de="Crawlt" es="Se arrastra" fr="Rampes"/></h4>
                   <ul>
                     {this.state.crawls.map(crawl => <SettingsCrawlLI key={crawl.name} id={crawlid++} crawl={crawl}/>) }
                   </ul>
@@ -196,15 +203,15 @@ class SettingsInfo extends IAReactComponent {
 
   render() {
     return (!this.state.info)
-      ? <span>Loading ...</span>
+      ? <span><I8span en="Loading" de="Wird geladen" es="Cargando" fr="Chargement"/> ...</span>
       :
       <div className="row">
         <div className="columns-items" style={{"marginLeft": "0px"}}>
           <div style={{position: "relative"}}>
             <div>
-              <h4>Info</h4>
+              <h4><I8span en="Info" de="Information" es="Información" fr="Information"/></h4>
               <ul>
-                <li><span>Directories: </span><span>{this.state.info.directories.join('; ')}</span></li>
+                <li><I8span en="Directories" de="verzeichnisse" es="directorios" fr="directories"/>: <span>{this.state.info.directories.join('; ')}</span></li>
               </ul>
             </div>
           </div>
@@ -213,6 +220,41 @@ class SettingsInfo extends IAReactComponent {
   }
 }
 
+class SettingsLanguages extends IAReactComponent {
+
+  setLanguage(lang) {
+    document.body.classList.remove("en","fr","de", "es");
+    document.body.classList.add(lang)
+  }
+
+  render() {
+    return (
+      <div className="row">
+        <div className="columns-items" style={{"marginLeft": "0px"}}>
+          <div style={{position: "relative"}}>
+            <div>
+              <h4><I8span en="Languages" de="Sprachen" es="Idiomas" fr="Les langues"/></h4>
+              <p><I8span
+                en="This is an experiment, and only works on this page"
+                de="Dies ist ein Experiment und funktioniert nur auf dieser Seite"
+                es="Este es un experimento y solo funciona en esta página"
+                fr="Ceci est une expérience et ne fonctionne que sur cette page"
+              /></p>
+              <div className="en fr de es">
+                <span>
+                  <span onClick={()=>this.setLanguage('fr')}>French</span>&nbsp;<span lang="fr">{'\u2713'}</span>&nbsp;
+                  <span onClick={()=>this.setLanguage('en')}>English</span>&nbsp;<span lang="en">{'\u2713'}</span>&nbsp;
+                  <span onClick={()=>this.setLanguage('de')}>Deutches</span>&nbsp;<span lang="de">{'\u2713'}</span>&nbsp;
+                  <span onClick={()=>this.setLanguage('es')}>Castilian</span>&nbsp;<span lang="es">{'\u2713'}</span>&nbsp;
+                </span>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
 class SettingsItem extends IAReactComponent {
   /**
    * A page for displaying settings
@@ -246,14 +288,15 @@ class SettingsItem extends IAReactComponent {
         </div>
         {/*Replaces banner() in Search) */}
         <CommonWelcomeComponent
-          title="Settings"
-          byline={"on " + gatewayServer()}
+          title=<I8span en="Settings" de="die Einstellungen" es="Configuraciones" fr="Réglages"/>
+          byline=<span><I8span en="on" de="auf" es="en" fr="sur"/> {gatewayServer()}</span>
           description=""
         />
         <div className="container container-ia nopad">
           <div className="in settings-item">
             <SettingsInfo/>
             <SettingsCrawlsComponent/>
+            <SettingsLanguages/>
           </div>
         </div>
       </div>
