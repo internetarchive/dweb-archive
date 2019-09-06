@@ -212,6 +212,7 @@ class SettingsInfo extends IAReactComponent {
 }
 
 class SettingsLanguages extends IAReactComponent {
+  //TODO-MULTILINGUAL - replace strings by flags
 
   render() {
     return (
