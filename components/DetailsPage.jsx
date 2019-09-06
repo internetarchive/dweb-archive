@@ -12,7 +12,7 @@ class DetailsIAWrap extends IAReactComponent {
   /**
    * <DetailsIAWrap
    *  identifier, mediatype, name, title, creator     Fields form Metadata API
-   *  item=ARCHIVEITEM  // Currently Needed if its a bookreader,
+   *  item=ARCHIVEITEM  // Currently Needed if its a bookreader, or a carousel
    *  poster=URL        // Poster for videos, mostly for search engines
    *  playlist={...}    // As stored in item from playlist API
    *  files=
@@ -68,7 +68,7 @@ class DetailsIAWrap extends IAReactComponent {
             ?
             <CarouselTheatre
               identifier={this.props.identifier}
-              slides={this.props.files4carousel().map(f => ({filename: f.metadata.name, source: f}))}
+              slides={this.props.item.files4carousel().map(f => ({filename: f.metadata.name, source: f}))}
               creator={this.props.creator}
               mediatype={this.props.mediatype}
               title={this.props.title}
@@ -183,12 +183,16 @@ class DetailsWork extends IAReactComponent {
     }
   }
 
-  render() { return (
+  render() {
+    const semiTitle = DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive";
+    document.title = `${this.props.identifier} : ${semiTitle}`;
+    return (
     <>
       {/* Missing donate-banner and scripts & css before it */}
       <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
       {/*--Begin page content --*/}
       <main id="maincontent">
+        <div className="container container-ia"></div>
         { this.props.download
           ?
             <DownloadDirectoryDiv identifier={this.props.identifier}
@@ -221,6 +225,7 @@ class DetailsWork extends IAReactComponent {
         }
         {(!this.props.identifier) ? null :
             <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
+        <div className="terms-of-service"><a className="stealth" href="https://archive.org/about/terms.php">Terms of Service (last updated 12/31/2014)</a></div>
       </main>
       {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
     </>

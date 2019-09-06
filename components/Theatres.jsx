@@ -3,7 +3,7 @@ import { CherModal } from './CherModal';
 import { BookReaderWrapper } from './BookReaderWrapper';
 import { AnchorDownload, Carousel, IAReactComponent, ImageDweb }  from '@internetarchive/ia-components/dweb-index.js';
 import TheatreControls from "./TheatreControls";
-import { AudioDweb, VideoDweb } from "./AudioVideo";
+import { AudioDweb, VideoDweb, WebTorrentStats } from "./AudioVideo";
 import {config} from "../Util";
 
 /**
@@ -39,8 +39,8 @@ class CarouselTheatre extends IAReactComponent {
   // Props: identifier, slides, creator, mediatype, title disconnected
   constructor(props) {
     super(props);
-    this.componentDidMount = this.component.DidMount.bind(this);
-    this.componentDidUpdate = this.component.DidUpdate.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentDidUpdate = this.componentDidUpdate.bind(this);
   }
   componentDidMount() {
     super.componentDidMount();
@@ -183,7 +183,7 @@ class VideoTheatre extends IAReactComponent {
             {/* This videothumbnailurl is http since if getting decentralized there is little value compared to loading video itself */}
             <VideoDweb id="streamContainer" source={this.props.source} poster={this.props.poster} controls></VideoDweb>
           </div>
-          <div id="webtorrentStats" style={{color: "white", textAlign: "center"}}></div>
+          <WebTorrentStats style={{color: "white", textAlign: "center"}} torrentfile={window.WEBTORRENT_FILE} torrent={window.WEBTORRENT_TORRENT}/>
           <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype}
                      title={this.props.title}/>
         </div>
@@ -231,8 +231,17 @@ class ImageTheatre extends IAReactComponent {
                       target="_blank"
                       disconnected={this.props.disconnected}
                     >
-                      {/* --Separate window so dont break DWeb--*/}
-                      <ImageDweb className="rot0 carousel-image" source={this.props.source} id="streamContainer" src={this.props.src} alt={this.props.alt} />
+                      {/* There is a bizarre firefox only bug https://bugzilla.mozilla.org/show_bug.cgi?id=1576523
+                      that means if we set carousel-image which ONLY sets maxWidth and maxHeight then this fails
+                      but if we set it in the style - even prior to the src getting loaded with a blob - it works */}
+                      <ImageDweb
+                        className="rot0 carousel-image"
+                        source={this.props.source}
+                        src={this.props.src}
+                        id="streamContainer"
+                        alt={this.props.alt}
+                        />
+
                     </AnchorDownload>
                     <div className="carousel-caption">
                       {this.props.caption}

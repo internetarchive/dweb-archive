@@ -59,7 +59,7 @@ class Page extends IAReactComponent {
   }
 
   componentDidMountOrUpdate() {
-    //TODO-FAKEREACT merge much of this into specific components at deeper level.
+    //TODO merge much of this into specific components at deeper level.
     const item = this.state.item;
     const identifier = item && item.itemid;
     const metadata = item && item.metadata;
@@ -117,10 +117,13 @@ class Page extends IAReactComponent {
         AJS.tiles_wrap_throttler = setTimeout(AJS.tiler, 250);
       });
     }
+    /*
+    Moved to ImageDweb component as Firefox bug causes it to fire prematurely here as img.complete returns true
     if (["image"].includes(mediatype)) {
       AJS.theatresize();
       AJS.carouselsize('#ia-carousel', true);
-    };
+    }
+   */
     if (!isSearch) { // This is common to Text, AV and image - though some have stuff before this and some a
       AJS.tilebars(); // page load
       $(window).on('resize  orientationchange', function (unusedEvt) { //TODO-JQUERY remove dependency window.on probably works fine
@@ -175,7 +178,7 @@ class Page extends IAReactComponent {
       document.body.classList.add('top');
     }
     return (
-      // TODO-FAKEREACT The outer Div is one level up to keep ReactFake happy
+      //There is one more div outside this - in archive.html, that <Page> gets rendered into
       <div id="wrap"
            itemScope={typeof itemType !== "undefined"}
            itemType={itemType ? ("http://schema.org/" + itemType) : undefined}
@@ -198,7 +201,7 @@ class Page extends IAReactComponent {
               identifier={identifier}
               subtype={metadata && (["texts"].includes(mediatype)) ? item.subtype() : undefined}
               poster={(metadata && ["movies"].includes(mediatype))
-                ? item.videoThumbnailFile().httpUrl()
+                ? item.videoThumbnailFile()
                 : (["audio", "etree"].includes(mediatype))
                   ? item.thumbnailFile()
                   : undefined}

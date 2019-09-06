@@ -13,6 +13,7 @@ to support the decentralized web.
 * to avoid single points of failure where possible
 
 ## Installation
+THESE INSTRUCTIONS PROBABLY WONT WORK - MORE RECENT ARE IN THE dweb-mirror repo
 ### All cases
 ```
 git clone https://git@github.com/internetarchive/dweb-archive.git
@@ -81,56 +82,27 @@ Build (webpack) the bundles and copy needed files to dist/
 * LICENSE - standard GNU Affero licence
 * webpack.config.js - defines bundling, and in particular which files are needed for the distribution
 
-## Class hierarchy TODO-FAKEREACT this is way out of date
+## Class hierarchy 
 * ArchiveFile - represents a single file
 * ArchiveItem - represents data structures for an item (a directory of files)
-    * ArchiveBase - superclass for each item type, has the structure of displaying pages
-        * Details - display a details page like archive.org/details/foo
-            * AV - base page for Audio/Video items
-                * Audio - display an Audio item
-                * Video - display a Video item
-            * DownloadsDirectory - for displaying the list of files in an item
-            * Image - display an image item
-            * Texts - display a Text item (TODO works - but not decentralized)
-        * Search - display a search page like archive.org/search.php?query=foo, also handles mediatype="collection"
-            * Home - archive home page, acts like a search
+    * ArchiveBase - Subclass ArchiveItem to add functionality specific to this UI
+* ArchiveMember - represents a listing for an item (e.g. in a search)
+* IAReactComponent - Extends ReactComponent to have common functionality across components
+  * Lots of stand-alone components
+  * AVDWeb - Adds functionality common to adding content to media tags
+    * AudioDweb, VideoDweb 
 * Nav - common class for navigation structures (mostly at the top of the page) also maps item types to classes
-* ReactFake - an expansion of dweb-objects/utils/createElement to fake react-like "createElement" allowing JSX to be used in JS
-* Tile - used to represent each tile displayed in a search
-* Util - a collection of tools, short functions, and dictionaries of use in multiple places
-
-## API of key subclassed function
-
-The general route to load a single Details item (TODO - writeup for Search) is ...
-
-
-* Nav.nav_details(itemid)   - load and display a details page TODO-FAKEREACT this is well out of date
-    * Nav.factory
-        * new Details({itemid}) - to get metadata
-        * determine class of item e.g. Texts, video
-        * new Video({itemid}).render => ArchiveBase.render
-            * Details.wrap - build the elements
-                * Nav.navwrap - the global navigation elements, menus etc
-                * theatreIaWrap - wrap the main content in controls (e.g. play etc)
-                    * Displays main content - highly variable between types (Texts, Image, Video etc)
-                    * cherModal - display sharing info
-            * browserbefore - anything to do before putting the elements onto the page
-            * domrender - display on the page
-            * browserafter - anything after displaying on the page
-
-For a *Search/Colletion/Home* the structure is slightly different
-* Search.wrap
-    * Nav.navwrap - navigation as for Details
-    * banner - appear above tiles
-    * <SearchRowColumnsItems> - loops over results displaying Tiles
-    * About & Forum tabs (for collections only)
-
 
 ## See also
 See [Dweb document index](https://github.com/internetarchive/dweb-transports/blob/master/DOCUMENTINDEX.md) for a list of the repos that make up the Internet Archive's Dweb project, and an index of other documents. 
 
 ## Release notes
 
+* v0.1.95: webtorrent partial and (via dweb-archivecontroller) fix bug with /local 
+* v0.1.94: document.title refactor and remove dependency on dweb-objects.deletechildren
+* v0.1.93: download links issue; accounts updloads display; naming refactor
+* v0.1.92: Remove incorrect Loading on no items; missing thumbnails; mirror="", align metadata display; image bug 
+* v0.1.91: Refactor search; fix bugs in ... video from 0.1.90; carousel;  
 * v0.1.90: yarn upgrade; undo regression to CSS from archive less
 * v0.1.89: Transportstatus; CSS; Image loading refactor
 * v0.1.88: Bugs - presuming disconnected, and Home page; Recompile less

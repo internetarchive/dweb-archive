@@ -40,7 +40,7 @@ class CollectionBanner extends IAReactComponent {
    * Typical usage (assuming "this" is an ARCHIVEFILE
    * <CollectionBanner
    *  identifier=this.itemid
-   *  imgsrc = this.thumbnailFile()
+   *  imgsrc = this.thumbnailFile() or undefined
    *  title=STRING
    *  description =STRING   Note this should have been preprocessed to concatenate any arrays, sanitize the HTML and replace any relative URI's which wont work.
    *    !this.metadata.description ? undefined : preprocessDescription(this.metadata.description).replace(/(..\/)+..\//g, "../"); // Contains HTML (supposedly safe) inserted via innerHTML thing
@@ -63,7 +63,7 @@ class CollectionBanner extends IAReactComponent {
                         <div className="col-xs-11 col-sm-10 welcome-left">
                             <div id="file-dropper-wrap">
                                 <div id="file-dropper"></div>
-                                <ImageDweb id="file-dropper-img" className="img-responsive" style={{'maxWidth':"350px", margin:'0 10px 5px 0'}} source={this.props.imgsrc}/>
+                                <ImageDweb id="file-dropper-img" className="img-responsive" style={{'maxWidth':"350px", margin:'0 10px 5px 0'}} source={this.props.imgsrc || "/images/notfound.png"}/>
                             </div>
                             <h1>{this.props.title}</h1>
                             <h4>{creator}</h4>
@@ -501,6 +501,7 @@ class ComboSearchWrap extends IAReactComponent {
      */
     // Note also used by Home, but not by Account
     const item = this.props.item;
+    document.title = `${item.query} ${item.sort.join(' ')} : ${DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive"}`
     const mediatype = item.metadata ? item.metadata.mediatype : "search";
     const identifier = item.itemid;
     return (

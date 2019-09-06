@@ -86,7 +86,6 @@ export default class Nav {
      * opts = {sort, rows, noCache}
      */
     debug("Navigating to Search for %s", q);
-    const semiTitle = DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive";
     const {noCache=false} = opts;
     opts.query = q;
     renderPage({message: "Loading search"});
@@ -94,7 +93,6 @@ export default class Nav {
     await s.fetch_metadata({noCache});
     await s.fetch_query({noCache}); // Should throw error if fails to fetch //TODO-RELOAD fetch_query ignores noCache currently
     pushHistory(opts); // Note this takes account of wantHistory //TODO-SEARCH test this works see window.onpopstate
-    document.title = `${s.query} ${s.sort || ""} : ${semiTitle}`;
     renderPage({item: s});
   }
 
@@ -111,7 +109,7 @@ export default class Nav {
     return this.navSearch(query, {sort, wanthistory: true}); //TODO-SEARCH test on Date switcher bar
   }
 
-  static async factory(identifier, ...optss) { //TODO-REACTFAKE I think this is what becomes the resettable page with the logic in its render
+  static async factory(identifier, ...optss) {
     /* Fetch and render an ArchiveItem
       wanthistory:    if set build a new entry in history
       download:       Want the download directory version of the details page
@@ -120,27 +118,19 @@ export default class Nav {
     */
     const opts = pushHistory(...optss, {identifier});
     const {download = undefined, page = undefined, noCache = undefined} = opts;
-    //TODO-FAKEREACT do we need destn  any more?
-    const destn = document.getElementById('main'); // Blank window (except Nav) as loading
     renderPage({message: "Loading "+identifier});
     window.loopguard = identifier;  // Tested in dweb-transport/httptools, will cancel any old loops - this is a kludge to get around a Chrome bug/feature
     let item; // Set below, but keep it here for error handling
     try {
-      const semiTitle = DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive";
       if (!identifier || (identifier === "home")) {
-        document.title = `Home : ${semiTitle}`; //TODO-IAUX when consolidated, this could be done in NavWeb component or even higher
         item = new ArchiveBase({itemid: "home", query: homeQuery, sort: '-downloads'});
         await item.fetch_metadata({noCache})
         await item.fetch_query({noCache})
         renderPage({item});
-        /* TODO-DWEBNAV this.setCrawlStatus({identifier: id, crawl: item.crawl}); */
       } else if (["local","settings"].includes(identifier)) { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
-        document.title = `${identifier} : ${semiTitle}`; //TODO-FAKEREACT move to <Page>
         item = new ArchiveBase({itemid: identifier, metaapi: {}})
         renderPage({item});
       } else {
-        //TODO-FAKEREACT
-        //TODO edit this to make function like fetch_metadata but as a static function that can be used without creating temporary details item "d"
         item = new ArchiveBase({itemid: identifier, page, download, noCache});
         await item.fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
         if (!item.metadata) {
@@ -149,12 +139,10 @@ export default class Nav {
         if (!item.message && item.metadata && !['texts', 'image', 'audio', 'etree', 'movies', 'collection', 'account'].includes(item.metadata.mediatype)) {
           item.message = `Unsupported mediatype: ${item.metadata.mediatype}`
         }
-        document.title = item.message || `${item.metadata && item.metadata.title} : ${semiTitle}`;
         if (!item.message) {
           await item.fetch_query({noCache}); // Should throw error if fails to fetch //TODO-RELOAD fetch_query ignores noCache currently
         }
         renderPage({item, message: item.message});
-        /* TODO-DWEBNAV this.setCrawlStatus({identifier, crawl: item.crawl}); */
         return item;
       }
     } catch (err) {

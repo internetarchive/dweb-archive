@@ -102,7 +102,7 @@ class AccountWelcome extends IAReactComponent {
         
         let identifier = this.props.item.itemid;
         let title = this.props.item.metadata.title; // Example from @tracey_pooh
-        let imagesrc = this.props.item.thumbnailFile();  // TODO-ACCOUNT Tracey is adding a service to get a better image (larger scale
+        let imagesrc = this.props.item.thumbnailFile() || "/images/notfound.png" ;  // TODO-ACCOUNT Tracey is adding a service to get a better image (larger scale
         let name = this.props.item.itemid.replace(/_/g, ' ').replace('@', ''); // Canonical name from id, may have better ways to get this - see @tracey_pooh for case needing this one.
         return (
             <div className="welcome container container-ia width-max account-uniform">
