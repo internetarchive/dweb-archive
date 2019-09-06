@@ -180,15 +180,31 @@ Then turn it on if body tag specifies it - note this is less specific than the a
 Specify a default language - turn that off if we have the desired language
 Now turn it on if we dont have the desired language - note this is less specific than the above
 */
-body.fr .fr :lang(fr) { background-color: yellow}
-.fr :lang(fr) { background-color: red}
-body.fr .fr :lang(en) { background-color: red }
-body.fr :lang(en) { background-color: yellow}
+body.fr .fr :lang(fr) {  display: inherit}
+.fr :lang(fr) { display: none}
+body.fr .fr :lang(en) { display: none }
+body.fr :lang(en) {  display: inherit}
 
-body.de .de :lang(de) { background-color: yellow}
-.de :lang(de) { background-color: red}
-body.de .de :lang(en) { background-color: red }
-body.de :lang(en) { background-color: yellow}
+body.de .de :lang(de) {  display: inherit}
+.de :lang(de) { display: none}
+body.de .de :lang(en) { display: none }
+body.de :lang(en) {  display: inherit}
 
-body.en .en :lang(en) { background-color: yellow}
-.en :lang(en) { background-color: red}
+body.es .es :lang(es) {  display: inherit}
+.es :lang(es) { display: none}
+body.es .es :lang(en) { display: none }
+body.es :lang(en) {  display: inherit}
+
+body.pt .pt :lang(pt) {  display: inherit}
+.pt :lang(pt) { display: none}
+body.pt .pt :lang(en) { display: none }
+body.pt :lang(en) {  display: inherit}
+
+body.mr .mr :lang(mr), body.mr :lang(en) {  display: inherit}
+.mr :lang(mr), body.mr .mr :lang(en) { display: none}
+
+body.my .my :lang(my), body.my :lang(en) {  display: inherit}
+.my :lang(my), body.my .my :lang(en) { display: none}
+
+body.en .en :lang(en) {  display: inherit}
+.en :lang(en) {   display: inherit}

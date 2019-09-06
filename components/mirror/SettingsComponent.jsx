@@ -6,6 +6,7 @@ import waterfall from 'async/waterfall';
 import {gatewayServer}  from '@internetarchive/dweb-archivecontroller/Util';
 import {CommonWelcomeComponent} from "./CommonComponent";
 import {IAReactComponent, NavWrap} from "@internetarchive/ia-components/dweb-index.js";
+import {languages, I8span, setLanguage} from "../Languages";
 
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 
@@ -63,14 +64,15 @@ class SettingsCrawlLI extends IAReactComponent {
         }
         {/*<span className="playbutton" onClick={this.empty}>{'X'}</span> -- Not currently showing X*/}
       <ul> {/*TODO Make collapsable*/}
-        <li><span>Queue: </span>
-          <span>Waiting: {crawl.queue.length}; </span>
-          <span>Running: {crawl.queue.running}; </span>
-          <span>Completed: {crawl.queue.completed}; </span>
+        <li>
+          <I8span en="Queue">: </I8span>"
+          <I8span en="Waiting">: </I8span><span>{crawl.queue.length}; </span>
+          <I8span en="Running">: </I8span><span>{crawl.queue.running}; </span>
+          <I8span  en="Completed">: </I8span><span>{crawl.queue.completed}; </span>
           {/*Expand workersList*/}
         </li>
         {(!crawl.queue.workersList.length) ? null :
-          <li><span>Working on: </span>
+          <li><I8span en="Working on"/>
             <ul>
               {crawl.queue.workersList.map(worker =>
                 <li key={worker.debugname}>
@@ -85,7 +87,9 @@ class SettingsCrawlLI extends IAReactComponent {
             </ul>
           </li>
         }
-        <li><span>Options: </span>
+
+    <li><I8span en="Options">: </I8span>
+          {/*TODO-MULTILINGUAL need to think this through probably best in english as relate to file*/}
           { ["concurrency", "limitTotalTasks"].map( // Integers
             k => <span key={k}>{`${k}: ${crawl.opts[k]}; `}</span>) }
           { ["maxFileSize"].map( // Bytes
@@ -93,12 +97,13 @@ class SettingsCrawlLI extends IAReactComponent {
           {["skipFetchFile", "skipCache"].map( //Booleans
             k => crawl.opts[k] ? <span key={k}>{k} </span> : null ) }
         </li>
-        <li><span>Seed: </span>
+
+    <li><I8span en="Seed">: </I8span>
           {crawl.initialItemTaskList.map(task =>
             <span key={task.identifier}>{task.identifier + (task.level === "details" ? "" : (": "+task.level))+"; "}</span>)}
         </li>
         { (!crawl.errors.length) ? null :
-          <li><span>Errors: </span>
+          <li><I8span en="Errors">: </I8span>
             <ul>
               {crawl.errors.map(err =>
                 <li key={err.date}>{err.date} {err.task.debugname}: {err.error.message + "; "}</li>)}
@@ -144,20 +149,13 @@ class SettingsCrawlsComponent extends IAReactComponent {
     // Build a list of crawls
     let crawlid = 0;
     return (!this.state.crawls)
-        ? <span>Loading ...</span>
+      ? <I8span en="Loading"> ...</I8span>
         :
           <div className="row">
             <div className="columns-items" style={{"marginLeft": "0px"}}>
               <div style={{position: "relative"}}>
                 <div>
-                  <h4>Crawls</h4>
-                  <div className="wantde">
-                    <div className="en fr de">
-                      <p lang="fr">Je Suis Francais</p>
-                      <p lang="en">I'm English</p>
-                      <p lang="de">Ich bin deutches</p>
-                    </div>
-                  </div>
+                  <h4><I8span en="Crawls"/></h4>
                   <ul>
                     {this.state.crawls.map(crawl => <SettingsCrawlLI key={crawl.name} id={crawlid++} crawl={crawl}/>) }
                   </ul>
@@ -196,15 +194,15 @@ class SettingsInfo extends IAReactComponent {
 
   render() {
     return (!this.state.info)
-      ? <span>Loading ...</span>
+      ? <I8span en="Loading">...</I8span>
       :
       <div className="row">
         <div className="columns-items" style={{"marginLeft": "0px"}}>
           <div style={{position: "relative"}}>
             <div>
-              <h4>Info</h4>
+              <h4><I8span en="Info"/></h4>
               <ul>
-                <li><span>Directories: </span><span>{this.state.info.directories.join('; ')}</span></li>
+                <li><I8span en="directories"/>: <span>{this.state.info.directories.join('; ')}</span></li>
               </ul>
             </div>
           </div>
@@ -213,6 +211,32 @@ class SettingsInfo extends IAReactComponent {
   }
 }
 
+class SettingsLanguages extends IAReactComponent {
+
+  render() {
+    return (
+      <div className="row">
+        <div className="columns-items" style={{"marginLeft": "0px"}}>
+          <div style={{position: "relative"}}>
+            <div>
+              <h4><I8span en="Languages"/></h4>
+              <p><I8span en="...language experiment..."/></p>
+              <div className={Object.keys(languages).join(' ')}>
+                <span>
+                  {Object.entries(languages).map(kv =>
+                    <span key={kv[0]} onClick={()=>setLanguage(kv[0])}>{kv[1]._thislanguage} &nbsp;
+                      <span lang={kv[0]}>{'\u2713'}</span>&nbsp;</span>
+                  )
+                  }
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
 class SettingsItem extends IAReactComponent {
   /**
    * A page for displaying settings
@@ -246,14 +270,15 @@ class SettingsItem extends IAReactComponent {
         </div>
         {/*Replaces banner() in Search) */}
         <CommonWelcomeComponent
-          title="Settings"
-          byline={"on " + gatewayServer()}
+          title=<I8span en="Settings"/>
+          byline=<span><I8span en="on"/> {gatewayServer()}</span>
           description=""
         />
         <div className="container container-ia nopad">
           <div className="in settings-item">
             <SettingsInfo/>
             <SettingsCrawlsComponent/>
+            <SettingsLanguages/>
           </div>
         </div>
       </div>
