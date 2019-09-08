@@ -30,26 +30,26 @@ class DetailsIAWrap extends IAReactComponent {
         <div id="theatre-ia-wrap" className="container container-ia width-max"
              style={["image"].includes(this.props.mediatype) ? {height: "600px"} : undefined} >
           <link itemProp="url" href={`https://archive.org/details/${this.props.identifier}`}/> {/*Probably correct as archive.org/details since itemProp*/}
-          {/* - TODO unclear why image & text|audio mediatypes use different itemprop below check current archive.org pages*/}
+          {/* - TODO unclear why image & text|audio mediatypes use different itemProp below check current archive.org pages*/}
           <link itemProp={["image","movies"].includes(this.props.mediatype) ? "thumbnailUrl" : "image"}
-                href="https://archive.org/services/img/{this.props.identifier}"/>{/*OK for direct link since itemprop*/}
+                href="https://archive.org/services/img/{this.props.identifier}"/>{/*OK for direct link since itemProp*/}
 
           { (this.props.playlist && ["audio","etree"].includes(this.props.mediatype)) // isDark wont have a playlist
             ?
             this.props.playlist.map((track,i) => ( // OK to be absolute or dweb link
-              <div key={i} itemprop="hasPart" itemscope itemtype="http://schema.org/AudioObject">
-                <meta itemprop="name" content={track.title}/>
-                <meta itemprop="duration" content={`PT0M${parseInt(track.duration)}S`}/>
+              <div key={i} itemProp="hasPart" itemscope itemtype="http://schema.org/AudioObject">
+                <meta itemProp="name" content={track.title}/>
+                <meta itemProp="duration" content={`PT0M${parseInt(track.duration)}S`}/>
                 {   // Loop over the sources which can be multiple files for the same track.  Note this is limited to playable sources, could add unplayable to playlist if want as separate field e.g. unplayablesources
                   track.sources.map((f,i) => (
-                    <link key={i} itemprop="associatedMedia" href={`https://archive.org/download/${this.props.identifier}/${f.name}`}/>
+                    <link key={i} itemProp="associatedMedia" href={`https://archive.org/download/${this.props.identifier}/${f.name}`}/>
                   ))
                 }
               </div>
             ))
             :
             this.props.files.filter((af)=> af.metadata.source !== "metadata")
-              .map((af) => ( //OK for direct link since itemprop
+              .map((af) => ( //OK for direct link since itemProp
                 <link itemProp="associatedMedia" href={`https://archive.org/download/${this.props.identifier}/${af.metadata.name}`} key={`${this.props.identifier}/${af.metadata.name}`}/>
               ))
           }
