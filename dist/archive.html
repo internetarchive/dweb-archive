@@ -64,22 +64,19 @@
     <script src="./bookreader/BookReaderJSIA.js" type="text/javascript"></script>
     <!-- TODO-SPLIT Just experimental as part of dweb-transports#split, should normally be commented out also moved to dweb-mirror -->
     <script>
-      if (new URL(window.location.href).searchParams.getAll("transport").includes['IPFS']) {
+      if (new URL(window.location.href).searchParams.getAll("transport").includes('IPFS')) {
         console.log("Loading IPFS")
-        document.write('<script src="https://unpkg.com/ipfs/dist/index.min.js"><\/script>');
+        document.write('<script src="https://unpkg.com/ipfs/dist/index.min.js"><\/script>'); // 2.3Mb
       }
     </script>
-    <script src="https://unpkg.com/ipfs/dist/index.min.js"></script><!--2.3Mb-->
 
     <style>
         #jw6, #jw6__list { background-color:black; }
     </style>
     <!-- Order of these bundle inclusions is important, objects should be loaded after transports as it adds Name lookup to DwebTransports-->
-    <script type="text/javascript">localStorage.debug = "dweb-archive dweb-archive:* dweb-archivecontroller:* dweb-transports dweb-transports:* dweb-objects dweb-objects:* ia-components:*";</script>
+    <script type="text/javascript">localStorage.debug = "dweb-archive dweb-archive:* dweb-archivecontroller:* dweb-transports dweb-transports:* ia-components:*";</script>
     <script type="text/javascript" src="dweb-transports-bundle.js"></script> <!--Direct transport-->
     <!-- <script type="text/javascript" src="dweb-serviceworker-proxy-bundle.js"></script> <!-- Transport via Proxy -->
-    <!--TODO-NAMING naming component built into Transports now TODO-SPLIT will refactor it-->
-    <!--<script type="text/javascript" src="dweb-objects-bundle.js"></script>-->
     <script type="text/javascript" src="dweb-archive-bundle.js"></script>
 </head>
 <!-- TODO-DETAILS missing scripts, properties and links that appear before body tag on archive/details/commute etc -->
