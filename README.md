@@ -1,6 +1,6 @@
 # dweb-archive
 User Interface to access the archive from the browser.
-Builds on dweb-transports and dweb-objects, and typically (currently) loaded from dweb-transport
+Builds on dweb-transports and typically (currently) loaded from dweb-transport
 
 ## Background
 This library is part of a general project at the Internet Archive (archive.org)
@@ -19,7 +19,7 @@ THESE INSTRUCTIONS PROBABLY WONT WORK - MORE RECENT ARE IN THE dweb-mirror repo
 git clone https://git@github.com/internetarchive/dweb-archive.git
 cd dweb-archive
 
-# install the dependencies including IPFS & WebTorrent and dweb-transports and dweb-objects
+# install the dependencies including IPFS & WebTorrent and dweb-transports
 npm install  
 ```
 ### Installation for testing in a browser
@@ -39,11 +39,6 @@ Note: Firefox works better than Chrome for local usage as Chrome limits cross-or
 http to 6 streams and we need to implement a limited http pool to fix this. 
 
 `open "http://localhost:8080/archive.html"`
-
-OR load via the bootloader, 
-passing the url parameter will simulate what happens at https://dweb.archive.org/
-
-`open "http://localhost:8080/bootloader.html?url=http://dweb.archive.org`
 
 To test with limited transports, for example HTTP only, add the transport parameter.
 
@@ -77,7 +72,6 @@ Build (webpack) the bundles and copy needed files to dist/
 * originals - saved copies of some example Archive pages and metadata to allow comparisom with HTML generated
 * archive.html - main file for displaying archive (detail or search) pages
 * archive.js - top level for creating archive-bundle.js
-* bootloader.html - entry point to the dweb, loads decentralized transport, and resolves a URL as a name
 * dweb-archive-styles.css - CSS styles for dweb, note that it uses standard archive styles for most
 * LICENSE - standard GNU Affero licence
 * webpack.config.js - defines bundling, and in particular which files are needed for the distribution

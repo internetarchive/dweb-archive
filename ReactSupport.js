@@ -463,10 +463,6 @@ function loadStream(el, urls, opts = {}, cb) {
     .catch((err) => cb(err)); // Unpromisify pattern v5-cbOnly
 }
 */
-/*
- * This section came from ReactFake and dont appear to be handled, but might not be needed.
-  if (href.startsWith("dweb:")) possibleOnclick = 'DwebObjects.Domain.p_resolveAndBoot(this.href); return false;';
- */
 
 function preprocessDescription(description) {
   // Now catch some things that often appear in descriptions because it assumes running on archive page e.g. /server/commute/commute.jpg on "commute"

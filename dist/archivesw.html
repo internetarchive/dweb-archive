@@ -24,7 +24,6 @@
     <!-- Order of these bundle inclusions is important, objects should be loaded after transports as it adds Name lookup to DwebTransports-->
     <!--<script type="text/javascript" src="dweb-transports-bundle.js"></script> <!-- Direct Transports -->
     <script type="text/javascript" src="dweb-serviceworker-proxy-bundle.js"></script> <!-- Transport via Proxy -->
-    <script type="text/javascript" src="dweb-objects-bundle.js"></script>
     <script type="text/javascript" src="dweb-archive-bundle.js"></script>
 </head>
     <!-- TODO-DETAILS missing scripts, properties and links that appear before body tag on archive/details/commute etc -->
@@ -50,7 +49,7 @@
 
 <div id="main"></div><!-- destination for <Page>->
 <script>
-    localStorage.debug = "dweb-transports:* dweb-objects:* dweb-archive:*";
+    localStorage.debug = "dweb-transports:* dweb-archive:*";
     var searchparams = new URL(window.location.href).searchParams;
     i = location.pathname.indexOf("/details/");
     var item = (i > -1) ? location.pathname.slice(i+9) : searchparams.get("item");
