@@ -26,14 +26,23 @@ class BookReaderWrapper extends IAReactComponent {
 
      The URL can include string like /page/4, this is pulled out of the window/document's URL deep in the code in BookReader.prototype.initParams
      so we just have to ensure the url is not munged by anything else happening.
-     */
 
+     To merge this (Dbrw) into iaux/.../bookreader-wrapper-main.jsx (Ibrw)
+    Extra options below should be passed as props to Ibrw - which prop means using Dbrw to wrap Ibrw
+    OR pushing that functionality up to BookReaderTheatre Dbrt
 
-    /* Used in IAUX, but not in ReactFake
-    static propTypes = {
-        item: PropTypes.object.isRequired, //ArchiveItem
-        page: PropType.string, // e.g. 1 or n5
-    };
+    Moving loadcallable to componentDidMount should be fine, as doesnt use `enclosingElement`
+
+    Make enableSearch dependent on if disconnected
+
+    Post to ISA:
+    https://github.com/internetarchive/iaux/issues/260
+    More not asked yet ...
+    Unsure why ...this.props is passed to the section - not a problem, just checking?
+    The current bookreader contains <div id="IABookReaderMessageWrapper" style="display:none;"></div> is that now deprecated/unused?
+    Any reason options.onePage.autofit is defaulting to 'height' not 'auto'
+    What is going on with the getPgeURI definition, a comment would be good
+    Why override defaultStartLeaf and titleLeaf, in fullOptions, it means anything wrapping this can't overwrite that, why not put in defaultOptions.
     */
 
     constructor(props) {
@@ -47,8 +56,6 @@ class BookReaderWrapper extends IAReactComponent {
         const [ protocol, unused, serverPort] = protocolServer.split('/');
         const item = this.props.item;
         var options = {
-            el: '#BookReader',
-            mobileNavFullscreenOnly: true,
             urlHistoryBasePath: `\/arc\/archive.org\/details\/${this.state.identifier}\/`,  // This is use when URL is rewritten to include page
             resumeCookiePath: `\/arc\/archive.org\/details\/${this.state.identifier}`,
             urlMode: 'history',
@@ -58,8 +65,6 @@ class BookReaderWrapper extends IAReactComponent {
             bookUrlText: null,
             initialSearchTerm: null,
             //getPageURI: {}, //TODO-BOOKREADER make this use dweb to fetch see getImageURI
-            imagesBaseURL: (DwebArchive.mirror ? protocolServer+"/archive/" : "https://archive.org/") + "bookreader/BookReader/images/", //TODO-BOOK support /archive/bookreader/BookReader/images on dweb.me
-            onePage: {autofit: "auto"},
             thumbnail:  (DwebArchive.mirror ? `//${serverPort}/arc/archive.org/` : "https://archive.org") + `download/${this.state.identifier}/page/cover_t.jpg`   // Unfortunately bookread.js appends protocol so we cant control it here
             // Note archive.org/download/xx/page/cover_t.jpg redirects to e.g.  https://ia601600.us.archive.org/BookReader/BookReaderPreview.php?id=xx&itemPath=%2F27%2Fitems%2Fxx&server=ia601600.us.archive.org&page=cover_t.jpg
             //getPageURI: xyzzy
@@ -72,12 +77,17 @@ class BookReaderWrapper extends IAReactComponent {
         if (window.archive_analytics) window.archive_analytics.values['bookreader'] = 'open';
     }
 
-    render() { return (
-        // Code as cut and paste from https://archive.org/details/unitednov65unit/page/n5 on 2019-02-24
-        <div id="IABookReaderWrapper" ref={this.load}>
-            <div id="IABookReaderMessageWrapper" style={{display: "none"}}></div>
-            <div id="BookReader" className="BookReader"></div>
-        </div> )
+    render() {
+      return (
+        <BookReaderWrapper
+          options={{
+              onePage: {autofit: "auto"}, // iBRW uses "height"
+              enableSearch: false, // TODO make this dependent on if disconnected
+              //TODO-URLS support base used by BRW i.e. /bookreader/BookReader/images
+              imagesBaseURL: (DwebArchive.mirror ? protocolServer+"/archive/" : "https://archive.org/") + "bookreader/BookReader/images/", //TODO-BOOK support /archive/bookreader/BookReader/images on dweb.me
+          }}
+        />
+      )
     }
 }
 
