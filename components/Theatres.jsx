@@ -14,7 +14,7 @@ import {config} from "../Util";
  */
 
 class BookReaderTheatre extends IAReactComponent {
-  // Props: mediatype, identifier, creator, title, item
+  // Props: mediatype, identifier, creator, title, item, disconnected
   render() {
     return (
       <>
@@ -24,7 +24,7 @@ class BookReaderTheatre extends IAReactComponent {
           <div className="row">
             <div className="xs-col-12">
               <TheatreControls identifier={this.props.identifier} mediatype={this.props.mediatype} />
-              <BookReaderWrapper item={this.props.item} page={this.props.page} />
+              <BookReaderWrapper item={this.props.item} page={this.props.page} disconnected={this.props.disconnected}/>
               <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
               <center style={{color:"white", marginBottom:"10px"}}>
               </center>

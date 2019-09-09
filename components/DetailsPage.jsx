@@ -82,6 +82,7 @@ class DetailsIAWrap extends IAReactComponent {
               mediatype={this.props.mediatype}
               title={this.props.title}
               page={this.props.page}
+              disconnected={this.props.disconnected}
             />
             : (["image"].includes(this.props.mediatype) && this.props.source)
             ?

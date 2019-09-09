@@ -13,11 +13,13 @@ Presentation by Richard - especially about lending and options:
 https://docs.google.com/presentation/d/1dhDAUjob6oSVWJsuShviW7qkiEou2RlJOsO5QIaEDlY/edit#slide=id.g4cf82c97a5_0_7
  */
 
-
-
-function getPage(index, reduce, rotate) {
-    debug("gettingPage=%d scale=%d rotate=%O", index, reduce, rotate);
-}
+/**
+ * <BookReaderWrapper
+ *   item=IDENTIFIER
+ *   page=INTEGER - or maybe its a string?
+ *   disconnected=BOOL true if cant see upstream server (so disable search)
+ */>
+ */
 class BookReaderWrapper extends IAReactComponent {
     /* Notes:
      assumption is that item has  .bookreader { data, brOptions, lendingInfo }
@@ -81,11 +83,6 @@ class BookReaderWrapper extends IAReactComponent {
 
 
 /*
-
-* Strategy
-    * function usesBookreader(metadata)
-      * = true if mediatype=texts && has abby and pdf files
-      * test on some image only files - like the peterrabbit one
   * Future:
     * dweb.me add ipfs etc to urls in brOptions/data as push into IPFS.
     * bookreader code to see that url when sees the dweb.me one (maybe not that hard)
