@@ -1,25 +1,27 @@
 import React from 'react';
 import prettierBytes from "prettier-bytes";
 import { ObjectFilter } from '@internetarchive/dweb-archivecontroller/Util.js';
-import { AnchorDownload, IAReactComponent } from '@internetarchive/ia-components/dweb-index.js';
+import { IAReactComponent } from '@internetarchive/ia-components/dweb-index.js';
 import {config} from "../Util";
 import {p_loadStream} from "../ReactSupport";
+import {I8span} from "./Languages";
 
-const debug = require('debug')('Video Components');
+const debug = require('debug')('dweb-archive:Video Components');
 
+// File regular review 2019-sept-09
 /**
  * This file provides wrapped Audio and Video components that can be driven from Dweb content -
  * Its similar to ImageDweb (in ia-components).
  * the source or src parameter is used to specify where to load content from, with other parameters passed alog
  */
 
-class AVDweb extends IAReactComponent {
-  /**
-   *  Local Superclass of AudioDweb and VideoDweb as similar structure
-   *
-   *  Behavior (common to both)
-   *  On Mount or on Update that changes source it retrieves a stream and loads it into the element
-   */
+/**
+ *
+ *  Do not use use this class directly, its a Local Superclass of AudioDweb and VideoDweb as similar structure
+ *  Behavior (common to both)
+ *  On Mount or on Update that changes source it retrieves a stream and loads it into the element
+ */
+class _AVDweb extends IAReactComponent {
   loadAV() {
     p_loadStream(this.avElement, this.props.source, {
       name: this.props.source.metadata.name,
@@ -29,22 +31,24 @@ class AVDweb extends IAReactComponent {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    /* Iff this update changed source then reload AV element with new source */
+    /* Iff this update changed source then reload AV element with new source - this is a track change*/
     if (prevProps.source !== this.props.source) {
       this.loadAV();
     };  // Cues up asynchronously to load the video/audio tag (dont need cb as this does the work of cb)
   }
+
   componentDidMount() {
     /* When mount this component, load AV element with source */
       this.loadAV();
   }
+
   loadcallable(avElement) {
     // On load, set the avElenent so it can be rendered into, its done this way since loadcallable is only called once, and not on re-renders
     this.avElement = avElement;
   }
 
 }
-class AudioDweb extends AVDweb {
+class AudioDweb extends _AVDweb {
    /** Audio that can, but doesnt have to be loaded via Dweb
    *
    * <AudioDweb
@@ -77,7 +81,7 @@ class AudioDweb extends AVDweb {
 AudioDweb.specificParms = ['src', 'source']; // Known in use includes:
 
 
-class VideoDweb extends AVDweb {
+class VideoDweb extends _AVDweb {
   /** Video that can, but doesnt have to be loaded via Dweb
    *
    * <VideoDweb
@@ -148,10 +152,10 @@ class WebTorrentStats extends IAReactComponent {
 render() {
     return (
       <span>
-        <b>Peers:</b> {this.numPeers}{' '}
-        <b>Progress:</b> {Math.min(100 * this.progress || 0, 100).toFixed(1)}%{' '}
-        <b>Download speed:</b> {prettierBytes(this.downloadSpeed || 0)}/s{' '}
-        <b>Upload speed:</b> {prettierBytes(this.uploadSpeed || 0)}/s
+        <b><I8span en="Peers">:</I8span></b> {this.numPeers}{' '}
+        <b><I8span en="Progress">:</I8span></b> {Math.min(100 * this.progress || 0, 100).toFixed(1)}%{' '}
+        <b><I8span en="Download speed">:</I8span></b> {prettierBytes(this.downloadSpeed || 0)}/s{' '}
+        <b><I8span en="Upload speed">:</I8span></b> {prettierBytes(this.uploadSpeed || 0)}/s
       </span>
       )
   }

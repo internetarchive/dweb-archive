@@ -1,3 +1,7 @@
+//This is a list of strings to feed into a translater
+import prettierBytes from "prettier-bytes";
+import React from "react";
+
 [ "Completed",
 "Crawls",
 "directories",
@@ -14,4 +18,11 @@
 "Waiting",
 "Working on",
 "This is an experiment, and only works on this page",
+]
+// TODO New ones to feed and add
+[
+"Peers",
+"Progress",
+"Download speed",
+"Upload speed",
 ]

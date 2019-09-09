@@ -447,6 +447,7 @@ async function p_loadStream(el, urls, { name=undefined, cb=undefined, preferredT
           }
         }
       }
+      el.play();
     } else { // No urls
       debug('ERROR: ReactSupport.p_loadStream didnt find any resolvable urls - cant load stream')
     }
