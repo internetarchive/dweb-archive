@@ -18,7 +18,7 @@ https://docs.google.com/presentation/d/1dhDAUjob6oSVWJsuShviW7qkiEou2RlJOsO5QIaE
  *   item=IDENTIFIER
  *   page=INTEGER - or maybe its a string?
  *   disconnected=BOOL true if cant see upstream server (so disable search)
- */>
+ * />
  */
 class BookReaderWrapper extends IAReactComponent {
     /* Notes:
