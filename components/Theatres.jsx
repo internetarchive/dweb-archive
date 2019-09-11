@@ -1,6 +1,6 @@
 import React from 'react';
 import { CherModal } from './CherModal';
-import { BookReaderWrapper } from './BookReaderWrapper';
+import { BookReaderDwebWrapper } from './BookReaderWrapper';
 import { AnchorDownload, Carousel, IAReactComponent, ImageDweb }  from '@internetarchive/ia-components/dweb-index.js';
 import TheatreControls from "./TheatreControls";
 import { AudioDweb, VideoDweb, WebTorrentStats } from "./AudioVideo";
@@ -14,7 +14,24 @@ import {config} from "../Util";
  */
 
 class BookReaderTheatre extends IAReactComponent {
-  // Props: mediatype, identifier, creator, title, item, disconnected
+  /**
+   * <BookReaderTheatre
+   *   mediatype="texts"
+   *   identifier=IDENTIFIER
+   *   creator=Metadata.creator
+   *   title=STRING
+   *   item=ARCHIVEITEM
+   *   disconnected=BOOL (disables some bookreader functionality
+   * />
+   */
+  componentDidMount() {
+    super.componentDidMount();
+    AJS.theatresize();
+  }
+  componentDidUpdate() {
+    super.componentDidUpdate();
+    AJS.theatresize();
+  }
   render() {
     return (
       <>
@@ -24,7 +41,7 @@ class BookReaderTheatre extends IAReactComponent {
           <div className="row">
             <div className="xs-col-12">
               <TheatreControls identifier={this.props.identifier} mediatype={this.props.mediatype} />
-              <BookReaderWrapper item={this.props.item} page={this.props.page} disconnected={this.props.disconnected}/>
+              <BookReaderDwebWrapper item={this.props.item} page={this.props.page} disconnected={this.props.disconnected}/>
               <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
               <center style={{color:"white", marginBottom:"10px"}}>
               </center>
@@ -172,8 +189,17 @@ class AudioTheatre extends IAReactComponent {
   )};
 }
 
+/**
+ * <VideoTheatre
+ *   identifier=IDENTIFIER
+ *   mediatype=movie
+ *   poster=ARCHIVEFILE
+ *   creator=Metadata.creator
+ *   title=STRING
+ *   source=ARCHIVEFILE
+ * />
+ */
 class VideoTheatre extends IAReactComponent {
-  // Props: identifier mediatype poster creator mediatype title source=ARCHIVEFILE
   render() { return (
     <div id="theatre-ia" className="container">
       <div className="row">
@@ -192,7 +218,18 @@ class VideoTheatre extends IAReactComponent {
   ); }
 }
 
-
+/**
+ * <ImageTheatre
+ *   mediatype="image"
+ *   identifier=IDENTIFIER
+ *   Either: source=ARCHIVEFILE
+ *   Or: src=URL
+ *   alt=URL (of alternative image)
+ *   caption=STRING
+ *   creator=Metadata.creator
+ *   disconnected=BOOL
+ * />
+ */
 class ImageTheatre extends IAReactComponent {
 
   render() {
@@ -259,6 +296,14 @@ class ImageTheatre extends IAReactComponent {
     );
   }
 }
+
+/**
+ * Render a message - typically an error, or while something is happening
+ *
+ * <MessageTheatre title=STRING >
+ *   ...
+ * </MessageTheatre>
+ */
 class MessageTheatre extends IAReactComponent {
   // Props: title children
 

@@ -32,4 +32,5 @@ import React from "react";
 "Unsupported mediatype",
 "Changing language from",
 "Changing language to",
+"Loading Book metadata for",
 ]
