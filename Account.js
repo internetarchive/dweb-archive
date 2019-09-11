@@ -131,12 +131,12 @@ class AccountWelcome extends IAReactComponent {
                     </div>{/*--/.row--*/}
                     <div className="tabbys tabbys-dynamic">
                         <Tabby identifier={identifier} id="uploads" text="UPLOADS" default/>
-                        <Tabby identifier={identifier} id="posts" text="POSTS"/>
-                        <Tabby identifier={identifier} id="reviews" text="REVIEWS"/>
-                        <Tabby identifier={identifier} id="collections" text="COLLECTIONS"/>
-                        <Tabby identifier={identifier} id="loans" text="LOANS"/>
-                        <Tabby identifier={identifier} id="web-archives" text="WEB ARCHIVES" abbreviatedText="WEB"
-                               href={`/details/${identifier}/web-archive`}/>
+                        {/*<Tabby identifier={identifier} id="posts" text="POSTS"/>*/}
+                        {/*<Tabby identifier={identifier} id="reviews" text="REVIEWS"/>*/}
+                        {/*<Tabby identifier={identifier} id="collections" text="COLLECTIONS"/>*/}
+                        {/*<Tabby identifier={identifier} id="loans" text="LOANS"/>
+                        {/*<Tabby identifier={identifier} id="web-archives" text="WEB ARCHIVES" abbreviatedText="WEB"
+                               href={`/details/${identifier}/web-archive`}/>*/}
                         <div className="clearfix"></div>
                     </div>
                 </div>{/*--/.container--*/}
@@ -187,7 +187,7 @@ class AccountWrap extends IAReactComponent {
                 {/*--.container-ia --*/}
                 <AccountWelcome item={this.props.item}/>
                 <AccountUploads item={this.props.item} disconnected={this.props.disconnected}/>
-                <AccountTabbyPosts item={this.props.item}/>
+              {/*<AccountTabbyPosts item={this.props.item}/>*/}
             </main>
           </>
         );
