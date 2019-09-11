@@ -200,7 +200,7 @@ class SettingsInfo extends IAReactComponent {
         <div className="columns-items" style={{"marginLeft": "0px"}}>
           <div style={{position: "relative"}}>
             <div>
-              <h4><I8span en="Info"/></h4>
+              <h4><I8span en="Information"/></h4>
               <ul>
                 <li><I8span en="directories"/>: <span>{this.state.info.directories.join('; ')}</span></li>
               </ul>
@@ -225,7 +225,7 @@ class SettingsLanguages extends IAReactComponent {
               <div className={Object.keys(languages).join(' ')}>
                 <span>
                   {Object.entries(languages).map(kv =>
-                    <span key={kv[0]} onClick={()=>setLanguage(kv[0])}>{kv[1]._thislanguage} &nbsp;
+                    <span key={kv[0]} onClick={()=>setLanguage(kv[0])}>{kv[1]._LanguageInEnglish} &nbsp;
                       <span lang={kv[0]}>{'\u2713'}</span>&nbsp;</span>
                   )
                   }

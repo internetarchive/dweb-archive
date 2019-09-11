@@ -1,5 +1,6 @@
 const spanish = {
-  "_thislanguage": "Spanish",
+  "_LanguageInEnglish": "Spanish",
+  "_LanguageInLocal": "castellano",
   "Completed": "Terminado",
   "Crawls": "Se arrastra",
   "directories": "directorios",

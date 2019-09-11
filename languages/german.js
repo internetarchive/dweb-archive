@@ -1,6 +1,7 @@
 const german = {
-  "_thislanguage": "German",
-  "Completed": "Abgeschlossen",
+  "_LanguageInEnglish": "German",
+  _LanguageInLocal: "Deutsche",
+    "Completed": "Abgeschlossen",
   "Crawls": "Crawlt",
   "directories": "Verzeichnisse",
   "English": "Englisch",

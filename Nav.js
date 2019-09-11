@@ -1,12 +1,13 @@
 const canonicaljson = require('@stratumn/canonicaljson');
+import ReactDOM from "react-dom";
+import React from "react";
 // Other IA repositories
 import { homeQuery, ObjectFilter } from "@internetarchive/dweb-archivecontroller/Util";
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 // This repository
 import ArchiveBase from './ArchiveBase';
 import {Page} from "./components/Page";
-import ReactDOM from "react-dom";
-import React from "react";
+import {I8span} from "./components/Languages";
 const debug = require('debug')('dweb-archive:Nav');
 
 function pushHistory(...optss) {
@@ -68,6 +69,7 @@ function URLSearchParamsEntries(sp) {
 }
 
 function renderPage({item=undefined, message=undefined}) {
+  // Shortcut ...
   // opts = { item (optional), message (optional) }
   DwebArchive.page.setState({item, message});
 }
@@ -118,7 +120,7 @@ export default class Nav {
     */
     const opts = pushHistory(...optss, {identifier});
     const {download = undefined, page = undefined, noCache = undefined} = opts;
-    renderPage({message: "Loading "+identifier});
+    renderPage({message: <I8span en="Loading">&nbsp; {identifier}</I8span>});
     window.loopguard = identifier;  // Tested in dweb-transport/httptools, will cancel any old loops - this is a kludge to get around a Chrome bug/feature
     let item; // Set below, but keep it here for error handling
     try {
@@ -134,10 +136,10 @@ export default class Nav {
         item = new ArchiveBase({itemid: identifier, page, download, noCache});
         await item.fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
         if (!item.metadata) {
-          item.message = `item ${identifier} cannot be found or does not have metadata`;
+          item.message = <><I8span en="item"/> {identifier}<I8span en="cannot be found or does not have metadata"/></>;
         }
         if (!item.message && item.metadata && !['texts', 'image', 'audio', 'etree', 'movies', 'collection', 'account'].includes(item.metadata.mediatype)) {
-          item.message = `Unsupported mediatype: ${item.metadata.mediatype}`
+          item.message = <I8span en='Unsupported mediatype'>: {item.metadata.mediatype}</I8span>
         }
         if (!item.message) {
           await item.fetch_query({noCache}); // Should throw error if fails to fetch //TODO-RELOAD fetch_query ignores noCache currently
@@ -176,9 +178,8 @@ export default class Nav {
      *  Anything else is passed to factory
      */
     const destn = document.getElementById('main'); // Blank window (except Nav) as loading
-    const els = (
-      <Page message={"LOADING STARTING"}/>
-    );
+    const message=<I8span en="LOADING STARTING"/>;
+    const els = <Page message={message}/>;
     ReactDOM.render(els, destn);
     // Assumes rendering is sync
     console.assert(typeof DwebArchive.page !== "undefined", "Assuming ReactDOM.render is sync");

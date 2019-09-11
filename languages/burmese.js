@@ -1,5 +1,6 @@
 const burmese = {
-  _thislanguage: "Burmese",
+  _LanguageInEnglish: "Burmese",
+  _LanguageInLocal: "မြန်မာ",
   "Completed":  "ပြီးစီး",
   "Crawls": "တွား",
   "directories": "အင်္ဂလိပ်",

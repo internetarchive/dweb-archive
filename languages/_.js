@@ -25,4 +25,11 @@ import React from "react";
 "Progress",
 "Download speed",
 "Upload speed",
+"LOADING STARTING",
+"Loading search",
+"item",
+"cannot be found or does not have metadata",
+"Unsupported mediatype",
+"Changing language from",
+"Changing language to",
 ]

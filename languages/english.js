@@ -1,5 +1,6 @@
 const english = {
-  _thislanguage: "English",
+  _LanguageInEnglish: "English",
+  _LanguageInLocal: "English",
   "Completed": "Completed",
   "Crawls": "Crawls",
   "directories": "directories",
@@ -16,8 +17,17 @@ const english = {
   "Settings": "Settings",
   "Waiting": "Waiting",
   "Working on": "Working on",
-  "...language experiment...":
-  "This is an experiment, and only works on this page"
+  // Not yet translated
+  "Peers": "Peers",
+  "Progress": "Progress",
+  "Download speed": "Download speed",
+  "Upload speed": "Upload speed",
+  "LOADING STARTING": "LOADING STARTING",
+  "Loading search": "Loading search",
+  "item": "item",
+  "cannot be found or does not have metadata": "cannot be found or does not have metadata",
+  "Unsupported mediatype": "Unsupported mediatype",
+  "...language experiment...": "This is an experiment, and only works on this page",
 }
 
 export {english}

@@ -1,5 +1,6 @@
 const french = {
-  "_thislanguage": "French",
+  "_LanguageInEnglish": "French",
+  _LanguageInLocal: "Française",
   "Completed":   "Terminé",
   "Crawls": "Crawls",
   "directories": "annuaires",

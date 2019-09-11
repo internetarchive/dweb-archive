@@ -1,5 +1,6 @@
 const marathi = {
-  _thislanguage: "Marathi",
+  _LanguageInEnglish: "Marathi",
+  _LanguageInLocal: "मराठी",
   "Completed":  "पूर्ण",
   "Crawls": "क्रॉल",
   "directories": "निर्देशिका",
