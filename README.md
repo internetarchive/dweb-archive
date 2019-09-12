@@ -92,6 +92,9 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.96: Refactor bookreader component; improvements on Account page; Auto-pay Audio; item*P*rop
+* v0.1.96: Include transports explicitly based on transports parameter to URL;
+* v0.1.96: Multilingual - partial, includes the framework and some screens in multiple languages
 * v0.1.95: webtorrent partial and (via dweb-archivecontroller) fix bug with /local 
 * v0.1.94: document.title refactor and remove dependency on dweb-objects.deletechildren
 * v0.1.93: download links issue; accounts updloads display; naming refactor
