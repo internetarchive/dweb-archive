@@ -66,19 +66,37 @@
     <script type="text/javascript">
         // SEE-OTHER-ADDTRANSPORT in dweb-transports dweb-archive dweb-mirror
         // TODO-SPLIT these will need to move into local server or may be excluded by cross-origin low-bandwidth rule in chrome
-        const transportsScripts = {
-            'IPFS': ['https://unpkg.com/ipfs/dist/index.min.js'], // 2.3Mb
-            'GUN': ['gun/gun.js', 'gun/lib/path.js', 'gun/nts', 'gun/lib/wire', 'gun/lib/multicast', 'gun/lib/radix.js',
-                    'gun/lib/radisk.js', 'gun/lib/store.js', 'gun/lib/rindexed.js']
-                    .map(s =>'https://cdn.jsdelivr.net/npm/'+s), // 40kb
-            'WEBTORRENT': ['https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js'],
-            };
-        const transports = new URL(window.location.href).searchParams.getAll("transport");
-        transports.forEach( t => (transportsScripts[t] || [])).forEach(s => {
-                console.log("Loading",t,s);
-                document.write('<script src="'+s+'"><\/script>') } );
+        // TODO-SPLIT move this function into Transports.js
+        function _transportsOptions(searchparams) {
+          // Allows abbreviation like mirror=localhost:4244, also allows mirror to specify https://xyz.org
+          let mirror = searchparams.get("mirror");
+          if (mirror && !(mirror === null) && !mirror.startsWith('http')) {
+            mirror = "http://" + mirror;
+          }
+          const transports = searchparams.getAll("transport");
+          DwebArchive.mirror = mirror || null; // So DwebArchive can check it locally, must be before gatewayServer call below (null check turns "" into null)
+          return {
+            statuselement: document.getElementById("dweb-status"),
+            http: {urlbase: DwebArchive.gatewayServer()},
+            transports,
+            defaulttransports: (mirror && !(mirror === null)) ? ["HTTP"] : ["HTTP", "WEBTORRENT", "IPFS", "WOLK"],
+            paused: searchparams.getAll("paused"),
+            mirror: mirror,                                 // Careful with this, gatewayServer will return dweb.me if mirror undefined
+          }
+        }
+        function _opts(searchparams, transportsOptions) {
+          // Now setup opts, which has to happen after transportsOptions
+          // Save the persistent (cross-window) state (transport & mirror & paused), and returns any other searchparams not saved
+          const opts = Nav.setState(searchparams, {transport: DwebTransports._tabbrevs(transportsOptions), mirror: transportsOptions.mirror});
+          const pathParts = window.location.pathname.split('/');
+          const k = ['details', 'download'].find(kPossible => pathParts.includes(kPossible));
+          opts.identifier = k
+            ? pathParts[pathParts.length - 1] // identifier must be last part of URL for this to work
+            : opts.identifier || opts.item;
+          opts.download = pathParts.includes('download') || opts.download || false;
+          return opts;
+        }
     </script>
-
     <style>
         #jw6, #jw6__list { background-color:black; }
     </style>
@@ -87,41 +105,26 @@
     <script type="text/javascript" src="dweb-transports-bundle.js"></script> <!--Direct transport-->
     <!-- <script type="text/javascript" src="dweb-serviceworker-proxy-bundle.js"></script> <!-- Transport via Proxy -->
     <script type="text/javascript" src="dweb-archive-bundle.js"></script>
+    <script type="text/javascript">
+      // This block has to run before and probably in separate <script> so that the document.write's happen before p_connect is called.
+      const searchparams = new URL(window.location.href).searchParams
+      const transportsOptions = _transportsOptions(searchparams);
+      const opts = _opts(searchparams, transportsOptions);
+      DwebTransports.loadIntoHtmlPage(transportsOptions);
+    </script>
 </head>
 <!-- TODO-DETAILS missing scripts, properties and links that appear before body tag on archive/details/commute etc -->
 
 <body class="navia ia-module navbar-no-margin-bottom tiles responsive en">
 <!--suppress HtmlUnknownAnchorTarget -->
 <a href="#maincontent" class="hidden-for-screen-readers">Skip to main content</a>
-<script>
-    $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
-    async function main() {
-      // Allows abbreviation like mirror=localhost:4244, also allows mirror to specify https://xyz.org
-      const searchparams = new URL(window.location.href).searchParams
-      let mirror = searchparams.get("mirror");
-      if (mirror && !(mirror === null) && !mirror.startsWith('http')) { mirror = "http://"+mirror; }
-      // Save the persistent (cross-window) state (transport & mirror & paused), and returns any other searchparams not saved
-      const opts = Nav.setState(searchparams, {mirror: mirror});
-      DwebArchive.mirror = mirror || null; // So DwebArchive can check it locally, must be before gatewayServer call below (null check turns "" into null)
-      const pathParts = location.pathname.split('/');
-      const k = ['details', 'download'].find(kPossible => pathParts.includes(kPossible));
-      opts.identifier = k
-        ? pathParts[pathParts.length-1] // identifier must be last part of URL for this to work
-        : opts.identifier || opts.item;
-      opts.download = pathParts.includes('download') || opts.download || false;
-      await DwebTransports.p_connect({
-        statuselement: document.getElementById("dweb-status"),
-        http: {urlbase: DwebArchive.gatewayServer()},
-        transports: searchparams.getAll("transport"),
-        paused: searchparams.getAll("paused"),
-        mirror: mirror,                                 // Careful with this, gatewayServer will return dweb.me if mirror undefined
-      });
-      Nav.metafactory(opts);
-    }
-</script>
+
+
 <div id="main"></div><!-- destination for part accumulated by ArchiveBase as html-->
 <script>
-    main();
+  $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
+  DwebTransports.p_connect(transportsOptions)
+    .then(unusedRes => Nav.metafactory(opts));
 </script>
 
 </body>
