@@ -30,6 +30,7 @@ module.exports = {
     optimization: {
         minimizer: [
             new UglifyJsPlugin({
+              sourceMap: true,
                 uglifyOptions: {
                     compress: {
                         unused: false,
@@ -70,5 +71,6 @@ module.exports = {
     ],
     resolve: {
         extensions: ['.js', '.jsx']
-    }
+    },
+  devtool: 'source-map'
 };
