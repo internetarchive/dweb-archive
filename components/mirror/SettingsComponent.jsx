@@ -287,4 +287,4 @@ class SettingsItem extends IAReactComponent {
   }
 }
 export {SettingsCrawlsComponent, SettingsItem};
-
+// File regular review 2019-sept-12

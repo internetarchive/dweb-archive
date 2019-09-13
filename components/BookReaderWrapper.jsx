@@ -28,10 +28,6 @@ class BookReaderDwebWrapper extends IAReactComponent {
      The URL can include string like /page/4, this is pulled out of the window/document's URL deep in the code in BookReader.prototype.initParams
      so we just have to ensure the url is not munged by anything else happening.
 
-     To merge this (Dbrw) into iaux/.../bookreader-wrapper-main.jsx (Ibrw)
-    TODO Extra options below should be passed as props to Ibrw - which prop means using Dbrw to wrap Ibrw
-    OR pushing that functionality up to BookReaderTheatre Dbrt
-
     See https://github.com/internetarchive/iaux/issues/260 re merging wrappers
     */
 
@@ -94,3 +90,4 @@ class BookReaderDwebWrapper extends IAReactComponent {
     * Does an OL query: https://openlibrary.org/query.json?type=/type/edition&*=&ocaid=unitednov65unit&callback=jQuery1102030322806165558847_1552068906756&_=1552068906757
 */
 export {BookReaderDwebWrapper}
+// File regular review 2019-sept-09
