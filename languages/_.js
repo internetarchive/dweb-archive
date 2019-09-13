@@ -28,9 +28,14 @@ import React from "react";
 "LOADING STARTING",
 "Loading search",
 "item",
+"Item",
 "cannot be found or does not have metadata",
 "Unsupported mediatype",
-"Changing language from",
-"Changing language to",
-"Loading Book metadata for",
+  "Changing language from",
+  "Changing language to",
+  "Loading Book metadata for",
+  "Share or Embed This",
+  "Collection",
+  "EMBED (for wordpress.com hosted blogs)",
+  "Advanced embedding details, examples, and help"
 ]

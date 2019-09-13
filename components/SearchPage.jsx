@@ -464,7 +464,7 @@ class CollectionWrap extends IAReactComponent {
             disconnected={this.props.disconnected}
           />
         }
-        {["home"].includes(item.itemid) ? null :
+        {(["home"].includes(item.itemid) || this.props.disconnected) ? null :
           <CherModal identifier={item.itemid} creator={item.metadata.creator} mediatype={item.metadata.mediatype}
                      title={item.metadata.title}/>
         }

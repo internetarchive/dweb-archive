@@ -1,27 +1,46 @@
 import React from 'react';
 import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
+import {I8span} from './Languages';
 
 /**
+ * Button to enable sharing to one url
+ *
+ * <CherModalButton
+ *    url=URL to open when clicked - typically complex sharing URL on service
+ *    className=STRING e.g. iconochive-twitter - tells it what to use for icon
+ *    title=STRING e.g. "Share to Reddit"
+ * />
+ *
+ * Behavior - when clicks access sharing on other service
  */
 
 class CherModalButton extends IAReactComponent {
-  /**
-   * <CherModalButton
-   *    url={`http://www.reddit.com/submit?url=${detailsURL}&amp;title=${sharingTextUriEncoded}+%3A+Free+Download+%26amp%3B+Streaming+%3A+Internet+Archive`}
-   *    className="iconchive-reddit"
-   *    title=""Share to Reddit"
-   */
 
-  render() {
+  render() { //TODO-I8N TODO-2SC figure out how displayed and add to languages
     return (
       <a
         href={this.props.url}
         target="_blank">
+        {/* The className is where the icon comes from */}
         <div className={"sharee "+ this.props.className} data-toggle="tooltip" data-placement="bottom" title="" data-original-title={this.props.title}></div>
       </a>
     );
   }
 }
+
+/**
+ * Button for sharing on multiple services,
+ * Consumer should omit if disconnected
+ *
+ * <CherModal
+ *   identifier=IDENTIFIER
+ *   title=STRING
+ *   creator=[STRING]
+ *   mediatype="texts|image..."
+ * />
+ *
+ * Behavior - when clicks, displays modal interaction for sharing
+ */
 class CherModal extends IAReactComponent {
   constructor(props) {
     super(props); // identifier, creator, mediatype, title
@@ -44,7 +63,7 @@ class CherModal extends IAReactComponent {
               <button type="button" className="close" data-dismiss="modal" aria-hidden="true"><span
                 className="iconochive-remove-circle" aria-hidden="true"></span><span className="sr-only">remove-circle</span>
               </button>
-              <h3 className="modal-title">Share or Embed This {(this.props.mediatype === "collection") ? "Collection" : "Item"}</h3>
+              <h3 className="modal-title"><I8span en="Share or Embed This"/> <I8span en={(this.props.mediatype === "collection") ? "Collection" : "Item"}/></h3>
             </div>{/*--/.modal-header--*/}
             <div id="cher-body">
               <div style={{textAlign: "center", margin: "50px auto"}}>
@@ -89,7 +108,7 @@ class CherModal extends IAReactComponent {
                   <div>
                     <form className="form" role="form">
                       <div className="form-group">
-                        <label>EMBED (for wordpress.com hosted blogs)</label>
+                        <label><I8span en="EMBED (for wordpress.com hosted blogs)"/></label>
                         <textarea id="embedcodehereWP" className="form-control textarea-invert-readonly"
                                   rows="3" readOnly="readonly" value={`[archiveorg ${this.props.identifier} width=560 height=384 frameborder=0 webkitallowfullscreen=true mozallowfullscreen=true]`}/>
                       </div>
@@ -97,7 +116,7 @@ class CherModal extends IAReactComponent {
                   </div>
                   <div>
                     Want more?
-                    <a href={helpURL}>Advanced embedding details, examples, and help</a>!
+                    <a href={helpURL}><I8span en="Advanced embedding details, examples, and help"/></a>!
                   </div>
                 </>
               }
@@ -109,4 +128,6 @@ class CherModal extends IAReactComponent {
 }
 
 export { CherModal };
+// File regular review 2019-sept-12
+
 

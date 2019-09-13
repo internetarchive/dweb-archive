@@ -42,7 +42,9 @@ class BookReaderTheatre extends IAReactComponent {
             <div className="xs-col-12">
               <TheatreControls identifier={this.props.identifier} mediatype={this.props.mediatype} />
               <BookReaderDwebWrapper item={this.props.item} page={this.props.page} disconnected={this.props.disconnected}/>
-              <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
+              { this.props.disconnected ? null :
+                <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
+              }
               <center style={{color:"white", marginBottom:"10px"}}>
               </center>
             </div>
@@ -79,7 +81,10 @@ class CarouselTheatre extends IAReactComponent {
             <div className="xs-col-12">
               <div id="theatre-controls"></div>
               <Carousel identifier={this.props.identifier} slides={this.props.slides} disconnected={this.props.disconnected}/>
-              <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
+              {this.props.disconnected ? null :
+                <CherModal identifier={this.props.identifier} creator={this.props.creator}
+                           mediatype={this.props.mediatype} title={this.props.title}/>
+              }
               <center style={{color:"white", marginBottom: "10px"}}>
               </center>
             </div>
@@ -182,7 +187,10 @@ class AudioTheatre extends IAReactComponent {
               </div>
             </div>
           </div>
-          <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
+          {this.props.disconnected ? null :
+            <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype}
+                       title={this.props.title}/>
+          }
         </div>
       </div>
     </div>
@@ -210,8 +218,10 @@ class VideoTheatre extends IAReactComponent {
             <VideoDweb id="streamContainer" source={this.props.source} poster={this.props.poster} controls></VideoDweb>
           </div>
           <WebTorrentStats style={{color: "white", textAlign: "center"}} torrentfile={window.WEBTORRENT_FILE} torrent={window.WEBTORRENT_TORRENT}/>
-          <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype}
+          { this.props.disconnected ? null :
+            <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype}
                      title={this.props.title}/>
+          }
         </div>
       </div>
     </div>
@@ -289,7 +299,9 @@ class ImageTheatre extends IAReactComponent {
             </div>
             {/* Script tags moved into the JS*/}
             <div id="webtorrentStats" style={{color: "white", textAlign: "center"}}></div>
-            <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
+            { this.props.disconnected ? null :
+              <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
+            }
           </div>
         </div>
       </div>
