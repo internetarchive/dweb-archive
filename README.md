@@ -92,6 +92,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.97: I8n CherModal; refactor archive.html
 * v0.1.96: Refactor bookreader component; improvements on Account page; Auto-pay Audio; item*P*rop
 * v0.1.96: Include transports explicitly based on transports parameter to URL;
 * v0.1.96: Multilingual - partial, includes the framework and some screens in multiple languages
