@@ -4,6 +4,7 @@ import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageT
 import {IAReactComponent, NavWrap, DetailsAbout, DownloadDirectoryDiv } from "@internetarchive/ia-components/dweb-index.js";
 import RelatedItemsWrapper from './RelatedItemsWrapper';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
+import {I8span} from "./Languages";
 /**
  * A set of components that make up the Details Page
  */
@@ -226,7 +227,9 @@ class DetailsWork extends IAReactComponent {
         }
         {(!this.props.identifier) ? null :
             <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
-        <div className="terms-of-service"><a className="stealth" href="https://archive.org/about/terms.php">Terms of Service (last updated 12/31/2014)</a></div>
+        {this.props.statuses.disconnected ? null :
+          <div className="terms-of-service"><a className="stealth" href="https://archive.org/about/terms.php"><I8span en="Terms of Service"/> (<I8span en="last updated"/>
+            12/31/2014)</a></div> }
       </main>
       {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
     </>

@@ -36,6 +36,12 @@ import React from "react";
   "Loading Book metadata for",
   "Share or Embed This",
   "Collection",
-  "EMBED (for wordpress.com hosted blogs)",
-  "Advanced embedding details, examples, and help"
+  "EMBED",
+  "EMBED (for wordpress.com hosted blogs and archive.org item &lt;description&gt; tags)",
+  "Advanced embedding details, examples, and help",
+  "Want more?",
+  "Terms of Service",
+  "last updated",
+  "Internet Archive",
+  "Top Collections at the Archive"
 ]

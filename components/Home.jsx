@@ -1,14 +1,20 @@
 import React from "react";
 import { AnchorDetails, IAReactComponent, AnchorSearch } from '@internetarchive/ia-components/dweb-index.js';
+import {I8span} from "./Languages";
 
+/**
+ * <HomeWelcomeLinkIcon
+ *   iconochive=STRING    e.g. iconochive-movies
+ *   sronly=STRING        e.g. "web"
+ *   size=STRING          e.g. "373B" purely an estimate as there is no API to get it TODO copy periodically from archive.org
+ * />
+ */
 class HomeWelcomeLinkIcon extends IAReactComponent {
-  // Props: iconochive, short
-
   render() {
     return (
       <div className="mt-big">
         <div>
-          <span className={this.props.iconochive} aria-hidden="true"></span><span className="sr-only">{this.props.short}</span>
+          <span className={this.props.iconochive} aria-hidden="true"></span><span className="sr-only">{this.props.sronly}</span>
         </div>
         <div className="micro-label">
           {this.props.size} <span className="sr-only">items</span>
@@ -17,37 +23,58 @@ class HomeWelcomeLinkIcon extends IAReactComponent {
     )
   }
 }
+
+/**
+ * <HomeWelcomeLink
+ *    ONE OF
+ *      identifier=IDENTIFIER
+ *      query=STRING      e.g. "collection: foo"
+ *      href=URL
+ *    title=STRING|NODE      for anchor e.g. Web or <I8span en="Web"/>
+ *    iconochive=STRING e.g. iconochive-web
+ *    size=STRING       e.g. "300B" just an estimate as there is no API
+ *    sronly=STRING
+ * />
+ */
 class HomeWelcomeLink extends IAReactComponent {
-  // Props: href, title, short, size
+  // Props: href, title, sronly, size
 
   render() {
+    //TODO-I8N figure out how to pass I8N string to <AnchorDetails which passes to <A title=>
     return (
       this.props.identifier
       ? <AnchorDetails identifier={this.props.identifier} title={this.props.title}>
-        <HomeWelcomeLinkIcon iconochive={this.props.iconochive} short={this.props.short} size={this.props.size}/></AnchorDetails>
+        <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size}/></AnchorDetails>
       : this.props.query
       ? <AnchorSearch query={this.props.query} title={this.props.title}>
-        <HomeWelcomeLinkIcon iconochive={this.props.iconochive} short={this.props.short} size={this.props.size}/></AnchorSearch>
+        <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size}/></AnchorSearch>
       : <a href={this.props.href} title={this.props.title}>
-        <HomeWelcomeLinkIcon iconochive={this.props.iconochive} short={this.props.short} size={this.props.size}/></a>
+        <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size}/></a>
 
     )
   }
 }
+
+/**
+ * <HomeBanner disconnected=BOOL />
+ */
 class HomeBanner extends IAReactComponent {
  render() {
    return (
      <>
-       <div id="ToS">
-         <a className="stealth" href="/about/terms.php">Terms of Service (last updated 12/31/2014)</a>
-       </div>
+       { this.props.disconnected ? null :
+         <div id="ToS">
+           <a className="stealth" href="https://archive.org/about/terms.php"><I8span en="Terms of Service"/> (<I8span en="last updated"/>
+             12/31/2014)</a>
+         </div>
+       }
        <div className="row preamble" style={{marginBottom: "60px"}}>
          <div className="col-sm-3 hero-left">
           <span className="iconochive-logo topinblock" aria-hidden="true"></span><span className="sr-only">logo</span >
          </div>
          <div className="col-sm-6 hero-center">
           <div className="preamble-whoweare">
-            <b>Internet Archive</b>
+            <b><I8span en="Internet Archive"/></b>
 
             is a non-profit library of millions of free books, movies, software, music, websites, and more.
             <center className="mt-big" style={{marginTop: "10px"}}>
@@ -175,7 +202,7 @@ class HomeBanner extends IAReactComponent {
    */}
  </div>
    <center id="top-collections" style={{marginBottom:"50px"}}>
-     <h1 style={{fontWeight:100}}>Top Collections at the Archive</h1>
+     <h1 style={{fontWeight:100}}><I8span en="Top Collections at the Archive"/></h1>
    </center>
   </>
  )
@@ -183,3 +210,4 @@ class HomeBanner extends IAReactComponent {
 }
 
 export { HomeBanner }
+// File regular review 2019-sept-15

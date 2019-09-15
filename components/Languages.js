@@ -79,6 +79,7 @@ class I8spanB extends IAReactComponent {
 class I8span extends IAReactComponent {
   /**
    * <I8span en="Yes" />
+   * TODO-I8N pass on any other props to span
    */
   render() {
       let thisLanguage = global.language;

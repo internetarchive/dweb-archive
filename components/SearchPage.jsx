@@ -411,7 +411,7 @@ class SearchWrap extends IAReactComponent {
         <main id="maincontent">
           <div className="container container-ia">
           {identifier === "home"
-            ? <HomeBanner/>
+            ? <HomeBanner disconnected={this.props.disconnected}/>
             /* ? <center style={{margin: "35px"}}><span style={{fontSize: "125px"}} className="iconochive-logo"></span></center> */
             : <SearchBanner query={this.props.item.query} disconnected={this.props.disconnected}/>
           }
@@ -453,7 +453,7 @@ class CollectionWrap extends IAReactComponent {
         <main id="maincontent">
           <div className="container container-ia">
         {["home"].includes(item.itemid)
-          ? <HomeBanner/>
+          ? <HomeBanner disconnected={this.props.disconnected}/>
           :
           <CollectionBanner
             identifier={item.itemid}
