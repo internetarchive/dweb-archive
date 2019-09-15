@@ -16,13 +16,15 @@ import {I8span} from './Languages';
 
 class CherModalButton extends IAReactComponent {
 
-  render() { //TODO-I8N TODO-2SC figure out how displayed and add to languages
+  //TODO tooltips aren't loading, not sure why there is a tooltip function in archive.html but calling that on this
+  //TODO doesnt seem to work. Investigation required and then I8N
+  render() {
     return (
       <a
         href={this.props.url}
         target="_blank">
         {/* The className is where the icon comes from */}
-        <div className={"sharee "+ this.props.className} data-toggle="tooltip" data-placement="bottom" title="" data-original-title={this.props.title}></div>
+        <div className={"sharee "+ this.props.className} data-toggle="tooltip" data-placement="bottom" title data-original-title={this.props.title}></div>
       </a>
     );
   }
@@ -60,8 +62,8 @@ class CherModal extends IAReactComponent {
         <div className="modal-dialog modal-lg">
           <div className="modal-content" style={{padding:"10px"}}>
             <div className="modal-header">
-              <button type="button" className="close" data-dismiss="modal" aria-hidden="true"><span
-                className="iconochive-remove-circle" aria-hidden="true"></span><span className="sr-only">remove-circle</span>
+              <button type="button" className="close" data-dismiss="modal" aria-hidden="true">
+                <span className="iconochive-remove-circle" aria-hidden="true"></span><span className="sr-only">remove-circle</span>
               </button>
               <h3 className="modal-title"><I8span en="Share or Embed This"/> <I8span en={(this.props.mediatype === "collection") ? "Collection" : "Item"}/></h3>
             </div>{/*--/.modal-header--*/}
@@ -89,14 +91,14 @@ class CherModal extends IAReactComponent {
                   <br clear="all" className="clearfix"/>
                 </div>
               </div>
-              { (!["image", "audio", "video"].includes(this.props.mediatype)) ? null :
+              { (!["image", "audio", "movies"].includes(this.props.mediatype)) ? null :
                 <>
                   <div>
                     <form className="form" role="form">
                       <div className="form-group">
-                        <label>EMBED</label>
+                        <label><I8span>EMBED</I8span></label>
                         <textarea id="embedcodehere" className="form-control textarea-invert-readonly"
-                                  rows="3" readOnly="readonly" value={`<iframe 
+                                      readOnly="readonly" value={`<iframe 
                                       src=${shortEmbedURL}
                                       width="480" height="430" frameborder="0"
                                       webkitallowfullscreen="true" mozallowfullscreen="true"
@@ -108,14 +110,14 @@ class CherModal extends IAReactComponent {
                   <div>
                     <form className="form" role="form">
                       <div className="form-group">
-                        <label><I8span en="EMBED (for wordpress.com hosted blogs)"/></label>
+                        <label><I8span en="EMBED (for wordpress.com hosted blogs and archive.org item &lt;description&gt; tags)"/></label>
                         <textarea id="embedcodehereWP" className="form-control textarea-invert-readonly"
-                                  rows="3" readOnly="readonly" value={`[archiveorg ${this.props.identifier} width=560 height=384 frameborder=0 webkitallowfullscreen=true mozallowfullscreen=true]`}/>
+                                  readOnly="readonly" value={`[archiveorg ${this.props.identifier} width=480 height=640 frameborder=0 webkitallowfullscreen=true mozallowfullscreen=true]`}/>
                       </div>
                     </form>
                   </div>
                   <div>
-                    Want more?
+                    <I8span en="Want more?"/>
                     <a href={helpURL}><I8span en="Advanced embedding details, examples, and help"/></a>!
                   </div>
                 </>
