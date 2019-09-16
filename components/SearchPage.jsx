@@ -232,9 +232,9 @@ class SearchSortBar extends IAReactComponent {
         <div className="topinblock">
           <div className="hidden-md hidden-lg">
             <select className="ikind-mobile form-control" onChange={()=>AJS.ikind_mobile_change(this)}>
-              {(!this.props.identifier) ?  // Dont show on collections
+              {this.props.identifier ? null : // Dont show on collections
                 <option data-id="relevance" selected="selected">RELEVANCE</option>
-                : undefined }
+              }
               <option data-id="views">VIEWS</option>
               <option data-id="title">TITLE</option>
               <option data-id="date-archived">DATE ARCHIVED</option>

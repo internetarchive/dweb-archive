@@ -78,24 +78,29 @@ export default class Nav {
     //super();
   }
 
-  static async navSearch(q, opts = {}) {
-    /**
-     * Navigate to a search
-     *
-     * q = string to search for e.g. 'foo'
-     *     or object e.g. {collection: foo, title: bar}
-     *     or string representing search in form URL wants e.g. 'collection:"foo" AND title:"bar"'
-     * opts = {sort, rows, noCache}
-     */
+  /**
+   * Navigate to a search
+   *
+   * @param q string to search for e.g. 'foo'
+   *          or object e.g. {collection: foo, title: bar}
+   *          or string representing search in form URL wants e.g. 'collection:"foo" AND title:"bar"'
+   * @param opts {
+   *    sort STRING || [STRING] e.g. "-downloads"
+   *    rows INT number of rows wanted in result
+   *    noCache BOOL true to skip cache and reload if possible
+   * }
+   */
+  static navSearch(q, opts = {}) {
     debug("Navigating to Search for %s", q);
     const {noCache=false} = opts;
     opts.query = q;
     renderPage({message: "Loading search"});
     const s = new ArchiveBase(opts);          // Wants {query, sort, rows, noCache}
-    await s.fetch_metadata({noCache});
-    await s.fetch_query({noCache}); // Should throw error if fails to fetch //TODO-RELOAD fetch_query ignores noCache currently
-    pushHistory(opts); // Note this takes account of wantHistory //TODO-SEARCH test this works see window.onpopstate
-    renderPage({item: s});
+    s.fetch_query({noCache}, (err, unusedMembers) => {
+      // Ignoring error and rendering anyway, maybe want to display instead, but not sure ?
+      pushHistory(opts); // Note this takes account of wantHistory //TODO-SEARCH test this works see window.onpopstate
+      renderPage({item: s});
+    }); // Should throw error if fails to fetch //TODO-RELOAD fetch_query ignores noCache currently
   }
 
   static onclick_search(q) {
@@ -105,19 +110,25 @@ export default class Nav {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  static async nav_searchOnClick(encodedQ) {
+  static nav_searchOnClick(encodedQ) {
     // Shortcut while onclick_search is passing a string
     const {query, sort} = canonicaljson.parse(encodedQ); // Undo encoding { query, sort }
     return this.navSearch(query, {sort, wanthistory: true}); //TODO-SEARCH test on Date switcher bar
   }
 
+  /**
+   *  Fetch and render an ArchiveItem - includes Collections, but not Search (see navSearch)
+   *
+   * @param identifier
+   * @param opts {
+   *    wanthistory:    if set build a new entry in history
+   *    download:       Want the download directory version of the details page
+   *    page:           Relevant if its the book reader  (note this might not get all the way through)
+   *    reload:         True if should use Cache-Control:no-cache to fetch (relevant in dweb-mirror when reloading)
+   * }
+   * @returns {Promise<ARCHIVEITEM>}
+   */
   static async factory(identifier, ...optss) {
-    /* Fetch and render an ArchiveItem
-      wanthistory:    if set build a new entry in history
-      download:       Want the download directory version of the details page
-      page:           Relevant if its the book reader  (note this might not get all the way through)
-      reload:         True if should use Cache-Control:no-cache to fetch (relevant in dweb-mirror when reloading)
-    */
     const opts = pushHistory(...optss, {identifier});
     const {download = undefined, page = undefined, noCache = undefined} = opts;
     renderPage({message: <I8span en="Loading">&nbsp; {identifier}</I8span>});
