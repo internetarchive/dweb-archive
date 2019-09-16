@@ -24,7 +24,7 @@ class CherModalButton extends IAReactComponent {
         href={this.props.url}
         target="_blank">
         {/* The className is where the icon comes from */}
-        <div className={"sharee "+ this.props.className} data-toggle="tooltip" data-placement="bottom" title data-original-title={this.props.title}></div>
+        <div className={"sharee "+ this.props.className} data-toggle="tooltip" data-placement="bottom" title="" data-original-title={this.props.title}></div>
       </a>
     );
   }
