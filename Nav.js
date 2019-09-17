@@ -94,7 +94,7 @@ export default class Nav {
     debug("Navigating to Search for %s", q);
     const {noCache=false} = opts;
     opts.query = q;
-    renderPage({message: "Loading search"});
+    renderPage({message: <I8span en="Loading search"/>});
     const s = new ArchiveBase(opts);          // Wants {query, sort, rows, noCache}
     s.fetch_query({noCache}, (err, unusedMembers) => {
       // Ignoring error and rendering anyway, maybe want to display instead, but not sure ?
@@ -160,7 +160,7 @@ export default class Nav {
       }
     } catch (err) {
       debug("ERROR: Nav.factory detected error %o", err);
-      renderPage({item, message:err.message}); // Item may or may not be set
+      renderPage({item, message:err.message}); // Item may or may not be set TODO-I8n future could handle error messages here or where generated
     }
   }
 

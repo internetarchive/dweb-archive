@@ -8,6 +8,7 @@ import {marathi} from "../languages/marathi";
 import {IAReactComponent} from "@internetarchive/ia-components/dweb-index";
 import React from "react";
 const debug = require('debug')('dweb-archive:languages');
+import { ObjectFilter } from "@internetarchive/dweb-archivecontroller/Util";
 
 // If you add a language here also add in dweb-archive-styles.css
 const languages = {
@@ -76,25 +77,32 @@ class I8spanB extends IAReactComponent {
     </span>
   }
 }
+function i8nLang(en) {
+
+}
+function I8n(en) {
+  let lang = global.language;
+  let mess = languages[global.language][this.props.en];
+  if (!mess) {
+    lang = "en";
+    mess = languages.en[this.props.en];
+    debug("%s missing %s", global.language, this.props.en);
+    if (!mess) {
+      mess = this.props.en; // Render key, its probably right
+      debug("en missing %s", "en", this.props.en);
+    }
+  }
+  return {mess, lang};
+}
 class I8span extends IAReactComponent {
   /**
-   * <I8span en="Yes" />
-   * TODO-I8N pass on any other props to span
+   * <I8span en="Yes" ... />
    */
   render() {
-      let thisLanguage = global.language;
-      let mess = languages[global.language][this.props.en];
-      if (!mess) {
-        thisLanguage = "en";
-        mess = languages.en[this.props.en];
-        debug("%s missing %s", global.language, this.props.en);
-        if (!mess) {
-          mess = this.props.en; // Render key, its probably right
-          debug("en missing %s", "en", this.props.en);
-        }
-      }
-      return <span lang={thisLanguage}>{mess}{this.props.children}</span>
+      let {mess, lang} = I8n(this.props.en);
+      const spanProps = ObjectFilter(this.props, (k,v)=> (k !== "en"));
+      return <span lang={lang} {...spanProps} >{mess}{this.props.children}</span>
   }
 }
 
-export {languages, I8span, setLanguage }
+export { languages, I8span, setLanguage, I8n }

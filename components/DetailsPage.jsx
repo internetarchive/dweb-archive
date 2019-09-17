@@ -4,7 +4,7 @@ import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageT
 import {IAReactComponent, NavWrap, DetailsAbout, DownloadDirectoryDiv } from "@internetarchive/ia-components/dweb-index.js";
 import RelatedItemsWrapper from './RelatedItemsWrapper';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
-import {I8span} from "./Languages";
+import {I8span, I8n} from "./Languages";
 /**
  * A set of components that make up the Details Page
  */
@@ -112,12 +112,12 @@ class DetailsIAWrap extends IAReactComponent {
             <VideoTheatre identifier={this.props.identifier} mediatype={this.props.mediatype} poster={this.props.poster}
                           title={this.props.title} creator={this.props.creator} source={this.props.playlist[0].sources[0].urls} />
             :
-            <MessageTheatre title="There Is No Preview Available For This Item">
+            <MessageTheatre title={<I8nspan en="There Is No Preview Available For This Item"/>}>
               <p>
-                This item does not appear to have any files that can be experienced on Archive.org
-                <br/><span className="hidden-xs hidden-sm">Please download files in this item to interact with them on your computer.</span><br/>
+                <I8span en="This item does not appear to have any files that can be experienced on Archive.org"/>
+                <br/><I8span className="hidden-xs hidden-sm" en="Please download files in this item to interact with them on your computer"/>.<br/>
                 {/* Should be link to DownloadDirectory */}
-                <a className="show-all" href={`https://archive.org/download/${this.props.identifier}`} target="_blank">Show all files</a>
+                <AnchorDownload className="show-all" identifier={this.props.identifier}><I8span en="Show all files"/></AnchorDownload>
               </p>
             </MessageTheatre>
           }
@@ -186,7 +186,7 @@ class DetailsWork extends IAReactComponent {
   }
 
   render() {
-    const semiTitle = DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive";
+    const semiTitle = I8n(DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive")["mess"];
     document.title = `${this.props.identifier} : ${semiTitle}`;
     return (
     <>

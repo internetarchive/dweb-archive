@@ -1,7 +1,7 @@
 import React from 'react';
 import {IAReactComponent, ImageDweb, Tabby, NavWrap} from "@internetarchive/ia-components/dweb-index.js";
 import {SearchRowColumnsItems} from "./components/SearchPage";
-
+import {I8span} from "./components/Languages";
 
 class AccountTabbyPosts extends IAReactComponent {
     /**
@@ -120,8 +120,8 @@ class AccountWelcome extends IAReactComponent {
                                     <a className="stealth"
                                        href={`/bookmarks.php?add_bookmark=1&amp;title=people&amp;mediatype=account&amp;identifier=${identifier}`}
                                        data-target="#confirm-modal"><span className="iconochive-favorite"
-                                                                          aria-hidden="true"></span><span
-                                            className="sr-only">favorite</span><span className="hidden-xs-span"> Favorite</span></a><br/>
+                                                                          aria-hidden="true"></span><I8span
+                                            className="sr-only" en="favorite"/><span className="hidden-xs-span"> Favorite</span></a><br/>
                                 </div>
                                 <div className="clearfix visible-xs-block hidden-sm hidden-md hidden-lg"></div>
                                 <div className="col-xs-12 col-sm-8 col-sm-pull-2">

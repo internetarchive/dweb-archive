@@ -70,4 +70,35 @@ Search
 "Search TV captions"
 "Search archived web sites"
 "GO"
+favorite
+web
+texts
+movies
+audio
+tv
+software
+image
+etree
+collection
+items
+logo
+search
+Favorite
+share
+edit
+time
+comment
+up
+down
+Show as list
+"Show thumbnails"
+SHOW
+DETAILS
+"Search the Archive. Filters and Advanced Search available below."
+"Search Options"
+"Item image slideshow"
+"Loading search"
+"This item does not appear to have any files that can be experienced on Archive.org"
+"Please download files in this item to interact with them on your computer"
+"Show all files"
 ]

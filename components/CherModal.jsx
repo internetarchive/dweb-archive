@@ -45,7 +45,7 @@ class CherModalButton extends IAReactComponent {
  */
 class CherModal extends IAReactComponent {
   constructor(props) {
-    super(props); // identifier, creator, mediatype, title
+    super(props); // identifier, creator, mediatype, title (not translatable)
   }
 
 

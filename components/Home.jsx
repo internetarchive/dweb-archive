@@ -1,6 +1,6 @@
 import React from "react";
 import { AnchorDetails, IAReactComponent, AnchorSearch } from '@internetarchive/ia-components/dweb-index.js';
-import {I8span} from "./Languages";
+import {I8span, I8n} from "./Languages";
 
 /**
  * <HomeWelcomeLinkIcon
@@ -14,10 +14,10 @@ class HomeWelcomeLinkIcon extends IAReactComponent {
     return (
       <div className="mt-big">
         <div>
-          <span className={this.props.iconochive} aria-hidden="true"></span><span className="sr-only">{this.props.sronly}</span>
+          <span className={this.props.iconochive} aria-hidden="true"></span><I8span className="sr-only" en={this.props.sronly}/>
         </div>
         <div className="micro-label">
-          {this.props.size} <span className="sr-only">items</span>
+          {this.props.size} <I8span className="sr-only" en="items"/>
         </div>
       </div>
     )
@@ -41,14 +41,15 @@ class HomeWelcomeLink extends IAReactComponent {
 
   render() {
     //TODO-I8N figure out how to pass I8N string to <AnchorDetails which passes to <A title=>
+    const {title, lang} = I8n(this.props.title);
     return (
       this.props.identifier
-      ? <AnchorDetails identifier={this.props.identifier} title={this.props.title}>
+      ? <AnchorDetails identifier={this.props.identifier} title={title} lang={lang}>
         <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size}/></AnchorDetails>
       : this.props.query
-      ? <AnchorSearch query={this.props.query} title={this.props.title}>
+      ? <AnchorSearch query={this.props.query} title={title} lang={lang}>
         <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size}/></AnchorSearch>
-      : <a href={this.props.href} title={this.props.title}>
+      : <a href={this.props.href} title={title} lang={lang}>
         <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size}/></a>
 
     )
@@ -70,7 +71,7 @@ class HomeBanner extends IAReactComponent {
        }
        <div className="row preamble" style={{marginBottom: "60px"}}>
          <div className="col-sm-3 hero-left">
-          <span className="iconochive-logo topinblock" aria-hidden="true"></span><span className="sr-only">logo</span >
+          <span className="iconochive-logo topinblock" aria-hidden="true"></span><span className="sr-only" en="logo"/>
          </div>
          <div className="col-sm-6 hero-center">
           <div className="preamble-whoweare">
@@ -110,7 +111,7 @@ class HomeBanner extends IAReactComponent {
                       placeholder="Search" type="text" value="" style={{fontSize:"125%" paddingLeft:"30px"}}
                       onClick="$(this).css('padding-left','').parent().find('.iconochive-search').hide()"
                       aria-controls="search_options"
-                      aria-label="Search the Archive. Filters and Advanced Search available below."
+                      aria-label={I8n("Search the Archive. Filters and Advanced Search available below.")["mess"]}"
                />
              </div>
 
@@ -118,7 +119,7 @@ class HomeBanner extends IAReactComponent {
                id="search_options"
                className="search-options js-search-options"
                aria-expanded="false"
-               aria-label="Search Options"
+               aria-label={I8n("Search Options")["mess']}
                data-keep-open-when-changed="true"
              >
                <fieldset>
