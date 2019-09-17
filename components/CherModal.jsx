@@ -17,7 +17,7 @@ import {I8span} from './Languages';
 class CherModalButton extends IAReactComponent {
 
   //TODO tooltips aren't loading, not sure why there is a tooltip function in archive.html but calling that on this
-  //TODO doesnt seem to work. Investigation required and then I8N
+  //TODO doesnt seem to work. Investigation required and then TODO-I8N
   render() {
     return (
       <a
@@ -45,7 +45,7 @@ class CherModalButton extends IAReactComponent {
  */
 class CherModal extends IAReactComponent {
   constructor(props) {
-    super(props); // identifier, creator, mediatype, title
+    super(props); // identifier, creator, mediatype, title (not translatable)
   }
 
 

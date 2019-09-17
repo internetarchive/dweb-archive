@@ -4,7 +4,8 @@ import { BookReaderDwebWrapper } from './BookReaderWrapper';
 import { AnchorDownload, Carousel, IAReactComponent, ImageDweb }  from '@internetarchive/ia-components/dweb-index.js';
 import TheatreControls from "./TheatreControls";
 import { AudioDweb, VideoDweb, WebTorrentStats } from "./AudioVideo";
-import {config} from "../Util";
+import { config } from "../Util";
+import { I8span, I8n, I8nStr } from './Languages';
 
 /**
  * A collection of theatres for embedding in Details page
@@ -255,7 +256,7 @@ class ImageTheatre extends IAReactComponent {
                 className="carousel slide"
                 data-ride="carousel"
                 data-interval="false"
-                aria-label="Item image slideshow"
+                aria-label={I8nStr("Item image slideshow")}
                 style={{ maxHeight: '600px' }}
               >
                 <ol className="carousel-indicators" style={{ display: 'none' }}>
@@ -265,7 +266,7 @@ class ImageTheatre extends IAReactComponent {
                     className=" active"
                     role="button"
                     tabIndex="0"
-                    aria-label="Go to image 1"
+                    aria-label={I8nStr("Go to image 1")}
                   />
                 </ol>
 
@@ -274,9 +275,9 @@ class ImageTheatre extends IAReactComponent {
                     <AnchorDownload
                       className="carousel-image-wrapper"
                       source={this.props.source}
-                      title="Open full sized image"
                       target="_blank"
                       disconnected={this.props.disconnected}
+                      title={I8nStr("Open full sized image")}
                     >
                       {/* There is a bizarre firefox only bug https://bugzilla.mozilla.org/show_bug.cgi?id=1576523
                       that means if we set carousel-image which ONLY sets maxWidth and maxHeight then this fails
@@ -312,7 +313,7 @@ class ImageTheatre extends IAReactComponent {
 /**
  * Render a message - typically an error, or while something is happening
  *
- * <MessageTheatre title=STRING >
+ * <MessageTheatre title=I8NSTRING || Node >
  *   ...
  * </MessageTheatre>
  */

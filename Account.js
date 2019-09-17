@@ -1,7 +1,7 @@
 import React from 'react';
 import {IAReactComponent, ImageDweb, Tabby, NavWrap} from "@internetarchive/ia-components/dweb-index.js";
 import {SearchRowColumnsItems} from "./components/SearchPage";
-
+import {I8span} from "./components/Languages";
 
 class AccountTabbyPosts extends IAReactComponent {
     /**
@@ -20,15 +20,15 @@ class AccountTabbyPosts extends IAReactComponent {
                           <table className="forumTable  table table-striped table-condensed table-hover">
                             <tbody>
                               <tr className="backColor1 forumRowHead">
-                                  <td>Subject</td>
-                                  <td>Poster</td>
-                                  <td>Forum</td>
-                                  <td>Replies</td>
-                                  <td>Date</td>
+                                  <td><I8span en="Subject"/></td>
+                                  <td><I8span en="Poster"/></td>
+                                  <td><I8span en="Forum"/></td>
+                                  <td><I8span en="Replies"/></td>
+                                  <td><I8span en="Date"/></td>
                               </tr>
                               {/*-- TODO-ACCOUNT this is a loop  need query for forum posts https://github.com/internetarchive/dweb-archive/issues/86--*/}
                               <tr>
-                                  <td>Still being implemented</td>
+                                  <td><Ispan en="Still being implemented"/></td>
                               </tr>
                               {/*
                                 <tr valign="top" className="eve forumRow">
@@ -120,8 +120,8 @@ class AccountWelcome extends IAReactComponent {
                                     <a className="stealth"
                                        href={`/bookmarks.php?add_bookmark=1&amp;title=people&amp;mediatype=account&amp;identifier=${identifier}`}
                                        data-target="#confirm-modal"><span className="iconochive-favorite"
-                                                                          aria-hidden="true"></span><span
-                                            className="sr-only">favorite</span><span className="hidden-xs-span"> Favorite</span></a><br/>
+                                                                          aria-hidden="true"></span><I8span
+                                            className="sr-only" en="favorite"/> <I8span className="hidden-xs-span" en="Favorite"/></a><br/>
                                 </div>
                                 <div className="clearfix visible-xs-block hidden-sm hidden-md hidden-lg"></div>
                                 <div className="col-xs-12 col-sm-8 col-sm-pull-2">

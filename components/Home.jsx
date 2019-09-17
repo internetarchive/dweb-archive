@@ -1,6 +1,6 @@
 import React from "react";
 import { AnchorDetails, IAReactComponent, AnchorSearch } from '@internetarchive/ia-components/dweb-index.js';
-import {I8span} from "./Languages";
+import {I8span, I8n, I8nStr} from "./Languages";
 
 /**
  * <HomeWelcomeLinkIcon
@@ -14,10 +14,10 @@ class HomeWelcomeLinkIcon extends IAReactComponent {
     return (
       <div className="mt-big">
         <div>
-          <span className={this.props.iconochive} aria-hidden="true"></span><span className="sr-only">{this.props.sronly}</span>
+          <span className={this.props.iconochive} aria-hidden="true"></span><I8span className="sr-only" en={this.props.sronly}/>
         </div>
         <div className="micro-label">
-          {this.props.size} <span className="sr-only">items</span>
+          {this.props.size} <I8span className="sr-only" en="items"/>
         </div>
       </div>
     )
@@ -25,12 +25,14 @@ class HomeWelcomeLinkIcon extends IAReactComponent {
 }
 
 /**
+ * A link to something from the home page
+ *
  * <HomeWelcomeLink
  *    ONE OF
  *      identifier=IDENTIFIER
  *      query=STRING      e.g. "collection: foo"
  *      href=URL
- *    title=STRING|NODE      for anchor e.g. Web or <I8span en="Web"/>
+ *    title=EN-STRING|NODE      for anchor e.g. Web or <I8span en="Web"/>
  *    iconochive=STRING e.g. iconochive-web
  *    size=STRING       e.g. "300B" just an estimate as there is no API
  *    sronly=STRING
@@ -40,15 +42,15 @@ class HomeWelcomeLink extends IAReactComponent {
   // Props: href, title, sronly, size
 
   render() {
-    //TODO-I8N figure out how to pass I8N string to <AnchorDetails which passes to <A title=>
+    const {s, l} = I8n(this.props.title || this.props.identifier);
     return (
       this.props.identifier
-      ? <AnchorDetails identifier={this.props.identifier} title={this.props.title}>
+      ? <AnchorDetails identifier={this.props.identifier} title={s} lang={l}>
         <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size}/></AnchorDetails>
       : this.props.query
-      ? <AnchorSearch query={this.props.query} title={this.props.title}>
+      ? <AnchorSearch query={this.props.query} title={s} lang={l}>
         <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size}/></AnchorSearch>
-      : <a href={this.props.href} title={this.props.title}>
+      : <a href={this.props.href} title={s} lang={l}>
         <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size}/></a>
 
     )
@@ -70,13 +72,13 @@ class HomeBanner extends IAReactComponent {
        }
        <div className="row preamble" style={{marginBottom: "60px"}}>
          <div className="col-sm-3 hero-left">
-          <span className="iconochive-logo topinblock" aria-hidden="true"></span><span className="sr-only">logo</span >
+          <span className="iconochive-logo topinblock" aria-hidden="true"></span><I8span className="sr-only" en="logo"/>
          </div>
          <div className="col-sm-6 hero-center">
           <div className="preamble-whoweare">
-            <b><I8span en="Internet Archive"/></b>
+            <b><I8span en="Internet Archive"/>&nbsp;</b>
 
-            is a non-profit library of millions of free books, movies, software, music, websites, and more.
+            <I8span en="is a non-profit library of millions of free books, movies, software, music, websites, and more."/>
             <center className="mt-big" style={{marginTop: "10px"}}>
               <HomeWelcomeLink href="/web" iconochive="iconochive-web" title="Web" sronly="web" size="373B"/>
               <HomeWelcomeLink identifier="texts" iconochive="iconochive-texts" title="Texts" sronly="texts" size="21M"/>
@@ -104,13 +106,13 @@ class HomeBanner extends IAReactComponent {
             <span aria-hidden="true">
                             <span className="iconochive-search"
                                   style={{position:"absolute", left: "4px", top: "7px", color: "#999", fontSize: "125%"}}
-                                  aria-hidden="true"></span><span className="sr-only">search</span>            </span>
+                                  aria-hidden="true"></span><I8span className="sr-only" en="search"/">            </span>
 
                <input className="form-control input-sm roundbox20 js-search-bar" size="25" name="search"
                       placeholder="Search" type="text" value="" style={{fontSize:"125%" paddingLeft:"30px"}}
                       onClick="$(this).css('padding-left','').parent().find('.iconochive-search').hide()"
                       aria-controls="search_options"
-                      aria-label="Search the Archive. Filters and Advanced Search available below."
+                      aria-label={I8nStr("Search the Archive. Filters and Advanced Search available below.")}"
                />
              </div>
 
@@ -118,7 +120,7 @@ class HomeBanner extends IAReactComponent {
                id="search_options"
                className="search-options js-search-options"
                aria-expanded="false"
-               aria-label="Search Options"
+               aria-label={I8nStr("Search Options")}
                data-keep-open-when-changed="true"
              >
                <fieldset>

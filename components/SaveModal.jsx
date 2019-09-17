@@ -1,6 +1,7 @@
 import React from 'react';
 import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
 import {gatewayServer} from '@internetarchive/dweb-archivecontroller/Util';
+import {I8span, I8nStr} from './Languages';
 const debug = require('debug')('SaveModal');
 
 /**
@@ -27,15 +28,16 @@ class SaveDirectory extends IAReactComponent {
     })
     $(selector).modal('hide');
   }
-  render() { return (
-    <a href={this.state.url}
-       target="_blank" rel="noopener noreferrer"
-       onClick={this.onClick}>
-      <span>{this.props.name}</span>
-      {/* unclear if next is used, copied from cherModal buttons*/}
-      <div className="savee" data-toggle="tooltip" data-placement="bottom" title={`Save to ${this.props.name}`}
-           data-original-title={this.props.name}></div>
-    </a>
+  render() {
+    return (
+       <a href={this.state.url}
+         target="_blank" rel="noopener noreferrer"
+         onClick={this.onClick}>
+        <span>{this.props.name}</span>
+        {/* unclear if next is used, copied from cherModal buttons*/}
+        <div className="savee" data-toggle="tooltip" data-placement="bottom" title={`${I8nStr("Save to")} ${this.props.name}`}
+             data-original-title={this.props.name}></div>
+      </a>
   ); }
 
 }
@@ -55,7 +57,7 @@ class SaveModal extends IAReactComponent {
               <button type="button" className="close" data-dismiss="modal" aria-hidden="true"><span
                 className="iconochive-remove-circle" aria-hidden="true"></span><span className="sr-only">remove-circle</span>
               </button>
-              <h3 className="modal-title">Save this {(this.props.mediatype === "collection") ? "Collection" : "Item"}</h3>
+              <h3 className="modal-title"><I8span en="Save this"/> <I8span en={(this.props.mediatype === "Collection") ? "Collection" : "Item"}/></h3>
             </div>
             <div id="save-body">
               <div style={{textAlign: "center", margin: "50px auto"}}>

@@ -1,11 +1,12 @@
 import React from 'react';
 import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
+import { I8span } from '../Languages';
 
 class CommonWelcomeComponent extends IAReactComponent {
   /**
    * <CommonWelcomeComponent
-   *    title=STRING
-   *    byline=STRING
+   *    title=I8STRING|NODE
+   *    byline=I8STRING|NODE
    *    descriptions=SANITIZEDHTML   Description which may contain HTML but should have been preprocessed to remove bad HTML
    * />
    *

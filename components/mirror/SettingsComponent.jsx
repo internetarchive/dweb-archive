@@ -6,7 +6,7 @@ import waterfall from 'async/waterfall';
 import {gatewayServer}  from '@internetarchive/dweb-archivecontroller/Util';
 import {CommonWelcomeComponent} from "./CommonComponent";
 import {IAReactComponent, NavWrap} from "@internetarchive/ia-components/dweb-index.js";
-import {languages, I8span, setLanguage} from "../Languages";
+import {languages, I8span, I8nStr, setLanguage, currentISO, languageConfig} from "../Languages";
 
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 
@@ -221,12 +221,13 @@ class SettingsLanguages extends IAReactComponent {
           <div style={{position: "relative"}}>
             <div>
               <h4><I8span en="Languages"/></h4>
-              <p><I8span en="...language experiment..."/></p>
-              <div className={Object.keys(languages).join(' ')}>
+              <div>
                 <span>
-                  {Object.entries(languages).map(kv =>
-                    <span key={kv[0]} onClick={()=>setLanguage(kv[0])}>{kv[1]._LanguageInEnglish} &nbsp;
-                      <span lang={kv[0]}>{'\u2713'}</span>&nbsp;</span>
+                  {Object.entries(languageConfig).map(kv =>
+                    <span key={kv[0]} onClick={()=>setLanguage(kv[0])}>
+                      {kv[1].inEnglish}&nbsp;{kv[1].inLocal}&nbsp;
+                      { currentISO() === kv[0] ? '\u2713' : '\u2610' } &nbsp;
+                    </span>
                   )
                   }
                 </span>
@@ -271,8 +272,8 @@ class SettingsItem extends IAReactComponent {
         </div>
         {/*Replaces banner() in Search) */}
         <CommonWelcomeComponent
-          title=<I8span en="Settings"/>
-          byline=<span><I8span en="on"/> {gatewayServer()}</span>
+          title={I8nStr("Settings")}
+          byline={I8nStr("on") + " " + gatewayServer()}
           description=""
         />
         <div className="container container-ia nopad">
