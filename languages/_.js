@@ -43,5 +43,31 @@ import React from "react";
   "Terms of Service",
   "last updated",
   "Internet Archive",
-  "Top Collections at the Archive"
+  "Top Collections at the Archive",
+  "Your search did not match any items in the Archive. Suggestions",
+  "Try different keywords",
+  "Try a more general search",
+  "Favorite",
+  "Share",
+  ABOUT
+COLLECTION
+FORUM
+DESCRIPTION
+RIGHTS
+ACTIVITY
+comments
+"Forum not yet supported on DWeb - heading to the legacy web"
+RELEVANCE
+VIEWS
+TITLE
+"DATE ARCHIVED""
+"DATE PUBLISHED"
+"DATE REVIEWED"
+"CREATOR"
+Search
+"Search metadata"
+"Search full text of books"
+"Search TV captions"
+"Search archived web sites"
+"GO"
 ]
