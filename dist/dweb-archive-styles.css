@@ -173,7 +173,7 @@ Then turn it on if body tag specifies it - note this is less specific than the a
 Specify a default language - turn that off if we have the desired language
 Now turn it on if we dont have the desired language - note this is less specific than the above
 */
-/* NOT USED WITH CURRENT VERSION OF Languages.js
+/* NOT USED WITH CURRENT VERSION OF Languages.jsx
 body.fr .fr :lang(fr) {  display: inherit}
 .fr :lang(fr) { display: none}
 body.fr .fr :lang(en) { display: none }

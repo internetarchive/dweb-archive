@@ -4,7 +4,7 @@ import { ObjectFilter } from '@internetarchive/dweb-archivecontroller/Util.js';
 import { IAReactComponent } from '@internetarchive/ia-components/dweb-index.js';
 import {config} from "../Util";
 import {p_loadStream} from "../ReactSupport";
-import {I8span} from "./Languages";
+import {I8nSpan} from "./Languages";
 
 const debug = require('debug')('dweb-archive:Video Components');
 
@@ -152,10 +152,10 @@ class WebTorrentStats extends IAReactComponent {
 render() {
     return (
       <span>
-        <b><I8span en="Peers">:</I8span></b> {this.numPeers}{' '}
-        <b><I8span en="Progress">:</I8span></b> {Math.min(100 * this.progress || 0, 100).toFixed(1)}%{' '}
-        <b><I8span en="Download speed">:</I8span></b> {prettierBytes(this.downloadSpeed || 0)}/s{' '}
-        <b><I8span en="Upload speed">:</I8span></b> {prettierBytes(this.uploadSpeed || 0)}/s
+        <b><I8nSpan en="Peers">:</I8nSpan></b> {this.numPeers}{' '}
+        <b><I8nSpan en="Progress">:</I8nSpan></b> {Math.min(100 * this.progress || 0, 100).toFixed(1)}%{' '}
+        <b><I8nSpan en="Download speed">:</I8nSpan></b> {prettierBytes(this.downloadSpeed || 0)}/s{' '}
+        <b><I8nSpan en="Upload speed">:</I8nSpan></b> {prettierBytes(this.uploadSpeed || 0)}/s
       </span>
       )
   }

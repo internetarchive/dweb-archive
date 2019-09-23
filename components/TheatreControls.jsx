@@ -21,7 +21,7 @@ class TheatreControlButton extends IAReactComponent {
           <div
             title={I8nStr(this.props.title)}
             data-toggle="tooltip" data-container="body" data-placement="left"
-            className="this.props.className" style={this.props.style}></div>
+            className={this.props.className} style={this.props.style}></div>
       </a>
 
     )}

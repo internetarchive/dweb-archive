@@ -46,8 +46,9 @@ function writeOne(name, cb) {
   })
 }
 //SEE-OTHER-ADDLANGUAGE - note cant import this from languages as may include ones here before built
-fulllanguages = ["burmese", "english", "french", "german", "marathi", "spanish"];
-thisbuild = ["english"]; // Dont rebuild as languages/_.txt may have changed
+fulllanguages = ["myanmar", "english", "french", "german", "hindi", "indonesian", "japanese", "marathi", "spanish", "portugese"];
+thisbuild = fulllanguages;
+//thisbuild = ["english"]; // Dont rebuild as languages/_.txt may have changed
 waterfall([
     cb => readSource(cb),
     cb2 => each(thisbuild,

@@ -4,7 +4,7 @@ import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageT
 import {IAReactComponent, NavWrap, DetailsAbout, DownloadDirectoryDiv } from "@internetarchive/ia-components/dweb-index.js";
 import RelatedItemsWrapper from './RelatedItemsWrapper';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
-import {I8span, I8nStr} from "./Languages";
+import {I8nSpan, I8nStr} from "./Languages";
 /**
  * A set of components that make up the Details Page
  */
@@ -114,10 +114,10 @@ class DetailsIAWrap extends IAReactComponent {
             :
             <MessageTheatre title={<I8nspan en="There Is No Preview Available For This Item"/>}>
               <p>
-                <I8span en="This item does not appear to have any files that can be experienced on Archive.org"/>
-                <br/><I8span className="hidden-xs hidden-sm" en="Please download files in this item to interact with them on your computer"/>.<br/>
+                <I8nSpan en="This item does not appear to have any files that can be experienced on Archive.org"/>
+                <br/><I8nSpan className="hidden-xs hidden-sm" en="Please download files in this item to interact with them on your computer"/>.<br/>
                 {/* Should be link to DownloadDirectory */}
-                <AnchorDownload className="show-all" identifier={this.props.identifier}><I8span en="Show all files"/></AnchorDownload>
+                <AnchorDownload className="show-all" identifier={this.props.identifier}><I8nSpan en="Show all files"/></AnchorDownload>
               </p>
             </MessageTheatre>
           }
@@ -228,7 +228,7 @@ class DetailsWork extends IAReactComponent {
         {(!this.props.identifier) ? null :
             <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
         {this.props.statuses.disconnected ? null :
-          <div className="terms-of-service"><a className="stealth" href="https://archive.org/about/terms.php"><I8span en="Terms of Service"/> (<I8span en="last updated"/>
+          <div className="terms-of-service"><a className="stealth" href="https://archive.org/about/terms.php"><I8nSpan en="Terms of Service"/> (<I8nSpan en="last updated"/>
             12/31/2014)</a></div> }
       </main>
       {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}

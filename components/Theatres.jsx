@@ -5,7 +5,7 @@ import { AnchorDownload, Carousel, IAReactComponent, ImageDweb }  from '@interne
 import TheatreControls from "./TheatreControls";
 import { AudioDweb, VideoDweb, WebTorrentStats } from "./AudioVideo";
 import { config } from "../Util";
-import { I8span, I8n, I8nStr } from './Languages';
+import { I8nSpan, I8n, I8nStr } from './Languages';
 
 /**
  * A collection of theatres for embedding in Details page
@@ -266,7 +266,7 @@ class ImageTheatre extends IAReactComponent {
                     className=" active"
                     role="button"
                     tabIndex="0"
-                    aria-label={I8nStr("Go to image 1")}
+                    aria-label={I8nStr("Go to image")+" 1"}
                   />
                 </ol>
 

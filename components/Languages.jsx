@@ -4,8 +4,12 @@ import {myanmar} from "../languages/myanmar";
 import {english} from "../languages/english";
 import {french} from "../languages/french";
 import {german} from "../languages/german";
+import {hindi} from "../languages/hindi";
+import {japanese} from "../languages/japanese";
+import {indonesian} from "../languages/indonesian";
 import {spanish} from "../languages/spanish";
 import {marathi} from "../languages/marathi";
+import {portugese} from "../languages/portugese";
 import {IAReactComponent} from "@internetarchive/ia-components/dweb-index";
 import React from "react";
 const debug = require('debug')('dweb-archive:languages');
@@ -18,8 +22,12 @@ const languages = {
   'fr': french,
   'de': german,
   'es': spanish,
+  'hi': hindi,
+  'id': indonesian,
+  'ja': japanese,
   'mr': marathi,
   'my': myanmar,
+  'pt': portugese,
 }
 //SEE-OTHER-ADDLANGUAGE
 const languageConfig = {
@@ -27,22 +35,26 @@ const languageConfig = {
   'fr': { inEnglish: 'French',  inLocal: 'Française' },
   'de': { inEnglish: 'German',  inLocal: 'Deutsche ' },
   'es': { inEnglish: 'Spanish', inLocal: 'Española' },
+  'hi': { inEnglish: 'Hindi', inLocal: 'हिंदी'},
+  'id': { inEnglish: 'Indonesian', inLocal: 'Bahasa'},
+  'ja': { inEnglish: 'Japanese', inLocal: '日本語'},
   'mr': { inEnglish: 'Marathi', inLocal: 'मराठी' },
   'my': { inEnglish: 'Myanmar', inLocal: 'မြန်မာ' },
+  'pt': { inEnglish: 'Portugese', inLocal: 'Portuguesa'},
 }
 if (!currentISO()) currentISO("en");
 
 function setLanguage(lang) {
   const olditem = DwebArchive.page.state.item; // Should be an item, not a message
-  DwebArchive.page.setState({message: <I8span en="Changing language from"> {languages[currentISO()]._LanguageInEnglish}</I8span>});
+  DwebArchive.page.setState({message: <I8nSpan en="Changing language from"> {languages[currentISO()]._LanguageInEnglish}</I8nSpan>});
   waterfall([
     cb => setTimeout(cb, 300),
     cb => {
-      DwebArchive.page.setState({message: <I8span en="Changing language to"> {languages[lang]._LanguageInEnglish}</I8span>});
+      DwebArchive.page.setState({message: <I8nSpan en="Changing language to"> {languages[lang]._LanguageInEnglish}</I8nSpan>});
       setTimeout(cb, 300); },
     cb => {
       currentISO(lang);
-      DwebArchive.page.setState({message: <I8span en="Changing language to">{languages[lang]._LanguageInLocal}</I8span>});
+      DwebArchive.page.setState({message: <I8nSpan en="Changing language to">{languages[lang]._LanguageInLocal}</I8nSpan>});
       setTimeout(cb, 300); }
   ],(err)=>{
     if (err) {
@@ -70,7 +82,7 @@ function I8n(messageEnglish) {
     debug("%s missing %s", currentISO(), messageEnglish);
     if (!s) {
       s = messageEnglish; // Render key, its probably right
-      debug("en missing %s", "en", messageEnglish);
+      debug("en missing %s", messageEnglish);
     }
   }
   return {s, l};
@@ -78,15 +90,43 @@ function I8n(messageEnglish) {
 function I8nStr(messageEnglish) {
   return I8n(messageEnglish)["s"];
 }
-class I8span extends IAReactComponent {
+class I8nSpan extends IAReactComponent {
   /**
-   * <I8span en="Yes" ... />
+   * <I8nSpan en="Yes" ... />
    */
+  constructor(props) {
+    super(props);
+  }
   render() {
       let {s, l} = I8n(this.props.en);
       const spanProps = ObjectFilter(this.props, (k,v)=> (k !== "en"));
       return <span lang={l} {...spanProps} >{s}{this.props.children}</span>
   }
 }
+class I8nIcon extends IAReactComponent {
+  /**
+   * <I8nIcon
+   *    className="iconochive-xxxx"
+   *    style={}
+   *    iconref=function to use as ref for icon - this is used in NavWebDiv to set a hideable element in the search
+   *    en=ENSTRING
+   *    xs=ENSTRING
+   * >
+   *    optional children of span (already translated) and sr-only
+   * </I8nIcon>
+   */
+  render() {
+    return <>
+      <span className={this.props.className} style={this.props.style} ref={this.props.iconref} aria-hidden="true"/>
+      <I8nSpan className="sr-only" en={this.props.en}>{this.props.children}</I8nSpan>
+      {!this.props.xs ? null :
+        <>
+        &nbsp;
+        <I8nSpan className="hidden-xs-span" en={this.props.xs}/>
+        </>
+      }
+    </>
+  }
+}
 
-export { languages, languageConfig, currentISO, I8span, setLanguage, I8n, I8nStr }
+export { languages, languageConfig, currentISO, I8nSpan, setLanguage, I8n, I8nStr, I8nIcon }

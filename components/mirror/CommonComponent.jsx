@@ -1,6 +1,6 @@
 import React from 'react';
 import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
-import { I8span } from '../Languages';
+import { I8nSpan } from '../Languages';
 
 class CommonWelcomeComponent extends IAReactComponent {
   /**
