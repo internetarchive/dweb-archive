@@ -21,7 +21,7 @@ class Page extends IAReactComponent {
    *
    * <Page
    *    item=ARCHIVEITEM
-   *    message=STRING      // If present display a message instead of an item
+   *    message=I8NSTRING
    * />
    */
 

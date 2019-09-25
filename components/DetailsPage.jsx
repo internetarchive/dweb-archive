@@ -19,6 +19,7 @@ class DetailsIAWrap extends IAReactComponent {
    *  files=
    *  page=
    *  download=         // if true display the download directory
+   *  disconnected=BOOL // If cannot see upstream, pass the theaters who decide what to hide
    * />
    */
   render() {
@@ -33,12 +34,11 @@ class DetailsIAWrap extends IAReactComponent {
           <link itemProp="url" href={`https://archive.org/details/${this.props.identifier}`}/> {/*Probably correct as archive.org/details since itemProp*/}
           {/* - TODO unclear why image & text|audio mediatypes use different itemProp below check current archive.org pages*/}
           <link itemProp={["image","movies"].includes(this.props.mediatype) ? "thumbnailUrl" : "image"}
-                href="https://archive.org/services/img/{this.props.identifier}"/>{/*OK for direct link since itemProp*/}
-
-          { (this.props.playlist && ["audio","etree"].includes(this.props.mediatype)) // isDark wont have a playlist
+                href="https://archive.org/services/img/${this.props.identifier}"/>{/*OK for direct link since itemProp*/}
+          { (this.props.playlist && ["audio","etree"].includes(this.props.mediatype)) // is_dark wont have a playlist
             ?
             this.props.playlist.map((track,i) => ( // OK to be absolute or dweb link
-              <div key={i} itemProp="hasPart" itemscope itemtype="http://schema.org/AudioObject">
+              <div key={i} itemProp="hasPart" itemScope itemType="http://schema.org/AudioObject">
                 <meta itemProp="name" content={track.title}/>
                 <meta itemProp="duration" content={`PT0M${parseInt(track.duration)}S`}/>
                 {   // Loop over the sources which can be multiple files for the same track.  Note this is limited to playable sources, could add unplayable to playlist if want as separate field e.g. unplayablesources
@@ -49,6 +49,7 @@ class DetailsIAWrap extends IAReactComponent {
               </div>
             ))
             :
+            //TODO check on rules for this, we are showing files on carousel e.g. thetaleofpeterra14838gut when archive.org isnt
             this.props.files.filter((af)=> af.metadata.source !== "metadata")
               .map((af) => ( //OK for direct link since itemProp
                 <link itemProp="associatedMedia" href={`https://archive.org/download/${this.props.identifier}/${af.metadata.name}`} key={`${this.props.identifier}/${af.metadata.name}`}/>
@@ -61,10 +62,8 @@ class DetailsIAWrap extends IAReactComponent {
               <meta itemProp="duration" content={`PT0M${parseInt(this.props.playlist[0].duration)}S`}/>
             </>
           }
-
-
           <h1 className="sr-only">{this.props.title}</h1>
-          <h2 className="sr-only">{this.props.mediatype} preview</h2>
+          <h2 className="sr-only">{I8nStr(this.props.mediatype)} {I8nStr("preview")}</h2>
           { (["texts"].includes(this.props.mediatype) && (this.props.subtype === "carousel") )
             ?
             <CarouselTheatre
@@ -129,7 +128,7 @@ class DetailsIAWrap extends IAReactComponent {
 class DetailsError extends IAReactComponent {
   /**
    * <DetailsError
-   *    message=STRING
+   *    message=I8NSTRING
    * />
    */
   render() {
@@ -144,7 +143,7 @@ class DetailsError extends IAReactComponent {
 
 class DetailsWork extends IAReactComponent {
   /**
-   *  This is the buld of a Details page
+   *  This is the build of a Details page
    *  <DetailsWork
    *    identifier=IDENTIFIER
    *    item=ARCHIVEFILE optional if not on Dweb
@@ -160,11 +159,12 @@ class DetailsWork extends IAReactComponent {
    *    page=INT (mediatype:texts only)
    *    playlist={}  Result of playlist call (/embed/IDENTIFIER?output=json)
    *    noCache=BOOL if shouldnt use disk cache when reading (only used for Related Items TODO check if used from here down)
-   *    disconnected=BOOL true if browser cant see archive.org (or dweb.archive.org)
    *    download=BOOL true if want the Download Directory for thsi item
    *    message=STRING Dont display content, display a message
-   *    statuses={...} disconnected, directories etc returned from call to /info
-   *    
+   *    statuses={  as returned from call to /info
+   *      disconnected=BOOL true if browser cant see archive.org (or dweb.archive.org)
+   *      ... directories etc
+   *      }
    */
 
    constructor(props) {
@@ -242,7 +242,7 @@ class DetailsMessage extends IAReactComponent {
    * <DetailsMessage
    *    identifier=IDENTIFIER optional
    *    item=ARCHIVEFILE optional
-   *    message=STRING Dont display content, display a message
+   *    message=I8NSTRING Dont display content, display a message
    *    statuses={...} disconnected, directories etc returned from call to /info
    *    noCache=BOOL
    * />
@@ -254,15 +254,14 @@ class DetailsMessage extends IAReactComponent {
     //TODO make the props.item check more granular - move down into NavWrap and display/hide parts of that.
     <>
       {(!this.props.item) ? null :
-        <>
           <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
-          <div className="container container-ia">
-            <a name="maincontent" id="maincontent"></a>
-          </div>
-        </>
       }
-      <DetailsError message={this.props.message}/>
-      {(!(this.props.item || this.props.identifier)) ? null :
+      <main id="maincontent">
+        <div className="container container-ia">
+          <DetailsError message={this.props.message}/>
+        </div>
+      </main>
+      {(!(this.props.item || this.props.identifier) || (this.props.item && this.props.item.is_dark)) ? null :
         <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
       {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
     </>
@@ -270,3 +269,4 @@ class DetailsMessage extends IAReactComponent {
 }
 
 export { DetailsIAWrap, DetailsWork, DetailsMessage }
+// Regular code review 2019-09-24

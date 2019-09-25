@@ -141,14 +141,16 @@ class AudioTheatre extends IAReactComponent {
     return (
     <div id="theatre-ia" className="container">
       <div className="row">
-        <div className="xs-col-12">
+        <div className="xs-col-12"  >
           <TheatreControls identifier={this.props.identifier} mediatype={this.props.mediatype}/>
           <div className="row">
-            <div className="col-xs-12 col-sm-6 col-md-5 col-lg-4 audio-image-carousel-wrapper">
-              <center>{/*--TODO-AUDIO replace image - see https://github.com/internetarchive/dweb-archive/issues/23--*/}
-                <ImageDweb source={this.props.imgsrc} className="img-responsive"/>
-              </center>
-            </div>
+            {!this.props.imgsrc ? null :
+              <div className="col-xs-12 col-sm-6 col-md-5 col-lg-4 audio-image-carousel-wrapper">
+                <center>{/*--TODO-AUDIO replace image - see https://github.com/internetarchive/dweb-archive/issues/23--*/}
+                  <ImageDweb source={this.props.imgsrc} className="img-responsive"/>
+                </center>
+              </div>
+            }
             <div className="col-xs-12 col-sm-6 col-md-7 col-lg-8">
               <div id="audioContainer" style={{textAlign: "center"}}>
                 <ImageDweb source={this.props.playlist[this.state.trackPlaying-1].imageurls} className="img-responsive" style={{backgroundColor:"white"}}/>

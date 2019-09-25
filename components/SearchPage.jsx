@@ -446,7 +446,7 @@ class CollectionWrap extends IAReactComponent {
      */
     //Note both description & rights need dangerousHTML and \n -> <br/>
     const item = this.props.item;
-    console.assert(!item.isDark) // Will be mediatype=collection so not isDark
+    console.assert(!item.is_dark) // Will be mediatype=collection so not is_dark
     return (
       <>
         {/*TODO needs "aside" */}

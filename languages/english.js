@@ -127,6 +127,7 @@ const english = {
 "plus-circle": "plus-circle",
 "Poster": "Poster",
 "POSTS": "POSTS",
+"preview": "preview",
 "Previous": "Previous",
 "Progress": "Progress",
 "PROJECTS": "PROJECTS",

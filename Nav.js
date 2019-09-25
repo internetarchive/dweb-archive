@@ -188,6 +188,7 @@ export default class Nav {
      *  download:  True or 1 if want download directory instead
      *  Anything else is passed to factory
      */
+      //TODO maybe dont need this metafactory, and can do at the body level and/or write Page in archive.html
     const destn = document.getElementById('main'); // Blank window (except Nav) as loading
     const message=<I8nSpan en="LOADING STARTING"/>;
     const els = <Page message={message}/>;
