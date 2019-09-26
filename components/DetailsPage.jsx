@@ -32,7 +32,6 @@ class DetailsIAWrap extends IAReactComponent {
         <div id="theatre-ia-wrap" className="container container-ia width-max"
              style={["image"].includes(this.props.mediatype) ? {height: "600px"} : undefined} >
           <link itemProp="url" href={`https://archive.org/details/${this.props.identifier}`}/> {/*Probably correct as archive.org/details since itemProp*/}
-          {/* - TODO unclear why image & text|audio mediatypes use different itemProp below check current archive.org pages*/}
           <link itemProp={["image","movies"].includes(this.props.mediatype) ? "thumbnailUrl" : "image"}
                 href="https://archive.org/services/img/${this.props.identifier}"/>{/*OK for direct link since itemProp*/}
           { (this.props.playlist && ["audio","etree"].includes(this.props.mediatype)) // is_dark wont have a playlist
@@ -132,7 +131,7 @@ class DetailsError extends IAReactComponent {
    * />
    */
   render() {
-    return ( // TODO Copy styles from the error in is_dark
+    return (
       <div style={{margin: "0 20px", textAlign: "center", fontWeight: "bold"}}><p>
         {this.props.message}
         </p>
@@ -169,7 +168,6 @@ class DetailsWork extends IAReactComponent {
 
    constructor(props) {
     super(props); //  item
-    // TODO-DWEBNAV need to tell Transports to set this status when changes
     this.state.expansionTried = false;
     // Note this was in DetailsAboutWrapper.loadable, but cant see why it shouldnt be in constructor
     // expand a list of collections into a list of titles either through collection_titles if supplied (e.g. from dweb gateway) or via a new Search query
