@@ -75,7 +75,7 @@ class BookReaderDwebWrapper extends IAReactComponent {
       }
       return  !this.state.jsia
         ? <I8nSpan en="Loading Book metadata for"> {this.props.item.itemid}</I8nSpan>
-        : <BookReaderJSIAWrapper jsia={this.state.jsia} options={options} />
+        : <BookReaderWrapper jsia={this.state.jsia} options={options} />
     }
 }
 
