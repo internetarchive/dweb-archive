@@ -1,6 +1,6 @@
 import React from 'react';
 import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
-import {I8nSpan, I8nIcon} from './Languages';
+import {I18nSpan, I18nIcon} from './Languages';
 
 /**
  * Button to enable sharing to one url
@@ -63,9 +63,9 @@ class CherModal extends IAReactComponent {
           <div className="modal-content" style={{padding:"10px"}}>
             <div className="modal-header">
               <button type="button" className="close" data-dismiss="modal" aria-hidden="true">
-                <I8nIcon className="iconochive-remove-circle" en="remove-circle"/>
+                <I18nIcon className="iconochive-remove-circle" en="remove-circle"/>
               </button>
-              <h3 className="modal-title"><I8nSpan en="Share or Embed This"/> <I8nSpan en={(this.props.mediatype === "collection") ? "Collection" : "Item"}/></h3>
+              <h3 className="modal-title"><I18nSpan en="Share or Embed This"/> <I18nSpan en={(this.props.mediatype === "collection") ? "Collection" : "Item"}/></h3>
             </div>{/*--/.modal-header--*/}
             <div id="cher-body">
               <div style={{textAlign: "center", margin: "50px auto"}}>
@@ -96,7 +96,7 @@ class CherModal extends IAReactComponent {
                   <div>
                     <form className="form" role="form">
                       <div className="form-group">
-                        <label><I8nSpan en="EMBED"/></label>
+                        <label><I18nSpan en="EMBED"/></label>
                         <textarea id="embedcodehere" className="form-control textarea-invert-readonly"
                                       readOnly="readonly" value={`<iframe 
                                       src=${shortEmbedURL}
@@ -110,15 +110,15 @@ class CherModal extends IAReactComponent {
                   <div>
                     <form className="form" role="form">
                       <div className="form-group">
-                        <label><I8nSpan en="EMBED (for wordpress.com hosted blogs and archive.org item &lt;description&gt; tags)"/></label>
+                        <label><I18nSpan en="EMBED (for wordpress.com hosted blogs and archive.org item &lt;description&gt; tags)"/></label>
                         <textarea id="embedcodehereWP" className="form-control textarea-invert-readonly"
                                   readOnly="readonly" value={`[archiveorg ${this.props.identifier} width=480 height=640 frameborder=0 webkitallowfullscreen=true mozallowfullscreen=true]`}/>
                       </div>
                     </form>
                   </div>
                   <div>
-                    <I8nSpan en="Want more?"/>
-                    <a href={helpURL}><I8nSpan en="Advanced embedding details, examples, and help"/></a>!
+                    <I18nSpan en="Want more?"/>
+                    <a href={helpURL}><I18nSpan en="Advanced embedding details, examples, and help"/></a>!
                   </div>
                 </>
               }

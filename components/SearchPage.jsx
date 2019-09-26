@@ -7,7 +7,7 @@ import { LocalItem } from "./mirror/LocalComponent";
 import { SettingsItem } from "./mirror/SettingsComponent";
 import { AccountWrap } from "../Account.jsx";
 import { HomeBanner } from "./Home.jsx";
-import {I8nSpan, I8n, I8nStr, I8nIcon} from "./Languages";
+import {I18nSpan, I18n, I18nStr, I18nIcon} from "./Languages";
 const debug = require('debug')('SearchPage');
 
 
@@ -29,8 +29,8 @@ class BookmarkButton extends IAReactComponent {
           <AnchorModalGo className="stealth"
                          href={this.props.URL}
                          opts={{favorite: 1}}
-                         data-target="#confirm-modal"><I8nIcon
-            className="iconochive-favorite" en="favorite"/> <I8nSpan en="Favorite"/></AnchorModalGo><br/>
+                         data-target="#confirm-modal"><I18nIcon
+            className="iconochive-favorite" en="favorite"/> <I18nSpan en="Favorite"/></AnchorModalGo><br/>
         </>
     )
   }
@@ -72,15 +72,15 @@ class CollectionBanner extends IAReactComponent {
                         </div>
                         <div className="col-xs-1 col-sm-2 welcome-right">
                             <AnchorModalGo className="stealth" opts={{ignore_lnk:1,shown:AJS.embed_codes_adjust}}
-                               data-target="#cher-modal"><I8nIcon className="iconochive-share" en="share" xs="Share"/></AnchorModalGo><br/>
+                               data-target="#cher-modal"><I18nIcon className="iconochive-share" en="share" xs="Share"/></AnchorModalGo><br/>
                            <BookmarkButton
                             url={`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=collection&amp;identifier=${this.itemid}&amp;title=${this.props.title}`}
                             disconnected={this.props.disconnected}
                            />
                             {/*TODO-LOGIN /editxml isn't going to wrk - we aren't logged in. and its an absolute URL
                             <div id="editlink" style={{display:"none"}}>
-                              <a id="edlink" className="stealth" href="/editxml/prelinger"><I8nIcon className="iconochive-edit" en="edit" xs="Edit"/></a><br/>
-                                        <a className="stealth" href="//catalogd.archive.org/history/prelinger"></span><I8nIcon className="iconochive-time" en="time" xs="History"/></a><br/>
+                              <a id="edlink" className="stealth" href="/editxml/prelinger"><I18nIcon className="iconochive-edit" en="edit" xs="Edit"/></a><br/>
+                                        <a className="stealth" href="//catalogd.archive.org/history/prelinger"></span><I18nIcon className="iconochive-time" en="time" xs="History"/></a><br/>
                             </div> */}
                         </div>
                     </div>
@@ -113,28 +113,28 @@ class CollectionTabby extends IAReactComponent {
             <div className="row">
                 <div className="col-sm-7" style={{marginBottom: "50px"}}>
                     <div className="about-box">
-                        <div className="micro-label"><I8nSpan en="DESCRIPTION"/></div>
+                        <div className="micro-label"><I18nSpan en="DESCRIPTION"/></div>
                         <div  dangerouslySetInnerHTML={{__html: this.props.description}}></div>
                         <br className="clearfix" clear="all"/>
                     </div>
 
                     <div className="about-box">
-                        <div className="micro-label"><I8nSpan en="RIGHTS"/></div>
+                        <div className="micro-label"><I18nSpan en="RIGHTS"/></div>
                         <div  dangerouslySetInnerHTML={{__html: this.props.rights}}></div>
                     </div>
 
                     <div className="about-box">
-                        <div className="micro-label"><I8nSpan en="ACTIVITY"/></div>
+                        <div className="micro-label"><I18nSpan en="ACTIVITY"/></div>
                         <div className="activity-box">
                             <h2 style={{fontWeight: 100}}>
-                                <AnchorDetails className="stealth" identifier={this.props.identifier} sort="-reviewdate"><I8nIcon
+                                <AnchorDetails className="stealth" identifier={this.props.identifier} sort="-reviewdate"><I18nIcon
                                 className="iconochive-comment" en="comment"/> <span
                                 id="activity-reviewsN"></span></AnchorDetails>
                             </h2>
                         </div>
                         <div className="activity-box">
                             <h2 style={{fontWeight:100}}>
-                                <a className="stealth" href="#forum" onClick={$('#tabby-forum-finder').click}><I8nIcon className="iconochive-comments" en="comments"/> <span
+                                <a className="stealth" href="#forum" onClick={$('#tabby-forum-finder').click}><I18nIcon className="iconochive-comments" en="comments"/> <span
                                         id="activity-forumN"></span></a>
                             </h2>
                         </div>
@@ -183,7 +183,7 @@ class CollectionTabby extends IAReactComponent {
                         <div className="micro-label">RELATED COLLECTIONS</div>
                         <div style="margin-top:10px;">
                             <div className="topinblock">
-                                <I8nIcon className="iconochive-collection" en="collection"/>            </div><div className="topinblock">
+                                <I18nIcon className="iconochive-collection" en="collection"/>            </div><div className="topinblock">
                             <b><a className="stealth" href="/details/ephemera">Ephemeral Films</a></b><br/>
                             9,435 items
                         </div>
@@ -192,14 +192,14 @@ class CollectionTabby extends IAReactComponent {
                 </div>
             </div>
         </div>
-        <div id="tabby-forum" className="tabby-data hidden row">{/*TODO-TABBY forum*/}<I8nSpan en="Forum not yet supported on DWeb - heading to the legacy web"/>...</div>
+        <div id="tabby-forum" className="tabby-data hidden row">{/*TODO-TABBY forum*/}<I18nSpan en="Forum not yet supported on DWeb - heading to the legacy web"/>...</div>
     </div>
   )}
 }
 
 class SearchSortBarElement extends IAReactComponent {
   render() {
-    const {s, l} = I8n(this.props.title);
+    const {s, l} = I18n(this.props.title);
     return (
       <a href="#" className="focus-on-child-only pull-right" onClick={() => AJS.tiles_toggle(this,'search')}>
         <div className={"topinblock "+this.props.className} data-toggle="tooltip" title={s} lang={l}></div>
@@ -222,26 +222,26 @@ class SearchSortBar extends IAReactComponent {
         <div className="hidden-xs hidden-sm pull-right" style={{height: "50px", width: "30px"}}></div>
         <div className="micro-label pull-right hidden-tiles">
           <input type="checkbox" name="showdetails" onChange={()=>AJS.showdetails_toggle(this,'search')}/>
-          <I8nSpan className="hidden-xs-span" en="SHOW"/> <I8nSpan en="DETAILS"/>
+          <I18nSpan className="hidden-xs-span" en="SHOW"/> <I18nSpan en="DETAILS"/>
         </div>
 
         <div className="up-down">
           <div className="iconochive-up-solid disabled" aria-hidden="true"></div>
-          <I8nSpan className="sr-only" en="up"/>
+          <I18nSpan className="sr-only" en="up"/>
           <div className="iconochive-down-solid disabled" aria-hidden="true"></div>
-          <I8nSpan className="sr-only" en="down"/></div>
+          <I18nSpan className="sr-only" en="down"/></div>
         <div className="topinblock">
           <div className="hidden-md hidden-lg">
             <select className="ikind-mobile form-control" onChange={()=>AJS.ikind_mobile_change(this)}>
               {this.props.identifier ? null : // Dont show on collections
-                <option data-id="relevance" selected="selected"><I8nSpan en="RELEVANCE"/></option>
+                <option data-id="relevance" selected="selected"><I18nSpan en="RELEVANCE"/></option>
               }
-              <option data-id="views"><I8nSpan en="VIEWS"/></option>
-              <option data-id="title"><I8nSpan en="TITLE"/></option>
-              <option data-id="date-archived"><I8nSpan en="DATE ARCHIVED"/></option>
-              <option data-id="date-published"><I8nSpan en="DATE PUBLISHED"/></option>
-              <option data-id="date-reviewed"><I8nSpan en="DATE REVIEWED"/></option>
-              <option data-id="creator"><I8nSpan en="CREATOR"/></option>
+              <option data-id="views"><I18nSpan en="VIEWS"/></option>
+              <option data-id="title"><I18nSpan en="TITLE"/></option>
+              <option data-id="date-archived"><I18nSpan en="DATE ARCHIVED"/></option>
+              <option data-id="date-published"><I18nSpan en="DATE PUBLISHED"/></option>
+              <option data-id="date-reviewed"><I18nSpan en="DATE REVIEWED"/></option>
+              <option data-id="creator"><I18nSpan en="CREATOR"/></option>
             </select>
           </div>
         </div>
@@ -284,7 +284,7 @@ class SearchBanner extends IAReactComponent {
             <div className="container">
                 <div className="row">
                     <div className="col-sm-2 col-md-2 col-lg-1 hidden-xs">
-                        <h3 style={{margin: "3px 0 0 0", textAlign: "right"}}><I8nSpan en="Search"/></h3>
+                        <h3 style={{margin: "3px 0 0 0", textAlign: "right"}}><I18nSpan en="Search"/></h3>
                     </div>
                     <div className="col-sm-8 col-md-8 col-lg-9">
                         <div className="searchbar" style={{marginBottom: "10px", marginRight: "60px"}}>
@@ -299,14 +299,14 @@ class SearchBanner extends IAReactComponent {
                                   data-wayback-machine-search-url="https://web.archive.org/web/*/"> {/* TODO-WAYBACK*/}
                                 <div className="form-group" style={{position: "relative"}}>
                                   <div style={{position: "relative"}}>
-                                      <I8nIcon style={{position: "absolute", left: "4px", top: "7px", color: "#999", fontSize: "125%"}} className="iconochive-search" en="search">            </I8nIcon>
+                                      <I18nIcon style={{position: "absolute", left: "4px", top: "7px", color: "#999", fontSize: "125%"}} className="iconochive-search" en="search">            </I18nIcon>
                                       <input className="form-control input-sm roundbox20 js-search-bar" size="25"
                                              name="search"
                                              placeholder="Search" type="text" defaultValue={this.props.query}
                                              style={{fontSize: "125%", paddingLeft: "30px"}}
                                              onClick={()=>$(this).css('padding-left','').parent().find('.iconochive-search').hide()}
                                              aria-controls="search_options"
-                                             aria-label={I8nStr("Search the Archive. Filters and Advanced Search available below.")}
+                                             aria-label={I18nStr("Search the Archive. Filters and Advanced Search available below.")}
                                              onChange={this.onChange}
                                       />
                                   </div>
@@ -315,14 +315,14 @@ class SearchBanner extends IAReactComponent {
                                     id="search_options"
                                     className="search-options js-search-options is-open"
                                     aria-expanded="true"
-                                    aria-label={I8nStr("Search Options")}
+                                    aria-label={I18nStr("Search Options")}
                                     data-keep-open-when-changed="true"
                                     >
                                     <fieldset>
-                                    <label><input type="radio" name="sin" value="" defaultChecked/><I8nSpan en="Search metadata"/></label>
-                                    <label><input type="radio" name="sin" value="TXT"/><I8nSpan en="Search full text of books"/></label>
-                                    <label><input type="radio" name="sin" value="TV"/><I8nSpan en="Search TV captions"/></label>
-                                    <label><input type="radio" name="sin" value="WEB"/><I8nSpan en="Search archived web sites"/></label>
+                                    <label><input type="radio" name="sin" value="" defaultChecked/><I18nSpan en="Search metadata"/></label>
+                                    <label><input type="radio" name="sin" value="TXT"/><I18nSpan en="Search full text of books"/></label>
+                                    <label><input type="radio" name="sin" value="TV"/><I18nSpan en="Search TV captions"/></label>
+                                    <label><input type="radio" name="sin" value="WEB"/><I18nSpan en="Search archived web sites"/></label>
                                     </fieldset>
                                     {/* We are using advanced search, so no point in this link
                                         <a href={searchURL} className="search-options__advanced-search-link">Advanced Search</a> */}
@@ -331,7 +331,7 @@ class SearchBanner extends IAReactComponent {
 
                                     <button className="btn btn-gray label-primary input-sm"
                                             style={{position: "absolute", right: "-60px", top: 0}}
-                                            type="submit"><I8nSpan en="GO"/>
+                                            type="submit"><I18nSpan en="GO"/>
                                     </button>
                                     <input type="hidden" name="limit" value="100"/>
                                     <input type="hidden" name="start" value="0"/>
@@ -415,9 +415,9 @@ class SearchWrap extends IAReactComponent {
             <div className="container container-ia nopad">
               {!((this.props.item.membersFav || []).length + (this.props.item.membersSearch || []).length) ?
                 <>
-                  <I8nSpan en="Your search did not match any items in the Archive. Suggestions"/>:
-                  <ul><li><I8nSpan en="Try different keywords"/></li>
-                  <li><I8nSpan en="Try a more general search"/></li>
+                  <I18nSpan en="Your search did not match any items in the Archive. Suggestions"/>:
+                  <ul><li><I18nSpan en="Try different keywords"/></li>
+                  <li><I18nSpan en="Try a more general search"/></li>
                   </ul>
                 </>
               :
@@ -507,7 +507,7 @@ class ComboSearchWrap extends IAReactComponent {
      */
     // Note also used by Home, but not by Account
     const item = this.props.item;
-    document.title = `${item.query} ${item.sort.join(' ')} : ${I8nStr(DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive")}`
+    document.title = `${item.query} ${item.sort.join(' ')} : ${I18nStr(DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive")}`
     const mediatype = item.metadata ? item.metadata.mediatype : "search";
     const identifier = item.itemid;
     return (

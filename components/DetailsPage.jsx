@@ -4,7 +4,7 @@ import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageT
 import {IAReactComponent, NavWrap, DetailsAbout, DownloadDirectoryDiv } from "@internetarchive/ia-components/dweb-index.js";
 import RelatedItemsWrapper from './RelatedItemsWrapper';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
-import {I8nSpan, I8nStr} from "./Languages";
+import {I18nSpan, I18nStr} from "./Languages";
 /**
  * A set of components that make up the Details Page
  */
@@ -62,7 +62,7 @@ class DetailsIAWrap extends IAReactComponent {
             </>
           }
           <h1 className="sr-only">{this.props.title}</h1>
-          <h2 className="sr-only">{I8nStr(this.props.mediatype)} {I8nStr("preview")}</h2>
+          <h2 className="sr-only">{I18nStr(this.props.mediatype)} {I18nStr("preview")}</h2>
           { (["texts"].includes(this.props.mediatype) && (this.props.subtype === "carousel") )
             ?
             <CarouselTheatre
@@ -110,12 +110,12 @@ class DetailsIAWrap extends IAReactComponent {
             <VideoTheatre identifier={this.props.identifier} mediatype={this.props.mediatype} poster={this.props.poster}
                           title={this.props.title} creator={this.props.creator} source={this.props.playlist[0].sources[0].urls} />
             :
-            <MessageTheatre title={<I8nspan en="There Is No Preview Available For This Item"/>}>
+            <MessageTheatre title={<I18nspan en="There Is No Preview Available For This Item"/>}>
               <p>
-                <I8nSpan en="This item does not appear to have any files that can be experienced on Archive.org"/>
-                <br/><I8nSpan className="hidden-xs hidden-sm" en="Please download files in this item to interact with them on your computer"/>.<br/>
+                <I18nSpan en="This item does not appear to have any files that can be experienced on Archive.org"/>
+                <br/><I18nSpan className="hidden-xs hidden-sm" en="Please download files in this item to interact with them on your computer"/>.<br/>
                 {/* Should be link to DownloadDirectory */}
-                <AnchorDownload className="show-all" identifier={this.props.identifier}><I8nSpan en="Show all files"/></AnchorDownload>
+                <AnchorDownload className="show-all" identifier={this.props.identifier}><I18nSpan en="Show all files"/></AnchorDownload>
               </p>
             </MessageTheatre>
           }
@@ -184,7 +184,7 @@ class DetailsWork extends IAReactComponent {
   }
 
   render() {
-    const semiTitle = I8nStr(DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive");
+    const semiTitle = I18nStr(DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive");
     document.title = `${this.props.identifier} : ${semiTitle}`;
     return (
     <>
@@ -226,7 +226,7 @@ class DetailsWork extends IAReactComponent {
         {(!this.props.identifier) ? null :
             <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
         {this.props.statuses.disconnected ? null :
-          <div className="terms-of-service"><a className="stealth" href="https://archive.org/about/terms.php"><I8nSpan en="Terms of Service"/> (<I8nSpan en="last updated"/>
+          <div className="terms-of-service"><a className="stealth" href="https://archive.org/about/terms.php"><I18nSpan en="Terms of Service"/> (<I18nSpan en="last updated"/>
             12/31/2014)</a></div> }
       </main>
       {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}

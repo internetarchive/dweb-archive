@@ -4,7 +4,7 @@ import { DetailsWork, DetailsMessage } from "./DetailsPage";
 import { SaveModal } from "./SaveModal";
 import { IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
 import { transportStatusAndProps, preprocessDescription } from "../ReactSupport";
-import { I8nStr } from './Languages';
+import { I18nStr } from './Languages';
 
 const mediatype2Schema = {
   audio: "AudioObject",
@@ -97,17 +97,17 @@ class Page extends IAReactComponent {
       //TODO figure out what this is doing, and replace with AnchorSearch etc
       AJS.date_switcher(
         (mediatype === "collection")
-          ? `&nbsp;<a href="/search.php?query=${query}&amp;sort=-publicdate"><div class="date_switcher in">${I8nStr("Date Archived")}</div></a> <a href="/search.php?query=${query}&amp;sort=-date"><div class="date_switcher">${I8nStr("Date Published")}</div></a> <a href="/search.php?query=${query}&amp;sort=-reviewdate"><div class="date_switcher">${I8nStr("Date Reviewed")}</div></a> `
+          ? `&nbsp;<a href="/search.php?query=${query}&amp;sort=-publicdate"><div class="date_switcher in">${I18nStr("Date Archived")}</div></a> <a href="/search.php?query=${query}&amp;sort=-date"><div class="date_switcher">${I18nStr("Date Published")}</div></a> <a href="/search.php?query=${query}&amp;sort=-reviewdate"><div class="date_switcher">${I18nStr("Date Reviewed")}</div></a> `
           : `&nbsp;<a href="https://dweb.archive.org/search/${encodeURIComponent(query) + "?sort=-publicdate"}" onclick='${Nav.onclick_search({
             query: query,
             sort: "-publicdate"
-          })}'><div class="date_switcher in">${I8nStr("Date Archived")}</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(query) + "?sort=-date"}" onclick='${Nav.onclick_search({
+          })}'><div class="date_switcher in">${I18nStr("Date Archived")}</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(query) + "?sort=-date"}" onclick='${Nav.onclick_search({
             query: query,
             sort: "-date"
-          })}'><div class="date_switcher">${I8nStr("Date Published")}</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(query) + "?sort=-reviewdate"}" onclick='${Nav.onclick_search({
+          })}'><div class="date_switcher">${I18nStr("Date Published")}</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(query) + "?sort=-reviewdate"}" onclick='${Nav.onclick_search({
             query: query,
             sort: "-reviewdate"
-          })}'><div class="date_switcher">${I8nStr("Date Reviewed")}</div></a> `
+          })}'><div class="date_switcher">${I18nStr("Date Reviewed")}</div></a> `
         );
       AJS.lists_v_tiles_setup(mediatype); // Needs to be collection | search and probably |account
       AJS.popState(mediatype === 'collection' ? '' : 'search'); //on archive.org: collection=>'' search=>'search'

@@ -46,15 +46,15 @@ if (!currentISO()) currentISO("en");
 
 function setLanguage(lang) {
   const olditem = DwebArchive.page.state.item; // Should be an item, not a message
-  DwebArchive.page.setState({message: <I8nSpan en="Changing language from"> {languages[currentISO()]._LanguageInEnglish}</I8nSpan>});
+  DwebArchive.page.setState({message: <I18nSpan en="Changing language from"> {languages[currentISO()]._LanguageInEnglish}</I18nSpan>});
   waterfall([
     cb => setTimeout(cb, 300),
     cb => {
-      DwebArchive.page.setState({message: <I8nSpan en="Changing language to"> {languages[lang]._LanguageInEnglish}</I8nSpan>});
+      DwebArchive.page.setState({message: <I18nSpan en="Changing language to"> {languages[lang]._LanguageInEnglish}</I18nSpan>});
       setTimeout(cb, 300); },
     cb => {
       currentISO(lang);
-      DwebArchive.page.setState({message: <I8nSpan en="Changing language to">{languages[lang]._LanguageInLocal}</I8nSpan>});
+      DwebArchive.page.setState({message: <I18nSpan en="Changing language to">{languages[lang]._LanguageInLocal}</I18nSpan>});
       setTimeout(cb, 300); }
   ],(err)=>{
     if (err) {
@@ -73,7 +73,7 @@ function currentISO(iso=undefined) {
   }
   return global.language;
 }
-function I8n(messageEnglish) {
+function I18n(messageEnglish) {
   let l = currentISO();
   let s = languages[currentISO()][messageEnglish];
   if (!s) {
@@ -87,25 +87,25 @@ function I8n(messageEnglish) {
   }
   return {s, l};
 }
-function I8nStr(messageEnglish) {
-  return I8n(messageEnglish)["s"];
+function I18nStr(messageEnglish) {
+  return I18n(messageEnglish)["s"];
 }
-class I8nSpan extends IAReactComponent {
+class I18nSpan extends IAReactComponent {
   /**
-   * <I8nSpan en="Yes" ... />
+   * <I18nSpan en="Yes" ... />
    */
   constructor(props) {
     super(props);
   }
   render() {
-      let {s, l} = I8n(this.props.en);
+      let {s, l} = I18n(this.props.en);
       const spanProps = ObjectFilter(this.props, (k,v)=> (k !== "en"));
       return <span lang={l} {...spanProps} >{s}{this.props.children}</span>
   }
 }
-class I8nIcon extends IAReactComponent {
+class I18nIcon extends IAReactComponent {
   /**
-   * <I8nIcon
+   * <I18nIcon
    *    className="iconochive-xxxx"
    *    style={}
    *    iconref=function to use as ref for icon - this is used in NavWebDiv to set a hideable element in the search
@@ -113,20 +113,20 @@ class I8nIcon extends IAReactComponent {
    *    xs=ENSTRING
    * >
    *    optional children of span (already translated) and sr-only
-   * </I8nIcon>
+   * </I18nIcon>
    */
   render() {
     return <>
       <span className={this.props.className} style={this.props.style} ref={this.props.iconref} aria-hidden="true"/>
-      <I8nSpan className="sr-only" en={this.props.en}>{this.props.children}</I8nSpan>
+      <I18nSpan className="sr-only" en={this.props.en}>{this.props.children}</I18nSpan>
       {!this.props.xs ? null :
         <>
         &nbsp;
-        <I8nSpan className="hidden-xs-span" en={this.props.xs}/>
+        <I18nSpan className="hidden-xs-span" en={this.props.xs}/>
         </>
       }
     </>
   }
 }
 
-export { languages, languageConfig, currentISO, I8nSpan, setLanguage, I8n, I8nStr, I8nIcon }
+export { languages, languageConfig, currentISO, I18nSpan, setLanguage, I18n, I18nStr, I18nIcon }

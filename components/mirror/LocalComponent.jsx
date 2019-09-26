@@ -8,7 +8,7 @@ import {gatewayServer, ObjectDeeperAssign}  from '@internetarchive/dweb-archivec
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 import {CommonWelcomeComponent} from "./CommonComponent";
 import {NavWrap} from "@internetarchive/ia-components/dweb-index";
-import { I8nStr, I8nSpan } from "../Languages";
+import { I18nStr, I18nSpan } from "../Languages";
 
 const _levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-components/.../ConfigCrawl.js
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
@@ -38,7 +38,7 @@ class LocalGridRowComponent extends IAReactComponent {
   render() {
     // Build a grid of tiles like in Collection/Search but doesnt have the "More" scrolling feature
     return (!this.props.members.length)
-        ? <I8nSpan en="Loading"> ...</I8nSpan>
+        ? <I18nSpan en="Loading"> ...</I18nSpan>
         :
           <div className="row">
             <div className="columns-items" style={{"marginLeft": "0px"}}>
@@ -125,8 +125,8 @@ class LocalItem extends IAReactComponent {
         </div>
         {/*Replaces banner() in Search) */}
         <CommonWelcomeComponent
-          title={I8nStr("Resources")}
-          byline={I8nStr("crawled by")+" " + gatewayServer()}
+          title={I18nStr("Resources")}
+          byline={I18nStr("crawled by")+" " + gatewayServer()}
           description=""
         />
         <div className="container container-ia nopad">

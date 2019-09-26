@@ -1,6 +1,6 @@
 import React from "react";
 import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
-import { I8nStr } from "./Languages";
+import { I18nStr } from "./Languages";
 
 /* Theatre Control are little widgets used in each of the "theatre" displays,
 
@@ -19,7 +19,7 @@ class TheatreControlButton extends IAReactComponent {
     render() { return (
         <a href={this.props.href} id={this.props.id} onClick={this.props.onClick}>
           <div
-            title={I8nStr(this.props.title)}
+            title={I18nStr(this.props.title)}
             data-toggle="tooltip" data-container="body" data-placement="left"
             className={this.props.className} style={this.props.style}></div>
       </a>

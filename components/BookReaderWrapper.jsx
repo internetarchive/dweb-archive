@@ -3,7 +3,7 @@ import React from "react";
 import { IAReactComponent, BookReaderJSIAWrapper, BookReaderWrapper } from "@internetarchive/ia-components/dweb-index.js";
 import RawBookReaderResponse from '@internetarchive/dweb-archivecontroller/RawBookReaderResponse';
 import { gatewayServer } from '@internetarchive/dweb-archivecontroller/Util'; // For gatewayServr
-import { I8nSpan } from './Languages';
+import { I18nSpan } from './Languages';
 
 //TODO-BOOK note all the <script> tags added to archive.html for this, some may be able to be moved here
 /*
@@ -74,7 +74,7 @@ class BookReaderDwebWrapper extends IAReactComponent {
         // Note archive.org/download/xx/page/cover_t.jpg redirects to e.g.  https://ia601600.us.archive.org/BookReader/BookReaderPreview.php?id=xx&itemPath=%2F27%2Fitems%2Fxx&server=ia601600.us.archive.org&page=cover_t.jpg
       }
       return  !this.state.jsia
-        ? <I8nSpan en="Loading Book metadata for"> {this.props.item.itemid}</I8nSpan>
+        ? <I18nSpan en="Loading Book metadata for"> {this.props.item.itemid}</I18nSpan>
         : <BookReaderWrapper jsia={this.state.jsia} options={options} />
     }
 }

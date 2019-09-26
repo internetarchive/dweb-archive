@@ -1,7 +1,7 @@
 import React from 'react';
 import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
 import {gatewayServer} from '@internetarchive/dweb-archivecontroller/Util';
-import {I8nSpan, I8nStr, I8nIcon} from './Languages';
+import {I18nSpan, I18nStr, I18nIcon} from './Languages';
 const debug = require('debug')('SaveModal');
 
 /**
@@ -35,7 +35,7 @@ class SaveDirectory extends IAReactComponent {
          onClick={this.onClick}>
         <span>{this.props.name}</span>
         {/* unclear if next is used, copied from cherModal buttons*/}
-        <div className="savee" data-toggle="tooltip" data-placement="bottom" title={`${I8nStr("Save to")} ${this.props.name}`}
+        <div className="savee" data-toggle="tooltip" data-placement="bottom" title={`${I18nStr("Save to")} ${this.props.name}`}
              data-original-title={this.props.name}></div>
       </a>
   ); }
@@ -54,9 +54,9 @@ class SaveModal extends IAReactComponent {
         <div className="modal-dialog modal-lg">
           <div className="modal-content" style={{padding:"10px"}}>
             <div className="modal-header">
-              <button type="button" className="close" data-dismiss="modal" aria-hidden="true"><I8nIcon className="iconochive-remove-circle" en="remove-circle"/>
+              <button type="button" className="close" data-dismiss="modal" aria-hidden="true"><I18nIcon className="iconochive-remove-circle" en="remove-circle"/>
               </button>
-              <h3 className="modal-title"><I8nSpan en="Save this"/> <I8nSpan en={(this.props.mediatype === "Collection") ? "Collection" : "Item"}/></h3>
+              <h3 className="modal-title"><I18nSpan en="Save this"/> <I18nSpan en={(this.props.mediatype === "Collection") ? "Collection" : "Item"}/></h3>
             </div>
             <div id="save-body">
               <div style={{textAlign: "center", margin: "50px auto"}}>
