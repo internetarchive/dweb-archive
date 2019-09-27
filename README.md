@@ -92,6 +92,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.1.98: Review CherModal, Home; TOS bug; Search Crawl indicator; I18n lots; Audio bug; 
 * v0.1.97: I18n CherModal; refactor archive.html
 * v0.1.96: Refactor bookreader component; improvements on Account page; Auto-pay Audio; item*P*rop
 * v0.1.96: Include transports explicitly based on transports parameter to URL;

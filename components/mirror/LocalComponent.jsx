@@ -75,7 +75,7 @@ class LocalItem extends IAReactComponent {
           (info, cb) => {
             const configmerged = ObjectDeeperAssign({}, ...info.config);
             tasks = canonicalizeTasks(configmerged.apps.crawl.tasks);
-            const tasksidentifiers = tasks.map(task => task.identifier);
+            const tasksidentifiers = tasks.map(task => task.identifier).filter(i => !!i);
             ArchiveMember.expand(tasksidentifiers, cb);
           }, // { ArchiveMember } [IDENTIFIER*]
         ],(err, memberDict) => { // [ArchiveMember*] includes specials like local &/or home
