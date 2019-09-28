@@ -6,3 +6,4 @@ dist/dweb-objects-bundle.js
 *.swp
 /includes/package-lock.json
 yarn-error.log
+.idea
