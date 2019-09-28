@@ -3,11 +3,11 @@ import ReactDOM from "react-dom";
 import React from "react";
 // Other IA repositories
 import { homeQuery, ObjectFilter } from "@internetarchive/dweb-archivecontroller/Util";
+import {I18nSpan} from '@internetarchive/ia-components/dweb-index';
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 // This repository
 import ArchiveBase from './ArchiveBase';
 import {Page} from "./components/Page";
-import {I18nSpan} from "./components/Languages";
 const debug = require('debug')('dweb-archive:Nav');
 
 function pushHistory(...optss) {

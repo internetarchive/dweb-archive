@@ -1,7 +1,6 @@
 import React from 'react';
-import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
+import {IAReactComponent, I18nSpan, I18nStr, I18nIcon} from '@internetarchive/ia-components/dweb-index';
 import {gatewayServer} from '@internetarchive/dweb-archivecontroller/Util';
-import {I18nSpan, I18nStr, I18nIcon} from './Languages';
 const debug = require('debug')('SaveModal');
 
 /**

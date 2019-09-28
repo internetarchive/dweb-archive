@@ -1,9 +1,8 @@
 const debug = require('debug')("BookReaderDwebWrapper");
 import React from "react";
-import { IAReactComponent, BookReaderJSIAWrapper, BookReaderWrapper } from "@internetarchive/ia-components/dweb-index.js";
+import { IAReactComponent, BookReaderJSIAWrapper, BookReaderWrapper, I18nSpan } from '@internetarchive/ia-components/dweb-index';
 import RawBookReaderResponse from '@internetarchive/dweb-archivecontroller/RawBookReaderResponse';
 import { gatewayServer } from '@internetarchive/dweb-archivecontroller/Util'; // For gatewayServr
-import { I18nSpan } from './Languages';
 
 //TODO-BOOK note all the <script> tags added to archive.html for this, some may be able to be moved here
 /*

@@ -1,10 +1,9 @@
 import React from 'react';
 import prettierBytes from "prettier-bytes";
 import { ObjectFilter } from '@internetarchive/dweb-archivecontroller/Util.js';
-import { IAReactComponent } from '@internetarchive/ia-components/dweb-index.js';
+import { IAReactComponent, I18nSpan} from '@internetarchive/ia-components/dweb-index';
 import {config} from "../Util";
 import {p_loadStream} from "../ReactSupport";
-import {I18nSpan} from "./Languages";
 
 const debug = require('debug')('dweb-archive:Video Components');
 

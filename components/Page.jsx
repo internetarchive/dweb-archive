@@ -2,9 +2,8 @@ import React from "react";
 import { ComboSearchWrap } from "./SearchPage";
 import { DetailsWork, DetailsMessage } from "./DetailsPage";
 import { SaveModal } from "./SaveModal";
-import { IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
+import { IAReactComponent, I18nStr } from '@internetarchive/ia-components/dweb-index';
 import { transportStatusAndProps, preprocessDescription } from "../ReactSupport";
-import { I18nStr } from './Languages';
 
 const mediatype2Schema = {
   audio: "AudioObject",

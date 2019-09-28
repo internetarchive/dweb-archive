@@ -1,10 +1,9 @@
 import React from 'react';
 import {gateway, gatewayServer, ObjectMap} from "@internetarchive/dweb-archivecontroller/Util";
 import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageTheatre, VideoTheatre} from "./Theatres";
-import {IAReactComponent, NavWrap, DetailsAbout, DownloadDirectoryDiv } from "@internetarchive/ia-components/dweb-index.js";
+import {IAReactComponent, NavWrap, DetailsAbout, DownloadDirectoryDiv, I18nSpan, I18nStr} from '@internetarchive/ia-components/dweb-index';
 import RelatedItemsWrapper from './RelatedItemsWrapper';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
-import {I18nSpan, I18nStr} from "./Languages";
 /**
  * A set of components that make up the Details Page
  */

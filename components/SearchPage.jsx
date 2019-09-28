@@ -1,13 +1,12 @@
 import React from 'react';
 import { AnchorModalGo, AnchorDetails, IAReactComponent, ImageDweb, Tabby } from '@internetarchive/ia-components/dweb-index.js';
-import { NavWrap, ScrollableTileGrid, SearchSwitcher } from "@internetarchive/ia-components/dweb-index";
+import { NavWrap, ScrollableTileGrid, SearchSwitcher, I18nSpan, I18n, I18nStr, I18nIcon} from '@internetarchive/ia-components/dweb-index';
 import { preprocessDescription } from "../ReactSupport";
 import { CherModal } from "./CherModal";
 import { LocalItem } from "./mirror/LocalComponent";
 import { SettingsItem } from "./mirror/SettingsComponent";
 import { AccountWrap } from "../Account.jsx";
 import { HomeBanner } from "./Home.jsx";
-import {I18nSpan, I18n, I18nStr, I18nIcon} from "./Languages";
 const debug = require('debug')('SearchPage');
 
 

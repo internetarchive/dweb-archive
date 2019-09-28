@@ -1,6 +1,5 @@
 import React from 'react';
-import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
-import {I18nSpan, I18nIcon} from './Languages';
+import {IAReactComponent, I18nSpan, I18nIcon} from '@internetarchive/ia-components/dweb-index';
 
 /**
  * Button to enable sharing to one url

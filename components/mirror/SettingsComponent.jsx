@@ -5,8 +5,7 @@ import prettierBytes from 'prettier-bytes';
 import waterfall from 'async/waterfall';
 import {gatewayServer}  from '@internetarchive/dweb-archivecontroller/Util';
 import {CommonWelcomeComponent} from "./CommonComponent";
-import {IAReactComponent, NavWrap} from "@internetarchive/ia-components/dweb-index.js";
-import {languages, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig} from "../Languages";
+import {IAReactComponent, NavWrap, languages, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig} from '@internetarchive/ia-components/dweb-index';
 
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 

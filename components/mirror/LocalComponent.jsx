@@ -7,8 +7,7 @@ import {TileGrid} from "@internetarchive/ia-components/dweb-index.js";
 import {gatewayServer, ObjectDeeperAssign}  from '@internetarchive/dweb-archivecontroller/Util';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 import {CommonWelcomeComponent} from "./CommonComponent";
-import {NavWrap} from "@internetarchive/ia-components/dweb-index";
-import { I18nStr, I18nSpan } from "../Languages";
+import {NavWrap, I18nStr, I18nSpan } from '@internetarchive/ia-components/dweb-index';
 
 const _levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-components/.../ConfigCrawl.js
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller

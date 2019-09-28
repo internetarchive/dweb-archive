@@ -1,6 +1,5 @@
 import React from "react";
-import { AnchorDetails, IAReactComponent, AnchorSearch } from '@internetarchive/ia-components/dweb-index.js';
-import {I18nSpan, I18n, I18nStr, I18nIcon } from "./Languages";
+import { AnchorDetails, IAReactComponent, AnchorSearch, I18nSpan, I18n, I18nStr, I18nIcon } from '@internetarchive/ia-components/dweb-index';
 
 /**
  * <HomeWelcomeLinkIcon

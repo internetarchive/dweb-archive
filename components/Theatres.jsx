@@ -1,11 +1,10 @@
 import React from 'react';
 import { CherModal } from './CherModal';
 import { BookReaderDwebWrapper } from './BookReaderWrapper';
-import { AnchorDownload, Carousel, IAReactComponent, ImageDweb }  from '@internetarchive/ia-components/dweb-index.js';
+import { AnchorDownload, Carousel, IAReactComponent, ImageDweb, I18nSpan, I18n, I18nStr } from '@internetarchive/ia-components/dweb-index';
 import TheatreControls from "./TheatreControls";
 import { AudioDweb, VideoDweb, WebTorrentStats } from "./AudioVideo";
 import { config } from "../Util";
-import { I18nSpan, I18n, I18nStr } from './Languages';
 
 /**
  * A collection of theatres for embedding in Details page
