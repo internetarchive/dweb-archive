@@ -15,9 +15,9 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.4.3",
     "@internetarchive/bookreader": "git+https://github.com/internetarchive/bookreader.git",
-    "@internetarchive/dweb-archivecontroller": "^0.1.78",
-    "@internetarchive/dweb-transports": "^0.2.0",
     "@internetarchive/ia-components": "^0.0.0-alpha.286",
+    "@internetarchive/dweb-archivecontroller": "^0.1.79",
+    "@internetarchive/dweb-transports": "^0.2.5",
     "@internetarchive/ia-design-system": "^0.3.1-alpha.21",
     "@stratumn/canonicaljson": "^1.0.2",
     "async": "^2.6.2",
@@ -58,6 +58,9 @@
     "server": "http-server",
     "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist;",
     "getbookreader": "for i in BookReaderHelpers.js BookReaderJSIA.js LendingFlow.js; do curl -o dist/bookreader/$i https://archive.org/bookreader/$i; done"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "version": "0.1.99"
 }

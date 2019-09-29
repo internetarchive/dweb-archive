@@ -1,0 +1,31 @@
+{
+  "author": {
+    "name": "Mitra Ardron",
+    "email": "mitra@mitra.biz",
+    "url": "http://www.mitra.biz"
+  },
+  "browserslist": "> 20%, not dead",
+  "bugs": {
+    "url": "https://github.com/internetarchive/dweb-archive/issues"
+  },
+  "description": "Internet Archive offline UI distribution for use by dweb-mirror",
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "homepage": "https://github.com/internetarchive/dweb-archive#readme",
+  "keywords": ["dweb","archive"],
+  "license": "AGPL-3.0",
+  "name": "@internetarchive/dweb-archive-dist",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/internetarchive/dweb-archive.git"
+  },
+  "scripts": {
+    "server": "http-server"
+  },
+  "version": "0.1.99"
+}
