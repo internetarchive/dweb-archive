@@ -177,7 +177,14 @@ class AccountWrap extends IAReactComponent {
         {/* Missing donate-banner and scripts & css before it */}
         return (
           <>
-            <NavWrap item={this.props.item} canSave={true}/>
+            <NavWrap
+              item={this.props.item}
+              transportStatuses={this.props.transportStatuses}
+              transportsClickable={this.props.transportsClickable}
+              mirror2gateway={this.props.mirror2gateway}
+              disconnected={this.props.disconnected}
+              canSave={true}
+            />
             {/*--Begin page content --*/}
             <main id="maincontent">
                 <div className="container container-ia">

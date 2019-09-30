@@ -59,11 +59,13 @@ Override default for <a> as blue
 body.navia .navbar #nav-dweb #dweb-status li, body.navia .navbar #nav-dweb a, .navbar #nav-dweb #dweb-mirrorconfig li, .navbar #nav-dweb #dweb-mirrorreload li {
     height: auto;
     font-size: 12px;
-    cursor: pointer;
     margin: 0 6px;
     vertical-align:top;
     zoom:1;
     line-height:1;
+}
+body.navia .navbar #nav-dweb #dweb-status clickable, body.navia .navbar #nav-dweb a, .navbar #nav-dweb #dweb-mirrorconfig li, .navbar #nav-dweb #dweb-mirrorreload li {
+    cursor: pointer;
 }
 .dwebnavbuttons li  {
     padding: 5px 8px 5px 8px;

@@ -161,6 +161,7 @@ class DetailsWork extends IAReactComponent {
    *    message=STRING Dont display content, display a message
    *    statuses={  as returned from call to /info
    *      disconnected=BOOL true if browser cant see archive.org (or dweb.archive.org)
+   *      transportsClickable=BOOL
    *      ... directories etc
    *      }
    */
@@ -240,7 +241,7 @@ class DetailsMessage extends IAReactComponent {
    *    identifier=IDENTIFIER optional
    *    item=ARCHIVEFILE optional
    *    message=I8NSTRING Dont display content, display a message
-   *    statuses={...} disconnected, directories etc returned from call to /info
+   *    statuses={...} disconnected, transportsClickable, directories etc returned from call to /info
    *    noCache=BOOL
    * />
    *

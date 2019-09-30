@@ -35,7 +35,7 @@ class Page extends IAReactComponent {
   }
 
   checkAndUpdateStatus() {
-    transportStatusAndProps((err, statuses) => { // { transportStatuses, mirror2gateway, disconnected, directories }
+    transportStatusAndProps((err, statuses) => { // { transportStatuses, mirror2gateway, disconnected, directories, transportsClickable }
       if (!err) {
         this.setState({statuses}); // disconnected etc
       }

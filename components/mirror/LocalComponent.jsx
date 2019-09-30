@@ -60,6 +60,7 @@ class LocalItem extends IAReactComponent {
    *   transportStatuses=[{name: STRING, status: INT} Status of connected transports
    *   mirror2gateway=BOOL  True if connected to a mirror that can see its upstream gateway
    *   disconnected=BOOL    True if disconnected from upstream (so disable UI dependent on upstream)
+   *   transportsClickable=BOOL True if can click on transports to pause them
    * />
    */
   constructor(props) {
@@ -116,6 +117,7 @@ class LocalItem extends IAReactComponent {
                  transportStatuses={this.props.transportStatuses}
                  mirror2gateway={this.props.mirror2gateway}
                  disconnected={this.props.disconnected}
+                 transportsClickable={this.props.transportsClickable}
                  canSave={true}
         />
         {/*--Begin page content --*/}

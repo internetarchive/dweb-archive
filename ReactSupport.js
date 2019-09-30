@@ -306,6 +306,8 @@ function transportStatusAndProps(cb) {
     cb1 => DwebTransports.p_statuses(cb1),      // e.g. [ { name: HTTP: status: 0 }* ]
     (transportStatuses, cb2) => {
       const httpStatus = transportStatuses.find(s=> s.name==='HTTP');
+      // If we are a mirror then display MIRROR rather than HTTP at this point
+      // TODO - this gets overwritten if we have status from a mirror relating to its connection to Gateway
       if (DwebArchive.mirror) {
         if (httpStatus) {
           httpStatus.name = "MIRROR";
@@ -314,29 +316,32 @@ function transportStatusAndProps(cb) {
       if (!(DwebArchive.mirror && httpStatus.status === 0)) {
         cb2(null, {transportStatuses}); // Note this could be effectively "MIRROR" failed
       } else if (httpStatus.info) { // If DwebTransports is getting info then no need to request again
+        // Pass on status of Mirror talking to gateway instead of ours.
         cb2(null, httpStatus.info)
       } else {
         const infoUrl = [Object(_internetarchive_dweb_archivecontroller_Util__WEBPACK_IMPORTED_MODULE_6__["gatewayServer"])(), "info"].join('/');
         DwebTransports.httptools.p_GET(infoUrl, {}, cb2);
       } // Note an error in contacting Mirror will skip to end and not update
     }], (err, info) => {
-    if (err) {
-      // The only likely errors are going to be a failure to reach the mirror, so return as such
-      debug('transportStatusAndProps interpreting error as failure: %s', err.message );
-      cb(null, {mirror2gateway: false, disconnected: true, transportStatuses: [{name: "MIRROR", status: 1}]})
-    } else {
-      const httpstatus = info.transportStatuses.find(s=> s.name==='HTTP');
-      // Can mirror see gateway (used for Reload button on dweb-mirror)
-      const mirror2gateway = DwebArchive.mirror && httpstatus && (httpstatus.status === 0)
-      cb(null, {
-        mirror2gateway,
-        // If using mirror, and mirror offline dont display stuff mirror doesnt have
-        // if !mirror (e.g. dweb.archive.org) never disconnected as can try IPFS/WebTorrent etc
-        disconnected: DwebArchive.mirror && !mirror2gateway,
-        transportStatuses: info.transportStatuses,  // Now set to those of Mirror
-        directories: info.directories // For save modal
-      });
-    }
+      // Info is either status of our connection to mirror if applicable, or our or mirrors connection upstream
+      if (err) {
+        // The only likely errors are going to be a failure to reach the mirror, so return as such
+        debug('transportStatusAndProps interpreting error as failure: %s', err.message );
+        cb(null, {mirror2gateway: false, disconnected: true, transportStatuses: [{name: "MIRROR", status: 1}]})
+      } else {
+        const httpstatus = info.transportStatuses.find(s=> s.name==='HTTP');
+        // Can mirror see gateway (used for Reload button on dweb-mirror)
+        const mirror2gateway = DwebArchive.mirror && httpstatus && (httpstatus.status === 0)
+        cb(null, {
+          mirror2gateway,
+          // If using mirror, and mirror offline dont display stuff mirror doesnt have
+          // if !mirror (e.g. dweb.archive.org) never disconnected as can try IPFS/WebTorrent etc
+          disconnected: DwebArchive.mirror && !mirror2gateway,
+          transportStatuses: info.transportStatuses,  // Now set to those of Mirror
+          directories: info.directories, // For save modal
+          transportsClickable: !DwebArchive.mirror // Cant click transports if connected to Mirror
+        });
+      }
   })
 }
 
