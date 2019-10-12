@@ -1,5 +1,5 @@
 import React from "react";
-import { AnchorDetails, IAReactComponent, AnchorSearch, I18nSpan, I18n, I18nStr, I18nIcon } from '@internetarchive/ia-components/dweb-index';
+import { AnchorDetails, AnchorSearch, I18nSpan, I18n, I18nIcon } from '@internetarchive/ia-components/dweb-index';
 
 /**
  * <HomeWelcomeLinkIcon
@@ -7,8 +7,10 @@ import { AnchorDetails, IAReactComponent, AnchorSearch, I18nSpan, I18n, I18nStr,
  *   sronly=STRING        e.g. "web"
  *   size=STRING          e.g. "373B" purely an estimate as there is no API to get it TODO copy periodically from archive.org
  * />
+ *
+ * Display one of the icons on the home welcome banner along with the approx number of items
  */
-class HomeWelcomeLinkIcon extends IAReactComponent {
+class HomeWelcomeLinkIcon extends React.Component {
   render() {
     return (
       <div className="mt-big">
@@ -36,8 +38,10 @@ class HomeWelcomeLinkIcon extends IAReactComponent {
  *    size=STRING       e.g. "300B" just an estimate as there is no API
  *    sronly=STRING
  * />
+ *
+ * Display one icon and link
  */
-class HomeWelcomeLink extends IAReactComponent {
+class HomeWelcomeLink extends React.Component {
   // Props: href, title, sronly, size
 
   render() {
@@ -58,8 +62,10 @@ class HomeWelcomeLink extends IAReactComponent {
 
 /**
  * <HomeBanner disconnected=BOOL />
+ *
+ * Display the Home Banner - a row of icons, approx counts and links
  */
-class HomeBanner extends IAReactComponent {
+class HomeBanner extends React.Component {
  render() {
    return (
      <>
@@ -208,4 +214,4 @@ class HomeBanner extends IAReactComponent {
 }
 
 export { HomeBanner }
-// File regular review 2019-sept-15
+// File regular review 2019-oct-12

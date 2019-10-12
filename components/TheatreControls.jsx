@@ -34,6 +34,7 @@ export default class TheatreControls extends IAReactComponent {
      */
     constructor(props) {
         super(props);
+        //TODO-STATE this might have the issue of constructor not being re-run and needing componentDidMount catch
         this.state.streamUrl = `https://archive.org/stream/${this.props.identifier}/${this.props.identifier}`;  //TODO-@IA figure out why stream urls have second component same as first, not a filename - asked Tracey in slack 2019-02-26 check multi-book items
     }
 

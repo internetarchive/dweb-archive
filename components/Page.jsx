@@ -2,7 +2,7 @@ import React from "react";
 import { ComboSearchWrap } from "./SearchPage";
 import { DetailsWork, DetailsMessage } from "./DetailsPage";
 import { SaveModal } from "./SaveModal";
-import { IAReactComponent, I18nStr } from '@internetarchive/ia-components/dweb-index';
+import { I18nStr } from '@internetarchive/ia-components/dweb-index';
 import { transportStatusAndProps, preprocessDescription } from "../ReactSupport";
 
 const mediatype2Schema = {
@@ -14,13 +14,13 @@ const mediatype2Schema = {
 };
 
 
-class Page extends IAReactComponent {
+class Page extends React.Component {
   /**
    * Top level component, displays a page, and expects to see .setState({item=IDENTIFIER || message=STRING}) calls
    *
    * <Page
    *    item=ARCHIVEITEM
-   *    message=I8NSTRING
+   *    message=I18NSTRING
    * />
    */
 
@@ -28,7 +28,9 @@ class Page extends IAReactComponent {
     super(props); //  item, message
     // TODO-DWEBNAV need to tell Transports to set this status when changes
     // Retrieve information from the gateway about its state, for passing and parameterizing the UI.
-    this.setState({item: this.props.item, message: this.props.message, statuses: {}});
+    // Note this state is set externally on a single persistent <Page> component
+    this.state = {item: this.props.item, message: this.props.message, statuses: {}};
+    this.load = this.load.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
     this.checkAndUpdateStatus();
@@ -41,7 +43,7 @@ class Page extends IAReactComponent {
       }
     })
   }
-  loadcallable(el) {
+  load(unusedEl) {
     DwebArchive.page = this;
   }
   componentDidMount() {
@@ -224,3 +226,4 @@ class Page extends IAReactComponent {
   }
 }
 export { Page };
+// Code review 2019-10-12

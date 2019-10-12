@@ -314,7 +314,7 @@ class ImageTheatre extends IAReactComponent {
 /**
  * Render a message - typically an error, or while something is happening
  *
- * <MessageTheatre title=I8NSTRING || Node >
+ * <MessageTheatre title=I18NSTRING || Node >
  *   ...
  * </MessageTheatre>
  */
