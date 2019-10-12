@@ -20,6 +20,7 @@ export default class RelatedItemsWrapper extends IAReactComponent {
   constructor(props) {
     console.assert(props.item || props.members,"Must pass either item or members")
     super(props); //identifier, members, item
+    //TODO-STATE this might have the issue of constructor not being re-run and needing componentDidMount catch
     this.state.members = this.props.members; // Maybe undefined, but has to be in .state so can change
     // called via ref=this.load when the component is loaded, triggers async load via API if .members undefined
     if (this.props.identifier && this.props.item && !this.state.members) {

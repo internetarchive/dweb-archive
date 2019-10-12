@@ -43,7 +43,9 @@ class LocalGridRowComponent extends IAReactComponent {
             <div className="columns-items" style={{"marginLeft": "0px"}}>
               <div style={{position: "relative"}}>
                 <div id="ikind-search" className="ikind in">
-                  <TileGrid members={this.props.members} disconnected={this.props.disconnected}/>
+                  {/*Always display as have no downloaded info till https://github.com/internetarchive/dweb-mirror/issues/211} fixes to use DM for local.members*/}
+                  {/* <TileGrid members={this.props.members} disconnected={this.props.disconnected}/>*/}
+                  <TileGrid members={this.props.members} disconnected={false}/>
                 </div>
               </div>
             </div>
@@ -84,7 +86,7 @@ class LocalItem extends IAReactComponent {
           } else {
             const item = this.props.item;
             item.membersFav = tasks.map(task =>
-              memberDict[task.identifier] || new ArchiveMember({identifier: task.identifier, crawl: task}, {unexpanded: true}));
+              memberDict[task.identifier] || new ArchiveMember({identifier: task.identifier, query: task.query, crawl: task}, {unexpanded: true}));
 
             if ((typeof item.downloaded !== "object") && (item.downloaded !== null)) item.downloaded = {};
             // See ALMOST-IDENTICAL-CODE-SUMMARIZEFILES

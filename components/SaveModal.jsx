@@ -1,18 +1,31 @@
 import React from 'react';
-import {IAReactComponent, I18nSpan, I18nStr, I18nIcon} from '@internetarchive/ia-components/dweb-index';
+import {I18nSpan, I18nStr, I18nIcon} from '@internetarchive/ia-components/dweb-index';
 import {gatewayServer} from '@internetarchive/dweb-archivecontroller/Util';
 const debug = require('debug')('SaveModal');
 
 /**
+ * <SaveDirectory
+ *    identifier=IDENTIFIER  to save
+ *    name=PATH             to save in
+ *    closeOnClick="#save-modal"
+ * />
+ * An element in a SaveModal, representing one possible target directory
+ * Behavior: onClicked will submit a URL that causes the gateway to save the item to the directory specified.
+ *
+ * state {
+ *   url: the full URL to be submitted   GATEWAYSERVER/admin/crawl/add/IDENTIFIER?copyDirectory=PATH
+ * }
  */
-
-class SaveDirectory extends IAReactComponent {
+class SaveDirectory extends React.Component {
   constructor(props) {
     super(props);
-    this.state.url = [gatewayServer(), 'admin/crawl/add', this.props.identifier].join('/')+"?copyDirectory="+this.props.name;
+    this.onClick = this.onClick.bind(this);
+    //state change safe since the SaveDirectory is rebuilt each time its key changes (which includes identifier), so catches new identifiers
+    this.state = {url: [gatewayServer(), 'admin/crawl/add', this.props.identifier].join('/')+"?copyDirectory="+this.props.name };
   }
 
-  clickCallable(ev) {
+  onClick(ev) {
+    // noinspection JSIgnoredPromiseFromCall
     DwebTransports.httptools.p_GET(this.state.url, {}, (err, unusedInfo) => {
       // Gets back info, but not currently using
       if (err) {
@@ -22,10 +35,11 @@ class SaveDirectory extends IAReactComponent {
     /* Pulled from archive.js modal_go as seems no combination of flags can trigger this on an action */
     const selector = this.props.closeOnClick;
     $(selector).on('hidden.bs.modal', () => {
-      $(selector).remove()
+      $(selector).remove();
       $('body').removeClass('blurry')
-    })
+    });
     $(selector).modal('hide');
+    ev.preventDefault(); // Prevent it going to the anchor (equivalent to "return false" in non-React
   }
   render() {
     return (
@@ -40,15 +54,17 @@ class SaveDirectory extends IAReactComponent {
   ); }
 
 }
-class SaveModal extends IAReactComponent {
-  /** Save to a disk
-   *
-   * <SaveModal identifier=string directories=[string*] />
-   *
-   */
+/**
+ * <SaveModal
+ *    identifier=IDENTIFIER   Item to save
+ *    directories=[string*]   Array of possible directories to save in
+ * />
+ * Behavior: When the Save button is clicked, this is displayed and allows user to choose between different directories to save in.
+ */
 
+class SaveModal extends React.Component {
   render() {
-    return ( (! this.props.directories) ? null : // disable until directories loaded in props
+    return ( !(this.props.directories && this.props.identifier) ? null : // disable until directories loaded in props and have an identifier
       <div id="save-modal" className="modal fade" role="dialog" aria-hidden="true">{/*TODO-SAVEUSB check styles was cher-modal*/}
         <div className="modal-dialog modal-lg">
           <div className="modal-content" style={{padding:"10px"}}>
@@ -61,8 +77,8 @@ class SaveModal extends IAReactComponent {
               <div style={{textAlign: "center", margin: "50px auto"}}>
                 <div className="topinblock">
                   <div id="saver">{/*TODO-SAVEUSB check styles was sharer*/}
-                    { this.props.directories.map((s,i) =>
-                      <SaveDirectory key={i} identifier={this.props.identifier} name={s} closeOnClick="#save-modal"/>
+                    { this.props.directories.map((s) =>
+                      <SaveDirectory key={`${this.props.identifier} ${s}`} identifier={this.props.identifier} name={s} closeOnClick="#save-modal"/>
                     )}
                   </div>
                   <br clear="all" className="clearfix"/>
@@ -72,8 +88,10 @@ class SaveModal extends IAReactComponent {
           </div>
         </div>
       </div>
-    ); }
+    );
+  }
 }
 
 export { SaveModal };
+// Code review 2019-10-07
 

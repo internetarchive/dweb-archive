@@ -1,5 +1,5 @@
 import React from 'react';
-import {gateway, gatewayServer, ObjectMap} from "@internetarchive/dweb-archivecontroller/Util";
+import {gateway, gatewayServer, specialidentifiers, ObjectMap} from "@internetarchive/dweb-archivecontroller/Util";
 import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageTheatre, VideoTheatre} from "./Theatres";
 import {IAReactComponent, NavWrap, DetailsAbout, DownloadDirectoryDiv, I18nSpan, I18nStr} from '@internetarchive/ia-components/dweb-index';
 import RelatedItemsWrapper from './RelatedItemsWrapper';
@@ -126,7 +126,7 @@ class DetailsIAWrap extends IAReactComponent {
 class DetailsError extends IAReactComponent {
   /**
    * <DetailsError
-   *    message=I8NSTRING
+   *    message=I18NSTRING
    * />
    */
   render() {
@@ -168,6 +168,7 @@ class DetailsWork extends IAReactComponent {
 
    constructor(props) {
     super(props); //  item
+    //TODO-STATE this might have the issue of constructor not being re-run and needing componentDidMount catch
     this.state.expansionTried = false;
     // Note this was in DetailsAboutWrapper.loadable, but cant see why it shouldnt be in constructor
     // expand a list of collections into a list of titles either through collection_titles if supplied (e.g. from dweb gateway) or via a new Search query
@@ -240,7 +241,7 @@ class DetailsMessage extends IAReactComponent {
    * <DetailsMessage
    *    identifier=IDENTIFIER optional
    *    item=ARCHIVEFILE optional
-   *    message=I8NSTRING Dont display content, display a message
+   *    message=I18NSTRING Dont display content, display a message
    *    statuses={...} disconnected, transportsClickable, directories etc returned from call to /info
    *    noCache=BOOL
    * />
@@ -248,8 +249,10 @@ class DetailsMessage extends IAReactComponent {
    * Display a message to the user, usually on failure, if possible a header is presented, but that depends on having an item to work with.
    */
 
-  render() { return (
+  render() {
     //TODO make the props.item check more granular - move down into NavWrap and display/hide parts of that.
+    const identifier = this.props.identifier || (this.props.item && this.props.item.itemid);
+    return (
     <>
       {(!this.props.item) ? null :
           <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
@@ -259,8 +262,11 @@ class DetailsMessage extends IAReactComponent {
           <DetailsError message={this.props.message}/>
         </div>
       </main>
-      {(!(this.props.item || this.props.identifier) || (this.props.item && this.props.item.is_dark)) ? null :
-        <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
+      { (!identifier
+        || (this.props.item && this.props.item.is_dark)  // is_dark dont have Related
+        || Object.keys(specialidentifiers).includes(identifier) // No related on specialidentifiers
+        ) ? null :
+          <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected}/> }
       {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?)*/}
     </>
   )}
