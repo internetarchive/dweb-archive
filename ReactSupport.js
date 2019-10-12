@@ -329,7 +329,10 @@ function transportStatusAndProps(cb) {
         debug('transportStatusAndProps interpreting error as failure: %s', err.message );
         cb(null, {mirror2gateway: false, disconnected: true, transportStatuses: [{name: "MIRROR", status: 1}]})
       } else {
-        const httpstatus = info.transportStatuses.find(s=> s.name==='HTTP');
+        if (DwebArchive.mirror) {
+          (info.transportStatuses.find(s => s.name === "HTTP") || {}).name = "GATEWAY";
+        }
+        const httpstatus = info.transportStatuses.find(s=> s.name==='HTTP' || s.name==="GATEWAY");
         // Can mirror see gateway (used for Reload button on dweb-mirror)
         const mirror2gateway = DwebArchive.mirror && httpstatus && (httpstatus.status === 0)
         cb(null, {
