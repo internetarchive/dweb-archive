@@ -7,6 +7,10 @@ import {gatewayServer}  from '@internetarchive/dweb-archivecontroller/Util';
 import {CommonWelcomeComponent} from "./CommonComponent";
 import {IAReactComponent, NavWrap, languages, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig} from '@internetarchive/ia-components/dweb-index';
 
+//TODO - alternative to using Unicode codes for flags directly
+// import ReactFlagsSelect from 'react-flags-select';
+// import 'react-flags-select/css/react-flags-select.css';
+
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 
 /*
@@ -224,7 +228,7 @@ class SettingsLanguages extends IAReactComponent {
                 <span>
                   {Object.entries(languageConfig).map(kv =>
                     <span key={kv[0]} onClick={()=>setLanguage(kv[0])}>
-                      {kv[1].inEnglish}&nbsp;{kv[1].inLocal}&nbsp;
+                      {kv[1].flag || " "}&nbsp;{kv[1].inEnglish}&nbsp;{kv[1].inLocal}&nbsp;
                       { currentISO() === kv[0] ? '\u2713' : '\u2610' } &nbsp;
                     </span>
                   )
