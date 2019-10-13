@@ -67,6 +67,14 @@
         // SEE-OTHER-ADDTRANSPORT in dweb-transports dweb-archive dweb-mirror
         // TODO-SPLIT these will need to move into local server or may be excluded by cross-origin low-bandwidth rule in chrome
         // TODO-SPLIT move this function into Transports.js
+
+        /**
+         * Process searchparams to something appropriate to pass to dweb-transports, allowing for defaults and mistakes etc.
+         *
+         * @param searchparams mirror=HOST:PORT&transport=XXXX&transport=YYYY
+         * @returns {{statuselement: *, transports: *, paused: *, mirror: *, defaulttransports: ([string]|[string, string, string]), http: {urlbase: *}}}
+         * @private
+         */
         function _transportsOptions(searchparams) {
           // Allows abbreviation like mirror=localhost:4244, also allows mirror to specify https://xyz.org
           let mirror = searchparams.get("mirror");
@@ -108,8 +116,8 @@
       // This block has to run before and probably in separate <script> so that the document.write's happen before p_connect is called.
       const searchparams = new URL(window.location.href).searchParams
       const transportsOptions = _transportsOptions(searchparams);
-      const opts = _opts(searchparams, transportsOptions);
-      DwebTransports.loadIntoHtmlPage(transportsOptions);
+      const opts = _opts(searchparams, transportsOptions);  // Side effect of saving persistent state we want to hold across history etc
+      DwebTransports.loadIntoHtmlPage(transportsOptions); // Writes script tags to document to dynamically load any transports specified that require it (generates warnings in log)
     </script>
 </head>
 <!-- TODO-DETAILS missing scripts, properties and links that appear before body tag on archive/details/commute etc -->

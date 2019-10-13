@@ -48,12 +48,10 @@ class Page extends React.Component {
   }
   componentDidMount() {
     //DwebArchive.page = this;
-    super.componentDidMount();
     this.componentDidMountOrUpdate()
   }
 
   componentDidUpdate(oldProps, oldState, snapshot) {
-    super.componentDidUpdate(oldProps, oldState, snapshot);
     if ((this.state.item !== oldState.item) || (this.state.message !== oldState.message)) {
       this.checkAndUpdateStatus();
     }
