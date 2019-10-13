@@ -35,8 +35,8 @@ class SaveDirectory extends React.Component {
     /* Pulled from archive.js modal_go as seems no combination of flags can trigger this on an action */
     const selector = this.props.closeOnClick;
     $(selector).on('hidden.bs.modal', () => {
-      $(selector).remove();
-      $('body').removeClass('blurry')
+      //$(selector).remove();
+      $('body').removeClass('blurry'); //TODO- body is not being set as blurry when modal shown
     });
     $(selector).modal('hide');
     ev.preventDefault(); // Prevent it going to the anchor (equivalent to "return false" in non-React
