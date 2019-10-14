@@ -33,7 +33,6 @@ class Page extends React.Component {
     this.load = this.load.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
-    this.checkAndUpdateStatus();
   }
 
   checkAndUpdateStatus() {
@@ -49,6 +48,7 @@ class Page extends React.Component {
   componentDidMount() {
     //DwebArchive.page = this;
     this.componentDidMountOrUpdate()
+    this.checkAndUpdateStatus();
   }
 
   componentDidUpdate(oldProps, oldState, snapshot) {
@@ -160,7 +160,7 @@ class Page extends React.Component {
     const item = this.state.item;
     const identifier = item && item.itemid;
     const metadata = item && item.metadata;
-    const mediatype = metadata && metadata.mediatype;
+    let mediatype = metadata && metadata.mediatype;
     const query = item && item.query;
     //isSearch: includes Search, Collection, Account, Settings, Local
     //!isSearch: is Details (includes DetailsError, DownloadDirectory, DetailsError,
@@ -169,6 +169,8 @@ class Page extends React.Component {
       && ( query
         || ["collection", "account"].includes(mediatype)
         || ["home", "local", "settings"].includes(identifier)); //SEE-OTHER-ADD-SPECIAL-PAGE
+
+    mediatype = mediatype || ((isSearch && !identifier) ? "search" : undefined); // Set mediatype to search if not set already and it appears to be.
 
     const itemType = metadata ? mediatype2Schema[mediatype] : undefined;
     if (isSearch) {
@@ -218,7 +220,7 @@ class Page extends React.Component {
               statuses={this.state.statuses}
             />
         }
-        <SaveModal identifier={identifier} directories={this.state.statuses.directories}/>
+        <SaveModal identifier={identifier} query={query} directories={this.state.statuses.directories} mediatype={mediatype}/>
       </div>
     );
   }
