@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import React from "react";
 // Other IA repositories
 import { homeQuery, ObjectFilter } from "@internetarchive/dweb-archivecontroller/Util";
-import {I18nSpan} from '@internetarchive/ia-components/dweb-index';
+import {I18nSpan, currentISO, getLanguage} from '@internetarchive/ia-components/dweb-index';
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 // This repository
 import ArchiveBase from './ArchiveBase';
@@ -164,10 +164,13 @@ export default class Nav {
     }
   }
 
+  /**
+   * Set global state that persists between what would normally be pages and is remembered across pages and history
+   * @param optss [{}]
+   */
   static setState(...optss) {
-    // Set global state that persists between what would normally be pages and is remembered
     if (!this.state) this.state = {};
-    const persistentState = ["transport", "mirror", "paused"]; // Note that transport and paused are arrays
+    const persistentState = ["transport", "mirror", "paused", "lang"]; // Note that transport and paused are arrays
     const combinedOpts = Object.assign({},
       this.state,
       ...optss.map(opts => opts instanceof URLSearchParams
@@ -177,7 +180,20 @@ export default class Nav {
     return ObjectFilter(combinedOpts, (k, unusedV) => !persistentState.includes(k)); // return any opts not persistent
   }
 
-  static metafactory(opts) {
+  static metaFactory(opts) {
+    getLanguage(currentISO(this.state.lang || "en"), (err) => {
+    // If lang set, then make sure in currentISO and fetch from server (reqd by archive.html before page loaded in metafactory)
+      if (err) {
+        debug("ERROR cannot set language to %s falling back to english: %o", this.state.lang, err);
+        getLanguage(currentISO('en'), (err) => {
+          this._metafactory(opts);
+        });
+      } else {
+        this._metafactory(opts);
+      };
+    })
+  }
+  static _metafactory(opts) {
     /**
      * Create object based on options passed in URL - this is only called from archive.html
      *

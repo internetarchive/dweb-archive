@@ -122,7 +122,7 @@
 </head>
 <!-- TODO-DETAILS missing scripts, properties and links that appear before body tag on archive/details/commute etc -->
 
-<body class="navia ia-module navbar-no-margin-bottom tiles responsive en">
+<body class="navia ia-module navbar-no-margin-bottom tiles responsive">
 <!--suppress HtmlUnknownAnchorTarget -->
 <a href="#maincontent" class="hidden-for-screen-readers">Skip to main content</a>
 
@@ -131,7 +131,7 @@
 <script>
   $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
   DwebTransports.p_connect(transportsOptions)
-    .then(unusedRes => Nav.metafactory(opts));
+    .then(unusedRes => Nav.metaFactory(opts));
 </script>
 
 </body>

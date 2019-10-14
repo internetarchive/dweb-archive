@@ -56,6 +56,7 @@ module.exports = {
                 { from: 'dweb-archive-styles.css', to: './'},
                 { from: 'favicon.ico', to: './'},
                 { from: 'images/', to: 'images/'},
+                { from: 'node_modules/@internetarchive/ia-components/sandbox/languages/json/', to: 'languages/' },
                 { from: 'includes/fonts/', to: 'includes/fonts'},
                 { from: 'includes/jw/', to: 'includes/jw'},
                 { from: 'includes/archive*css', to: './'},
