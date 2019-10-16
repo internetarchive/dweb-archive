@@ -150,7 +150,7 @@ body.navia .navbar #nav-dweb a img {
      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="200" height="200"><circle cx="100" cy="100" r="95" fill="green" /></svg>');
 }
 .crawlall {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="200" height="200"><circle cx="100" cy="100" r="95" fill="gold" /></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="200" height="200"><circle cx="100" cy="100" r="95" fill="blue" /></svg>');
 }
 
 /* Naming from here conforms to https://rscss.io */

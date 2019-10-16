@@ -96,7 +96,7 @@ class HomeBanner extends React.Component {
               <HomeWelcomeLink query="mediatype:collection" iconochive="iconochive-collection" title="Collections" sronly="collection" size="522K"/>
        </center>
      </div>
-     {/* TODO check and fix this searchbar
+     {/* TODO check and fix this searchbar see https://github.com/internetarchive/dweb-archive/issues/161
      <div>
        <div className="searchbar searchbar-home">
          <form className="form search-form js-search-form"

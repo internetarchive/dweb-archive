@@ -26,7 +26,7 @@ export default class RelatedItemsWrapper extends IAReactComponent {
     if (this.props.identifier && this.props.item && !this.state.members) {
       this.setState({loading: true});
       this.props.item.relatedItems({wantStream:false, wantMembers:true, noCache: this.props.noCache}, (err, members) => {
-        if (!err) { // If there is an error then fetch_json will have reported it, and can just ignore it here and not display
+        if (!err) { // If there is an error then relatedItems() will have reported it, and can just ignore it here and not display
           this.setState({members: members, loading: false});
         }
       });
