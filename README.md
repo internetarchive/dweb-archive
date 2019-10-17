@@ -92,6 +92,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.2.1: Nav bar: clickability of statuses; "GATEWAY", flag; Save on Search/Collection/Local; flags as grid; BUGS with specialidentifiers, save; crawl indicators;
 * v0.2.0: move i18n to iaux; remove "originals"; include dweb-transports; separate dweb-archive-dist package
 * v0.1.98: Review CherModal, Home; TOS bug; Search Crawl indicator; I18n lots; Audio bug; 
 * v0.1.97: I18n CherModal; refactor archive.html

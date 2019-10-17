@@ -15,8 +15,8 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.4.3",
     "@internetarchive/bookreader": "git+https://github.com/internetarchive/bookreader.git",
-    "@internetarchive/dweb-archivecontroller": "^0.1.79",
-    "@internetarchive/dweb-transports": "^0.2.5",
+    "@internetarchive/dweb-archivecontroller": "^0.1.80",
+    "@internetarchive/dweb-transports": "^0.2.6",
     "@internetarchive/ia-components": "^0.0.0-alpha.286",
     "@internetarchive/ia-design-system": "^0.3.1-alpha.21",
     "@stratumn/canonicaljson": "^1.0.2",
@@ -62,5 +62,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.2.0"
+  "version": "0.2.1"
 }
