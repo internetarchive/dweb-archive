@@ -224,17 +224,19 @@ class SettingsLanguages extends IAReactComponent {
           <div style={{position: "relative"}}>
             <div>
               <h4><I18nSpan en="Languages"/></h4>
-              <div>
-                <span>
-                  {Object.entries(languageConfig).map(kv =>
-                    <span key={kv[0]} onClick={()=>setLanguage(kv[0])}>
-                      {kv[1].flag || " "}&nbsp;{kv[1].inEnglish}&nbsp;{kv[1].inLocal}&nbsp;
-                      { currentISO() === kv[0] ? '\u2713' : '\u2610' } &nbsp;
-                    </span>
-                  )
-                  }
-                </span>
-              </div>
+              <ul style={{
+                listStyle: "none",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(200px,1fr))"
+              }}>
+                {Object.entries(languageConfig).map(kv =>
+                  <li key={kv[0]} onClick={()=>setLanguage(kv[0])}>
+                    <span>{ currentISO() === kv[0] ? '\u2713' : '\u2610' }</span>
+                    &nbsp;<span>{kv[1].flag || " "}</span>
+                    &nbsp;<span>{kv[1].inEnglish}&nbsp;{kv[1].inLocal}</span>
+                  </li>
+                )}
+              </ul>
             </div>
           </div>
         </div>
