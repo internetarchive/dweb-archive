@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnchorModalGo, AnchorDetails, IAReactComponent, ImageDweb, Tabby } from '@internetarchive/ia-components/dweb-index.js';
+import { AnchorModalGo, AnchorDetails, ImageDweb, Tabby } from '@internetarchive/ia-components/dweb-index.js';
 import { NavWrap, ScrollableTileGrid, SearchSwitcher, I18nSpan, I18n, I18nStr, I18nIcon} from '@internetarchive/ia-components/dweb-index';
 import { preprocessDescription } from "../ReactSupport";
 import { CherModal } from "./CherModal";
@@ -15,11 +15,11 @@ const debug = require('debug')('SearchPage');
  */
 
 
-class BookmarkButton extends IAReactComponent {
+class BookmarkButton extends React.Component {
   /**
    * <BookmarkButton url=URL disconnected=BOOL/>
    *
-   * Note - this isnt going to work on Dweb as not logged in.
+   * Note - this is not going to work on Dweb as not logged in.
    */
   render() {
     return (
@@ -34,7 +34,7 @@ class BookmarkButton extends IAReactComponent {
     )
   }
 }
-class CollectionBanner extends IAReactComponent {
+class CollectionBanner extends React.Component {
   /**
    * Typical usage (assuming "this" is an ARCHIVEFILE
    * <CollectionBanner
@@ -54,14 +54,14 @@ class CollectionBanner extends IAReactComponent {
   render () {
         // Preprocess creator because JSX doesnt have a good equivalent of join()
         // I'm not sure of an example case where the creator matches the title like this, but suspect there is one :-)
-        const creator = (this.props.creator  &&  (this.props.creator.join(', ') != this.props.title) ? this.props.creator.join(', ') : '');
+        const creator = (this.props.creator  &&  (this.props.creator.join(', ') !== this.props.title) ? this.props.creator.join(', ') : '');
         return (
             <div className="welcome container container-ia width-max" style={{'backgroundColor':'white'}}>
                 <div className="container">
                     <div className="row">
                         <div className="col-xs-11 col-sm-10 welcome-left">
                             <div id="file-dropper-wrap">
-                                <div id="file-dropper"></div>
+                                <div id="file-dropper"/>
                                 <ImageDweb id="file-dropper-img" className="img-responsive" style={{'maxWidth':"350px", margin:'0 10px 5px 0'}} source={this.props.imgsrc || "/images/notfound.png"}/>
                             </div>
                             <h1>{this.props.title}</h1>
@@ -93,19 +93,20 @@ class CollectionBanner extends IAReactComponent {
             {/*welcome*/}</div>
         )};
 }
-class CollectionTabby extends IAReactComponent {
+class CollectionTabby extends React.Component {
   /**
    * Set of Tabs associated with Collections
    *
    * <CollectionTabby
    *  identifier = IDENTIFIER
    *  description = SANITIZED HTML
-   *  righs = SANITIZED HTML
+   *  rights = SANITIZED HTML
    *
    */
 
 
   render(){
+    // noinspection HtmlUnknownAnchorTarget
     return (
       <div className="container container-ia nopad">
         <div id="tabby-about" className="tabby-data hidden row">
@@ -113,13 +114,13 @@ class CollectionTabby extends IAReactComponent {
                 <div className="col-sm-7" style={{marginBottom: "50px"}}>
                     <div className="about-box">
                         <div className="micro-label"><I18nSpan en="DESCRIPTION"/></div>
-                        <div  dangerouslySetInnerHTML={{__html: this.props.description}}></div>
+                        <div  dangerouslySetInnerHTML={{__html: this.props.description}}/>
                         <br className="clearfix" clear="all"/>
                     </div>
 
                     <div className="about-box">
                         <div className="micro-label"><I18nSpan en="RIGHTS"/></div>
-                        <div  dangerouslySetInnerHTML={{__html: this.props.rights}}></div>
+                        <div  dangerouslySetInnerHTML={{__html: this.props.rights}}/>
                     </div>
 
                     <div className="about-box">
@@ -128,13 +129,13 @@ class CollectionTabby extends IAReactComponent {
                             <h2 style={{fontWeight: 100}}>
                                 <AnchorDetails className="stealth" identifier={this.props.identifier} sort="-reviewdate"><I18nIcon
                                 className="iconochive-comment" en="comment"/> <span
-                                id="activity-reviewsN"></span></AnchorDetails>
+                                id="activity-reviewsN"/></AnchorDetails>
                             </h2>
                         </div>
                         <div className="activity-box">
                             <h2 style={{fontWeight:100}}>
                                 <a className="stealth" href="#forum" onClick={$('#tabby-forum-finder').click}><I18nIcon className="iconochive-comments" en="comments"/> <span
-                                        id="activity-forumN"></span></a>
+                                        id="activity-forumN"/></a>
                             </h2>
                         </div>
                         <br className="clearfix" clear="all"/>
@@ -142,7 +143,7 @@ class CollectionTabby extends IAReactComponent {
                 </div>{/* /.col-sm-7 */}
                 <div className="col-sm-5" style={{marginBottom:"50px"}}>
                     {/* TODO-UPLOADER not supported - need way to turn email into userid - see Missing-API doc I think its there
-                    // See https://webarchive.jira.com/browse/PBOX-3047?focusedCommentId=109572#comment-109572 for indefinately postponed changes to uploader field TODO-@IA
+                    // See https://webarchive.jira.com/browse/PBOX-3047?focusedCommentId=109572#comment-109572 for indefinitely postponed changes to uploader field TODO-@IA
                     <div className="about-box" style="background-color:rgb(251,242,221); margin-bottom:0;">
                         <div className="topinblock"
                              style="text-align:center; border-right:1px solid #ccc; padding:0 25px;margin-right:25px;">
@@ -196,17 +197,20 @@ class CollectionTabby extends IAReactComponent {
   )}
 }
 
-class SearchSortBarElement extends IAReactComponent {
+/**
+ * <SearchSortBar className="xxx-button iconochive-xxx" title=ENSTRING />
+ */
+class SearchSortBarElement extends React.Component {
   render() {
     const {s, l} = I18n(this.props.title);
     return (
       <a href="#" className="focus-on-child-only pull-right" onClick={() => AJS.tiles_toggle(this,'search')}>
-        <div className={"topinblock "+this.props.className} data-toggle="tooltip" title={s} lang={l}></div>
+        <div className={"topinblock "+this.props.className} data-toggle="tooltip" title={s} lang={l}/>
       </a>
     );
   }
 }
-class SearchSortBar extends IAReactComponent {
+class SearchSortBar extends React.Component {
   /**
    * <SearchSortBar
    *    identifier=IDENTIFIER
@@ -218,16 +222,16 @@ class SearchSortBar extends IAReactComponent {
       <div className="sortbar">
         <SearchSortBarElement className="lists-button iconochive-list" title="Show as list"/>
         <SearchSortBarElement className="tiles-button iconochive-tiles" title="Show thumbnails"/>
-        <div className="hidden-xs hidden-sm pull-right" style={{height: "50px", width: "30px"}}></div>
+        <div className="hidden-xs hidden-sm pull-right" style={{height: "50px", width: "30px"}}/>
         <div className="micro-label pull-right hidden-tiles">
           <input type="checkbox" name="showdetails" onChange={()=>AJS.showdetails_toggle(this,'search')}/>
           <I18nSpan className="hidden-xs-span" en="SHOW"/> <I18nSpan en="DETAILS"/>
         </div>
 
         <div className="up-down">
-          <div className="iconochive-up-solid disabled" aria-hidden="true"></div>
+          <div className="iconochive-up-solid disabled" aria-hidden="true"/>
           <I18nSpan className="sr-only" en="up"/>
-          <div className="iconochive-down-solid disabled" aria-hidden="true"></div>
+          <div className="iconochive-down-solid disabled" aria-hidden="true"/>
           <I18nSpan className="sr-only" en="down"/></div>
         <div className="topinblock">
           <div className="hidden-md hidden-lg">
@@ -249,7 +253,7 @@ class SearchSortBar extends IAReactComponent {
     )
   }
 }
-class SearchBanner extends IAReactComponent {
+class SearchBanner extends React.Component {
   /**
    * <SearchBanner
    *    query=STRING     query string
@@ -287,7 +291,7 @@ class SearchBanner extends IAReactComponent {
                     </div>
                     <div className="col-sm-8 col-md-8 col-lg-9">
                         <div className="searchbar" style={{marginBottom: "10px", marginRight: "60px"}}>
-                          {/*--TODO-DETAILS make the advnced stuff work with onSubmit*/}
+                          {/*--TODO-DETAILS make the advanced stuff work with onSubmit*/}
                             <form className="form search-form js-search-form"
                                   id="searchform"
                                   method="get"
@@ -351,7 +355,7 @@ class SearchBanner extends IAReactComponent {
   }
 }
 
-class SearchRowColumnsItems extends IAReactComponent {
+class SearchRowColumnsItems extends React.Component {
   /**
    * Output the columns-items, wrapped in a row - this will then be wrapped differently for Collections (tabbed) and Search (not)
    *
@@ -376,7 +380,7 @@ class SearchRowColumnsItems extends IAReactComponent {
             {["home"].includes(this.props.item.itemid) ? null :
               <>
               <SearchSortBar identifier={this.props.item.itemid} query={this.props.item.query}/>
-              <div className="sortbar-rule"></div>
+              <div className="sortbar-rule"/>
               </>
             }
             <ScrollableTileGrid item={this.props.item} disconnected={this.props.disconnected}/>
@@ -385,7 +389,7 @@ class SearchRowColumnsItems extends IAReactComponent {
     );
   }
 }
-class SearchWrap extends IAReactComponent {
+class SearchWrap extends React.Component {
   /**
    * <SearchWrap
    *   item=this
@@ -427,12 +431,12 @@ class SearchWrap extends IAReactComponent {
             </div>
           </div>
         </main>
-        {/*--TODO-ANALYTiCS is missing --*/}
+        {/*--TODO-ANALYTICS is missing --*/}
       </>
     );
   }
 }
-class CollectionWrap extends IAReactComponent {
+class CollectionWrap extends React.Component {
   /**
    * <CollectionWrap
    *    item=this
@@ -448,7 +452,7 @@ class CollectionWrap extends IAReactComponent {
      */
     //Note both description & rights need dangerousHTML and \n -> <br/>
     const item = this.props.item;
-    console.assert(!item.is_dark) // Will be mediatype=collection so not is_dark
+    console.assert(!item.is_dark); // Will be mediatype=collection so not is_dark
     return (
       <>
         {/*TODO needs "aside" */}
@@ -498,7 +502,7 @@ class CollectionWrap extends IAReactComponent {
   }
 }
 
-class ComboSearchWrap extends IAReactComponent {
+class ComboSearchWrap extends React.Component {
   /**
    * <ComboSearchWrap item=ARCHIVEITEM statuses={...}/>
    *
@@ -510,7 +514,7 @@ class ComboSearchWrap extends IAReactComponent {
      */
     // Note also used by Home, but not by Account
     const item = this.props.item;
-    document.title = `${item.query} ${item.sort.join(' ')} : ${I18nStr(DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive")}`
+    document.title = `${item.query} ${item.sort.join(' ')} : ${I18nStr(DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive")}`;
     const mediatype = item.metadata ? item.metadata.mediatype : "search";
     const identifier = item.itemid;
     return (
@@ -531,3 +535,4 @@ class ComboSearchWrap extends IAReactComponent {
 }
 
 export { CollectionBanner, CollectionTabby, CollectionWrap, SearchBanner, SearchSortBar, SearchRowColumnsItems, SearchWrap, ComboSearchWrap }
+//Code review 2019-oct-19
