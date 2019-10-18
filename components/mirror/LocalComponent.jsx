@@ -12,6 +12,7 @@ import {NavWrap, I18nStr, I18nSpan } from '@internetarchive/ia-components/dweb-i
 const _levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-components/.../ConfigCrawl.js
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 
+//SEE-IDENTICAL-CODE-CANONICALIZETASKS in dweb-mirror.mirrorHttp and dweb-archive.LocalComponent
 function canonicalizeTasks(tasks) {
   /* Turn an array of tasks where identifiers may be arrays or singles into canonicalized form - one task per identifier */
   // This turns each task into an array of tasks with one identifier per task, then flattens that array of arrays into a 1D array
@@ -73,6 +74,7 @@ class LocalItem extends IAReactComponent {
       const urlConfig = [gatewayServer(), "info"].join('/');
       let tasks; // hydrated after info fetched
       waterfall([
+        // TODO move the hydration to fetch_metadata - see https://github.com/internetarchive/dweb-mirror/issues/211
           cb => DwebTransports.httptools.p_GET(urlConfig, {}, cb),
           (info, cb) => {
             const configmerged = ObjectDeeperAssign({}, ...info.config);
