@@ -1,3 +1,4 @@
+/* global DwebTransports */
 import React from 'react';
 import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
 const debug = require('debug')('dweb-archive:LocalComponent');

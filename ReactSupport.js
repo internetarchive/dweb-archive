@@ -3,6 +3,7 @@
  *
  * It knows about Dweb architecture
  */
+/* global DwebTransports */
 import map from 'async/map';
 import path from 'path';
 import Url from 'url';

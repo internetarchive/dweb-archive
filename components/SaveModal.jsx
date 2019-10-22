@@ -1,3 +1,4 @@
+/* global DwebTransports */
 import React from 'react';
 import {I18nSpan, I18nStr, I18nIcon} from '@internetarchive/ia-components/dweb-index';
 import {gatewayServer} from '@internetarchive/dweb-archivecontroller/Util';

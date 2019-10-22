@@ -1,3 +1,4 @@
+/* global DwebTransports */
 import React from 'react';
 const debug = require('debug')('dweb-archive:SettingsComponent');
 import prettierBytes from 'prettier-bytes';
