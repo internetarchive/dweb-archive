@@ -6,7 +6,7 @@ import prettierBytes from 'prettier-bytes';
 import waterfall from 'async/waterfall';
 import {gatewayServer}  from '@internetarchive/dweb-archivecontroller/Util';
 import {CommonWelcomeComponent} from "./CommonComponent";
-import {IAReactComponent, NavWrap, languages, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig} from '@internetarchive/ia-components/dweb-index';
+import {IAReactComponent, NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig} from '@internetarchive/ia-components/dweb-index';
 
 //TODO - alternative to using Unicode codes for flags directly
 // import ReactFlagsSelect from 'react-flags-select';
@@ -39,7 +39,7 @@ class SettingsCrawlLI extends IAReactComponent {
 
   constructor(props) {
     super(props);
-    this.setState({crawl: this.props.crawl})
+    this.setState({crawl: this.props.crawl});
     this.restart = this.restart.bind(this);
     this.pause = this.pause.bind(this);
     this.resume = this.resume.bind(this);
@@ -51,7 +51,6 @@ class SettingsCrawlLI extends IAReactComponent {
     });
 
   }
-  restart() { this._crawlbutton("restart"); }
   pause() { this._crawlbutton("pause"); }
   resume() { this._crawlbutton("resume"); }
   restart() { this._crawlbutton("restart"); }
@@ -133,7 +132,7 @@ class SettingsCrawlsComponent extends IAReactComponent {
     super(props);
     this.state.crawls = this.props.crawls; // Maybe undefined
     // Called by React when the Loading... div is displayed
-    if (!this.crawls) {
+    if (!this.state.crawls) {
       const urlCrawls = [gatewayServer(), "admin/crawl/status"].join('/');
       waterfall([
           cb => DwebTransports.httptools.p_GET(urlCrawls, {}, cb),
@@ -250,7 +249,7 @@ class SettingsItem extends IAReactComponent {
    * A page for displaying settings
    *
    * <SettingsItem
-   *  item=ARCHIVEITEM  The Settins item,
+   *  item=ARCHIVEITEM  The Settinsg item,
    *  transportStatuses=[{name: STRING, status: INT} Status of connected transports
    *  mirror2gateway=BOOL  True if connected to a mirror that can see its upstream gateway
    *  disconnected=BOOL    True if disconnected from upstream (so disable UI dependent on upstream)
@@ -276,7 +275,7 @@ class SettingsItem extends IAReactComponent {
         />
         {/*--Begin page content --*/}
         <div className="container container-ia">
-          <a name="maincontent" id="maincontent"></a>
+          <a name="maincontent" id="maincontent"/>
         </div>
         {/*Replaces banner() in Search) */}
         <CommonWelcomeComponent
