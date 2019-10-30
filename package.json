@@ -19,6 +19,7 @@
     "@internetarchive/dweb-transports": "^0.2.6",
     "@internetarchive/ia-components": "^0.0.0-alpha.286",
     "@internetarchive/ia-design-system": "^0.3.1-alpha.21",
+    "@internetarchive/radio-player": "0.0.1-alpha.448+bab6552",
     "@stratumn/canonicaljson": "^1.0.2",
     "async": "^2.6.2",
     "debug": "^4.1.1",
@@ -36,6 +37,7 @@
     "@babel/plugin-proposal-class-properties": "^7.3.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.3.4",
     "@babel/plugin-transform-runtime": "^7.3.4",
+    "@pika/web": "^0.5.3",
     "babel-loader": "^8.0.5",
     "chai": "^4.2.0",
     "copy-webpack-plugin": "^4.5.2",
@@ -55,6 +57,7 @@
   },
   "scripts": {
     "build": "webpack --mode production",
+    "postinstall": "yarn exec pika-web  &&  yarn build",
     "server": "http-server",
     "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist;",
     "getbookreader": "for i in BookReaderHelpers.js BookReaderJSIA.js LendingFlow.js; do curl -o dist/bookreader/$i https://archive.org/bookreader/$i; done"

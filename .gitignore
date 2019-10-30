@@ -7,3 +7,4 @@ dist/dweb-objects-bundle.js
 /includes/package-lock.json
 yarn-error.log
 .idea
+web_modules
