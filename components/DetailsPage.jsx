@@ -4,6 +4,7 @@ import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageT
 import {IAReactComponent, NavWrap, DetailsAbout, DownloadDirectoryDiv, I18nSpan, I18nStr} from '@internetarchive/ia-components/dweb-index';
 import RelatedItemsWrapper from './RelatedItemsWrapper';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
+import RadioPlayerControllerReact from './RadioPlayerController';
 /**
  * A set of components that make up the Details Page
  */
@@ -93,6 +94,11 @@ class DetailsIAWrap extends IAReactComponent {
               creator={this.props.creator}
               title={this.props.title}
               disconnected={this.props.disconnected}/>
+            : (["audio"].includes(this.props.mediatype) && (this.props.subtype === "radio"))
+            ?
+            <RadioPlayerControllerReact
+                itemId={this.props.identifier}
+                item={this.props.item} />
             : (["audio","etree"].includes(this.props.mediatype))
             ?
             <AudioTheatre
@@ -147,7 +153,7 @@ class DetailsWork extends IAReactComponent {
    *    item=ARCHIVEFILE optional if not on Dweb
    *    metadata= METADATA API ".metadata", munged to enforce contracts (i.e. .
    *    files=[ArchiveFile] or [ METADATA API .files ]
-   *    subtype = STRING - result of this.subtype(), "carousel","bookreader" supported (mediatype:texts only)
+   *    subtype = STRING - result of ArchiveItem.subtype(), "carousel","bookreader" supported (mediatype:texts only)
    *    poster=URL of image  (mediatype:movies,audio,etree only)
    *    source=ArchiveFile (mediatype:image only)
    *    files_count=INT (from metadata API)

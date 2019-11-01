@@ -201,7 +201,7 @@ class Page extends React.Component {
               metadata={metadata}
               files={item && item.files}
               identifier={identifier}
-              subtype={metadata && (["texts"].includes(mediatype)) ? item.subtype() : undefined}
+              subtype={metadata && (["texts","audio","movies"].includes(mediatype)) ? item.subtype() : undefined}
               poster={(metadata && ["movies"].includes(mediatype))
                 ? item.videoThumbnailFile()
                 : (["audio", "etree"].includes(mediatype))

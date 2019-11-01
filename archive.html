@@ -108,10 +108,10 @@
     <style>
         #jw6, #jw6__list { background-color:black; }
     </style>
-    <!-- Order of these bundle inclusions is important, objects should be loaded after transports as it adds Name lookup to DwebTransports-->
     <script type="text/javascript">localStorage.debug = "dweb-archive dweb-archive:* dweb-archivecontroller:* dweb-transports dweb-transports:* ia-components:*";</script>
     <!-- <script type="text/javascript" src="dweb-serviceworker-proxy-bundle.js"></script> <!-- Transport via Proxy -->
     <script type="text/javascript" src="dweb-archive-bundle.js"></script>
+
     <script type="text/javascript">
       // This block has to run before and probably in separate <script> so that the document.write's happen before p_connect is called.
       const searchparams = new URL(window.location.href).searchParams
