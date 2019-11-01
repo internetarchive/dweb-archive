@@ -1,7 +1,7 @@
 import React from 'react';
 import {gateway, gatewayServer, specialidentifiers, ObjectMap} from "@internetarchive/dweb-archivecontroller/Util";
 import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageTheatre, VideoTheatre} from "./Theatres";
-import {IAReactComponent, NavWrap, DetailsAbout, DownloadDirectoryDiv, I18nSpan, I18nStr} from '@internetarchive/ia-components/dweb-index';
+import {AnchorDownload, NavWrap, DetailsAbout, DownloadDirectoryDiv, I18nSpan, I18nStr} from '@internetarchive/ia-components/dweb-index';
 import RelatedItemsWrapper from './RelatedItemsWrapper';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 import RadioPlayerControllerReact from './RadioPlayerController';
@@ -9,7 +9,7 @@ import RadioPlayerControllerReact from './RadioPlayerController';
  * A set of components that make up the Details Page
  */
 
-class DetailsIAWrap extends IAReactComponent {
+class DetailsIAWrap extends React.Component {
   /**
    * <DetailsIAWrap
    *  identifier, mediatype, name, title, creator     Fields form Metadata API
@@ -28,7 +28,7 @@ class DetailsIAWrap extends IAReactComponent {
 
       return (
 
-        /*React doesnt like this - says resized isnt boolean// resized={["image"].includes(this.props.mediatype)} */
+        /*React doesnt like this - says resized is not boolean// resized={["image"].includes(this.props.mediatype)} */
         <div id="theatre-ia-wrap" className="container container-ia width-max"
              style={["image"].includes(this.props.mediatype) ? {height: "600px"} : undefined} >
           <link itemProp="url" href={`https://archive.org/details/${this.props.identifier}`}/> {/*Probably correct as archive.org/details since itemProp*/}
@@ -48,7 +48,7 @@ class DetailsIAWrap extends IAReactComponent {
               </div>
             ))
             :
-            //TODO check on rules for this, we are showing files on carousel e.g. thetaleofpeterra14838gut when archive.org isnt
+            //TODO check on rules for this, we are showing files on carousel e.g. thetaleofpeterra14838gut when archive.org is not
             this.props.files.filter((af)=> af.metadata.source !== "metadata")
               .map((af) => ( //OK for direct link since itemProp
                 <link itemProp="associatedMedia" href={`https://archive.org/download/${this.props.identifier}/${af.metadata.name}`} key={`${this.props.identifier}/${af.metadata.name}`}/>
@@ -110,12 +110,12 @@ class DetailsIAWrap extends IAReactComponent {
             />
             : (["movies"].includes(this.props.mediatype))
             ? /* The 'poster' is intentionally a direct Http link as its intended only for search engines etc
-                Preference is 2nd thumbnail (first is usually black-sreen) in .thumbs/ directory (e.g. for "commute");
+                Preference is 2nd thumbnail (first is usually black-screen) in .thumbs/ directory (e.g. for "commute");
                 if only one (e.g. item 'stairs') use that. */
             <VideoTheatre identifier={this.props.identifier} mediatype={this.props.mediatype} poster={this.props.poster}
                           title={this.props.title} creator={this.props.creator} source={this.props.playlist[0].sources[0].urls} />
             :
-            <MessageTheatre title={<I18nspan en="There Is No Preview Available For This Item"/>}>
+            <MessageTheatre title={<I18nSpan en="There Is No Preview Available For This Item"/>}>
               <p>
                 <I18nSpan en="This item does not appear to have any files that can be experienced on Archive.org"/>
                 <br/><I18nSpan className="hidden-xs hidden-sm" en="Please download files in this item to interact with them on your computer"/>.<br/>
@@ -129,7 +129,7 @@ class DetailsIAWrap extends IAReactComponent {
   ); }
 }
 
-class DetailsError extends IAReactComponent {
+class DetailsError extends React.Component {
   /**
    * <DetailsError
    *    message=I18NSTRING
@@ -145,7 +145,7 @@ class DetailsError extends IAReactComponent {
   }
 }
 
-class DetailsWork extends IAReactComponent {
+class DetailsWork extends React.Component {
   /**
    *  This is the build of a Details page
    *  <DetailsWork
@@ -163,7 +163,7 @@ class DetailsWork extends IAReactComponent {
    *    page=INT (mediatype:texts only)
    *    playlist={}  Result of playlist call (/embed/IDENTIFIER?output=json)
    *    noCache=BOOL if shouldnt use disk cache when reading (only used for Related Items TODO check if used from here down)
-   *    download=BOOL true if want the Download Directory for thsi item
+   *    download=BOOL true if want the Download Directory for this item
    *    message=STRING Dont display content, display a message
    *    statuses={  as returned from call to /info
    *      disconnected=BOOL true if browser cant see archive.org (or dweb.archive.org)
@@ -172,24 +172,28 @@ class DetailsWork extends IAReactComponent {
    *      }
    */
 
-   constructor(props) {
-    super(props); //  item
-    //TODO-STATE this might have the issue of constructor not being re-run and needing componentDidMount catch
-    this.state.expansionTried = false;
-    // Note this was in DetailsAboutWrapper.loadable, but cant see why it shouldnt be in constructor
-    // expand a list of collections into a list of titles either through collection_titles if supplied (e.g. from dweb gateway) or via a new Search query
+  expand() {
     const {collection} = this.props.metadata;
-    this.state.collection_titles = (typeof this.props.collection_titles === 'undefined') ? {} : this.props.collection_titles;
-    if (!this.state.expansionTried) {
-      // Note Aaron said - 2019-07-12 that should fix it so collection0title provided with metadata which may eliminate need for this
-      this.state.expansionTried = true;
-      ArchiveMember.expand(collection.filter(k => !this.state.collection_titles[k]), (err, res) => { // res = { id: AS(id) }
+    // expand a list of collections into a list of titles either through collection_titles if supplied (e.g. from dweb gateway) or via a new Search query
+    ArchiveMember.expand(collection.filter(k => !this.state.collection_titles[k]), (err, res) => { // res = { id: AS(id) }
         const collection_titles = Object.assign({}, this.state.collection_titles, ObjectMap(res, (k, v) => [k, v.title]));
-        this.setState({ collection_titles }); // Cause a rerender
+        this.setState({ collection_titles }); // Cause a rerender with newly learned titles //(note maybe a race condition with mounting)
       });
+  }
+  getDerivedStateFromProps(props, state) {
+    // Learn any newly provided collection_titles
+    return (typeof props.collection_titles === "undefined")
+      ? null
+      : {collection_titles: Object.assign(state.collection_titles, props.collection_titles)};
+  }
+  componentDidMount() {
+     this.expand();
+  }
+  componentDidUpdate(prevProps, unusedPrevState, unusedSnapshot) {
+    if (prevProps.identifier !== this.props.identifier) { // Only try and expand once per identifier
+      this.expand();
     }
   }
-
   render() {
     const semiTitle = I18nStr(DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive");
     document.title = `${this.props.identifier} : ${semiTitle}`;
@@ -199,7 +203,7 @@ class DetailsWork extends IAReactComponent {
       <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
       {/*--Begin page content --*/}
       <main id="maincontent">
-        <div className="container container-ia"></div>
+        <div className="container container-ia" />
         { this.props.download
           ?
             <DownloadDirectoryDiv identifier={this.props.identifier}
@@ -242,7 +246,7 @@ class DetailsWork extends IAReactComponent {
 }
 
 
-class DetailsMessage extends IAReactComponent {
+class DetailsMessage extends React.Component {
   /**
    * <DetailsMessage
    *    identifier=IDENTIFIER optional
@@ -279,4 +283,4 @@ class DetailsMessage extends IAReactComponent {
 }
 
 export { DetailsIAWrap, DetailsWork, DetailsMessage }
-// Regular code review 2019-09-24
+// Regular code review 2019-11-01 by Mitra
