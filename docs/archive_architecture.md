@@ -7,7 +7,7 @@ Last edited to match reality 14 August 2018
 ## Contents below
 
 * Major Components: Bootloader; ArchiveUI
-* Dweb Integtration: IPFS, GUN, WEBTORRENT, YJS
+* Dweb Integration: IPFS, GUN, WEBTORRENT, YJS
 * TODO's 
 * See Also: repos, issues, ipfs-architecture
 

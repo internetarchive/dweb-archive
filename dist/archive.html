@@ -87,7 +87,7 @@
             statuselement: document.getElementById("dweb-status"),
             http: {urlbase: DwebArchive.gatewayServer()},
             transports,
-            defaulttransports: (mirror && !(mirror === null)) ? ["HTTP"] : ["HTTP", "WEBTORRENT", "IPFS"],
+            defaulttransports: (mirror && !(mirror === null)) ? ["HTTP"] : ["HTTP", "WEBTORRENT", "IPFS", "GUN"],
             paused: searchparams.getAll("paused"),
             mirror: mirror,                                 // Careful with this, gatewayServer will return dweb.me if mirror undefined
           }
