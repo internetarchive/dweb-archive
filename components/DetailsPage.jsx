@@ -172,6 +172,11 @@ class DetailsWork extends React.Component {
    *      }
    */
 
+  constructor() {
+    super(props);
+    this.state = { collection_titles: {}};
+  }
+
   expand() {
     const {collection} = this.props.metadata;
     // expand a list of collections into a list of titles either through collection_titles if supplied (e.g. from dweb gateway) or via a new Search query
