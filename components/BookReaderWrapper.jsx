@@ -33,10 +33,10 @@ class BookReaderDwebWrapper extends IAReactComponent {
     constructor(props) {
         super(props);
     }
-    fetchAndUpdateState() {
-      // Cant be in constructor as new page or item wont call it, cant be in render as run too often
+  // SEE-IDENTICAL-CODE-IN: BookReaderWrapper, AlbumTheatre
+  fetchAndUpdateState() {
+      // Cant be in constructor as new page or item wont call it, cant be in render as run too often, and cant be getDerivedStateFromProps as async
       this.props.item.fetch_bookreader({page: this.props.page}, (err, ai) => {// Load Bookreader data async
-        const rawAPI = RawBookReaderResponse.fromArchiveItem(this.props.item);
         this.setState({jsia: RawBookReaderResponse.fromArchiveItem(this.props.item).cooked()});
       });
     }

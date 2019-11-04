@@ -5,6 +5,7 @@ import {AnchorDownload, NavWrap, DetailsAbout, DownloadDirectoryDiv, I18nSpan, I
 import RelatedItemsWrapper from './RelatedItemsWrapper';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 import RadioPlayerControllerReact from './RadioPlayerController';
+import { AlbumTheatre } from './AlbumTheatre';
 /**
  * A set of components that make up the Details Page
  */
@@ -13,7 +14,7 @@ class DetailsIAWrap extends React.Component {
   /**
    * <DetailsIAWrap
    *  identifier, mediatype, name, title, creator     Fields form Metadata API
-   *  item=ARCHIVEITEM  // Currently Needed if its a bookreader, or a carousel
+   *  item=ARCHIVEITEM  // Currently Needed if its a bookreader, or a carousel or enhanced media player.
    *  poster=URL        // Poster for videos, mostly for search engines
    *  playlist={...}    // As stored in item from playlist API
    *  files=
@@ -99,6 +100,10 @@ class DetailsIAWrap extends React.Component {
             <RadioPlayerControllerReact
                 itemId={this.props.identifier}
                 item={this.props.item} />
+            : (["audio"].includes(this.props.mediatype) && (this.props.subtype === "album"))
+            ?
+            // TODO-EMP check playFullIAAudio what calculated on;
+            <AlbumTheatre item={this.props.item} />
             : (["audio","etree"].includes(this.props.mediatype))
             ?
             <AudioTheatre
@@ -185,7 +190,7 @@ class DetailsWork extends React.Component {
         this.setState({ collection_titles }); // Cause a rerender with newly learned titles //(note maybe a race condition with mounting)
       });
   }
-  getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(props, state) {
     // Learn any newly provided collection_titles
     return (typeof props.collection_titles === "undefined")
       ? null
