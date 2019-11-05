@@ -125,6 +125,13 @@ window.BookReaderJSIAinit = (function() {
     }
     options.metadata = metadata;
 
+    if (data.metadata.language) {
+      var language = typeof(data.metadata.language) == 'string' ? data.metadata.language :
+                     data.metadata[0] ? data.metadata[0] :
+                     null;
+      options.bookLanguage = language;
+    }
+
     return options;
   }
 

@@ -13,10 +13,10 @@ import { AudioPlayerWithYoutubeSpotify } from '@internetarchive/ia-components';
  * @param { object } component params
  */
 export default async function loadEnhancedMusicPlayer({
-  target_selector,
+  target_selector, // TODO-EMP-where does this come from
   identifier,
-  full_audio,
-  liner_notes_url,
+  full_audio, // TODO-EMP-where does this come from
+  liner_notes_url, // TODO-EMP-where does this come from
 }) {
   const audioPlayerHook = document.querySelector(target_selector);
   const itemStr = document.querySelector('.js-ia-metadata').value;
@@ -46,7 +46,7 @@ export default async function loadEnhancedMusicPlayer({
   let linerNotes;
   try {
     linerNotes = await $.ajax({
-      url: liner_notes_url,
+      url: liner_notes_url, // TODO-EMP-where does this come from
       type: 'GET',
       dataType: 'json',
       xhrFields: {

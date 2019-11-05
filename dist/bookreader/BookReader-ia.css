@@ -263,10 +263,7 @@ body.navia #theatre-ia-wrap {
 #theatre-ia-wrap #BookReader {
   height: 80vh;
 }
-#theatre-ia-wrap #BookReader.fullscreenActive {
-  height: 100%;
-}
-#theatre-ia-wrap #BookReader.fullscreenActive {
+#theatre-ia-wrap #IABookReaderWrapper #BookReader.fullscreenActive {
   height: 100%;
 }
 #theatre-ia-wrap .BRtoolbarSectionInfo,
@@ -278,7 +275,8 @@ body.navia #theatre-ia-wrap {
 #theatre-ia-wrap .fullscreenActive .BRtoolbarSectionTitle {
   display: inline;
 }
-@media (max-width: 800px) {
+
+@media (max-width: 480px) {
   #theatre-ia-wrap #BookReader {
     height: 100vw;
   }
@@ -288,8 +286,36 @@ body.navia #theatre-ia-wrap {
 .BRpreview .BRtoolbar {
   padding: 0;
 }
+
+@media (min-width: 481px) {
+  #theatre-ia-wrap .BRpreview #BookReader {
+    height: 64vh;
+  }
+}
+
 @media (min-width: 801px) {
-  .BRpreview .fullscreenActive .BRtoolbar {
+  #theatre-ia-wrap .BRpreview .fullscreenActive .BRtoolbar {
     padding: 10px 10px 4px 10px;
   }
+}
+
+.BookReaderThumbnail,
+.BookReaderTextsIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 80%;
+  transform: translate(-50%, -50%);
+}
+
+body.navia .container-ia .iconochive-texts.BookReaderTextsIcon {
+  font-size: 200px;
+  color: #333333;
+}
+
+body.navia .container-ia .iconochive-texts.BookReaderTextsIcon:before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

@@ -102,6 +102,7 @@ NullTokenPoller.prototype.init = function(lendingFlow, callback) {
 function LendingFlow(br, lendingInfo, tokenPoller, downloadUrls, isRestricted) {
   this.br = br;
   this.lendingInfo = lendingInfo;
+  this.lendingStatus = lendingInfo.lendingStatus.split(':')[0];
   this.tokenPoller = tokenPoller;
   this.userid = lendingInfo.userid;
   this.downloadUrls = downloadUrls || [];
@@ -147,7 +148,7 @@ LendingFlow.prototype.init = function() {
    */
   function printDisabilityLink() {
     var text = "Print disability? Get access now.";
-    var url = "/details/printdisabled&tab=about";
+    var url = "/details/printdisabled?tab=about";
     var $el = $("<a>")
         .attr('href', url)
         .addClass('print-disability-link')
@@ -214,27 +215,19 @@ LendingFlow.prototype.init = function() {
       this.br.options.bookUrl = backHref;
       this.br.options.enableBookTitleLink = true;
     }
-  } else if (this.lendingInfo.userIsPrintDisabled) {
-    dialogOpts = {
-      title: 'You are eligible for print-disabled access.',
-      actions: [
-        { text: 'Read book',
-          callback: function() {
-            self.handleReadItNow('access=1');
-          },
-          className: 'btn-primary skinny',
-          title: 'You are eligible for print-disabled access.' }
-      ]
-    };
-  } else if (this.lendingInfo.isPrintDisabledOnly) {
-    dialogOpts = {
-      title: 'Book available to patrons with print disabilities.',
-      foot: printDisabilityLine(),
-      actions: []
-    };
   } else if (this.isRestricted && !this.lendingInfo.isBrowserBorrowable) {
+    var $restricted_description = $('<div />', {
+      'class': 'BookReaderMessage',
+      text: 'Its access has been restricted. '
+    });
+    $('<a />', {
+      href: '/details/inlibrary',
+      text: 'Browse our lendable books'
+    }).appendTo($restricted_description);
+    $restricted_description.html(function(i, html) { return html + "."; });
     dialogOpts = {
       title: 'This book is not available at this time.',
+      foot: $restricted_description,
       actions: []
     };
   } else if (!this.userid && !this.lendingInfo.isAvailable) {
@@ -246,7 +239,7 @@ LendingFlow.prototype.init = function() {
           className: 'btn-warning' }
       ]
     };
-  } else if (!this.userid) {
+  } else if (!this.userid && !this.lendingInfo.isPrintDisabledOnly) {
     dialogOpts = {
       title: "This book can be borrowed for 14 days.",
       foot: printDisabilityLine(),
@@ -295,6 +288,22 @@ LendingFlow.prototype.init = function() {
           })
       ).append(printDisabilityLink()),
       actions: actions
+    };
+  } else if (this.lendingStatus == 'AVAILABLE_PRINT_DISABLED') {
+    dialogOpts = {
+      title: 'You are eligible for print-disabled access.',
+      actions: [
+        { text: 'Read book',
+          callback: this.handleBorrowIt,
+          className: 'btn-primary skinny',
+          title: 'You are eligible for print-disabled access.' }
+      ]
+    };
+  } else if (this.lendingInfo.isPrintDisabledOnly) {
+    dialogOpts = {
+      title: 'Book available to patrons with print disabilities.',
+      foot: printDisabilityLine(),
+      actions: []
     };
   } else if (this.lendingInfo.isAvailable) {
     var disableBorrow = this.lendingInfo.loanCount >= this.lendingInfo.maxLoans;
@@ -353,7 +362,22 @@ LendingFlow.prototype.init = function() {
     };
   }
 
-  if (showPreview === true) {
+  if (this.isRestricted && !this.lendingInfo.isBrowserBorrowable && get_query_param('admin') !== '1') {
+    $.ajax({
+      url: '/services/img/' + this.br.bookId,
+      success: function() {
+        $('#BookReader').append($('<img />', {
+          src: this.url,
+          'class': 'BookReaderThumbnail'
+        }));
+      },
+      error: function() {
+        // Render book iconochive
+        $('#BookReader').append($('<span class="BookReaderTextsIcon iconochive-texts" />'));
+      }
+    });
+  }
+  else if (showPreview === true) {
     // change the book reader to show the preview files instead
     this.swapInPreview(function() {
       this.br.init();
@@ -486,7 +510,7 @@ LendingFlow.prototype.callService = function(options) {
 };
 
 LendingFlow.prototype.handleLoginOk = function() {
-  var target = "/account/login.php?referer=" + encodeURIComponent(this.getRedirectUrl());
+  var target = "/account/login?referer=" + encodeURIComponent(this.getRedirectUrl());
   this.goToUrl(target, true);
 };
 
@@ -969,4 +993,3 @@ LendingFlow.prototype.addLendingUI = function(opts) {
 LendingFlow.prototype.initTokenPolling = function(callback) {
   this.tokenPoller.init(this, callback);
 };
-
