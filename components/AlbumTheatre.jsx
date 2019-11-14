@@ -4,7 +4,6 @@ import RawBookReaderResponse from "@internetarchive/dweb-archivecontroller/RawBo
 
 /**
  * <AlbumTheatre
- *  TODO-EMP
  *  item=ARCHIVEITEM
  *  playFullIAAudio=BOOLEAN
  *  jwplayerPlaylist=PLAYLIST
@@ -33,6 +32,10 @@ class AlbumTheatre extends React.Component {
   }
 
   render() {
+    if (DwebArchive.mirror) {
+      this.props.item.server = DwebArchive.mirror;
+      this.props.item.dir = "/download/" + this.props.item.metadata.identifier;
+    }
     return (
       // This has a class theatre-ia at its top level
       <AudioPlayerWithYoutubeSpotify

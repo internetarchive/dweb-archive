@@ -30,6 +30,7 @@
 /includes/bootstrap.min.js
 /includes/build/js/play8.min.js
 /includes/build/js/playset.min.js
+/includes/build/js/polyfill.min.js
 /includes/desc.gif
 /includes/fonts/Iconochive-Regular.eot
 /includes/fonts/Iconochive-Regular.svg
