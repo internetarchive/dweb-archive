@@ -15,6 +15,7 @@
 /images/cc/nc.png
 /images/cc/nd.png
 /images/cc/publicdomain.png
+/images/cc/sa.png
 /images/cc/zero.png
 /images/footer.png
 /images/gift.png
