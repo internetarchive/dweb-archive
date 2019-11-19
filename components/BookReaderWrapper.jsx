@@ -69,7 +69,7 @@ class BookReaderDwebWrapper extends IAReactComponent {
         bookUrlText: null,
         initialSearchTerm: null,
         //getPageURI: {}, //TODO-BOOKREADER make this use dweb to fetch see getImageURI
-        thumbnail:  (DwebArchive.mirror ? `//${serverPort}/arc/archive.org/` : "https://archive.org") + `download/${this.props.item.itemid}/page/cover_t.jpg`   // Unfortunately bookread.js appends protocol so we cant control it here
+        thumbnail:  (DwebArchive.mirror ? `//${serverPort}/` : "https://archive.org/") + `download/${this.props.item.itemid}/page/cover_t.jpg`   // Unfortunately bookread.js appends protocol so we cant control it here
         // Note archive.org/download/xx/page/cover_t.jpg redirects to e.g.  https://ia601600.us.archive.org/BookReader/BookReaderPreview.php?id=xx&itemPath=%2F27%2Fitems%2Fxx&server=ia601600.us.archive.org&page=cover_t.jpg
       }
       return  !this.state.jsia
@@ -83,7 +83,7 @@ class BookReaderDwebWrapper extends IAReactComponent {
   * Future:
     * dweb.me add ipfs etc to urls in brOptions/data as push into IPFS.
     * bookreader code to see that url when sees the dweb.me one (maybe not that hard)
-    * Add URLs like /details/unitednov65unit/page/2?transport=HTTP&mirror=localhost:4244 (see where come from and should be /arc/archive.org/details...
+    * Add URLs like /details/unitednov65unit/page/2?transport=HTTP&mirror=localhost:4244
     * Fetch /BookReader/ etc via Transports rather than direct to service node or dweb.me so will use IPFS
     * In JSIA json are download links that go to //archive.org, rewrite those.
     * Does an OL query: https://openlibrary.org/query.json?type=/type/edition&*=&ocaid=unitednov65unit&callback=jQuery1102030322806165558847_1552068906756&_=1552068906757

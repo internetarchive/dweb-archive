@@ -84,7 +84,7 @@
             transports,
             defaulttransports: (mirror && !(mirror === null)) ? ["HTTP"] : ["HTTP", "WEBTORRENT", "IPFS", "GUN"],
             paused: searchparams.getAll("paused"),
-            mirror: mirror,                                 // Careful with this, gatewayServer will return dweb.me if mirror undefined
+            mirror: mirror,                                 // Careful with this, gatewayServer will return dweb.archive.org if mirror undefined
           }
         }
         function _opts(searchparams, transportsOptions) {

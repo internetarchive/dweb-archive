@@ -4,7 +4,6 @@ import ArchiveItem from '@internetarchive/dweb-archivecontroller/ArchiveItem';
 // This repo
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ReactConfig } from './ReactSupport';
 import {AJS_on_dom_loaded} from './Util';
 import {Page} from "./components/Page";
 

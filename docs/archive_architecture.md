@@ -34,7 +34,7 @@ TODO-FAKEREACT this is significantly out of date
 * fetch(): 
     * If its an item 
         * it fetches metadata by: 
-            * Resolving a name /arc/archive.org/metadata/foo to Gun & the gateway's HTTP Url 
+            * Resolving a name https://archive.org/metadata/foo to Gun & the gateway's HTTP Url 
             * Uses the dweb-transports layer to fetch those URLs
             * If it goes through Gun then Gun checks its cache, and if not loaded calls the Gateway's HTTP URL
         * The Gateway

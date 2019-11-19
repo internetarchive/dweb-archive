@@ -37,11 +37,11 @@ function pushHistory(...optss) {
     const historyTitle = `Internet Archive ${query ? ("? "+ query) : identifier ? ("- "+ identifier) : ""}`;
     const url = new URL(window.location);
     // Ideally we'd like to be on a service that supports /arc but if it doesnt we've got an alternative.
-    const supportsArc = ! (url.origin === "file://" || url.pathname.startsWith("/ipfs/")  || url.pathname.startsWith("/ipns/") );
-    url.pathname =  (!supportsArc) ? window.location.pathname
-      : query ? '/arc/archive.org/details'
-      : `/arc/archive.org/${opts.download ? "download" : "details"}${identifier ? "/" + identifier : ""}${opts.page ? "/page/" + opts.page : ""}`;
-    const combinedparams = Object.assign({}, (!supportsArc || query) ? opts : optsDetails); // For now, not putting persistent state in URL (was Nav.state) as first parm
+    const supportsDetails = ! (url.origin === "file://" || url.pathname.startsWith("/ipfs/")  || url.pathname.startsWith("/ipns/") );
+    url.pathname =  (!supportsDetails) ? window.location.pathname
+      : query ? '/details'
+      : `/${opts.download ? "download" : "details"}${identifier ? "/" + identifier : ""}${opts.page ? "/page/" + opts.page : ""}`;
+    const combinedparams = Object.assign({}, (!supportsDetails || query) ? opts : optsDetails); // For now, not putting persistent state in URL (was Nav.state) as first parm
     const usp = new URLSearchParams();
     Object.entries(combinedparams).forEach(
       kv => Array.isArray(kv[1])

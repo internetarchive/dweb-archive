@@ -7,15 +7,11 @@
 import map from 'async/map';
 import path from 'path';
 import Url from 'url';
-import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
-import ArchiveFile from "@internetarchive/dweb-archivecontroller/ArchiveFile";
-import ArchiveItem from "@internetarchive/dweb-archivecontroller/ArchiveItem";
-import {formats} from "@internetarchive/dweb-archivecontroller/Util";
 import from2 from "from2";
 import RenderMedia from "render-media";
 import waterfall from "async/waterfall";
-import {gatewayServer} from "@internetarchive/dweb-archivecontroller/Util";
 import throttle from "throttleit";
+import { ArchiveMember, ArchiveFile, ArchiveItem, formats, gatewayServer, upstreamPrefix } from "@internetarchive/dweb-archivecontroller";
 const debug = require('debug')('dweb-archive:ReactSupport');
 var streamToBlobURL = require('stream-to-blob-url'); //TODO-BOOKREADER try as import
 
@@ -33,52 +29,38 @@ This file contains a lot of processing of names, here is a summary, taking note 
     ArchiveFile       -> error
     //AAA             -> https://AAA
     [.]/AAA       (warning if not /search* /services* /detail*)
-                  MIRR-> MIRROR/arc/archive.org/AAA
+                  MIRR-> MIRROR/AAA
                   DWEB-> dweb://arc/archive.org/AAA
                          TODO could be gateway/URL TODO probably gets /arc/aaa wrong
     PPP://AAA/BBB     -> PPP://AAA/BBB
 
   p_resolveUrls - asynchronous used by resolveImageUrls & p_loadStream
     [url*]  -> [ p_resolveUrls(url)*]
-    ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/arc/archive.org/thumbnail/IDENTIFIER
-    ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/arc/archive.org/download/IDENTIFIER/FILENAME ] (possible extra roundtrip if not populated
+    ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/services/img/IDENTIFIER
+    ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/download/IDENTIFIER/FILENAME ] (possible extra roundtrip if not populated
     //AAA             -> https://AAA
     [.]/AAA       (warning if not /search* /services* /detail*)
-                  MIRR-> MIRROR/arc/archive.org/AAA
+                  MIRR-> MIRROR/AAA
                   DWEB-> dweb://arc/archive.org/AAA
                          TODO could be gateway/URL TODO probably gets /arc/aaa wrong
     PPP://AAA/BBB     -> PPP://AAA/BBB
 
   resolveImageUrls - asynchronous used by _imgUrlOrStream
-    ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/arc/archive.org/download/IDENTIFIER/FILENAME ] (possible extra roundtrip if not populated, exclude magnet if __ia_thumb.jpg)
+    ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/download/IDENTIFIER/FILENAME ] (possible extra roundtrip if not populated, exclude magnet if __ia_thumb.jpg)
     [url*]  -> [ p_resolveUrls(url)*]
-    ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/arc/archive.org/thumbnail/IDENTIFIER
+    ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/services/img/IDENTIFIER
     ArchiveFile       -> error
     //AAA             -> https://AAA
     [.]/AAA       (warning if not /search* /services* /detail*)
-                  MIRR-> MIRROR/arc/archive.org/AAA
+                  MIRR-> MIRROR/AAA
                   DWEB-> dweb://arc/archive.org/AAA
     [.]/services/img/IDENTIFIER
-                  MIRR-> MIRROR/arc/archive.org/services/img/IDENTIFIER
+                  MIRR-> MIRROR/services/img/IDENTIFIER
                   DWEB-> ARCHIVEITEM.metadata.thumbnaillinks via next line
     dweb://arc/archiveorg/services/img/IDENTIFIER -> ARCHIVEITEM.metadata.thumbnaillinks
     PPP://AAA/BBB     -> PPP://AAA/BBB
 
  */
-
-function ReactConfig() {
-  return DwebArchive.mirror ? {
-    root:       DwebArchive.mirror + "/arc/archive.org",    // Used for absolute URLs in descriptions e.g. /details/foo
-    relname:    DwebArchive.mirror + "/arc/archive.org/",   // Used for img.src=./
-    rootname:   DwebArchive.mirror + "/arc/archive.org/",   // Used for img.rc=/serve etc (see example in commute.description
-    tabbyrootinsert: "/arc/archive.org", // Insert before tabby links to gets to https://dweb.me/arc/archive.org/details/foo?bar in origin dweb.me with url /details/foo?bar
-  } : {
-    root:       "https://dweb.archive.org",   // Used for absolute URLs in descriptions e.g. /details/foo
-    relname:    "dweb:/arc/archive.org/",   // Used for img.src=./
-    rootname:   "dweb:/arc/archive.org/", // Used for img.rc=/serve etc (see example in commute.description
-    tabbyrootinsert: "/arc/archive.org", // Insert before tabby links to gets to https://dweb.me/arc/archive.org/details/foo?bar in origin dweb.me with url /details/foo?bar
-  };
-}
 
 function relativeurl(r, url) {
   /* Convert a relative url into a real one based on a possible base URL
@@ -118,12 +100,12 @@ function resolveUrls(url, options={}) {
     if (!(url.startsWith("/search.php") || url.startsWith("/services") || url.startsWith("/details"))) {
       console.warn("Probably not a good idea to use root-relative URL", url); //could genericise to use options.rel instead of config but might not catch cases e.g. of /images
     }
-    return [relativeurl(ReactConfig().rootname, url)].filter(u => !!u);  // e.g. /foo => [https://bar.com/foo]
+    return [relativeurl((typeof DwebArchive.mirror !== "undefined" ? DwebArchive.mirror : 'https://archive.org')+"/", url)].filter(u => !!u);  // e.g. /foo => [https://bar.com/foo]
   } else if (url.startsWith("./")) {
     if (!url.startsWith("./images")) {
       console.warn("Relative URLs are not a great idea as what to be relative to is often unclear", url, options); //could genericise to use rel instead of config but might not catch cases e.g. of /images
     }
-    return [relativeurl(ReactConfig().relname, url)].filter(u => !!u);
+    return [relativeurl((typeof DwebArchive.mirror !== "undefined" ? DwebArchive.mirror : 'https://archive.org')+"/", url)].filter(u => !!u);
   } else {
     return [url]; // Not relative, just pass it back
   }
@@ -142,10 +124,10 @@ function p_resolveUrls(url, cb) { //TODO check callers can now use cb
         if (err) { cb(err) } else { cb(null, [].concat(...res)) } // Flatten, for now accept there might be dupes
       });
     } else if (url instanceof ArchiveMember) {  // Its a member, we want the urls of the images
-      // ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/arc/archive.org/thumbnail/IDENTIFIER
+      // ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/services/img/IDENTIFIER
       url.urls(cb);                           // This will be fast - just thumbnaillinks or services, wont try and ask gateway for metadata and IPFS ima
     } else if (url instanceof ArchiveFile) {
-      // ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/arc/archive.org/download/IDENTIFIER/FILENAME ]
+      // ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/download/IDENTIFIER/FILENAME ]
       url.urls(cb);                           // This could be slow, may have to get the gateway to cache the file in IPFS
     } else {
       cb(null, resolveUrls(url));        // Synchronous code will work
@@ -196,6 +178,8 @@ async function resolveImageUrls(urls) {
   for (let i in urls) { // This can get used if /services/xx passed in here, then converted to dweb:/arc/archive.org/services
     if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
       urls[i] = await thumbnailUrlsFrom(urls[i].slice(35));
+    } else if (urls[i].includes("https:/services/img/")) {
+      urls[i] = await thumbnailUrlsFrom(urls[i].slice(20));
     }
   }
   urls = [].concat(...urls); // Flatten any urls expanded above
@@ -230,6 +214,8 @@ async function _imgUrlOrStream(name, urls, cb) {
     for (let i in urls) { // This can get used if /services/xx passed in here, then converted to dweb:/arc/archive.org/services
       if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
         urls[i] = await thumbnailUrlsFrom(urls[i].slice(35));
+      } else if (urls[i].includes("https:/services/img/")) {
+        urls[i] = await thumbnailUrlsFrom(urls[i].slice(20));
       }
     }
     urls = [].concat(...urls); // Flatten any urls expanded above
@@ -259,7 +245,7 @@ async function _imgUrlOrStream(name, urls, cb) {
           await bufferedFile(name, urls)  // { name, createReadStream: f(opts=>buff) }
     );
   } catch(err) {
-    debug("ERROR: Unable to _imgUrlOrStream %s %s %s %o", name, urls, err.message, err);
+    debug("ERROR: Unable to _imgUrlOrStream %s %s %o", name, urls, err.message, err);
     cb(null, "/images/Broken_document.png");
   }
 }
@@ -320,7 +306,7 @@ function transportStatusAndProps(cb) {
         // Pass on status of Mirror talking to gateway instead of ours.
         cb2(null, httpStatus.info)
       } else {
-        const infoUrl = [Object(_internetarchive_dweb_archivecontroller_Util__WEBPACK_IMPORTED_MODULE_6__["gatewayServer"])(), "info"].join('/');
+        const infoUrl = [gatewayServer(), "info"].join('/');
         DwebTransports.httptools.p_GET(infoUrl, {}, cb2);
       } // Note an error in contacting Mirror will skip to end and not update
     }], (err, info) => {
@@ -480,10 +466,10 @@ function preprocessDescription(description) {
   return !description ? description
     : (Array.isArray(description) ? description.join('<br/>') : description)
       .replace('\n', '<br/>')
-      .replace(/src=(['"])http:\/\/www.archive.org\//gi, 'src=$1' + ReactConfig().root + '/') // src="/  absolute urls
-      .replace(/src=(['"])\//gi, 'src=$1' + ReactConfig().root + '/'); // src="/  absolute urls
+      .replace(/src=(['"])http:\/\/www.archive.org\//gi, 'src=$1' + upstreamPrefix() + '/') // src="/  absolute urls
+      .replace(/src=(['"])\//gi, 'src=$1' + upstreamPrefix() + '/'); // src="/  absolute urls
 
 }
 
 //Not exporting relativeurl as not used
-export { ReactConfig, resolveUrls, p_resolveUrls, thumbnailUrlsFrom, getImageURI, loadImg, p_loadStream, transportStatusAndProps, preprocessDescription }
+export { resolveUrls, p_resolveUrls, thumbnailUrlsFrom, getImageURI, loadImg, p_loadStream, transportStatusAndProps, preprocessDescription }

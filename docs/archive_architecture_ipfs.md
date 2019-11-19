@@ -19,13 +19,16 @@ The current setup consists of ...
     * A few webpacked javascript libraries that include our code and IPFS etc
     * bootstrap.html - resolves archive names to find metadata from IPFS etc and loads archive.html
     * Service Worker and/or Wayback browser extension alternatives to bootstrap.html
-* Research machine that we can iterate rapidly on, without impacting production, hosting:
-    * Nginx providing HTTPS and routing as required
-    * A gateway server (gateway.dweb.me) running in Python with a consistent URL syntax.
-    * A IPFS instance running urlstore on same machine as above
-    * A Torrent tracker and client
-    * Other local servers will also be added to the same machine
-    * Local storage by “contenthash”.
+* Kubernetes cluster with:
+    * a server running
+        * Nginx providing HTTPS and routing as required
+        * A gateway server (dweb.me & dweb.archive.org) running in Python with a consistent URL syntax.
+        * A IPFS instance running urlstore on same machine as above
+        * A Torrent tracker and client
+        * Other local servers will also be added to the same machine
+        * Local storage by “contenthash”.
+    * a service dweb-torrent that just fixes issues with IA torrent files
+    * a service dweb-metadata that returns a modified metadata with magnet link (and possibly other things) added
 * IA production servers, currently unmodified, serving files and metadata
 
 ### Notes about the above:
@@ -53,19 +56,11 @@ These queries will gradually be migrated to decentralized services where possibl
     * Is stored on those servers in a .xml  e.g. [commute/commute_meta.xml](https://archive.org/metadata/commute]) file but is served as JSON at the above URL.
     * Includes list of files, including, for each file except the metadata.xml file, a sha1
 * Metadata for each item,
-    * Retrievable by  https://gateway.dweb.me/arc/archive.org/metadata/commute to rebuild
-    * https://ipfs.io/ipfs/QmQr2AUBVMTJNj9AVfuKqS5oCxmTQjWiSxZLWA96WqETub to fetch
+    * Retrievable by  https://www-dweb-metadata.dev.archive.org/metadata/xxx to rebuild
     * consists of above with additional fields added by gateway for item: magnetlink, thumbnaillinks
     * And for each file: contenthash (sha1 as multihash), magnetlink:
-* On first access to https://gateway.dweb.me/arc/archive.org/metadata/*) by a user.
-    * The metadata is retrieved from the IA metadata call (archive.org/metadata/commute)
-    * it is and stored in local contenthash accessible store
-    * its stored on IPFS (http API add)
-    * A Leaf record is created. (see below allows decentralized retrieval of metadata)
-    * Thumbnails are generated and links added (See content thumbnail links (below) for an anomaly in handling thumbnails.)
-    * See below .. the IPFS link is not added to every file in the item at each step because of current IPFS scaling issues.
 * Metadata for each file.
-    * e.g. https://gateway.dweb.me/arc/archive.org/metadata/commute/commute.avi
+    * e.g. https://dweb.archive.org/metadata/commute/commute.avi
     * This is the same as the File component of above, except that when the metadata is requested by a user,
     the file is urlstored to IPFS and an ipfs link is added to the metadata.
 
@@ -75,7 +70,7 @@ These queries will gradually be migrated to decentralized services where possibl
     * Allows arbitrary searches, return a subset of the metadata for each item found.
     * Collections are a specific, much used case: e.g. [https://archive.org/metadata/advancedsearch?output=json&q=collection:prelinger&rows=75&sort\[\]=-downloads]
 * Advanced search on Gateway
-    * e.g. [https://gateway.dweb.me/arc/archive.org/advancedsearch?output=json&q=prelinger&rows=75&sort\[\]=item_size&and\[\]=mediatype=movie]
+    * e.g. [https://dweb.archive.org/advancedsearch?output=json&q=prelinger&rows=75&sort\[\]=item_size&and\[\]=mediatype=movie]
     * Follows the same syntax as the above direct IA search, which it calls
     * Returns the same data with additional fields for each result
         * thumbnaillinks - thumbnails for the item (see metadata notes)
@@ -89,7 +84,7 @@ These queries will gradually be migrated to decentralized services where possibl
     * Also available with slightly different semantics as
     [stream/commute/commute.avi](https://archive.org/stream/commute/commute.avi)
 * Downloadable content in Dweb
-    * Same content as above is available via gateway on https://gateway.dweb.me/arc/archive.org/download/commute/commute.avi
+    * Same content as above is available via gateway on https://dweb.archive.org/download/commute/commute.avi
     * On first request by a user for the metadata for that file.
         * It is pushed to IPFS
         * however that push is not available due to the IPFS issues with URLstore (files not available to WSS clients; WSS clients not able to connect to peer; and CIDv1 not supported)
@@ -108,27 +103,15 @@ Thumbnail links are slightly odd due to an IA anomaly.
 * From Dweb
     * They are accessible via the IPFS links added in the metadata (since we use files.add instead of urlstore)
 
-### Names
-* Leaf records (one per archive item)
-    * e.g. https://gateway.dweb.me/arc/archive.org/leaf/commute
-    * Map a name (relative to enclosing domains - especially archive.org)
-        * a set of locations to fetch the metadata for the item including some or all of: ipfs, contenthash and direct URL
-    * Signed by Archive <TO BE IMPLEMENTED
-    * stored as items in Key Value tables in multiple places (e.g. http lists, YJS) on first retrieval or <TO BE IMPLEMENTED> when pushed by a retrieval of the metadata.
-* Domain records  ( very small number)
-    * e.g. “metadata" line of [https://gateway.dweb.me/getall/table/NACL%20VERIFY%3AdZ.../domain]([https://gateway.dweb.me/getall/table/NACL%20VERIFY%3AdZHrTMea0OgOF2zI6GsAN-rlcTa4ejcyGj_TSg_cwEY%3D/domain)
-    * Map name of domain to tables (YJS, IPFS etc) to look up leafs or subdomains
-
-
 # Future IPFS integration
 We'd like to integrate at a much more comprehensive level with IPFS,
 but that is dependent on if/when the first few small-scale trials start working properly.
 
 ## IPFS access to content
 At the moment IPFS to content is not working well due to three issues.
-* Files added to urlstore have a CIDv1 which cant be read on the JS-IPFS
-* Files added via urlstore aren’t advertised to the DHT so a separate ping to http://ipfs.io is needed before clients (connected via WSS to ipfs.io can see them)
-* Protocol have been unable to get WSS working to the IPFS instance at archive.org
+* Files added via urlstore aren’t advertised to the DHT and cant be added due to scaling challenges on IPFS gateways
+* Streams retrieved always return true even when not working, so cant fall back
+* It all goes through the Archive's WSS server anyway, there is no P2P discovery / connection in IPFS yet.
 
 ## IPFS items
 In the future an Archive item (except for its metadata.xml) could be added as a IPFS item (i.e. an IPLD with a link for each file). However currently none of the options work:
