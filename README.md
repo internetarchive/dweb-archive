@@ -92,6 +92,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.2.5: major naming refactor and some missing files
 * v0.2.4: Enhanced Media player integration (try cd_abba_abba)
 * v0.2.3: Radio player; reenable Gun by default
 * v0.2.2: License images; webpack includes hack fix for url bug
