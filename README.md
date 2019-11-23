@@ -92,6 +92,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.2.7: Add .map files; yuck hand edit of play8.min,js; debugging naming refactor
 * v0.2.6: oops - need "production" bundles
 * v0.2.5: major naming refactor and some missing files
 * v0.2.4: Enhanced Media player integration (try cd_abba_abba)
