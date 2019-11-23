@@ -100,12 +100,13 @@ function resolveUrls(url, options={}) {
     if (!(url.startsWith("/search.php") || url.startsWith("/services") || url.startsWith("/details"))) {
       console.warn("Probably not a good idea to use root-relative URL", url); //could genericise to use options.rel instead of config but might not catch cases e.g. of /images
     }
-    return [relativeurl((typeof DwebArchive.mirror !== "undefined" ? DwebArchive.mirror : 'https://archive.org')+"/", url)].filter(u => !!u);  // e.g. /foo => [https://bar.com/foo]
+    // Carefull DwebArchive.mirror could be null so don't test against typeof === undefined
+    return [relativeurl((DwebArchive.mirror || 'https://archive.org')+"/", url)].filter(u => !!u);  // e.g. /foo => [https://bar.com/foo]
   } else if (url.startsWith("./")) {
     if (!url.startsWith("./images")) {
       console.warn("Relative URLs are not a great idea as what to be relative to is often unclear", url, options); //could genericise to use rel instead of config but might not catch cases e.g. of /images
     }
-    return [relativeurl((typeof DwebArchive.mirror !== "undefined" ? DwebArchive.mirror : 'https://archive.org')+"/", url)].filter(u => !!u);
+    return [relativeurl((DwebArchive.mirror|| 'https://archive.org')+"/", url)].filter(u => !!u);
   } else {
     return [url]; // Not relative, just pass it back
   }
@@ -175,13 +176,6 @@ async function resolveImageUrls(urls) {
   } else { // This includes ArchiveMember
     urls = await p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
   }  //Examples: [dweb:/arc/archive.org/services/foo]
-  for (let i in urls) { // This can get used if /services/xx passed in here, then converted to dweb:/arc/archive.org/services
-    if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
-      urls[i] = await thumbnailUrlsFrom(urls[i].slice(35));
-    } else if (urls[i].includes("https:/services/img/")) {
-      urls[i] = await thumbnailUrlsFrom(urls[i].slice(20));
-    }
-  }
   urls = [].concat(...urls); // Flatten any urls expanded above
 
 }
@@ -211,13 +205,6 @@ async function _imgUrlOrStream(name, urls, cb) {
     } else { // This includes ArchiveMember
       urls = await p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - can be empty if fail to find any
     }  //Examples: [dweb:/arc/archive.org/services/foo]
-    for (let i in urls) { // This can get used if /services/xx passed in here, then converted to dweb:/arc/archive.org/services
-      if (urls[i].includes("dweb:/arc/archive.org/services/img/")) {
-        urls[i] = await thumbnailUrlsFrom(urls[i].slice(35));
-      } else if (urls[i].includes("https:/services/img/")) {
-        urls[i] = await thumbnailUrlsFrom(urls[i].slice(20));
-      }
-    }
     urls = [].concat(...urls); // Flatten any urls expanded above
     // Step 2: Split into file / magnet / stream / other
     urls = await DwebTransports.p_resolveNames(urls); // Resolves names as validFor doesnt currently handle names
