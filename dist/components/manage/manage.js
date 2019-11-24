@@ -17,7 +17,7 @@ class Manage {
     const head = document.getElementsByTagName('head')[0]
     const e = document.createElement('link')
     e.media = 'screen'
-    e.href = `/components/manage/manage.css`
+    e.href = '/components/manage/manage.css'
     e.type = 'text/css'
     e.rel = 'stylesheet'
     head.appendChild(e)

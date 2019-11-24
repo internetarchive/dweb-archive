@@ -94,6 +94,10 @@ body.br-ui-embed .BRcontainer {
   text-align: center;
 }
 
+.BRnavCntlBtm.BRup, .BRnavCntlBtm.BRdn {
+  display: none;
+}
+
 /* EXPERIMENT: removing the show/hide button */
 /*
 .BRnavCntlBtm {
