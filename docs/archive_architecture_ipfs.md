@@ -57,7 +57,7 @@ These queries will gradually be migrated to decentralized services where possibl
     * Includes list of files, including, for each file except the metadata.xml file, a sha1
 * Metadata for each item,
     * Retrievable by  https://www-dweb-metadata.dev.archive.org/metadata/xxx to rebuild
-    * consists of above with additional fields added by gateway for item: magnetlink, thumbnaillinks
+    * consists of above with additional fields added by gateway for item: magnetlink
     * And for each file: contenthash (sha1 as multihash), magnetlink:
 * Metadata for each file.
     * e.g. https://dweb.archive.org/metadata/commute/commute.avi
@@ -73,7 +73,6 @@ These queries will gradually be migrated to decentralized services where possibl
     * e.g. [https://dweb.archive.org/advancedsearch?output=json&q=prelinger&rows=75&sort\[\]=item_size&and\[\]=mediatype=movie]
     * Follows the same syntax as the above direct IA search, which it calls
     * Returns the same data with additional fields for each result
-        * thumbnaillinks - thumbnails for the item (see metadata notes)
         * collection0title - name of primary collection
         * collection0thumbnaillinks - thumbnails for that collection (on IPFS, contenthash, direct etc)
     * Will also create a Leaf record for each item <TO BE IMPLEMENTED> so client doesn’t need to return to Archive for metadata

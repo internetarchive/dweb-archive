@@ -36,7 +36,7 @@ This file contains a lot of processing of names, here is a summary, taking note 
 
   p_resolveUrls - asynchronous used by resolveImageUrls & p_loadStream
     [url*]  -> [ p_resolveUrls(url)*]
-    ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/services/img/IDENTIFIER
+    ArchiveMember -> AM.urls() -> GATEWAY/services/img/IDENTIFIER
     ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/download/IDENTIFIER/FILENAME ] (possible extra roundtrip if not populated
     //AAA             -> https://AAA
     [.]/AAA       (warning if not /search* /services* /detail*)
@@ -48,7 +48,7 @@ This file contains a lot of processing of names, here is a summary, taking note 
   resolveImageUrls - asynchronous used by _imgUrlOrStream
     ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/download/IDENTIFIER/FILENAME ] (possible extra roundtrip if not populated, exclude magnet if __ia_thumb.jpg)
     [url*]  -> [ p_resolveUrls(url)*]
-    ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/services/img/IDENTIFIER
+    ArchiveMember -> AM.urls() -> GATEWAY/services/img/IDENTIFIER
     ArchiveFile       -> error
     //AAA             -> https://AAA
     [.]/AAA       (warning if not /search* /services* /detail*)
@@ -56,8 +56,8 @@ This file contains a lot of processing of names, here is a summary, taking note 
                   DWEB-> dweb://arc/archive.org/AAA
     [.]/services/img/IDENTIFIER
                   MIRR-> MIRROR/services/img/IDENTIFIER
-                  DWEB-> ARCHIVEITEM.metadata.thumbnaillinks via next line
-    dweb://arc/archiveorg/services/img/IDENTIFIER -> ARCHIVEITEM.metadata.thumbnaillinks
+                  DWEB-> ??? ITS CHANGED
+    dweb://arc/archiveorg/services/img/IDENTIFIER -> ??? ITS CHANGED
     PPP://AAA/BBB     -> PPP://AAA/BBB
 
  */
@@ -125,8 +125,8 @@ function p_resolveUrls(url, cb) { //TODO check callers can now use cb
         if (err) { cb(err) } else { cb(null, [].concat(...res)) } // Flatten, for now accept there might be dupes
       });
     } else if (url instanceof ArchiveMember) {  // Its a member, we want the urls of the images
-      // ArchiveMember -> AM.urls() -> AM.thumbnaillinks || GATEWAY/services/img/IDENTIFIER
-      url.urls(cb);                           // This will be fast - just thumbnaillinks or services, wont try and ask gateway for metadata and IPFS ima
+      // ArchiveMember -> AM.urls() -> GATEWAY/services/img/IDENTIFIER
+      url.urls(cb);   // This will be fast - just services, wont try and ask gateway for metadata and IPFS ima
     } else if (url instanceof ArchiveFile) {
       // ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/download/IDENTIFIER/FILENAME ]
       url.urls(cb);                           // This could be slow, may have to get the gateway to cache the file in IPFS
@@ -134,12 +134,6 @@ function p_resolveUrls(url, cb) { //TODO check callers can now use cb
       cb(null, resolveUrls(url));        // Synchronous code will work
     }
   }
-}
-
-async function thumbnailUrlsFrom(identifier) {
-  // Return thumbnail links
-  //itemid
-  return await new ArchiveItem({identifier}).thumbnaillinks()
 }
 
 async function bufferedFile(name, urls) {
@@ -459,4 +453,4 @@ function preprocessDescription(description) {
 }
 
 //Not exporting relativeurl as not used
-export { resolveUrls, p_resolveUrls, thumbnailUrlsFrom, getImageURI, loadImg, p_loadStream, transportStatusAndProps, preprocessDescription }
+export { resolveUrls, p_resolveUrls, getImageURI, loadImg, p_loadStream, transportStatusAndProps, preprocessDescription }
