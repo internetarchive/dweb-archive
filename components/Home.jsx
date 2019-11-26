@@ -1,5 +1,5 @@
 import React from "react";
-import { AnchorDetails, AnchorSearch, I18nSpan, I18n, I18nIcon } from '@internetarchive/ia-components/dweb-index';
+import { AnchorDetails, AnchorSearch, I18nSpan, I18n, I18nStr, I18nIcon } from '@internetarchive/ia-components/dweb-index';
 
 /**
  * <HomeWelcomeLinkIcon
@@ -94,94 +94,93 @@ class HomeBanner extends React.Component {
               <HomeWelcomeLink identifier="image" iconochive="iconochive-image" itle="Image" sronly="image" size="3.3M"/>
               <HomeWelcomeLink identifier="etree" iconochive="iconochive-etree" title="Concerts" sronly="etree" size="206K"/>
               <HomeWelcomeLink query="mediatype:collection" iconochive="iconochive-collection" title="Collections" sronly="collection" size="522K"/>
-       </center>
-     </div>
-     {/* TODO check and fix this searchbar see https://github.com/internetarchive/dweb-archive/issues/161
-     <div>
-       <div className="searchbar searchbar-home">
-         <form className="form search-form js-search-form"
-               id="searchform"
-               method="get"
-               role="search"
-               action="https://archive.org/searchresults.php"
-               data-event-form-tracking="Home|SearchForm"
-               data-wayback-machine-search-url="https://web.archive.org/web/* /">
-           <div className="form-group" style={{position:"relative"}}>
-             <div style={{position:"relative"}}>
-            <span style={{position:"absolute", left: "4px", top: "7px", color: "#999", fontSize: "125%"}}>
-              <I18nSpan className="sr-only" en="search"/></span>
-               <input className="form-control input-sm roundbox20 js-search-bar" size="25" name="search"
-                      placeholder="Search" type="text" value="" style={{fontSize:"125%" paddingLeft:"30px"}}
-                      onClick="$(this).css('padding-left','').parent().find('.iconochive-search').hide()"
-                      aria-controls="search_options"
-                      aria-label={I18nStr("Search the Archive. Filters and Advanced Search available below.")}"
-               />
-             </div>
+            </center>
+          </div>
+           {/* TODO-SEARCH check and fix this searchbar see https://github.com/internetarchive/dweb-archive/issues/161 */}
 
-             <div
-               id="search_options"
-               className="search-options js-search-options"
-               aria-expanded="false"
+           <div>
+             <div className="searchbar searchbar-home">
+               <form className="form search-form js-search-form"
+                     id="searchform"
+                     method="get"
+                     role="search"
+                     action="https://archive.org/searchresults.php"
+                     data-event-form-tracking="Home|SearchForm"
+                     data-wayback-machine-search-url="https://web.archive.org/web/* /">
+                 <div className="form-group" style={{position:"relative"}}>
+                   <div style={{position:"relative"}}>
+                     <span aria-hidden="true">
+                      <span className="iconochive-search" style={{position:"absolute", left: "4px", top: "7px", color: "#999", fontSize: "125%"}}>
+                        <I18nSpan className="sr-only" en="search"/></span>
+                     </span>
+                     <input className="form-control input-sm roundbox20 js-search-bar" size="25" name="search"
+                            placeholder="Search" type="text" value="" style={{fontSize:"125%", paddingLeft:"30px"}}
+                            onClick={() => {$(this).css('padding-left','').parent().find('.iconochive-search').hide()}}
+                            aria-controls="search_options"
+                            aria-label={I18nStr("Search the Archive. Filters and Advanced Search available below.")}
+                      />
+                   </div>
+                   <div
+                     id="search_options"
+                     className="search-options js-search-options"
+                     aria-expanded="false"
                aria-label={I18nStr("Search Options")}
-               data-keep-open-when-changed="true"
-             >
-               <fieldset>
-                 <label>
-                   <input
-                     type="radio"
-                     name="sin"
-                     value=""
-                     checked
+                     data-keep-open-when-changed="true"
                    >
-                     <span>Search metadata</span>
-                 </label>
-                 <label>
-                   <input
-                     type="radio"
-                     name="sin"
-                     value="TXT"
-                   >
-                     <span>Search text contents</span>
-                 </label>
-                 <label>
-                   <input
-                     type="radio"
-                     name="sin"
-                     value="TV"
-                   >
-                     <span>Search TV news captions</span>
-                 </label>
-                 <label>
-                   <input
-                     type="radio"
-                     name="sin"
-                     value="WEB"
-                   >
-                     <span>Search archived web sites</span>
-                 </label>
-               </fieldset>
+                     <div className="pre-search-options"></div>
+                     <fieldset>
+                       <label>
+                         <input
+                           type="radio"
+                           name="sin"
+                           value=""
+                           checked
+                         />
+                           <span>Search metadata</span>
+                       </label>
+                       <label>
+                         <input
+                           type="radio"
+                           name="sin"
+                           value="TXT"
+                         />
+                           <span>Search text contents</span>
+                       </label>
+                       <label>
+                         <input
+                           type="radio"
+                           name="sin"
+                           value="TV"
+                         />
+                           <span>Search TV news captions</span>
+                       </label>
+                       <label>
+                         <input
+                           type="radio"
+                           name="sin"
+                           value="WEB"
+                         />
+                           <span>Search archived web sites</span>
+                       </label>
+                     </fieldset>
+                     <a
+                       href="/advancedsearch.php"
+                       className="search-options__advanced-search-link"
+                       onClick={()=>{return AJS.advanced_search(this)}}
+                     >Advanced Search</a>
+                   </div>
 
-               <a
-                 href="https://archive.org/advancedsearch.php"
-                 className="search-options__advanced-search-link"
-                 onClick="return AJS.advanced_search(this)"
-               >Advanced Search</a>
+                   <button className="btn btn-gray label-primary input-sm" type="submit">GO</button>
+                   <input type="hidden" name="limit" value="100"/>
+                   <input type="hidden" name="start" value="0"/>
+                   <input type="hidden" name="searchAll" value="yes"/>
+                   <input type="hidden" name="submit" value="this was submitted"/>
+                 </div>
+               </form>
              </div>
-
-             <button className="btn btn-gray label-primary input-sm" type="submit">GO</button>
-             <input type="hidden" name="limit" value="100"/>
-             <input type="hidden" name="start" value="0"/>
-             <input type="hidden" name="searchAll" value="yes"/>
-             <input type="hidden" name="submit" value="this was submitted"/>
            </div>
-           <!--/.form-group -->
-         </form>
-       </div>
-       <!--/.searchbar-->
-     </div>
-    */}
-   <br clear="all" className="clearfix"/>
-   </div>
+           <br clear="all" className="clearfix"/>
+          </div>
    {/* TODO Add announcements if/when can find an API for them
     <div className="col-sm-3 hero-right">
      <div className="hidden-sm hidden-md hidden-lg" style={{height:"50px}}></div>
