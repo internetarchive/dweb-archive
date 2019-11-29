@@ -221,6 +221,9 @@ async function _imgUrlOrStream(name, urls, cb) {
             createReadStream: await DwebTransports.p_f_createReadStream(streamUrls)
             // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
           }
+          // Special case just one http or https url - e.g. when going to mirror. Note we've canonicalized it above so nothing gained by passing to DwebTransports
+          : ((urls.length === 1) && urls[0].startsWith('http'))
+          ? urls[0]
           : // Otherwise fetch the file to buffer and return file for rendermedia
           //TODO this is inefficient, its going to fetch in one go, store in buffer return stream to buffer then to blob ... short cut it but do incrementally as problems with this code before
           await bufferedFile(name, urls)  // { name, createReadStream: f(opts=>buff) }

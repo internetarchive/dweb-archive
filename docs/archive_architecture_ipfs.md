@@ -74,7 +74,6 @@ These queries will gradually be migrated to decentralized services where possibl
     * Follows the same syntax as the above direct IA search, which it calls
     * Returns the same data with additional fields for each result
         * collection0title - name of primary collection
-        * collection0thumbnaillinks - thumbnails for that collection (on IPFS, contenthash, direct etc)
     * Will also create a Leaf record for each item <TO BE IMPLEMENTED> so client doesn’t need to return to Archive for metadata
 
 ### Content
