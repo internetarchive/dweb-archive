@@ -1,72 +1,107 @@
 import React from 'react';
 import { CherModal } from './CherModal';
 import { BookReaderDwebWrapper } from './BookReaderWrapper';
-import { AnchorDownload, Carousel, IAReactComponent, ImageDweb, I18nSpan, I18n, I18nStr } from '@internetarchive/ia-components/dweb-index';
+import { AnchorDownload, Carousel, ImageDweb, I18nStr } from '@internetarchive/ia-components/dweb-index';
 import TheatreControls from "./TheatreControls";
 import { AudioDweb, VideoDweb, WebTorrentStats } from "./AudioVideo";
-import { config } from "../Util";
 
 /**
- * A collection of theatres for embedding in Details page
- *
- * Each theatre has a similar structure, especially the outer "theatre-ia" DIV
- * TODO refactor out that outer structure
+ * A collection of theatres for embedding in Details page*
  */
 
-class BookReaderTheatre extends IAReactComponent {
-  /**
-   * <BookReaderTheatre
-   *   mediatype="texts"
-   *   identifier=IDENTIFIER
-   *   creator=Metadata.creator
-   *   title=STRING
-   *   item=ARCHIVEITEM
-   *   disconnected=BOOL (disables some bookreader functionality
-   * />
-   */
+/**
+ * <TheatreIAWrap
+ *    chermodal=BOOL          true to display cherModal UI
+ *    controls=BOOL           true to display mediatype dependent controls
+ *    disconnected=BOOL       (disables some cherModal functionality
+ *    identifier=IDENTIFIER
+ *    mediatype=STRING        from metadata
+ *    creator=STRING          from metadata
+ *    title=STRING            from metadata
+ * >
+ *  ... children
+ * </TheatreIAWrap>
+ */
+class TheatreIAWrap extends React.Component {
+  render() {
+    return (
+      <div id="theatre-ia" className="container">
+        <div className="row">
+          <div className="xs-col-12">
+            { !this.props.controls ? null :
+              <TheatreControls identifier={this.props.identifier} mediatype={this.props.mediatype} />
+            }
+            {this.props.children}
+            {this.props.disconnected ? null :
+              <CherModal identifier={this.props.identifier}
+                         creator={this.props.creator}
+                         mediatype={this.props.mediatype}
+                         title={this.props.title}/>
+            }
+            { !this.props.marginBottom ? null :
+              <center style={{color: "white", marginBottom: this.props.marginBottom}}>
+              </center>
+            }
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+/**
+ * <BookReaderTheatre
+ *   mediatype="texts"
+ *   identifier=IDENTIFIER
+ *   creator=Metadata.creator
+ *   title=STRING
+ *   item=ARCHIVEITEM
+ *   disconnected=BOOL (disables some bookreader & cherModal functionality
+ * />
+ */
+class BookReaderTheatre extends React.Component {
+  // Dont need binding as not accessing this
   componentDidMount() {
-    super.componentDidMount();
     AJS.theatresize();
   }
   componentDidUpdate() {
-    super.componentDidUpdate();
     AJS.theatresize();
   }
   render() {
     return (
       <>
-        {/* TODO this link is broken figure out what it should be as its not rlative to here */}
+        {/* TODO this link is broken figure out what it should be as its not relative to here */}
         <link href="/archive/bookreader/BookReader-ia.css" rel="stylesheet" type="text/css"/>
-        <div id="theatre-ia" className="container">
-          <div className="row">
-            <div className="xs-col-12">
-              <TheatreControls identifier={this.props.identifier} mediatype={this.props.mediatype} />
+        <TheatreIAWrap controls={true} chermodal={true} marginBottom="10px"
+                       mediatype={this.props.mediatype} identifier={this.props.identifier} disconnected={this.props.disconnected} creator={this.props.creator} title={this.props.title}>
               <BookReaderDwebWrapper item={this.props.item} page={this.props.page} disconnected={this.props.disconnected}/>
-              { this.props.disconnected ? null :
-                <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
-              }
-              <center style={{color:"white", marginBottom:"10px"}}>
-              </center>
-            </div>
-          </div>
-        </div>
+        </TheatreIAWrap>
       </>
     );
   }
 }
-class CarouselTheatre extends IAReactComponent {
-  // Props: identifier, slides, creator, mediatype, title disconnected
+/**
+ * <CarouselTheatre
+ *   mediatype="images"
+ *   identifier=IDENTIFIER
+ *   creator=Metadata.creator
+ *   title=STRING
+ *   item=ARCHIVEITEM
+ *   slides=ARRAY       of slides - see <Carousel>
+ *   disconnected=BOOL (disables some bookreader & cherModal functionality
+ * />
+ */
+class CarouselTheatre extends React.Component {
   constructor(props) {
     super(props);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
   }
   componentDidMount() {
-    super.componentDidMount();
     this.componentDidMountOrUpdate()
   }
+  // noinspection JSUnusedLocalSymbols
   componentDidUpdate(oldProps, oldState, snapshot) {
-    super.componentDidUpdate(oldProps, oldState, snapshot);
     this.componentDidMountOrUpdate()
   }
   componentDidMountOrUpdate() {
@@ -76,44 +111,44 @@ class CarouselTheatre extends IAReactComponent {
 
   render() {
     return (
-        <div id="theatre-ia" className="container">
-          <div className="row">
-            <div className="xs-col-12">
-              <div id="theatre-controls"></div>
+      <TheatreIAWrap controls={false} chermodal={true} marginBottom="10px"
+                     mediatype={this.props.mediatype} identifier={this.props.identifier} disconnected={this.props.disconnected} creator={this.props.creator} title={this.props.title}>
+              <div id="theatre-controls"/>
               <Carousel identifier={this.props.identifier} slides={this.props.slides} disconnected={this.props.disconnected}/>
-              {this.props.disconnected ? null :
-                <CherModal identifier={this.props.identifier} creator={this.props.creator}
-                           mediatype={this.props.mediatype} title={this.props.title}/>
-              }
-              <center style={{color:"white", marginBottom: "10px"}}>
-              </center>
-            </div>
-          </div>
-        </div>
+      </TheatreIAWrap>
     );
   }
 }
 
-class AudioTrack extends IAReactComponent {
-  /**
-   * <AudioTrack
-   *  EITHER source=ARCHIVEFILE
-   *  OR src=URL
-   *  trackNumber=INT
-   *  prettyDuration=STRING
-   *  playing=BOOL
-   * />
-   *
-   */
+/**
+ * <AudioTrack
+ *  EITHER source=ARCHIVEFILE
+ *  OR src=URL
+ *  trackNumber=INT
+ *  prettyDuration=STRING
+ *  playing=BOOL
+ *  disconnected=BOOL       (disables some cherModal functionality
+ *  identifier=IDENTIFIER
+ *  mediatype=STRING        from metadata
+ *  creator=STRING          from metadata
+ *  title=STRING            from metadata
+ * />
+ *
+ */
+class AudioTrack extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onClick = this.onClick.bind(this);
+  }
 
-  clickCallable(el) {
+  onClick(ev) {
     // Note - this is redirected from Nav which is a global
     this.props.theatre.setState({trackPlaying: this.props.trackNumber});
-    return false; // Dont follow link
+    ev.preventDefault(); // Prevent it going to the anchor (equivalent to "return false" in non-React
   }
 
   render() { return (
-    <a href="#" key={this.props.trackNumber} source={this.props.source} onClick={this.onClick}>
+    <a href="#" key={this.props.trackNumber} onClick={this.onClick}>
       <div className={this.props.playing ? "jwrowV2 playing" : "jwrowV2" }>
         <b>{this.props.trackNumber}</b>
         <span className="ttl">{this.props.title}</span> - <span className="tm">{this.props.prettyDuration}</span>
@@ -123,25 +158,23 @@ class AudioTrack extends IAReactComponent {
   )}
 }
 
-class AudioTheatre extends IAReactComponent {
-  /**
-   * <AudioTheatre
-   *    identifier=string mediatype='audio'|'etree' creator=string title=string    All from metadata
-   *    imgsrc=ARCHIVEFILE
-   *    playlist={PLAYLIST}
-   *    initialPlay=INT
-   */
+/**
+ * <AudioTheatre
+ *    identifier=string mediatype='audio'|'etree' creator=string title=string    All from metadata
+ *    imgsrc=ARCHIVEFILE
+ *    playlist={PLAYLIST}
+ *    initialPlay=INT
+ */
+class AudioTheatre extends React.Component {
   constructor(props) {
     super(props);
-    this.setState({trackPlaying: this.props.initialPlay});
+    this.state = {trackPlaying: this.props.initialPlay};
   }
   render() {
     let trackCount = 0; // First count is called 1, so initialPlay=1 plays first track
     return (
-    <div id="theatre-ia" className="container">
-      <div className="row">
-        <div className="xs-col-12"  >
-          <TheatreControls identifier={this.props.identifier} mediatype={this.props.mediatype}/>
+      <TheatreIAWrap controls={true} chermodal={true}
+                     mediatype={this.props.mediatype} identifier={this.props.identifier} disconnected={this.props.disconnected} creator={this.props.creator} title={this.props.title}>
           <div className="row">
             {!this.props.imgsrc ? null :
               <div className="col-xs-12 col-sm-6 col-md-5 col-lg-4 audio-image-carousel-wrapper">
@@ -156,7 +189,7 @@ class AudioTheatre extends IAReactComponent {
                 <AudioDweb id="streamContainer" controls
                            source={this.props.playlist[this.state.trackPlaying-1].sources[0].urls}/>
               </div>
-              <div id="webtorrentStats" style={{color: "white", textAlign: "center"}}></div>
+              <div id="webtorrentStats" style={{color: "white", textAlign: "center"}}/>
               <div id="jw6__list" className="jwlistV2"
                    style={{width: "100%", margin: "auto", maxHeight: "240px", overflowX: "hidden", overflowY: "auto"}}>
                 <div className="row" id="tracklist">
@@ -189,13 +222,7 @@ class AudioTheatre extends IAReactComponent {
               </div>
             </div>
           </div>
-          {this.props.disconnected ? null :
-            <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype}
-                       title={this.props.title}/>
-          }
-        </div>
-      </div>
-    </div>
+      </TheatreIAWrap>
   )};
 }
 
@@ -209,24 +236,16 @@ class AudioTheatre extends IAReactComponent {
  *   source=ARCHIVEFILE
  * />
  */
-class VideoTheatre extends IAReactComponent {
+class VideoTheatre extends React.Component {
   render() { return (
-    <div id="theatre-ia" className="container">
-      <div className="row">
-        <div className="xs-col-12">
-          <TheatreControls identifier={this.props.identifier} mediatype={this.props.mediatype}/>
+    <TheatreIAWrap controls={true} chermodal={true}
+                   mediatype={this.props.mediatype} identifier={this.props.identifier} disconnected={this.props.disconnected} creator={this.props.creator} title={this.props.title}>
           <div id="videoContainerX" style={{textAlign: "center"}}>
             {/* This videothumbnailurl is http since if getting decentralized there is little value compared to loading video itself */}
-            <VideoDweb id="streamContainer" source={this.props.source} poster={this.props.poster} controls></VideoDweb>
+            <VideoDweb id="streamContainer" source={this.props.source} poster={this.props.poster} controls/>
           </div>
           <WebTorrentStats style={{color: "white", textAlign: "center"}} torrentfile={window.WEBTORRENT_FILE} torrent={window.WEBTORRENT_TORRENT}/>
-          { this.props.disconnected ? null :
-            <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype}
-                     title={this.props.title}/>
-          }
-        </div>
-      </div>
-    </div>
+    </TheatreIAWrap>
   ); }
 }
 
@@ -242,15 +261,12 @@ class VideoTheatre extends IAReactComponent {
  *   disconnected=BOOL
  * />
  */
-class ImageTheatre extends IAReactComponent {
+class ImageTheatre extends React.Component {
 
   render() {
     return ( //TODO compare this with Carousel.jsx
-      <div id="theatre-ia" className="container">
-        <div className="row">
-          <div className="xs-col-12">
-            <TheatreControls identifier={this.props.identifier} mediatype={this.props.mediatype}/>
-
+      <TheatreIAWrap controls={true} chermodal={true}
+                     mediatype={this.props.mediatype} identifier={this.props.identifier} disconnected={this.props.disconnected} creator={this.props.creator} title={this.props.title}>
             <div className="details-carousel-wrapper">
               <section
                 id="ia-carousel"
@@ -300,13 +316,8 @@ class ImageTheatre extends IAReactComponent {
               </section>
             </div>
             {/* Script tags moved into the JS*/}
-            <div id="webtorrentStats" style={{color: "white", textAlign: "center"}}></div>
-            { this.props.disconnected ? null :
-              <CherModal identifier={this.props.identifier} creator={this.props.creator} mediatype={this.props.mediatype} title={this.props.title}/>
-            }
-          </div>
-        </div>
-      </div>
+            <div id="webtorrentStats" style={{color: "white", textAlign: "center"}}/>
+      </TheatreIAWrap>
     );
   }
 }
@@ -318,25 +329,23 @@ class ImageTheatre extends IAReactComponent {
  *   ...
  * </MessageTheatre>
  */
-class MessageTheatre extends IAReactComponent {
+class MessageTheatre extends React.Component {
   // Props: title children
 
   render() {
     return (
-      <div id="theatre-ia" className="container">
-        <div className="row">
-          <div className="xs-col-12">
-            <TheatreControls identifier={this.props.identifier} mediatype={metadata.mediatype}/>
+      <TheatreIAWrap controls={true} chermodal={false}
+                     mediatype={this.props.mediatype} identifier={this.props.identifier} disconnected={this.props.disconnected} creator={this.props.creator} title={this.props.title}>
             <div className="row" style={{color: "white"}}>
               <div className="col-md-10 col-md-offset-1 no-preview">
                 <p className="theatre-title">{this.props.title}</p>
                 {this.props.children}
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+      </TheatreIAWrap>
   ); }
 }
 
 export { BookReaderTheatre, CarouselTheatre, MessageTheatre, AudioTheatre, ImageTheatre, VideoTheatre }
+
+// Code Review by Mitra 2019-11-29 excluding HTML and move to IAUX
