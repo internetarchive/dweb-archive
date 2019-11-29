@@ -237,14 +237,14 @@ class SearchSortBar extends React.Component {
           <div className="hidden-md hidden-lg">
             <select className="ikind-mobile form-control" onChange={()=>AJS.ikind_mobile_change(this)}>
               {this.props.identifier ? null : // Dont show on collections
-                <option data-id="relevance" selected="selected"><I18nSpan en="RELEVANCE"/></option>
+                <option data-id="relevance" selected="selected">{I18nStr("RELEVANCE")}</option>
               }
-              <option data-id="views"><I18nSpan en="VIEWS"/></option>
-              <option data-id="title"><I18nSpan en="TITLE"/></option>
-              <option data-id="date-archived"><I18nSpan en="DATE ARCHIVED"/></option>
-              <option data-id="date-published"><I18nSpan en="DATE PUBLISHED"/></option>
-              <option data-id="date-reviewed"><I18nSpan en="DATE REVIEWED"/></option>
-              <option data-id="creator"><I18nSpan en="CREATOR"/></option>
+              <option data-id="views">{I18nStr("VIEWS")}</option>
+              <option data-id="title">{I18nStr("TITLE")}</option>
+              <option data-id="date-archived">{I18nStr("DATE ARCHIVED")}</option>
+              <option data-id="date-published">{I18nStr("DATE PUBLISHED")}</option>
+              <option data-id="date-reviewed">{I18nStr("DATE REVIEWED")}</option>
+              <option data-id="creator">{I18nStr("CREATOR")}</option>
             </select>
           </div>
         </div>
