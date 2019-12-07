@@ -97,7 +97,7 @@ class HomeBanner extends React.Component {
             </center>
           </div>
            {/* TODO-SEARCH check and fix this searchbar see https://github.com/internetarchive/dweb-archive/issues/161 */}
-
+           {/*
            <div>
              <div className="searchbar searchbar-home">
                <form className="form search-form js-search-form"
@@ -179,6 +179,7 @@ class HomeBanner extends React.Component {
                </form>
              </div>
            </div>
+           */}
            <br clear="all" className="clearfix"/>
           </div>
    {/* TODO Add announcements if/when can find an API for them
