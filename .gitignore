@@ -1,6 +1,7 @@
 /node_modules
 /includes/node_modules
 dist/bookreader/BookReader
+dist/epubreader
 dist/dweb-transports-bundle.js
 dist/dweb-objects-bundle.js
 *.swp
