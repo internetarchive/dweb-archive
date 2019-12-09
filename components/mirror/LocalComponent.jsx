@@ -5,7 +5,7 @@ const debug = require('debug')('dweb-archive:LocalComponent');
 import waterfall from 'async/waterfall';
 
 import {TileGrid} from "@internetarchive/ia-components/dweb-index.js";
-import {gatewayServer, ObjectDeeperAssign}  from '@internetarchive/dweb-archivecontroller/Util';
+import { ObjectDeeperAssign }  from '@internetarchive/dweb-archivecontroller/Util';
 import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 import {CommonWelcomeComponent} from "./CommonComponent";
 import {NavWrap, I18nStr, I18nSpan } from '@internetarchive/ia-components/dweb-index';
@@ -72,7 +72,7 @@ class LocalItem extends IAReactComponent {
     this.state.members = this.props.item.membersFav || []; // Lets assume they are in membersFav not membersSearch
     // Called by React when the Loading... div is displayed
     if (!this.state.members.length) {
-      const urlConfig = [gatewayServer(), "info"].join('/');
+      const urlConfig = [DwebArchive.mirror, "info"].join('/');
       let tasks; // hydrated after info fetched
       waterfall([
         // TODO move the hydration to fetch_metadata - see https://github.com/internetarchive/dweb-mirror/issues/211
@@ -132,7 +132,7 @@ class LocalItem extends IAReactComponent {
         {/*Replaces banner() in Search) */}
         <CommonWelcomeComponent
           title={I18nStr("Resources")}
-          byline={I18nStr("crawled by")+" " + gatewayServer()}
+          byline={I18nStr("crawled by")+" " + DwebArchive.mirror}
           description=""
         />
         <div className="container container-ia nopad">

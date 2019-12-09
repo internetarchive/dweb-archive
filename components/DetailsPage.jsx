@@ -1,5 +1,5 @@
 import React from 'react';
-import {gateway, gatewayServer, specialidentifiers, ObjectMap} from "@internetarchive/dweb-archivecontroller/Util";
+import {specialidentifiers, ObjectMap} from "@internetarchive/dweb-archivecontroller/Util";
 import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageTheatre, VideoTheatre} from "./Theatres";
 import {AnchorDownload, NavWrap, DetailsAbout, DownloadDirectoryDiv, I18nSpan, I18nStr} from '@internetarchive/ia-components/dweb-index';
 import RelatedItemsWrapper from './RelatedItemsWrapper';
@@ -57,8 +57,10 @@ class DetailsIAWrap extends React.Component {
           }
           { !["movies"].includes(this.props.mediatype) ? null :
             <>
-              <link itemProp="contentUrl" href={`${gatewayServer()}/download/${this.props.identifier}/${this.props.playlist[0].sources[0].name}`}/>
-              <link itemProp="embedUrl" href={`${gatewayServer()}/download/${this.props.identifier}/${this.props.playlist[0].orig}`}/>
+              <link itemProp="contentUrl" href={DwebTransports.httpFetchUrl( DwebTransports.resolveNames(
+                `https://archive.org/download/${this.props.identifier}/${this.props.playlist[0].sources[0].name}`))}/>
+              <link itemProp="embedUrl" href={DwebTransports.httpFetchUrl( DwebTransports.resolveNames(
+                `https://archive.org/download/${this.props.identifier}/${this.props.playlist[0].orig}`))}/>
               <meta itemProp="duration" content={`PT0M${parseInt(this.props.playlist[0].duration)}S`}/>
             </>
           }
@@ -205,7 +207,7 @@ class DetailsWork extends React.Component {
     }
   }
   render() {
-    const semiTitle = I18nStr(DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive");
+    const semiTitle = I18nStr(DwebArchive.mirror ? "Offline Internet Archive" : "Decentralized Internet Archive");
     document.title = `${this.props.identifier} : ${semiTitle}`;
     return (
     <>

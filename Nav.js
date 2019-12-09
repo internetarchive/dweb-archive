@@ -2,7 +2,7 @@ const canonicaljson = require('@stratumn/canonicaljson');
 import ReactDOM from "react-dom";
 import React from "react";
 // Other IA repositories
-import { homeQuery, ObjectFilter } from "@internetarchive/dweb-archivecontroller/Util";
+import { homeQuery, ObjectFilter, specialidentifiers } from "@internetarchive/dweb-archivecontroller/Util";
 import {I18nSpan, currentISO, getLanguage} from '@internetarchive/ia-components/dweb-index';
 //const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 // This repository
@@ -141,7 +141,7 @@ export default class Nav {
         await item.fetch_query({noCache})
         renderPage({item});
       } else if (["local","settings"].includes(identifier)) { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
-        item = new ArchiveBase({itemid: identifier, metaapi: {}})
+        item = new ArchiveBase({itemid: identifier, metaapi: {metadata: specialidentifiers[identifier]}})
         renderPage({item});
       } else {
         item = new ArchiveBase({itemid: identifier, page, download, noCache});

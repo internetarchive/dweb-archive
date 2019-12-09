@@ -55,7 +55,7 @@ Build (webpack) the bundles and copy needed files to dist/
 
 ## See related:
 
-* [Archive.org](https://dweb.archive.org/details) bootstrap into the Archive's page
+* [Archive.org](https://dweb.archive.org) bootstrap into the Archive's page
 * [Examples](https://dweb.me/examples) examples
 
 ### Repos:

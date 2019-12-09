@@ -94,7 +94,7 @@ class Page extends React.Component {
     if (isSearch) {
       const query = item && item.query;
       //TODO figure out what this is doing, and replace with AnchorSearch etc
-      AJS.date_switcher(
+      AJS.date_switcher( // TODO-DM242 unclear how/if this works or if so whether to use archive.org or mirror urls
         (mediatype === "collection")
           ? `&nbsp;<a href="/search.php?query=${query}&amp;sort=-publicdate"><div class="date_switcher in">${I18nStr("Date Archived")}</div></a> <a href="/search.php?query=${query}&amp;sort=-date"><div class="date_switcher">${I18nStr("Date Published")}</div></a> <a href="/search.php?query=${query}&amp;sort=-reviewdate"><div class="date_switcher">${I18nStr("Date Reviewed")}</div></a> `
           : `&nbsp;<a href="https://dweb.archive.org/search/${encodeURIComponent(query) + "?sort=-publicdate"}" onclick='${Nav.onclick_search({

@@ -12,7 +12,7 @@ import from2 from "from2";
 import RenderMedia from "render-media";
 import waterfall from "async/waterfall";
 import throttle from "throttleit";
-import { ArchiveMember, ArchiveFile, ArchiveItem, formats, gatewayServer, upstreamPrefix } from "@internetarchive/dweb-archivecontroller";
+import { ArchiveMember, ArchiveFile, ArchiveItem, formats } from "@internetarchive/dweb-archivecontroller";
 const debug = require('debug')('dweb-archive:ReactSupport');
 var streamToBlobURL = require('stream-to-blob-url'); //TODO-BOOKREADER try as import
 
@@ -307,7 +307,7 @@ function transportStatusAndProps(cb) {
         // Pass on status of Mirror talking to gateway instead of ours.
         cb2(null, httpStatus.info)
       } else {
-        const infoUrl = [gatewayServer(), "info"].join('/');
+        const infoUrl = [DwebArchive.mirror || "https://dweb.archive.org", "info"].join('/'); //TODO-DM242 where is /info in future
         DwebTransports.httptools.p_GET(infoUrl, {}, cb2);
       } // Note an error in contacting Mirror will skip to end and not update
     }], (err, info) => {
@@ -435,7 +435,7 @@ async function p_loadStream(el, urls, { name=undefined, cb=undefined, preferredT
           // TODO clean this nasty kludge up,
           // Find a HTTP transport if connected, then ask it for the URL (as will probably be contenthash) note it leaves non contenthash urls untouched
           // TODO if start seeing failures with wrong urls e.g. http://ipfs.io etc then may want to do a HEAD in p_httpfetchurl to check
-          const httpurl = await DwebTransports.p_httpfetchurl(urlsresolved);
+          const httpurl = DwebTransports.httpFetchUrl(urlsresolved);
           if (httpurl) {
             el.src = httpurl;
           } else {
@@ -460,9 +460,8 @@ function preprocessDescription(description) {
   return !description ? description
     : (Array.isArray(description) ? description.join('<br/>') : description)
       .replace('\n', '<br/>')
-      .replace(/src=(['"])http:\/\/www.archive.org\//gi, 'src=$1' + upstreamPrefix() + '/') // src="/  absolute urls
-      .replace(/src=(['"])\//gi, 'src=$1' + upstreamPrefix() + '/'); // src="/  absolute urls
-
+      .replace(/src=(['"])http:\/\/www.archive.org\//gi, 'src=$1/') // src="/  absolute urls become root-relative (works on mirror or dweb.archive.org)
+      // .replace(/src=(['"])\//gi, 'src=$1' + upstreamPrefix() + '/'); // src="/  root relative urls
 }
 
 //Not exporting relativeurl as not used

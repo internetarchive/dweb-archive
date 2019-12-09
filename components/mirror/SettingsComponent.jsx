@@ -4,7 +4,6 @@ const debug = require('debug')('dweb-archive:SettingsComponent');
 import prettierBytes from 'prettier-bytes';
 
 import waterfall from 'async/waterfall';
-import {gatewayServer}  from '@internetarchive/dweb-archivecontroller/Util';
 import {CommonWelcomeComponent} from "./CommonComponent";
 import {IAReactComponent, NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig} from '@internetarchive/ia-components/dweb-index';
 
@@ -46,7 +45,7 @@ class SettingsCrawlLI extends IAReactComponent {
     this.empty = this.empty.bind(this);
   }
   _crawlbutton(buttonname) {
-    DwebTransports.httptools.p_GET(`${gatewayServer()}/admin/crawl/${buttonname}/${this.props.id}`, (err, res) => {
+    DwebTransports.httptools.p_GET(`${DwebArchive.mirror}/admin/crawl/${buttonname}/${this.props.id}`, (err, res) => {
       this.setState({crawl: res});
     });
 
@@ -133,7 +132,7 @@ class SettingsCrawlsComponent extends IAReactComponent {
     this.state.crawls = this.props.crawls; // Maybe undefined
     // Called by React when the Loading... div is displayed
     if (!this.state.crawls) {
-      const urlCrawls = [gatewayServer(), "admin/crawl/status"].join('/');
+      const urlCrawls = [DwebArchive.mirror, "admin/crawl/status"].join('/');
       waterfall([
           cb => DwebTransports.httptools.p_GET(urlCrawls, {}, cb),
           // There may be more here , if not then simplify waterfall
@@ -181,7 +180,7 @@ class SettingsInfo extends IAReactComponent {
 
   constructor(props) {
     super(props);
-    const urlInfo = [gatewayServer(), "info"].join('/');
+    const urlInfo = [DwebArchive.mirror, "info"].join('/');
     waterfall([
         cb => DwebTransports.httptools.p_GET(urlInfo, {}, cb),
         // There may be more here , if not then simplify waterfall
@@ -280,7 +279,7 @@ class SettingsItem extends IAReactComponent {
         {/*Replaces banner() in Search) */}
         <CommonWelcomeComponent
           title={I18nStr("Settings")}
-          byline={I18nStr("on") + " " + gatewayServer()}
+          byline={I18nStr("on") + " " + DwebArchive.mirror}
           description=""
         />
         <div className="container container-ia nopad">

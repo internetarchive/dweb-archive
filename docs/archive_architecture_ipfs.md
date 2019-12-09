@@ -22,7 +22,7 @@ The current setup consists of ...
 * Kubernetes cluster with:
     * a server running
         * Nginx providing HTTPS and routing as required
-        * A gateway server (dweb.me & dweb.archive.org) running in Python with a consistent URL syntax.
+        * A gateway server (dweb.me & dweb.archive.org) running in Python
         * A IPFS instance running urlstore on same machine as above
         * A Torrent tracker and client
         * Other local servers will also be added to the same machine
@@ -38,9 +38,9 @@ The current setup consists of ...
 
 Clients navigate to resources by three methods (Browse, Search or by external URLS including ItemIDs)
 
-All queries are JSON based and all access to the IA production servers goes through gateway.dweb.me so we can add content to the output, perform extra services, and mitigate CORS issues.
+All queries are JSON based and go via dweb.archive.org, microservices or direct to archive.org
 
-These queries will gradually be migrated to decentralized services where possible, and remaining functionality on gateway.dweb.me will be gradually integrated into production servers.
+These queries will gradually be migrated to decentralized services where possible, and remaining functionality on dweb.me/dweb.archive.org will be gradually integrated into production servers.
 
 ### Data architecture consists of:
 
@@ -60,7 +60,7 @@ These queries will gradually be migrated to decentralized services where possibl
     * consists of above with additional fields added by gateway for item: magnetlink
     * And for each file: contenthash (sha1 as multihash), magnetlink:
 * Metadata for each file.
-    * e.g. https://dweb.archive.org/metadata/commute/commute.avi
+    * e.g. https://www-dweb-metadata.dev.archive.org/metadata/metadata/commute/commute.avi
     * This is the same as the File component of above, except that when the metadata is requested by a user,
     the file is urlstored to IPFS and an ipfs link is added to the metadata.
 

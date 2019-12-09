@@ -3,7 +3,6 @@ import React from 'react';
 
 //import { fetch } from '../web_modules/whatwg-fetch.js';
 //import URLSearchParams from '../web_modules/@ungap/url-search-params.js';
-import {gatewayServer} from '@internetarchive/dweb-archivecontroller/Util.js';
 import Throttler from '../util/throttler.js';
 
 // Typical items can be found with https://archive.org/search.php?query=collection%3Aradio-archive%20AND%20format%3A%22JSON%20SRT%22&scope=all
@@ -238,9 +237,10 @@ class RadioPlayerController extends LitElement {
     const collectionIdentifier = metadata.metadata.collection[0];
     const srtFile = metadata.files.find((file) => file.format === 'JSON SRT');
     this.fileName = srtFile.name;
-    const logoUrl = DwebArchive
-      ? [gatewayServer(), 'services/img', collectionIdentifier].join('/')
-      : `https://archive.org/services/img/${collectionIdentifier}`;
+    const logoBaseUrl = `https://archive.org/services/img/${collectionIdentifier}`;
+    const logoUrl = DwebTransports
+      ? DwebTransports.httpFetchUrl( DwebTransports.resolveNames(logoBaseUrl))
+      : logoBaseUrl;
     this.radioPlayerConfig = new RadioPlayerConfig(
       metadata.metadata.contributor,
       metadata.metadata.start_localtime || metadata.metadata.start_time,

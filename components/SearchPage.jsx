@@ -514,19 +514,19 @@ class ComboSearchWrap extends React.Component {
      */
     // Note also used by Home, but not by Account
     const item = this.props.item;
-    document.title = `${item.query} ${item.sort.join(' ')} : ${I18nStr(DwebArchive.mirror ? "Universal Library" : "Decentralized Internet Archive")}`;
+    document.title = `${item.query} ${item.sort.join(' ')} : ${I18nStr(DwebArchive.mirror ? "Offline Internet Archive" : "Decentralized Internet Archive")}`;
     const mediatype = item.metadata ? item.metadata.mediatype : "search";
     const identifier = item.itemid;
     return (
-      (mediatype === "collection")
-          ? <CollectionWrap item={item} {...this.props.statuses}/>
-          : (mediatype === "account")
-            ? <AccountWrap item={item} {...this.props.statuses}/>
-            : (identifier === "local")
-              ? <LocalItem item={item} {...this.props.statuses}/>
-              : (identifier === "settings")
-                ? <SettingsItem item={item} {...this.props.statuses}/>
-                : <SearchWrap item={item} {...this.props.statuses}/>
+      (identifier === "local")
+      ? <LocalItem item={item} {...this.props.statuses}/>
+      : (identifier === "settings")
+      ? <SettingsItem item={item} {...this.props.statuses}/>
+      : (mediatype === "collection")
+      ? <CollectionWrap item={item} {...this.props.statuses}/>
+      : (mediatype === "account")
+      ? <AccountWrap item={item} {...this.props.statuses}/>
+      : <SearchWrap item={item} {...this.props.statuses}/>
     );
   }
 

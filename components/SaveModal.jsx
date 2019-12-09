@@ -1,7 +1,6 @@
 /* global DwebTransports */
 import React from 'react';
 import {I18nSpan, I18nStr, I18nIcon} from '@internetarchive/ia-components/dweb-index';
-import {gatewayServer} from '@internetarchive/dweb-archivecontroller/Util';
 const debug = require('debug')('SaveModal');
 
 /**
@@ -16,7 +15,7 @@ const debug = require('debug')('SaveModal');
  * Behavior: onClicked will submit a URL that causes the gateway to save the item to the directory specified.
  *
  * state {
- *   url: the full URL to be submitted   GATEWAYSERVER/admin/crawl/add/IDENTIFIER?copyDirectory=PATH
+ *   url: the full URL to be submitted   MIRROR/admin/crawl/add/IDENTIFIER?copyDirectory=PATH
  * }
  */
 class SaveDirectory extends React.Component {
@@ -24,7 +23,7 @@ class SaveDirectory extends React.Component {
     super(props);
     this.onClick = this.onClick.bind(this);
     //state change safe since the SaveDirectory is rebuilt each time its key changes (which includes identifier), so catches new identifiers
-    const url = new URL('/admin/crawl/add', gatewayServer())
+    const url = new URL('/admin/crawl/add', DwebArchive.mirror)
     url.searchParams.append("copyDirectory", this.props.name);
     ["query", "identifier"].forEach( k => { if (this.props[k]) url.searchParams.set(k, this.props[k]); }); // maybe add search and related here in future
     this.state = {url: url.href};

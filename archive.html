@@ -77,14 +77,14 @@
             mirror = "http://" + mirror;
           }
           const transports = searchparams.getAll("transport");
-          DwebArchive.mirror = mirror || null; // So DwebArchive can check it locally, must be before gatewayServer call below (null check turns "" into null)
+          DwebArchive.mirror = mirror || null; // So DwebArchive can check it locally (null check turns "" into null)
           return {
             statuselement: document.getElementById("dweb-status"),
-            http: {urlbase: DwebArchive.gatewayServer()},
+            http: {urlbase: (mirror && !(mirror === null)) ? mirror : "https://dweb.archive.org"}, //TODO-DM242 how is this used
             transports,
             defaulttransports: (mirror && !(mirror === null)) ? ["HTTP"] : ["HTTP", "WEBTORRENT", "IPFS", "GUN"],
             paused: searchparams.getAll("paused"),
-            mirror: mirror,                                 // Careful with this, gatewayServer will return dweb.archive.org if mirror undefined
+            mirror: mirror,
           }
         }
         function _opts(searchparams, transportsOptions) {
