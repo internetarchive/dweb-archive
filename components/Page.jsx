@@ -3,7 +3,7 @@ import { ComboSearchWrap } from "./SearchPage";
 import { DetailsWork, DetailsMessage } from "./DetailsPage";
 import { SaveModal } from "./SaveModal";
 import { I18nStr } from '@internetarchive/ia-components/dweb-index';
-import { transportStatusAndProps, preprocessDescription } from "../ReactSupport";
+import { transportNowAndWhenChanges, transportListenerClear, preprocessDescription } from "../ReactSupport";
 
 const mediatype2Schema = {
   audio: "AudioObject",
@@ -35,26 +35,22 @@ class Page extends React.Component {
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
   }
 
-  checkAndUpdateStatus() {
-    transportStatusAndProps((err, statuses) => { // { transportStatuses, mirror2gateway, disconnected, directories, transportsClickable }
-      if (!err) {
-        this.setState({statuses}); // disconnected etc
-      }
-    })
-  }
   load(unusedEl) {
     DwebArchive.page = this;
   }
   componentDidMount() {
     //DwebArchive.page = this;
-    this.componentDidMountOrUpdate()
-    this.checkAndUpdateStatus();
+    this.componentDidMountOrUpdate();
+    this.listeningWith = transportNowAndWhenChanges((err, statuses) => { // { transportStatuses, mirror2gateway, disconnected, directories, transportsClickable }
+      if (!err) {
+        this.setState({statuses}); // disconnected etc
+      }
+    })
   }
-
+  componentWillUnmount() {
+    transportListenerClear(this.listeningWith);
+  }
   componentDidUpdate(oldProps, oldState, snapshot) {
-    if ((this.state.item !== oldState.item) || (this.state.message !== oldState.message)) {
-      this.checkAndUpdateStatus();
-    }
     this.componentDidMountOrUpdate()
   }
 

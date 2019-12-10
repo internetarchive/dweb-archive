@@ -283,13 +283,26 @@ async function getImageURI(name, urls, cb) {
   }
 }
 
+function transportNowAndWhenChanges(cb) {
+  // call Callback now
+  transportStatusAndProps(cb);
+  // and each time status changes
+  const f = (event) => transportStatusAndProps(cb);
+  DwebTransports.addEventListener("statuschanged", f);
+  return f; // So transportListenerClear can unwind it
+}
+function transportListenerClear(f) {
+  DwebTrasnports.removeEventListener("statuschanged", f);
+}
+
 function transportStatusAndProps(cb) {
   /**
    * This function checks on the status of the transport layer,
    * and returns an object with various status indicators that the UI can use.
    *
+   * It only does any http activity IFF we are connected to a mirror, AND http status isn't returning info (i.e. its not polling)
+   *
    */
-  // TODO-DWEBNAV need to tell Transports to set this status when changes
   waterfall([
     cb1 => DwebTransports.p_statuses(cb1),      // e.g. [ { name: HTTP: status: 0 }* ]
     (transportStatuses, cb2) => {
@@ -306,8 +319,8 @@ function transportStatusAndProps(cb) {
       } else if (httpStatus.info) { // If DwebTransports is getting info then no need to request again
         // Pass on status of Mirror talking to gateway instead of ours.
         cb2(null, httpStatus.info)
-      } else {
-        const infoUrl = [DwebArchive.mirror || "https://dweb.archive.org", "info"].join('/'); //TODO-DM242 where is /info in future
+      } else { // Connected to mirror, want upstream
+        const infoUrl = DwebArchive.mirror + "/info"; //TODO-DM242 where is /info in future
         DwebTransports.httptools.p_GET(infoUrl, {}, cb2);
       } // Note an error in contacting Mirror will skip to end and not update
     }], (err, info) => {
@@ -317,10 +330,12 @@ function transportStatusAndProps(cb) {
         debug('transportStatusAndProps interpreting error as failure: %s', err.message );
         cb(null, {mirror2gateway: false, disconnected: true, transportStatuses: [{name: "MIRROR", status: 1}]})
       } else {
+        // Copy info.transportStatues as edit iit impacts the check for it changing in TransportHTTP
+        const transportStatuses = info.transportStatuses.map(s => Object.assign({},s));
         if (DwebArchive.mirror) {
-          (info.transportStatuses.find(s => s.name === "HTTP") || {}).name = "GATEWAY";
+          (transportStatuses.find(s => s.name === "HTTP") || {}).name = "GATEWAY";
         }
-        const httpstatus = info.transportStatuses.find(s=> s.name==='HTTP' || s.name==="GATEWAY");
+        const httpstatus = transportStatuses.find(s=> s.name==='HTTP' || s.name==="GATEWAY");
         // Can mirror see gateway (used for Reload button on dweb-mirror)
         const mirror2gateway = DwebArchive.mirror && httpstatus && (httpstatus.status === 0)
         cb(null, {
@@ -328,7 +343,7 @@ function transportStatusAndProps(cb) {
           // If using mirror, and mirror offline dont display stuff mirror doesnt have
           // if !mirror (e.g. dweb.archive.org) never disconnected as can try IPFS/WebTorrent etc
           disconnected: DwebArchive.mirror && !mirror2gateway,
-          transportStatuses: info.transportStatuses,  // Now set to those of Mirror
+          transportStatuses: transportStatuses,  // Now set to those of Mirror
           directories: info.directories, // For save modal
           transportsClickable: !DwebArchive.mirror // Cant click transports if connected to Mirror
         });
@@ -465,4 +480,4 @@ function preprocessDescription(description) {
 }
 
 //Not exporting relativeurl as not used
-export { resolveUrls, getImageURI, p_loadStream, transportStatusAndProps, preprocessDescription }
+export { resolveUrls, getImageURI, p_loadStream, transportNowAndWhenChanges, transportStatusAndProps, transportListenerClear, preprocessDescription }
