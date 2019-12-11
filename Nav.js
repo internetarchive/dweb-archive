@@ -9,6 +9,7 @@ import {I18nSpan, currentISO, getLanguage} from '@internetarchive/ia-components/
 import ArchiveBase from './ArchiveBase';
 import {Page} from "./components/Page";
 const debug = require('debug')('dweb-archive:Nav');
+const each = require('async/each');
 
 function pushHistory(...optss) {
     //Note opts should NOT be urlencoded, it can be URLSearchParams in which case handled specially
@@ -180,31 +181,32 @@ export default class Nav {
     return ObjectFilter(combinedOpts, (k, unusedV) => !persistentState.includes(k)); // return any opts not persistent
   }
 
+  /**
+   * Create object based on options passed in URL - this is only called from archive.html
+   * Gets language file if required
+   *
+   * opts {
+   *  query:  query as string "foo", object {collection:foo, title:bar} or string 'collection:"foo" AND title:"bar"'
+   *  sort: STRING
+   *  identifier||item: STRING (item is deprecated)
+   *  download:  True or 1 if want download directory instead
+   *  Anything else is passed to factory
+   */
+
   static metaFactory(opts) {
-    getLanguage(currentISO(this.state.lang || "en"), (err) => {
-    // If lang set, then make sure in currentISO and fetch from server (reqd by archive.html before page loaded in metafactory)
-      if (err) {
-        debug("ERROR cannot set language to %s falling back to english: %o", this.state.lang, err);
-        getLanguage(currentISO('en'), (err) => {
-          this._metafactory(opts);
-        });
-      } else {
+    getLanguage("en", (unusedErr) => { // Always get english - needed in case strings are missing from language.
+      getLanguage(currentISO(this.state.lang || 'en'), (err) => { // Get language used (getLanguage won't duplicate fetch if it is 'en')
+        // If lang set, then make sure in currentISO and fetch from server (reqd by archive.html before page loaded in metafactory)
+        if (err) {
+          debug("ERROR cannot set language to %s falling back to english: %o", this.state.lang, err);
+          currentISO('en');
+        }
         this._metafactory(opts);
-      };
-    })
+      });
+    });
   }
   static _metafactory(opts) {
-    /**
-     * Create object based on options passed in URL - this is only called from archive.html
-     *
-     * opts {
-     *  query:  query as string "foo", object {collection:foo, title:bar} or string 'collection:"foo" AND title:"bar"'
-     *  sort: STRING
-     *  identifier||item: STRING (item is deprecated)
-     *  download:  True or 1 if want download directory instead
-     *  Anything else is passed to factory
-     */
-      //TODO maybe dont need this metafactory, and can do at the body level and/or write Page in archive.html
+    //TODO maybe dont need this metafactory, and can do at the body level and/or write Page in archive.html
     const destn = document.getElementById('main'); // Blank window (except Nav) as loading
     const message=<I18nSpan en="LOADING STARTING"/>;
     const els = <Page message={message}/>;
