@@ -1,5 +1,6 @@
 import React from 'react';
 import {RelatedItems} from '@internetarchive/ia-components/dweb-index.js';
+const debug = require('debug')('RelatedItemsWrapper');
 
 //Note this component is a bridge from ArchiveBase.js to a IAUX React Component (that wants not to be dependent on archivecontroller,
 
@@ -21,24 +22,22 @@ export default class RelatedItemsWrapper extends React.Component {
     super(props); //identifier, members, item
     this.state = {member: this.props.members}; // Maybe undefined, but has to be in .state so can change
     // called via ref=this.load when the component is loaded, triggers async load via API if .members undefined
-    if (this.props.identifier && this.props.item && !this.state.members) {
-      this.state = {loading: true};
-      this.props.item.relatedItems({wantStream:false, wantMembers:true, noCache: this.props.noCache}, (err, members) => {
-        if (!err) { // If there is an error then relatedItems() will have reported it, and can just ignore it here and not display
+  }
+  fetchRelated(item) {
+    if (!this.state.loading) { // Dont run twice in parallel - it will fail !
+      this.setState({loading: true});
+      item.relatedItems({wantStream: false, wantMembers: true, noCache: this.props.noCache}, (err, members) => {
+        if (err) {
+          // If there is an error then relatedItems() will have reported it, and can just ignore it here and not display
+          // debug("retrieval failed for %s: %s", item.itemid,err.message);
+        } else if (item !== this.props.item) {
+          // Dont update if item has changed while relatedItems running
+          debug("retrieval rejected because item changed from %s to %s", item.itemid, this.props.item.itemid);
+        } else {
           this.setState({members: members, loading: false});
         }
       });
     }
-  }
-  fetchRelated(item) {
-    this.setState({loading: true});
-    item.relatedItems({wantStream:false, wantMembers:true, noCache: this.props.noCache}, (err, members) => {
-      if (!err && (item === this.props.item)) {
-        // If there is an error then relatedItems() will have reported it, and can just ignore it here and not display
-        // Dont update if item has changed while relatedItems running
-        this.setState({members: members, loading: false});
-      }
-    });
   }
   componentDidMount() {
     if (this.props.identifier && this.props.item && !this.state.members) {
