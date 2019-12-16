@@ -1,6 +1,6 @@
 const debug = require('debug')("BookReaderDwebWrapper");
 import React from "react";
-import { IAReactComponent, BookReaderJSIAWrapper, BookReaderWrapper, I18nSpan } from '@internetarchive/ia-components/dweb-index';
+import { BookReaderJSIAWrapper, BookReaderWrapper, I18nSpan } from '@internetarchive/ia-components/dweb-index';
 import RawBookReaderResponse from '@internetarchive/dweb-archivecontroller/RawBookReaderResponse';
 
 //TODO-BOOK note all the <script> tags added to archive.html for this, some may be able to be moved here
@@ -19,7 +19,7 @@ https://docs.google.com/presentation/d/1dhDAUjob6oSVWJsuShviW7qkiEou2RlJOsO5QIaE
  *   disconnected=BOOL true if cant see upstream server (so disable search)
  * />
  */
-class BookReaderDwebWrapper extends IAReactComponent {
+class BookReaderDwebWrapper extends React.Component {
     /* Notes:
      assumption is that item has  .bookreader { data, brOptions, lendingInfo }
 
@@ -31,6 +31,7 @@ class BookReaderDwebWrapper extends IAReactComponent {
 
     constructor(props) {
         super(props);
+        this.state = {};
     }
   // SEE-IDENTICAL-CODE-IN: BookReaderWrapper, AlbumTheatre
   fetchAndUpdateState() {
@@ -40,11 +41,9 @@ class BookReaderDwebWrapper extends IAReactComponent {
       });
     }
     componentDidMount() {
-      super.componentDidMount();
       this.fetchAndUpdateState(); // Asynchronous
     }
     componentDidUpdate(prevProps, unusedPrevState, unusedSnapshot) {
-      super.componentDidUpdate(prevProps, unusedPrevState, unusedSnapshot);
       if (prevProps.item !== this.props.item) {
         fetchAndUpdateState(); // Asynchronous
       }
@@ -55,13 +54,16 @@ class BookReaderDwebWrapper extends IAReactComponent {
         // Override defaults in BookReaderJSIAWrapper
         //onePage: {autofit: "auto"}, // iBRW uses "height"
         enableSearch: !this.props.disconnected,
+        enableUrlPlugin: true,
         //TODO-URLS support base used by BRW i.e. /bookreader/BookReader/images
         imagesBaseURL: DwebTransports.httpFetchUrl(
           DwebTransports.resolveNames("https://archive.org/bookreader/BookReader/images/")),
         // Options not in BookReaderJSIAWrapper
         urlHistoryBasePath: `\/details\/${this.props.item.itemid}\/`,  // This is use when URL is rewritten to include page
         resumeCookiePath: `\/details\/${this.props.item.itemid}`,
-        urlMode: 'history',
+        // lookign at IDENTIFIER/page/xxx -> history; IDENTIFIER#page -> !history otherwise ???
+        // urlMode: window.location.pathname.length > urlHistoryBasePath.length ? 'history' : 'hash',
+        urlMode: window.location.hash.length > 1 ? undefined : 'history',
         // Only reflect page onto the URL
         urlTrackedParams: ['page'],
         enableBookTitleLink: false,
