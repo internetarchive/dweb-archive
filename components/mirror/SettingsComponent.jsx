@@ -19,7 +19,7 @@ Crawl is: {
   queue: {
     paused:  BOOL,
     length, running, completed: INT
-    workerslist: [  parent: [STRING], debugname, reqUrl || file: {metadata.size} ]
+    workerslist: [  parent: [STRING], debugname || file: {metadata.size} ]
     opts: {}
     initialItemTaskList: []
     errors: []
@@ -79,7 +79,7 @@ class SettingsCrawlLI extends IAReactComponent {
               {crawl.queue.workersList.map(worker =>
                 <li key={worker.debugname}>
                   {worker.parent.join(' > ')} {'>'} {worker.debugname}
-                  { worker.reqUrl // Its a page
+                  { worker.pageParms // Its a page
                       ? null
                       : worker.file  // Its a file
                         ? prettierBytes(parseInt(worker.file.metadata.size))
