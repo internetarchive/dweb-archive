@@ -235,12 +235,13 @@ window.onpopstate = function(event) {
     debug("Going back to: %s %o", document.location, event.state);
     const identifier = event.state && (event.state.itemid || event.state.item || event.state.identifier); // item in URL, itemid legacy, identifier future
     const stateOpts = Object.assign({}, event.state, {wanthistory: false});
-    if (event.state && event.state.query) {
-      // noinspection JSIgnoredPromiseFromCall
-      Nav.navSearch(event.state.query, stateOpts);
-    } else {
-      // noinspection JSIgnoredPromiseFromCall
-      Nav.factory(identifier || "home", stateOpts);
+    if (event.state) {
+      if (event.state.query) {
+        // noinspection JSIgnoredPromiseFromCall
+        Nav.navSearch(event.state.query, stateOpts);
+      } else {
+        // noinspection JSIgnoredPromiseFromCall
+        Nav.factory(identifier || "home", stateOpts);
+      }
     }
-
 };
