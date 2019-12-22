@@ -12,7 +12,7 @@ import from2 from "from2";
 import RenderMedia from "render-media";
 import waterfall from "async/waterfall";
 import throttle from "throttleit";
-import { ArchiveMember, ArchiveFile, ArchiveItem, formats } from "@internetarchive/dweb-archivecontroller";
+import { ArchiveMember, ArchiveFile, ArchiveItem, formats, routed } from "@internetarchive/dweb-archivecontroller";
 const debug = require('debug')('dweb-archive:ReactSupport');
 var streamToBlobURL = require('stream-to-blob-url'); //TODO-BOOKREADER try as import
 
@@ -122,112 +122,47 @@ function p_resolveUrls(url, cb) { //TODO check callers can now use cb
   }
 }
 
-async function bufferedFile(name, urls) {
-  /**
+/* Not currently used, but useful to keep around as cold do ...
+function bufferedFile(name, routedUrls, cb) {
+  /-**
    * fetch the file to a buffer and return the function to slice from it
    * returns: { name, createReadStream: f(opts => buffer)}
-   */
+   *-/
   //TODO-MULTI-GATEWAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
-  const buff = await DwebTransports.p_rawfetch(urls, {timeoutMS: 5000, relay: false});  //Maybe should not time out since streams will almost always get used, and in this case could be a large file and last resort to use a download url.
-  // Logged by Transports
-  return {
+  DwebTransports.fetch(routedUrls, {timeoutMS: 5000, relay: false}, (err, buff)=> {
+    cb(err,  err ? undefined : {
     name: name,
     createReadStream: function (opts={}) {
       return from2([buff.slice(opts.start || 0, opts.end || (buff.length - 1))])
-    }
-  };
-}
-async function bufferedFileAsURL(name, urls) {
+    }});
+  });
+  //Maybe should not time out since streams will almost always get used, and in this case could be a large file and last resort to use a download url.
+*/
+
+function _bufferedFileAsURL(name, routedUrls, cb) {
   /**
    * fetch the file to a buffer and return the function to slice from it
    * returns: { name, createReadStream: f(opts => buffer)}
    */
     //TODO-MULTI-GATEWAY need to set relay: true once IPFS different CIDs (hashes) from browser/server adding
   const mimetype = formats("ext", path.extname(name).toLowerCase(), {first: true}).mimetype;
-  const buff = await DwebTransports.p_rawfetch(urls, {timeoutMS: 5000, relay: false});  //Maybe should not time out since streams will almost always get used, and in this case could be a large file and last resort to use a download url.
-  const blob = new Blob([buff], {type: mimetype} );
-  const url = URL.createObjectURL(blog);
-  return url.href;
-}
-
-/*
-async function OBS_imgUrlOrStream(name, urls, cb) { // TODO dont delete till new getImageURI tested
-  /-**
-   *
-   * This is asynchronous converts urls in various formats to either a "file" data structure or a url
-   * Note that it uses this multi-type response because consumer can then optimise display for a URL if appropriate
-   *
-   * Step 1: canonicalize URLs
-   * Step 2: Split into file / magnet / stream / other
-   * Step 3: Setup to fetch (or in some cases fetch, buffer and pass pointer to buffer)
-   * returns: { name, createReadStream: f(opts=>buff) } OR URL (which may be a blob URL)
-   * After: URL stuffed into img.src, or file passed to Render.render
-
-  //TODO rewrite this to use callbacks internally instead of await
-  Some cases of interest
-  /services/img/foo with rel=["dweb:/arc/archive.org/"] > "dweb:/arc/archive.org/services/img/  special case > metadata>thumbnailimg
-   *-/
-  try {
-    // Step 1: canonicalize URLs
-    debug("Loading Image %s from %o", name, urls);
-    urls = await p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - always an array, can be empty if fail to find any
-    if (urls instanceof ArchiveFile && urls.name() === "__ia_thumb.jpg") {
-      // Dont use magnet urls on __ia_thumb.jpg as opens many webtorrents and fails when tiling TODO this could be a parameter
-      urls = urls.filter(u => !u.includes("magnet:"));
-    }  //Examples: [https:archive.org/services/foo]
-    // Step 2: Split into file / magnet / stream / other
-    urls = await DwebTransports.p_resolveNames(urls); // Resolves names and canonicalize as validFor doesnt currently handle names
-    // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
-    let fileurl = urls.find(u => u.startsWith("file"));
-    let magneturl = urls.find(u => u.includes('magnet:'));
-    let streamUrls = await DwebTransports.p_urlsValidFor(urls, "createReadStream");
-    streamUrls = streamUrls.filter(u => !u.href.startsWith("ipfs:")); // IPFS too unreliable (losing data, no errors) to use for streams esp for thumbnails
-    // Step 3: Return as url or { name: createReadStream(f(range opts)=>stream)
-    cb(null,
-      fileurl
-        ? fileurl
-        : ((DwebTransports.type === "ServiceWorker") && magneturl) //TODO-MIRROR could possible pick up here as well
-        ? magneturl.replace('magnet:', `${window.origin}/magnet/`)
-        : streamUrls.length
-          //TODO merge getImageURI and _imgUrlOrStream but careful as mixing cb's and awaits. its not as obvious as it looks.
-          ? {
-            name: name,
-            // Initiate a stream, & return a f({start, end}) => readstream
-            createReadStream: await DwebTransports.p_f_createReadStream(streamUrls)
-            // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
-          }
-          // Special case just one http or https url - e.g. when going to mirror. Note we've canonicalized it above so nothing gained by passing to DwebTransports
-          : ((urls.length === 1) && urls[0].startsWith('http'))
-          ? urls[0]
-          : // Otherwise fetch the file to buffer and return file for rendermedia
-          //TODO this is inefficient, its going to fetch in one go, store in buffer return stream to buffer then to blob ... short cut it but do incrementally as problems with this code before
-          await bufferedFile(name, urls)  // { name, createReadStream: f(opts=>buff) }
-    );
-  } catch(err) {
-    debug("ERROR: Unable to _imgUrlOrStream %s %s %o", name, urls, err.message, err);
-    cb(null, "/images/Broken_document.png");
-  }
-}
-
-function getImageURI_OLD(name, urls, cb) { // Fork of p_loadImg to use Render instead of append
-  /-*
-  TODO maybe merge _imgUrlOrStream into here if only place used
-  TODO This is being obsoleted by new getImageURI below - BUT that isnt fully tested, especially fetching files via dweb URLs
-  *-/
-  _imgUrlOrStream(name, urls,  // Errors handled inside, and error image url returned
-    (unusedErr, res) => {
-      if (typeof res === "string") {
-        cb(null, res);
-      } else { //res is {name, createReadStream: f(opts=>buff)
-        const mimetype = formats("ext", path.extname(name).toLowerCase(), {first: true}).mimetype;
-        streamToBlobURL(res.createReadStream(), // entire file as buffer
-          mimetype, cb)
+  DwebTransports.fetch(routedUrls, {timeoutMS: 5000, relay: false}, (err, buff) => {
+    if (err) {
+      cb(err);
+    } else {
+      try {
+        const blob = new Blob([buff], {type: mimetype});
+        const url = URL.createObjectURL(blog);
+      } catch (err) { // Blob making can be problematic, so catch and throw up
+        debug("Failed to make blob for %o: %s", routedUrls, err.message);
+        cb(err);
       }
-    });
+      cb(null, url.href);
+    }
+  });  //Maybe should not time out since streams will almost always get used, and in this case could be a large file and last resort to use a download url.
 }
-*/
 
-async function getImageURI(name, urls, cb) {
+function getImageURI(name, urls, cb) {
   /**
    *
    * This is asynchronous converts urls in various formats to either a "file" data structure or a url
@@ -246,39 +181,46 @@ async function getImageURI(name, urls, cb) {
   try {
     // Step 1: canonicalize URLs
     debug("Loading Image %s from %o", name, urls);
-    urls = await p_resolveUrls(urls); // Handles a range of urls include ArchiveFile - always an array, can be empty if fail to find any
-    if (urls instanceof ArchiveFile && urls.name() === "__ia_thumb.jpg") {
-      // Dont use magnet urls on __ia_thumb.jpg as opens many webtorrents and fails when tiling TODO this could be a parameter
-      urls = urls.filter(u => !u.includes("magnet:"));
-    }  //Examples: [https:archive.org/services/foo]
-    // Step 2: Split into file / magnet / stream / other
-    urls = await DwebTransports.p_resolveNames(urls); // Resolves names and canonicalize as validFor doesnt currently handle names
-    // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
-    let fileurl = urls.find(u => u.startsWith("file"));
-    let magneturl = urls.find(u => u.includes('magnet:'));
-    let streamUrls = await DwebTransports.p_urlsValidFor(urls, "createReadStream");
-    streamUrls = streamUrls.filter(u => !u.href.startsWith("ipfs:")); // IPFS too unreliable (losing data, no errors) to use for streams esp for thumbnails
-    // Step 3: Return as url or { name: createReadStream(f(range opts)=>stream)
-    if (fileurl) {
-      cb(null, fileurl);
-    } else if (streamUrls.length) {
-      const mimetype = formats("ext", path.extname(name).toLowerCase(), {first: true}).mimetype;
-      DwebTransports.createReadStream(streamUrls, {}, (err, s) => {
-        if (err) {
-          cb(err);
+    p_resolveUrls(urls, (err, resolvedUrls) => { // Handles a range of urls include ArchiveFile - always an array, can be empty if fail to find any
+      if (err) {
+        cb(err);
+      } else {
+        if (urls instanceof ArchiveFile && urls.name() === "__ia_thumb.jpg") {
+          //TODO this looks bogus, cant understand how works since cant filter an ArchiveFile ? Maybe its never called
+          // Dont use magnet urls on __ia_thumb.jpg as opens many webtorrents and fails when tiling TODO this could be a parameter
+          resolvedUrls = resolvedUrls.filter(u => !u.includes("magnet:"));
+        }  //Examples: [https:archive.org/services/foo]
+        // Step 2: Split into file / magnet / stream / other
+        const routedUrls = routed(resolvedUrls); // Route urls including to mirror
+        // Three options - depending on whether can do a stream well (WEBSOCKET) or not (HTTP, IPFS); or local (File:)
+        let fileurl = routedUrls.find(u => u.startsWith("file"));
+        let magneturl = routedUrls.find(u => u.includes('magnet:'));
+        let streamUrls = DwebTransports.urlsValidFor(routedUrls, "createReadStream");
+        streamUrls = streamUrls.filter(u => !u.href.startsWith("ipfs:")); // IPFS too unreliable (losing data, no errors) to use for streams esp for thumbnails
+        // Step 3: Return as url or { name: createReadStream(f(range opts)=>stream)
+        if (fileurl) {
+          cb(null, fileurl);
+        } else if (streamUrls.length) {
+          const mimetype = formats("ext", path.extname(name).toLowerCase(), {first: true}).mimetype;
+          DwebTransports.createReadStream(streamUrls, {}, (err, s) => {
+            if (err) {
+              cb(err);
+            } else {
+              streamToBlobURL(s, mimetype, cb);
+            }
+          });
+          // Special case just one http or https url - e.g. when going to mirror. Note we've canonicalized it above so nothing gained by passing to DwebTransports
+        } else if ((routedUrls.length === 1) && routedUrls[0].startsWith('http')) {
+          cb(null, routedUrls[0]);
+          // Otherwise fetch the file to buffer and return file for rendermedia
         } else {
-          streamToBlobURL(s, mimetype, cb);
-        } });
-    // Special case just one http or https url - e.g. when going to mirror. Note we've canonicalized it above so nothing gained by passing to DwebTransports
-    } else if ((urls.length === 1) && urls[0].startsWith('http')) {
-      cb(null, urls[0]);
-    // Otherwise fetch the file to buffer and return file for rendermedia
-    } else {
-      //TODO this is inefficient, its going to fetch in one go, store in buffer return stream to buffer then to blob ... short cut it but do incrementally as problems with this code before
-      cb(null, await bufferedFileAsURL(name, urls));  // { name, createReadStream: f(opts=>buff) }
-    }
+          //TODO this is inefficient, its going to fetch in one go, store in buffer return stream to buffer then to blob ... short cut it but do incrementally as problems with this code before
+          _bufferedFileAsURL(name, routedUrls, cb); // { name, createReadStream: f(opts=>buff) }
+        }
+      }
+    });
   } catch(err) {
-    debug("ERROR: Unable to _imgUrlOrStream %s %s %o", name, urls, err.message, err);
+    debug("ERROR: Unable to _imgUrlOrStream %s %o %s %o", name, urls, err.message, err);
     cb(null, "/images/Broken_document.png");
   }
 }
@@ -351,14 +293,14 @@ function transportStatusAndProps(cb) {
   })
 }
 
-async function _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) {
+async function _p_loadStreamRenderMedia(el, routedUrls, { name=undefined, preferredTransports=[]} = {}, cb) {
   /*
       Render item by passing a data structure with a stream creating function to the RenderMedia
       See p_loadStream for arguments
    */
   const file = {
     name: name,
-    createReadStream: await DwebTransports.p_f_createReadStream(urls, {preferredTransports})
+    createReadStream: await DwebTransports.p_f_createReadStream(routedUrls, {preferredTransports})
     // Return a function that returns a readable stream that provides the bytes between offsets "start" and "end" inclusive.
     // This function works just like fs.createReadStream(opts) from the node.js "fs" module.
     // f_createReadStream can initiate the stream before returning the function.
@@ -395,25 +337,30 @@ async function _p_loadStreamRenderMedia(el, urls, { name=undefined, cb=undefined
   }
   */
 }
-async function _p_loadStreamFetchAndBuffer(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) {
+function _p_loadStreamFetchAndBuffer(el, routedUrls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) {
   /*
       Render item by fetching a buffer and passing to the RenderMedia
       This is the worst choice, if can't handle as a stream
       See p_loadStream for arguments
    */
-  const buff = await DwebTransports.p_rawfetch(urls);  //Typically will be a Uint8Array, note that this is a fallback to http, only used if streams not available,
-  // currently not timing out which is probably OK since it should always be last choice.
-  const file = {
-    name: name,
-    createReadStream: function (opts) {
-      if (!opts) opts = {};
-      return from2([buff.slice(opts.start || 0, opts.end || (buff.length - 1))])
+  DwebTransports.fetch(routedUrls, (err, buff) => {
+    // currently not timing out which is probably OK since it should always be last choice.
+    if (err) {
+      if (cb) { cb(err); }
+    } else {
+      const file = {
+        name: name,
+        createReadStream: function (opts) {
+          if (!opts) opts = {};
+          return from2([buff.slice(opts.start || 0, opts.end || (buff.length - 1))])
+        }
+      }
+      RenderMedia.render(file, el, cb);  // Render into supplied element
     }
-  };
-  RenderMedia.render(file, el, cb);  // Render into supplied element
+  });  //Typically will be a Uint8Array, note that this is a fallback to http, only used if streams not available,
 }
 
-async function p_loadStream(el, urls, { name=undefined, cb=undefined, preferredTransports=[]} = {}) { //CB version below
+async function p_loadStream(el, urls, { name=undefined, preferredTransports=[]} = {}, cb) { //CB version below
   /*
       More complex strategy. ....
       If the Transports supports urls/createReadStream (webtorrent only at this point) then load it.
@@ -423,49 +370,42 @@ async function p_loadStream(el, urls, { name=undefined, cb=undefined, preferredT
       el: HTML element to load into (the video, img or audio tag)
       urls:   relative or absolute url, array of url, or ArchiveFile i.e. flexible!
       name:   Name of the stream - this is important to something, but I can't remember what
-      cb(err,el):     If present, will be passed to RenderMedia.render and called back on failure or when can play/view the element
+      cb(err,el): Passed to RenderMedia.render and called back on failure or when can play/view the element
   */
-  try {
-    //TODO-MIRROR-ISSUE47 have resolveUrls use Transports.canonicalUrls, and special patterns for rel and rootrel (maybe array of patterns)...
-    //TODO-MIRROR-ISSUE47 ...and then p_resolveNames (or in here) should probably be where we decide these can go to the cache...
-    //TODO-MIRRROR-ISSUE47 ... or merge p_resolveUrls with p_resolveNames into a urls->urls function esp if this pattern reused ...
-    //TODO-MIRROR-ISSUE47 ... but needs to know whether to handle the cache URL as a stream URL or not ...
-    const urlsabs = await p_resolveUrls(urls); // [ url* ] where url is absolute (not root or directory relative)
-    const urlsresolved = await DwebTransports.p_resolveNames(urlsabs); // Allow names among urls
-    // Strategy here ...
-    // If serviceworker && webtorrent => video src=
-    // If can createReadStream (IPFS when fixed; webtorrent) => rendermedia
-    // If http => video src
-    // Default fetch as bytes and
-    if (urlsresolved.length) { // At least one url to try
-      let magneturl = urlsresolved.find(u => u.includes('magnet:'));
-      if ((DwebTransports.type === "ServiceWorker") && magneturl) {
-        el.src = magneturl.replace('magnet:', `${window.origin}/magnet/`);
-      } else {
-        const streamUrls = (await DwebTransports.p_urlsValidFor(urlsresolved, "createReadStream"));
+  p_resolveUrls(urls, (err, urlsabs) => { // [ url* ] where url is absolute (not root or directory relative)
+    if (err) {
+      cb(err);
+    } else {
+      const urlsresolved = routed(urlsabs); // Allow names among urls
+      // Strategy here ...
+      // If serviceworker && webtorrent => video src=
+      // If can createReadStream (IPFS when fixed; webtorrent) => rendermedia
+      // If http => video src
+      // Default fetch as bytes and
+      if (!urlsresolved.length) {
+          // No urls
+          const errString = 'ERROR: ReactSupport.p_loadStream didnt find any resolvable urls - cant load stream';
+          debug(errString);
+          cb(new Error(errString));
+      } else { // At least one url to try
+        const streamUrls = DwebTransports.urlsValidFor(urlsresolved, "createReadStream");
         if (streamUrls.length) {
-          await _p_loadStreamRenderMedia(el, streamUrls, {name, cb, preferredTransports})
+          _p_loadStreamRenderMedia(el, streamUrls, {name, preferredTransports}, cb);
         } else {
           // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
           // TODO clean this nasty kludge up,
           // Find a HTTP transport if connected, then ask it for the URL (as will probably be contenthash) note it leaves non contenthash urls untouched
-          // TODO if start seeing failures with wrong urls e.g. http://ipfs.io etc then may want to do a HEAD in p_httpfetchurl to check
-          const httpurl = DwebTransports.httpFetchUrl(urlsresolved);
+          const httpurl = routed(urlsabs, {wantOneHttp: true});
           if (httpurl) {
             el.src = httpurl;
-          } else {
-            await _p_loadStreamFetchAndBuffer(el, urlsresolved, {name, cb, preferredTransports});
+            cb(null, el);
+          } else { // Worst case, buffer whole file
+            _p_loadStreamFetchAndBuffer(el, urlsresolved, {name, preferredTransports}, cb);
           }
         }
       }
-      el.play();
-    } else { // No urls
-      debug('ERROR: ReactSupport.p_loadStream didnt find any resolvable urls - cant load stream')
     }
-  } catch(err) {
-    console.error("Uncaught error in p_loadStream",err);
-    throw err;
-  }
+  });
 }
 
 function preprocessDescription(description) {

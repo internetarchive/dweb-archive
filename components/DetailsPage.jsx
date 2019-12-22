@@ -1,9 +1,8 @@
 import React from 'react';
-import {specialidentifiers, ObjectMap} from "@internetarchive/dweb-archivecontroller/Util";
+import {specialidentifiers, ObjectMap, routed, ArchiveMember } from "@internetarchive/dweb-archivecontroller";
 import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageTheatre, VideoTheatre} from "./Theatres";
 import {AnchorDownload, NavWrap, DetailsAbout, DownloadDirectoryDiv, I18nSpan, I18nStr} from '@internetarchive/ia-components/dweb-index';
 import RelatedItemsWrapper from './RelatedItemsWrapper';
-import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
 import RadioPlayerControllerReact from './RadioPlayerController';
 import { AlbumTheatre } from './AlbumTheatre';
 /**
@@ -57,11 +56,9 @@ class DetailsIAWrap extends React.Component {
           }
           { !["movies"].includes(this.props.mediatype) ? null :
             <>
-              <link itemProp="contentUrl" href={DwebTransports.httpFetchUrl( DwebTransports.resolveNames(
-                `https://archive.org/download/${this.props.identifier}/${this.props.playlist[0].sources[0].name}`))}/>
-              <link itemProp="embedUrl" href={DwebTransports.httpFetchUrl( DwebTransports.resolveNames(
-                `https://archive.org/download/${this.props.identifier}/${this.props.playlist[0].orig}`))}/>
-              <meta itemProp="duration" content={`PT0M${parseInt(this.props.playlist[0].duration)}S`}/>
+              <link itemProp="contentUrl" href={routed(`https://archive.org/download/${this.props.identifier}/${this.props.playlist[0].sources[0].name}`,
+                { wantOneHttp: true })} />
+              <meta itemProp="duration" content={`PT0M${parseInt(this.props.playlist[0].duration)}S`} />
             </>
           }
           <h1 className="sr-only">{this.props.title}</h1>

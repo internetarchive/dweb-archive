@@ -5,8 +5,8 @@ const debug = require('debug')('dweb-archive:LocalComponent');
 import waterfall from 'async/waterfall';
 
 import {TileGrid} from "@internetarchive/ia-components/dweb-index.js";
-import { ObjectDeeperAssign }  from '@internetarchive/dweb-archivecontroller/Util';
-import ArchiveMember from "@internetarchive/dweb-archivecontroller/ArchiveMember";
+import { ObjectDeeperAssign }  from '@internetarchive/dweb-archivecontroller';
+import { ArchiveMember } from "@internetarchive/dweb-archivecontroller";
 import {CommonWelcomeComponent} from "./CommonComponent";
 import {NavWrap, I18nStr, I18nSpan } from '@internetarchive/ia-components/dweb-index';
 

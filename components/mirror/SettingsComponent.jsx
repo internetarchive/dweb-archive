@@ -59,10 +59,10 @@ class SettingsCrawlLI extends IAReactComponent {
     const crawl = this.state.crawl;
     return (
       <li key={crawl.name}><span className="crawlname">{crawl.name}</span>:
-      <img className="playbutton" onClick={this.restart} src="/archive/images/baseline-fast_rewind-24px.svg" alt="restart"/>
+      <img className="playbutton" onClick={this.restart} src="/images/baseline-fast_rewind-24px.svg" alt="restart"/>
         {crawl.queue.paused
-          ? <img className="playbutton" onClick={this.resume} src="/archive/images/baseline-play_arrow-24px.svg" alt="rewind"/>
-          : <img className="playbutton" onClick={this.pause} src="/archive/images/baseline-pause-24px.svg" alt="pause"/>
+          ? <img className="playbutton" onClick={this.resume} src="/images/baseline-play_arrow-24px.svg" alt="rewind"/>
+          : <img className="playbutton" onClick={this.pause} src="/images/baseline-pause-24px.svg" alt="pause"/>
         }
         {/*<span className="playbutton" onClick={this.empty}>{'X'}</span> -- Not currently showing X*/}
       <ul> {/*TODO Make collapsable*/}

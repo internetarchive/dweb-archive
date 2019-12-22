@@ -60,10 +60,11 @@ Build (webpack) the bundles and copy needed files to dist/
 
 ### Repos:
 * *dweb-transports:* Common API to underlying transports (http, webtorrent, ipfs, yjs)
-* *dweb-objects:* Object model for Dweb inc Lists, Authentication, Key/Value, Naming and example html for these
+* *dweb-objects:* Object model for Dweb inc Lists, Authentication, Key/Value and example html for these
 * *dweb-serviceworker:* Run Transports in ServiceWorker (experimental)
 * *dweb-archive:* Decentralized Archive webpage and bootstrapping
 * *dweb-transport:* Original Repo, still has some half-complete projects
+* *dweb-archivecontroller:* Object model for archive, includes routing table
 
 ## Directory structure here
 * dist - where files needed by dweb-transport are located

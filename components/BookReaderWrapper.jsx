@@ -1,7 +1,7 @@
 const debug = require('debug')("BookReaderDwebWrapper");
 import React from "react";
 import { BookReaderJSIAWrapper, BookReaderWrapper, I18nSpan } from '@internetarchive/ia-components/dweb-index';
-import RawBookReaderResponse from '@internetarchive/dweb-archivecontroller/RawBookReaderResponse';
+import { RawBookReaderResponse, routed } from '@internetarchive/dweb-archivecontroller';
 
 //TODO-BOOK note all the <script> tags added to archive.html for this, some may be able to be moved here
 /*
@@ -56,8 +56,8 @@ class BookReaderDwebWrapper extends React.Component {
         enableSearch: !this.props.disconnected,
         enableUrlPlugin: true,
         //TODO-URLS support base used by BRW i.e. /bookreader/BookReader/images
-        imagesBaseURL: DwebTransports.httpFetchUrl(
-          DwebTransports.resolveNames("https://archive.org/bookreader/BookReader/images/")),
+        imagesBaseURL: routed('https://archive.org/bookreader/BookReader/images/',
+            { wantOneHttp: true }),
         // Options not in BookReaderJSIAWrapper
         urlHistoryBasePath: `\/details\/${this.props.item.itemid}\/`,  // This is use when URL is rewritten to include page
         resumeCookiePath: `\/details\/${this.props.item.itemid}`,
@@ -70,9 +70,8 @@ class BookReaderDwebWrapper extends React.Component {
         bookUrlText: null,
         initialSearchTerm: null,
         //getPageURI: {}, //TODO-BOOKREADER make this use dweb to fetch see getImageURI
-        thumbnail:  DwebTransports.httpFetchUrl(
-          // Note this was "localhost:4244" || 'https://archive.org' so check this works or special case TODO-DM242
-          DwebTransports.resolveNames(`https://archive.org/download/${this.props.item.itemid}/page/cover_t.jpg`))   // Unfortunately bookread.js appends protocol so we cant control it here
+        thumbnail:  routed(`https://archive.org/download/${this.props.item.itemid}/page/cover_t.jpg`, { wantOneHttp: true }),
+        // Unfortunately bookread.js appends protocol so we cant control it here
         // Note archive.org/download/xx/page/cover_t.jpg redirects to e.g.  https://ia601600.us.archive.org/BookReader/BookReaderPreview.php?id=xx&itemPath=%2F27%2Fitems%2Fxx&server=ia601600.us.archive.org&page=cover_t.jpg
       }
       return  !this.state.jsia

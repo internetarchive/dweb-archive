@@ -2,9 +2,8 @@ const canonicaljson = require('@stratumn/canonicaljson');
 import ReactDOM from "react-dom";
 import React from "react";
 // Other IA repositories
-import { homeQuery, ObjectFilter, specialidentifiers } from "@internetarchive/dweb-archivecontroller/Util";
+import { homeQuery, ObjectFilter, specialidentifiers } from "@internetarchive/dweb-archivecontroller";
 import {I18nSpan, currentISO, getLanguage} from '@internetarchive/ia-components/dweb-index';
-//const DwebTransports = require('./Transports'); Not "required" because available as window.DwebTransports by separate import
 // This repository
 import ArchiveBase from './ArchiveBase';
 import {Page} from "./components/Page";

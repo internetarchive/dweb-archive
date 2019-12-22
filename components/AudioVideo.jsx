@@ -1,6 +1,6 @@
 import React from 'react';
 import prettierBytes from "prettier-bytes";
-import { ObjectFilter } from '@internetarchive/dweb-archivecontroller/Util.js';
+import { ObjectFilter } from '@internetarchive/dweb-archivecontroller';
 import { IAReactComponent, I18nSpan} from '@internetarchive/ia-components/dweb-index';
 import {config} from "../Util";
 import {p_loadStream} from "../ReactSupport";
@@ -23,10 +23,10 @@ const debug = require('debug')('dweb-archive:Video Components');
 class _AVDweb extends IAReactComponent {
   loadAV() {
     p_loadStream(this.avElement, this.props.source, {
-      name: this.props.source.metadata.name,
-      preferredTransports: config.preferredAVtransports
-    });
-
+        name: this.props.source.metadata.name,
+        preferredTransports: config.preferredAVtransports
+      },
+      (err, el) => { if (el) el.play(); });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {

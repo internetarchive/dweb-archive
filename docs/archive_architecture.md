@@ -13,16 +13,7 @@ Last edited to match reality 14 August 2018
 
 
 ## Major Components
-### Bootloader
 
-* It lives in dweb-archive/bootloader.html or an extension currently in dweb-ext but moving into the Wayback extension
-* Process:
-    * Canonicalizes the URL it was called from, 
-    * uses name resolver in dweb-transports/naming.js to map into some addresses, 
-    * retrieves some HTML
-    * and loads it into the browser.
-* TODO: incoporate some other URL patterns and to match IPFS's Companion extension and/or Mozilla's library
-    
 ### Archive UI
 TODO-FAKEREACT this is significantly out of date
 * Core: lives in dweb-archive/archive.html which loads the rest of the UI from dweb-archive and functionality from dweb-transports

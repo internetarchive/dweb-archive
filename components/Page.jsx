@@ -108,6 +108,7 @@ class Page extends React.Component {
       AJS.popState(mediatype === 'collection' ? '' : 'search'); //on archive.org: collection=>'' search=>'search'
       $('div.ikind').css({visibility: 'visible'});
       //AJS.tiler();
+      // If we change the window, wait 250ms then redo the tiler
       $(window).on('resize  orientationchange', function (unusedEvt) {
         clearTimeout(AJS.tiles_wrap_throttler);
         AJS.tiles_wrap_throttler = setTimeout(AJS.tiler, 250);

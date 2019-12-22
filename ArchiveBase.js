@@ -1,6 +1,6 @@
 import { stringify } from '@stratumn/canonicaljson';
 // Other Archive Repos
-import ArchiveItem from '@internetarchive/dweb-archivecontroller/ArchiveItem';
+import { ArchiveItem } from '@internetarchive/dweb-archivecontroller';
 // This repo
 import React from 'react';
 import ReactDOM from 'react-dom';

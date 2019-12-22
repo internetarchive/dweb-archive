@@ -1,6 +1,6 @@
 import React from 'react';
 import { AudioPlayerWithYoutubeSpotify } from '@internetarchive/ia-components';
-import RawBookReaderResponse from "@internetarchive/dweb-archivecontroller/RawBookReaderResponse";
+import { RawBookReaderResponse } from "@internetarchive/dweb-archivecontroller";
 
 /**
  * <AlbumTheatre

@@ -1,4 +1,5 @@
 import { LitElement, html } from '../web_modules/lit-element.js';
+import { routed } from '@internetarchive/dweb-archivecontroller';
 import React from 'react';
 
 //import { fetch } from '../web_modules/whatwg-fetch.js';
@@ -238,9 +239,7 @@ class RadioPlayerController extends LitElement {
     const srtFile = metadata.files.find((file) => file.format === 'JSON SRT');
     this.fileName = srtFile.name;
     const logoBaseUrl = `https://archive.org/services/img/${collectionIdentifier}`;
-    const logoUrl = DwebTransports
-      ? DwebTransports.httpFetchUrl( DwebTransports.resolveNames(logoBaseUrl))
-      : logoBaseUrl;
+    const logoUrl = routed(logoBaseUrl, { wantOneHttp: true });
     this.radioPlayerConfig = new RadioPlayerConfig(
       metadata.metadata.contributor,
       metadata.metadata.start_localtime || metadata.metadata.start_time,
