@@ -93,6 +93,7 @@ See [Dweb document index](https://github.com/internetarchive/dweb-transports/blo
 
 ## Release notes
 
+* v0.2.10: Refactor to use routing from dweb-archivecontroller instead of Naming in dweb-transports; epub support; support bookreader urls; bugs in languages and related items
 * v0.2.9: Incorporate Bug fixes in naming refactor in dweb-transports
 * v0.2.8: Major naming refactor; getImageURI refactor; 
 * v0.2.7: Add .map files; yuck hand edit of play8.min,js; debugging naming refactor
