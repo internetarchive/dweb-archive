@@ -69,7 +69,7 @@ class BookReaderDwebWrapper extends React.Component {
         enableBookTitleLink: false,
         bookUrlText: null,
         initialSearchTerm: null,
-        //getPageURI: {}, //TODO-BOOKREADER make this use dweb to fetch see getImageURI
+        //getPageURI: {}, //TODO-BOOKREADER make this use dweb to fetch see getImageURI, problem is that render has to by sync, and getImageURI has to be async
         thumbnail:  routed(`https://archive.org/download/${this.props.item.itemid}/page/cover_t.jpg`, { wantOneHttp: true }),
         // Unfortunately bookread.js appends protocol so we cant control it here
         // Note archive.org/download/xx/page/cover_t.jpg redirects to e.g.  https://ia601600.us.archive.org/BookReader/BookReaderPreview.php?id=xx&itemPath=%2F27%2Fitems%2Fxx&server=ia601600.us.archive.org&page=cover_t.jpg

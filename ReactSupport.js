@@ -234,7 +234,7 @@ function transportNowAndWhenChanges(cb) {
   return f; // So transportListenerClear can unwind it
 }
 function transportListenerClear(f) {
-  DwebTrasnports.removeEventListener("statuschanged", f);
+  DwebTransports.removeEventListener("statuschanged", f);
 }
 
 function transportStatusAndProps(cb) {
