@@ -63,8 +63,8 @@
     "postinstall": "yarn exec pika-web",
     "server": "http-server",
     "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist;",
-    "getArchiveFiles": "while read line; do curl -o \"dist${line}\" \"https://archive.org${line}\"; done <archive_files.txt",
-    "getNewArchiveFiles": "while read line; do [ -f \"dist${line}\" ] || curl -o \"dist${line}\" \"https://archive.org${line}\"; done <archive_files.txt"
+    "getArchiveFiles": "while read line; do echo $line; curl -s -S -o \"dist${line}\" \"https://archive.org${line}\" ; done <archive_files.txt",
+    "getNewArchiveFiles": "while read line; do echo $line; [ -f \"dist${line}\" ] || curl  -o \"dist${line}\" \"https://archive.org${line}\"; done <archive_files.txt"
   },
   "publishConfig": {
     "access": "public"

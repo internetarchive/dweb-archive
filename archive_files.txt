@@ -48,3 +48,4 @@
 /includes/jquery-1.10.2.min.js
 /includes/jquery-1.10.2.min.map
 /jw/8/jwplayer.core.controls.html5.js
+/upload/images/tree/loading.gif
