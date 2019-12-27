@@ -2,6 +2,8 @@
 /bookreader/BookReaderHelpers.js
 /bookreader/BookReaderJSIA.js
 /bookreader/LendingFlow.js
+/bookreader/static/pd-daisy.svg
+/bookreader/static/preview-800x1200.png
 /components/manage/ManageItems.js
 /components/manage/manage.css
 /components/manage/manage.js
