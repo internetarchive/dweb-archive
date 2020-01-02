@@ -64,7 +64,9 @@
     "server": "http-server",
     "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist;",
     "getArchiveFiles": "while read line; do echo $line; curl -s -S -o \"dist${line}\" \"https://archive.org${line}\" ; done <archive_files.txt",
-    "getNewArchiveFiles": "while read line; do echo $line; [ -f \"dist${line}\" ] || curl  -o \"dist${line}\" \"https://archive.org${line}\"; done <archive_files.txt"
+    "getNewArchiveFiles": "while read line; do echo $line; [ -f \"dist${line}\" ] || curl  -o \"dist${line}\" \"https://archive.org${line}\"; done <archive_files.txt",
+    "DOMANUALgetArchiveIncludesLess": "curl -o includes/src/less.zip https://git.archive.org/ia/petabox/-/archive/master/petabox-master.zip?path=www%2Fsf%2Fincludes%2Fless",
+    "DOMANUALgetArchiveIncludesJS": "curl -o includes/src/js.zip https://git.archive.org/ia/petabox/-/archive/master/petabox-master.zip?path=www%2Fsf%2Fincludes%2Fjs"
   },
   "publishConfig": {
     "access": "public"

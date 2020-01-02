@@ -61,7 +61,6 @@ module.exports = {
                 { from: 'includes/.+[css]', to: './'},
                 { from: 'includes/archive.*js', to: './'},
                 { from: 'includes/archive.*js.map', to: './'},
-                { from: 'includes/node_modules_dist', to: 'includes/node_modules'} // Note in node_modules need react/dist/react.js
             ],
             { }
         )
