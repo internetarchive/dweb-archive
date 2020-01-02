@@ -42,10 +42,13 @@
 /includes/fonts/Iconochive-Regular.svg
 /includes/fonts/Iconochive-Regular.ttf
 /includes/fonts/Iconochive-Regular.woff
-/includes/fonts/Iconochive.less
 /includes/fonts/steppum fo rotsap flipped.otf
 /includes/fonts/steppum fo rotsap.otf
 /includes/jquery-1.10.2.min.js
 /includes/jquery-1.10.2.min.map
+/includes/build/npm/bootstrap/fonts/glyphicons-halflings-regular.eot
+/includes/build/npm/bootstrap/fonts/glyphicons-halflings-regular.woff
+/includes/build/npm/bootstrap/fonts/glyphicons-halflings-regular.ttf
+/includes/build/npm/bootstrap/fonts/glyphicons-halflings-regular.svg
 /jw/8/jwplayer.core.controls.html5.js
 /upload/images/tree/loading.gif
