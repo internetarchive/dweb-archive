@@ -1,0 +1,45 @@
+// Pixel values used to ensure consistency of display cross-domain
+.ia-banners {
+  overflow: hidden;
+}
+
+.ia-banner {
+  display: none;
+  position: relative;
+  padding: 5px 10px;
+  grid-template-columns: auto auto;
+  color: @color-white;
+  background: @linkcolor;
+  &.visible {
+    display: grid;
+  }
+  p {
+    padding: 5px 10px 5px 0;
+    margin: 0;
+    font-size: 14px;
+  }
+  a {
+    align-self: center;
+    justify-self: end;
+    padding: 2.5px 10px;
+    font-size: 14px;
+    color: @body-text-color;
+    border-radius: 4px;
+    background: #ffffff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .2);
+    &:empty {
+      padding: 0;
+      border-radius: 16px;
+      &:before {
+        display: block;
+        width: 16px;
+        height: 16px;
+        content: "";
+        background: transparent url("/images/dismiss.svg") 0 0 no-repeat;
+      }
+    }
+  }
+  &.urgent {
+    background: #ab4517;
+  }
+}

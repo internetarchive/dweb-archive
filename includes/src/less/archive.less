@@ -1,5 +1,5 @@
-// Using ~ to pull from node_modules
-@import '~@internetarchive/ia-design-system/src/styles/index.less';
+// This must precede bootstrap
+@import "jquery-ui/jquery-ui.less";
 
 @import "bootstrap/bootstrap.less";
 
@@ -31,6 +31,7 @@
 @import 'partials/simple-filter-form.less';
 @import 'partials/simple-text-form.less';
 @import 'partials/table-with-actions.less';
+@import 'partials/banners.less';
 
 // Site-Specific Components
 @import 'partials/cryptocurrency-logo.less';
@@ -53,9 +54,11 @@
 @import 'partials/stats-graph.less';
 @import 'partials/stats-table.less';
 @import 'partials/table-with-actions.less';
+@import 'partials/whole-earth-web-archive.less';
 @import 'partials/wikipedia-summary.less';
 @import 'partials/fts-message.less';
 @import 'partials/grid-tiles.less';
+@import 'partials/search-autocomplete.less';
 
 // Pages
 @import 'partials/donate-cryptocurrency.less';
@@ -67,6 +70,7 @@
 @import 'partials/news-stories.less';
 @import 'partials/login-signup.less';
 @import 'partials/donate.less';
+@import 'partials/sponsorship.less';
 
 // IAUX includes
 @import '~@internetarchive/ia-components/index.less';
@@ -114,7 +118,7 @@ body.rgb {
   max-width: 100%;
 }
 
-// they shoulda included this!  keeps span inline, not block, in sm/md/lg! ( our version doesnt have visible-md-inline etc)-8
+ // they shoulda included this!  keeps span inline, not block, in sm/md/lg! ( our version doesnt have visible-md-inline etc)-8
 @media (max-width: @xs-max) { .hidden-xs-span { display:none; }}
 @media (max-width: @sm-max) { .hidden-sm-span { display:none; }}
 @media (min-width: @sm-min) { .visible-xs-span { display:none; }}
@@ -314,25 +318,84 @@ body.navia {
     }
 
     .navbar-nav {
-      width:100%;
-      margin:0;
+      width: 100%;
+      margin: 0;
+      @media (max-width: @sm-min) {
+        padding-left: 5px;
+      }
+      .nav-right-tool {
+        padding: 10px 0;
+        margin: 0 10px 0 0;
+      }
       > li {
-        height:@navbarHT;
+        height: @navbarHT;
+        &.pull-left {
+          padding: 0;
+        }
         > a {
-          font-size:20px;
-          padding:10px 0;
+          font-size: 20px;
+          padding: 10px 0;
+          &.navia-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
+            height: 50px;
+          }
+          &.home {
+            margin-right: 10px;
+            color: #FFF;
+            .archive-wordmark {
+              margin-left: 10px;
+              display: inline-block;
+            }
+            @media (max-width: 580px) {
+              .archive-wordmark {
+                display: none;
+              }
+            }
+          }
+          [class^="iconochive"] {
+            margin-right: 10px;
+            + span {
+              font-size: 13px;
+              line-height: 100%;
+              text-transform: uppercase;
+            }
+          }
+          .iconochive-logo {
+            margin: 0;
+            display: inline-block;
+            vertical-align: middle;
+          }
+          .iconochive-logo:before {
+            font-size: 160%;
+          }
           span.hidden-xs-span {
-            font-size:16px;
+            font-size: 16px;
+          }
+          @media (max-width: 1365px) {
+            [class^="iconochive"] {
+              margin-right: 0;
+              + span {
+                display: none;
+              }
+            }
           }
           @media (max-width: @xs-max) {
-            font-size:14px;
-            padding-top:7px;
-            padding-bottom:0;
+            font-size: 14px;
+            padding-top: 7px;
+            padding-bottom: 0;
+            &.navia-link {
+              width: auto;
+              height: @navbarHT-xs;
+              padding: 0 5px;
+            }
           }
         }//> a
 
         @media (max-width: @xs-max) {
-          height:@navbarHT-xs;
+          height: @navbarHT-xs;
         }
 
         // Temp vertically center Upload button and label, replacing padding usage
@@ -377,6 +440,11 @@ body.navia {
         .open > .dropdown-menu > li > a {
           color: inherit;
         }
+
+        .nav-right-tool {
+          padding: 4px 0;
+          margin: 0 5px 0 0;
+        }
       }
 
       .open > a,
@@ -385,6 +453,14 @@ body.navia {
         background-color: initial;
       }
     }//.navbar-nav
+
+    // Remove once new nav labels are live for all users
+    &.hide-labels .navbar-nav > li > a [class^="iconochive"] {
+      margin-right: 0;
+      + span {
+        display: none;
+      }
+    }
 
     .dropdown-ia{
       padding-left:13px;
@@ -398,15 +474,6 @@ body.navia {
       &.pull-right.rightmost {
         margin-right:40px;
       }
-      &.pull-right.leftmost {
-        padding-left:60px;
-      }
-      &.pull-left.rightmost {
-        padding-right:60px;
-        &.hatted {
-          padding-right:13px;
-        }
-      }//&.pull-left.rightmost
 
       @media (max-width: @sm-max) {
         height:32px;
@@ -421,8 +488,8 @@ body.navia {
         &.pull-right.leftmost  { padding-left:3px; }
         &.pull-right.rightmost { margin-right:0; }
         &.pull-left.rightmost  { padding-right:3px;
-          &.hatted { padding-right:3px; }
-        }
+                                 &.hatted { padding-right:3px; }
+                               }
       }//@media (max-width: @xs-max)
     }//.dropdown-ia
 
@@ -464,9 +531,11 @@ body.navia {
 
     .navbar-brand-li {
       position:absolute;
+      top: 0;
       height:1px !important;
       width:100%;
       text-align:center;
+      z-index: 2;
 
       .navbar-brand {
         float:none;
@@ -494,25 +563,22 @@ body.navia {
 
 
     #nav-search {
-      @mypad:8px;
-      padding-top: @mypad;
-      padding-bottom: @mypad;
-      width:15%;
+      width:12%;
       position:relative;
 
-      a {
+      .nav-search-button {
         position:absolute;
         z-index: 1;
-        padding-top:4px;
-        left:17px;
+        padding-top:5px;
+        left:5px;
         .iconochive-search {
           color:@navbg;
         }
-      }//a
+      }
 
       > div {
         .roundboxer(5px);
-        padding:0 7px;
+        padding:4px;
         background-color:#eee;
         height:100%;
       }
@@ -522,8 +588,8 @@ body.navia {
       }
 
       input[name=search] {
-        padding-left: 30px;
-        margin-top: 3px;
+        padding-left: 25px;
+        margin-top: 4px 0 4px 25px;
         z-index: 10;
         border: 0;
         outline: none;
@@ -548,9 +614,8 @@ body.navia {
       }
 
       @media (max-width: @xs-max) {
-        padding-top:4px;
-        padding-bottom:4px;
-        a {
+        width: 10%;
+        .nav-search-button {
           left:3px;
         }
         > div {
@@ -560,7 +625,6 @@ body.navia {
           padding-left:10px;
           margin-top:0;
           top:2px;
-          height:25px;
           font-size:12px;
         }
       }//@media (max-width: @xs-max)
@@ -569,6 +633,8 @@ body.navia {
 
     .navbar-main {
       float: none;
+      position: relative;
+      z-index: 1;
     }
 
     #internet-archive {
@@ -590,16 +656,14 @@ body.navia {
 
     .nav-hamburger {
       .navbar-toggle {
-        margin-bottom: -2px;
-        margin-right: 0;
-        margin-top: -2px;
-        padding:8px 6px;
+        padding: 0;
+        margin: 5px 0;
       }
       #nav-hamburger-menu {
         height:1px;
         position:absolute;
         right:0;
-        top:30px;
+        top:@navbarHT-xs;
         background-color:#353535;
         overflow-x:hidden;
         max-height:1000px;
@@ -607,6 +671,10 @@ body.navia {
       .navbar-nav {
         min-width:inherit;
         margin-right:0;
+        li a span.iconochive-heart {
+          color: red;
+          font-size: 100%;
+        }
       }
     }//.nav-hamburger
 
@@ -616,47 +684,51 @@ body.navia {
     }//@media
   }//.navbar
 
-  #nav-abouts {
-    position: static;
-    margin: 0;
-    padding-top: 8px;
-    width: 100%;
-    background-color: #353535;
-    text-align: center;
+#nav-abouts {
+  position: static;
+  margin: 0;
+  padding-top: 8px;
+  width: 100%;
+  background-color: #353535;
+  text-align: center;
 
-    li {
-      .topinblock;
-      margin: 0 10px;
-      font-size: 12px;
-      height: 20px;
-      color: #999 !important;
+  li {
+    .topinblock;
+    margin: 0 10px;
+    font-size: 12px;
+    height: 20px;
+    color: #999 !important;
+    line-height: 1.0;
+    margin-left: 15px;
+    margin-right: 15px;
+    a {
+      display: block;
       line-height: 1.0;
-      margin-left: 15px;
-      margin-right: 15px;
-      a {
-        display: block;
-        line-height: 1.0;
-        padding-bottom: 3px;
-        color: @grey67 !important;
-        text-decoration: none !important;
-        cursor: pointer;
-        &:hover {
-          color: white !important;
-        }
-      }//a
-      @media (max-width: @sm-max){
-        margin-left: 9px;
-        margin-right: 9px;
+      padding-bottom: 3px;
+      color: @grey67 !important;
+      text-decoration: none !important;
+      cursor: pointer;
+      &:hover {
+        color: white !important;
       }
-      @media (max-width: 820px){
-        margin-left: 7px;
-        margin-right: 7px;
+      span.iconochive-heart {
+        color: red;
+        font-size: 100%;
       }
-    }//li
-    @media (max-width: @xs-max) {
-      display: none !important;
+    }//a
+    @media (max-width: @sm-max){
+      margin-left: 9px;
+      margin-right: 9px;
     }
-  }//#nav-abouts
+    @media (max-width: 820px){
+      margin-left: 7px;
+      margin-right: 7px;
+    }
+  }//li
+  @media (max-width: @xs-max) {
+    display: none !important;
+  }
+}//#nav-abouts
 
 
   #nav-tophat {
@@ -752,7 +824,7 @@ body.navia {
     .wayback-main {
       background-color:@manilla;
 
-      //3x 3y blur=0 spread=0
+       //3x 3y blur=0 spread=0
       box-shadow: 3px 3px 0px 0px #C3AD97;
 
       text-align:center;
@@ -794,7 +866,7 @@ body.navia {
   // a touch device (eg: iPad/tablet may be beyond [xs] width where the nav "About" hamburger dropdown
   // triggers!  so in those cases, make sure the about dropdown is visible since has no "hover" events.
   &.touch {
-    @media (min-width: @sm-min) {
+    @media (max-width: @xs-max) {
       .nav-hamburger { display:block !important; } //override: hidden-sm hidden-md hidden-lg
       .navbar-toggle { display:block !important; margin-top:10px; }
       .navbar-collapse li { height:inherit; }
@@ -1179,9 +1251,9 @@ body.font-size-two-thirds .container-ia     { font-size: 62.5%; }
 /* handy CSS transition class */
 .ease (@property:top, @time:0.5s){
   -webkit-transition: @property @time ease;
-  -moz-transition: @property @time ease;
-  -o-transition: @property @time ease;
-  transition: @property @time ease;
+     -moz-transition: @property @time ease;
+       -o-transition: @property @time ease;
+          transition: @property @time ease;
 }
 /* handy CSS transition class */
 
@@ -1194,15 +1266,15 @@ body.font-size-two-thirds .container-ia     { font-size: 62.5%; }
 .blink {
   text-decoration: blink;
   -webkit-animation-name: blinker;
-  animation-name: blinker;
+          animation-name: blinker;
   -webkit-animation-duration: 1.6s;
-  animation-duration: 1.6s;
+          animation-duration: 1.6s;
   -webkit-animation-iteration-count:infinite;
-  animation-iteration-count:infinite;
+          animation-iteration-count:infinite;
   -webkit-animation-timing-function:ease-in-out;
-  animation-timing-function:ease-in-out;
+          animation-timing-function:ease-in-out;
   -webkit-animation-direction: alternate;
-  animation-direction: alternate;
+          animation-direction: alternate;
 }
 
 
@@ -1355,7 +1427,7 @@ body.ia-module {
   &.ios .rot180,
   &.ios .rot270 {
     -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
+            transform: rotate(0deg);
   }
 
   .relative-row {
@@ -1921,6 +1993,10 @@ body.ia-module {
     margin: 20px;
   }//#confirm-modal-body .favorite-failure-message
 
+  #threeD-modal {
+    overflow-y: auto;
+  }
+
   #morf-modal .modal-dialog {
     width:90%;
     max-width:1100px;
@@ -1975,6 +2051,9 @@ body.ia-module {
         margin-bottom: 0;
         font-weight: 500;
         .facell {
+          a {
+            margin-left: 0;
+          }
           &.fin {
             background-color:rgb(252,194, 76)/*@yellow-em*/;
             color:black;
@@ -1989,6 +2068,7 @@ body.ia-module {
           }
           &:last-child {
             .breaker-breaker;
+            display: flex; /*because want to lay facets cells out in one direction so that checkbox and facet cells value can in two different column*/
           }
         }//.facell
       }//.farow
@@ -2277,7 +2357,7 @@ body.ia-module {
       &:hover .mt-icon {
         .colorMT;
       }
-      .stat, > a, .tile-img, .item-parent, .num-items, .item-crawl,  {
+      .stat, > a, .tile-img, .item-parent, .num-items {
         display:none;
       }
     }//.item-ia
@@ -2690,10 +2770,29 @@ body.ia-module {
   }
 
 
-  &.top .columns-items .co-top-row {
-    display:none;//per david
-  }
+  /****** Home Page ******/
+  &.top {
+    .columns-items .co-top-row {
+      display:none;//per david
+    }
 
+    .columns-items {
+      padding-top: 0;
+      > div {
+        margin-left: 0;
+      }
+    }
+
+    .collection-title a .tile-img + div {
+      overflow : hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      line-height: 2rem;
+      height: 4rem;
+    }
+  }
 
   #download-modal .modal-content {
     overflow-x:scroll;
@@ -3029,142 +3128,6 @@ body.ia-module {
   }//.action-buttons
 }//body.ia-module
 
-body.navia.NAV3 {
-  @text-color: #777;
-  @font-size: 16px;
-  @font-weight: 300;
-  .navbar .navbar-nav {
-    height:36px;
-    background-color: black;
-    padding-top: 3px;
-    > li {
-      float:left;
-      height:inherit;
-      > a {
-        margin-top:-7px;
-        font-size: @font-size;
-        font-weight: @font-weight !important;
-        letter-spacing:0.05em;
-      }// a
-    }//> li
-    .navbar-brand {
-      color:white !important;
-      font-size: 20px !important;
-      margin-top: -10px;
-    }
-    .bleah {
-      padding-left: 0;
-      img {
-        width: 254px;
-        height: 23px;
-      }
-    }//.bleah
-    &:first-child {
-      padding-top: 7px;
-      > li > a {
-        font-size: 13px;
-      }
-    }//&:first-child
-  }//.navbar .navbar-nav
-  #nav-up, #nav-down {
-    color:#ddd;
-    font-weight: 100 !important;
-    font-size: 14px;
-    display:none;
-    &.in {
-      display:inline;
-    }
-  }//#nav-or, #nav-and
-  #searchy {
-    @navyish: rgb(64,82,103);
-    .topinblock;
-    .roundbox3;
-    padding:2px;
-    &.in {
-      background-color:white;
-      border:1px solid #ccc;
-      .glass-txt {
-        display:none;
-      }
-      .searchy-top {
-        .roundbox3;
-        border:2px solid @navyish;
-        a {
-          background-color: white;
-          color: @navyish;
-        }
-      } //.searchy-top
-    } //&.in
-    a {
-      font-size: @font-size;
-      font-weight: @font-weight;
-      background-color:transparent;
-      color:white;
-    }
-    input[type=submit]{
-      color:white;
-      background-color:@navyish;
-      border:0;
-      height:100%;
-      &:hover{
-        opacity:0.8;
-      }
-    }//input[type=submit]
-    input[type=text]{
-      border-width:0;
-      border:0;
-    }
-  }//#searchy
-  #sitemap {
-    //.ease(all, 1s);
-    //overflow-y:hidden;
-    color: @text-color;
-    font-size:12px;
-    line-height: 1.5;
-    background-color: black;
-    margin-left:0;
-    margin-right:0;
-    padding:0 15px;
-    &.out{
-      //  height:0;
-    }
-    > div {
-      padding-bottom:20px;
-    }
-    h1 {
-      font-size:16px;
-      font-weight:normal;
-      color:white;
-    }
-    a {
-      display:block;
-      &.stealth {
-        color: @text-color;
-        &:hover {
-          color: white;
-        }
-      }//&.stealth
-    }//a
-  }//#sitemap
-  .navbar .navbar-nav.navbar-nav-ia  {
-    // 2nd level nav (for now!)
-    background-color:rgb(51,51,51);
-    > li > a {
-      color:white !important;
-      font-weight: normal;
-      &:hover{
-        color:#e0e0e0 !important;
-      }
-    }
-  }//.navbar .navbar-nav:nth-child(1)
-  @media (max-width: @xs-max) {
-    .navbar {
-      .bleah, .nav-txt, .glass-txt {
-        display:none;
-      }
-    }//.navbar-nav
-  }
-}//&.NAV3
 
 
 .item-ia .SIN {
@@ -3324,10 +3287,9 @@ body.navia.NAV3 {
     width:@TILE_WIDTH;
 
 
-    .item-parent, .item-crawl {
+    .item-parent {
       @parent-img-wd: 45px;
       @parent-img-wd-border: 2px;
-      @crawl-img-wd: 22px;
 
       .ease(margin-top,0.3s);
       position:absolute;
@@ -3337,36 +3299,21 @@ body.navia.NAV3 {
       margin-left:-10px;
       text-align:left;
 
-      .item-parent-img, .item-crawl-img {
+      .item-parent-img {
         .ease(opacity,0.3s);
         .opac0;
         .roundboxer(round(@parent-img-wd / 2 - 1));
         box-shadow: 0 0 10px @base-border-color;
         background-color:white;
         border:@parent-img-wd-border solid #ddd;
+        width:@parent-img-wd;
+        height:@parent-img-wd;
         overflow:hidden;
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center center;
       }//.item-parent-img
-      .item-parent-img {
-        width:@parent-img-wd;
-        height:@parent-img-wd;
-      }
-      .item-parent-img img {
-        width: @parent-img-wd - 5;
-        height: @parent-img-wd - 5;
-        margin-top: 1px;
-        margin-bottom: 1px;
-      }
-      .item-crawl-img {
-        position: absolute;
-        right: -(@TILE_WIDTH+10);
-        bottom: -(round(@crawl-img-wd /2));
-        width:@crawl-img-wd;
-        height:@crawl-img-wd;
-        .opac100;
-      }
+
       .item-parent-ttl {
         .ease(opacity,0.4s);
         .opac0;
@@ -4145,7 +4092,7 @@ body.navia {
     // Set explicit heights as a fallback for non-flexbox-supporting browsers.
     // Using `not` so IE11 (✔︎ flexbox, ✘ @supports) can ignore it.
     @supports not (display: flex) {
-    @reader-height: 85%;
+      @reader-height: 85%;
 
       .bookreader-playlist-container {
         max-height: 100% - @reader-height;
@@ -4279,6 +4226,10 @@ body.navia {
     }
   }//.info-top .thats-right
 
+  .under-title-display {
+    font-size: 1.6rem;
+    font-weight: 200;
+  }
 
   #emulate {
     background-color:black;
@@ -4310,6 +4261,7 @@ body.navia {
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
       -ms-interpolation-mode: nearest-neighbor;
+      max-width: 100%;
     }
 
     #canvasholder, #gofullscreen, #gamepadtext {
@@ -4502,12 +4454,6 @@ form.iaform .formElement {
 /* /accounts/ + /admins/  Anand: customizations for forms. Adopted from Open Library. */
 
 
-
-
-
-
-
-
 /****************  Section.inc  ************************/
 .c1nav a { display:block; margin-bottom:10px; }
 /****************  Section.inc  ************************/
@@ -4533,10 +4479,10 @@ table.cat {
 
   /* default colors if wait_admin not an int further below */
   th               { background-color:wheat;
-    border-bottom:1px solid black;
-    border-left:1px solid black;
-    border-right:1px solid black;
-  }
+                     border-bottom:1px solid black;
+                     border-left:1px solid black;
+                     border-right:1px solid black;
+                   }
 
   tr:hover         { border-color:black; }
 
@@ -4630,7 +4576,7 @@ table.catJ {
   }//td
 
   table.args {
-    tbody tr {
+   tbody tr {
       border-bottom:1px solid #eee;
       td {
         vertical-align:top;
@@ -4795,7 +4741,7 @@ body.catalog {
       @media (min-width:1501px)                        { .mycols(25%, 75%); }
       @media (min-width:@sm-min) and (max-width:1500px){ .mycols(); }
       @media (max-width:@xs-max)                       { .mycols(50%, 50%, 14px, 60px);
-        tr > :nth-child(2) { padding-left:0; border-left:0; a { display: none; }}}
+                                                          tr > :nth-child(2) { padding-left:0; border-left:0; a { display: none; }}}
       tr > :nth-child(8), tr > :nth-child(9){ display:none; }
     }
     &.cols8 {
@@ -5158,7 +5104,7 @@ body.embedded {
       text-align:left;
       width:65%; /*starting width; adjust with JS*/
       overflow-x:hidden !important;
-      /*  word-wrap: break-word !important;*/  /* this wraps long urls in IE */
+    /*  word-wrap: break-word !important;*/  /* this wraps long urls in IE */
     }
     .tm {
       .topinblock;
@@ -5184,8 +5130,8 @@ body.embedded {
     font-weight:400;
     cursor:pointer;
     span.ttl { padding:0 5px 0 8px;
-      word-wrap: break-word;
-    }
+               word-wrap: break-word;
+             }
     span.tm  { font-weight:200; }
 
     &.playing {
@@ -5592,7 +5538,7 @@ body.playset {
     width: auto;
 
     position: absolute;
-    right: -7px;
+    right: 0;
     top: 95%;
 
     font-size: 1.25em;
@@ -5633,7 +5579,7 @@ body.navia .navbar #nav-search .search-options__advanced-search-link {
 }
 
 p.transaction-id {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 // when the page we're on has a wysiwyg editor that is maximized (so that it occupies the full viewport)

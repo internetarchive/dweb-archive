@@ -71,6 +71,10 @@
       font-size: 1.4rem;
       margin-bottom: @margin-rem2;
     }
+
+    .js-disabled {
+      color: @input-box-error;
+    }
   }
 
   .signup-form-element,
@@ -119,6 +123,29 @@
       background-position: 0px 3px;
     }
 
+    .loader-img-username,
+    .loader-img-screenname,
+    .loader-img-signup {
+      background-image: url(/images/loading.gif);
+    }
+
+    .loader-img-signup {
+      padding-top: 5px;
+    }
+
+    .success-img-username,
+    .success-img-screenname {
+      background-image: url(/images/check_green.svg);
+    }
+
+    .loader-img-username,
+    .success-img-username,
+    .loader-img-screenname,
+    .success-img-screenname,
+    .loader-img-signup {
+      display: none;
+    }
+
     .eye-img {
       a {
         display: block;
@@ -136,7 +163,6 @@
       padding: 6px 25px;
       margin-top: 1rem;
       margin-bottom: @margin-rem2;
-      display: block;
       background-color: @submit-button-fill;
 
       &[disabled] {

@@ -1,0 +1,82 @@
+@import 'base.less';
+
+@tray-width: 400px;
+@tray-width-mobile: 320px;
+
+.dev-tray {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: -@tray-width;
+  z-index: 1001; // Nav is z-index 1000 WHY???
+  width: @tray-width;
+  font: normal 14px Helvetica, Arial, sans-serif;
+  background: #ffffff;
+  transition: left 200ms ease;
+  @media (max-width: @xs-min) {
+    left: -@tray-width-mobile;
+    width: @tray-width-mobile;
+  }
+  &.opened {
+    left: 0;
+    box-shadow: 1px 0 3px rgba(0, 0, 0, .4);
+  }
+  a.toggle {
+    position: absolute;
+    top: 110px;
+    right: -36px;
+    z-index: 1;
+    padding: 5px 12px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    background: #ffffff;
+    box-shadow: 0 0 3px rgba(0, 0, 0, .4);
+    transform: rotate(-90deg);
+  }
+  section {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    padding: 20px;
+    overflow: auto;
+    background: #ffffff;
+    box-sizing: border-box;
+  }
+  h1 {
+    display: inline-block;
+    font-size: 2rem;
+  }
+  table {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+  }
+  th {
+    text-align: left;
+  }
+  .copy-field {
+    text-decoration: underline dashed;
+    cursor: pointer;
+    &:after {
+      display: inline-block;
+      padding: .2rem;
+      margin-left: 1rem;
+      font: 500 2rem Iconochive-Regular;
+      content: "\1F4DA";
+    }
+  }
+  #clipboard {
+    position: absolute;
+    left: -100%;
+  }
+  .tooltip {
+    position: absolute;
+    z-index: 1;
+    padding: .5rem .8rem;
+    font-size: 1.1rem;
+    color: #ffffff;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, .7);
+    transition: opacity 400ms ease;
+  }
+}

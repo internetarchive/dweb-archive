@@ -1,0 +1,296 @@
+// Donate UpSell Popup
+div.upsell-popup.modal.fade {
+  .modal-content {
+    left: auto;
+    width: 300px;
+    padding: 0.625em 1.65em;
+    border-radius: 0.375em;
+    color: #333333;
+    position: relative;
+    background-color: #f5f5f7;
+    transform: translate(0, 10%);
+    box-shadow: 0 12px 30px 0 rgba(0,0,0,.5), inset 0 1px 0 0 hsla(0,0%,100%,.65);
+
+    > .close {
+      position: absolute;
+      right: 13px;
+    }
+
+    h4 {
+      color: #333333;
+      margin-top: 1em;
+      padding: 0 8px;
+    }
+
+    .error {
+      display: none;
+      font-weight: 600;
+      color: #b00b00;
+      margin-bottom: 0;
+      &.visible {
+        display: block;
+      }
+    }
+
+    .logo-icon img {
+      border-radius: 100%;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 1px rgba(0,0,0,.18), 0 2px 2px 0 rgba(0,0,0,.08);
+      margin-top: -29px;
+      width: 65px;
+    }
+
+    .amount-box {
+      background-color: #fff;
+      padding: 5px 0.625em;
+      border-radius: 5px;
+
+      input {
+        width: 70px;
+        text-align: center;
+        border: none;
+        border-bottom: 1px solid gray;
+        font-weight: bold;
+        font-size: 1.5em;
+      }
+
+      span {
+        font-size: 1.25em;
+        font-weight: bold;
+      }
+    }
+
+    .btn-yes-donor {
+      font-size: 1.5em;
+      display: block;
+      width: 100%;
+      padding: 0.625em;
+      margin-top: 1.5em;
+      background-color: #96C23E;
+      color: #fff;
+      border-radius: 5px;
+      text-shadow: 0px 1px #000;
+      border: 2px solid #5c8e5c;
+      font-weight: bold;
+      line-height: normal;
+      margin-bottom: 0.625em;
+      outline: none;
+
+      &[disabled] {
+        cursor: progress;
+        background-color: gray;
+        border: 2px solid gray;
+      }
+    }
+
+    .later {
+      color: #c23e3e;
+      text-decoration: none;
+    }
+    .actions {
+      p {
+        margin-bottom: 10px;
+        font-size: 23px;
+        font-weight: 700;
+        color: #1188d7;
+      }
+    }
+  }
+}
+
+// Modal backdrop. Sits between the modal and page to prevent page interaction
+body.donatePage {
+  position: relative;
+  height: auto;
+  .backdrop {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+    background: rgba(0, 0, 0, .8);
+  }
+}
+
+#donation_processing {
+  .modal-dialog {
+    width: 320px;
+  }
+  h2 {
+    font-size: 1.8rem;
+  }
+  [id$='body'] {
+    padding: 2rem 1rem;
+    font-size: 16px;
+    text-align: center;
+  }
+}
+
+.braintree-fields {
+  + .braintree-fields {
+    padding-top: 1rem;
+  }
+  .error {
+    display: none;
+    font-weight: 600;
+    color: #b00b00;
+    margin-bottom: 0;
+    &.visible {
+      display: block;
+    }
+  }
+  .field.error-border.no-border-bottom {
+    border-bottom: 0;
+  }
+  .field.error-border {
+    border: .1rem solid #b00b00;
+  }
+  label {
+    display: none;
+  }
+  .field,
+  input[type=text],
+  input[type=email] {
+    display: inline-block;
+    width: 100%;
+    height: 30px;
+    padding: 0 1rem 0 3.2rem;
+    box-sizing: border-box;
+    border: 1px solid #d9d9d9;
+    border-top-width: 0;
+    border-radius: 0;
+    background: #ffffff;
+    transition: border-color 200ms ease;
+    &#bt_first-name,
+    &#bt_card-number {
+      border-top-width: 1px;
+    }
+  }
+  .icon_wrap {
+    border: 1px solid #d9d9d9;
+    border-top-width: 0;
+    background: #ffffff;
+    background-position: 1rem 50%;
+    background-repeat: no-repeat;
+    input[type=text],
+    input[type=email] {
+      border: none;
+      background: transparent;
+    }
+    &.person {
+      border-top-width: 1px;
+      background-image: url("/images/person.svg");
+    }
+    &.email {
+      border-top-width: 1px;
+      background-image: url("/images/email.svg");
+    }
+    &.lock {
+      background-image: url("/images/lock.svg");
+    }
+    &.card {
+      background-image: url("/images/ccard.svg");
+    }
+    &.calendar {
+      background-image: url("/images/calendar.svg");
+    }
+    &.pin {
+      background-image: url("/images/locale_pin.svg");
+    }
+  }
+  .select {
+    padding: 0 1rem 0 2.4rem;
+    border: 1px solid #d9d9d9;
+    border-top-width: 0;
+    background: #ffffff;
+  }
+  select {
+    display: block;
+    width: 100%;
+    height: 30px;
+    font: 700 14px Helvetica Neue, Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
+    border: none;
+    background: #ffffff;
+  }
+  input[type="submit"] {
+    display: block;
+    width: 100%;
+    margin: 1rem 0;
+    appearance: none;
+    -webkit-appearance: none;
+    font-size: 2.4rem;
+    font-weight: 700;
+    text-align: center;
+    color: #ffffff;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background: #31A481;
+
+    &:active {
+      background-color: #195241;
+    }
+  }
+  .field-row {
+    font-size: 0;
+    text-align: left;
+    input[type=text] {
+      border-top-width: 0;
+    }
+  }
+  label {
+    display: none;
+  }
+  input {
+    font: 700 14px Helvetica Neue, Helvetica, Arial, sans-serif;
+    color: #333;
+    ::-webkit-input-placeholder { /* Edge */
+      color: #CCC;
+    }
+    :-ms-input-placeholder { /* Internet Explorer 10-11 */
+      color: #CCC;
+    }
+    ::placeholder {
+      color: #CCC;
+    }
+    &:focus {
+      outline: none;
+      &:not(type="submit") {
+        color: #000;
+      }
+    }
+    &:-internal-autofill-selected {
+      background: transparent !important;
+    }
+  }
+  #bt_state,
+  #bt_expiration {
+    width: 60%;
+  }
+  #bt_cvv,
+  #bt_zipcode {
+    width: 40%;
+    border-left-width: 0;
+  }
+  #bt_zipcode {
+    padding-left: 1.5rem;
+  }
+  #bt_card-number {
+    display: block;
+  }
+  // Braintree-applied class for when iframe input receives focus
+  .braintree-hosted-fields-focused {
+    border-color: @bright-blue;
+  }
+  // Braintree-applied class for when iframe input is invalid
+  .braintree-hosted-fields-invalid {
+    color: #b00b00;
+    border-color: #b00b00;
+  }
+  // Braintree-applied class for when iframe input is valid
+  .braintree-hosted-fields-valid {
+  }
+}

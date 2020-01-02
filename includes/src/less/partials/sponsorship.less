@@ -1,0 +1,195 @@
+#sponsorship {
+  h1 {
+    font-weight: normal;
+    line-height: 1.4em;
+    margin: 0;
+    font-size: 1.8em;
+  }
+  section {
+    margin: 10px 20px;
+  }
+  .sponsorship-checkout {
+    padding-top: 0;
+
+    fieldset {
+      display: none;
+    }
+  }
+  .checkout {
+    padding-top: 0;
+  }
+  .sponsorship-details {
+    padding-bottom: 0;
+  }
+  .donate-form-section {
+    min-height: auto;
+  }
+  .letter {
+    min-height: auto;
+  }
+  .ineligible {
+    max-width: 700px;
+    margin: 0 auto;
+    margin-top: 24px;
+    line-height: 1.8em;
+    h1 {
+      text-align: center;
+      padding: 10px 20px;
+      margin-bottom: 10px;
+    }
+  }
+  .donate-header {
+    text-align: center;
+  }
+  .benefits {
+    display: grid;
+    max-width: unset;
+    font-size: 1.2em;
+    list-style: none;
+    padding-left: 0;
+    line-height: 2.4em;
+  }
+  .benefits li {
+    position: relative;
+    padding-left: 25px;
+  }
+  .benefits li:before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    background-image: url('/images/check.png');
+    background-size: cover;
+    background-position: center;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .book-details {
+    flex: 1;
+    margin-right: 20px;
+  }
+  .desktop-only {
+    display: none;
+  }
+  .book-img {
+    width: 160px;
+    display: block;
+    margin: 0 auto;
+  }
+  .book-title {
+    padding: 10px 0px;
+    display: block;
+  }
+  .donation-header {
+    margin-top: 10px;
+    font-weight: normal;
+    font-size: 1.4em;
+    color: @grey40;
+  }
+  .includes-header {
+    display: flex;
+  }
+  .content-footer {
+    display: flex;
+  }
+  .content-header {
+    flex: 1;
+  }
+  .preferences {
+    border: 1px solid #ddd;
+    box-shadow: 1px 1px 2px rgba(0,0,0,.2);
+    border-radius: 5px;
+    padding: 20px;
+    padding-top: 0;
+  }
+  .sponsorship-intro {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .perks {
+    flex: 1;
+    min-width: 375px;
+    margin-left: 10px;
+  }
+  .pref {
+    font-size: 1.2em;
+    margin: 10px 0;
+  }
+  .sponsorship-total {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    padding-bottom: 20px;
+  }
+  .truncate {
+    text-overflow: ellipsis;
+  }
+  .smallprint {
+    font-size: .9em;
+    color: @dark-grey;
+  }
+  .warning {
+    font-size: 1.2em;
+    padding: 10px;
+    border: 2px solid @bitcoin-orange;
+    margin-top: 20px;
+  }
+  .sponsorshipMessage {
+    width: 100%;
+    border: 2px solid #f9bf3b;
+    background-color: @white1;
+    padding: 10px;
+    height: 50px;
+    font-size: 1.2em;
+  }
+  .sponsorshipCTA {
+    background: @bitcoin-orange-light;
+    border: 1px solid @bitcoin-orange;
+  }
+  .sponsorshipCTA:hover {
+    background: @bitcoin-orange;
+  }
+  @media only screen and (min-width: 768px) {
+    .sponsorship-intro {
+      min-width: 560px;
+      flex-wrap: nowrap;
+    }
+    .book-details {
+      flex: unset;
+    }
+    .perks {
+      min-width: unset;
+    }
+  }
+
+  @media only screen and (min-width: 991px) {
+    .benefits {
+      max-width: 462px;
+    }
+    .checkout {
+      padding: 24px;
+    }
+    .sponsorship-checkout {
+      padding-top: 7px;
+    }
+    .letter {
+      padding: 24px;
+    }
+    .sponsorship-details {
+      padding-bottom: 7px;
+    }
+    .checkout {
+      padding-top: 24px;
+    }
+    .perks {
+      margin-left: 20px;
+    }
+    .mobile-only {
+      display: none;
+    }
+    .desktop-only {
+      display: block;
+    }
+  }
+}
