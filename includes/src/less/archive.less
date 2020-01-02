@@ -118,7 +118,7 @@ body.rgb {
   max-width: 100%;
 }
 
- // they shoulda included this!  keeps span inline, not block, in sm/md/lg! ( our version doesnt have visible-md-inline etc)-8
+// they shoulda included this!  keeps span inline, not block, in sm/md/lg! ( our version doesnt have visible-md-inline etc)-8
 @media (max-width: @xs-max) { .hidden-xs-span { display:none; }}
 @media (max-width: @sm-max) { .hidden-sm-span { display:none; }}
 @media (min-width: @sm-min) { .visible-xs-span { display:none; }}
@@ -488,8 +488,8 @@ body.navia {
         &.pull-right.leftmost  { padding-left:3px; }
         &.pull-right.rightmost { margin-right:0; }
         &.pull-left.rightmost  { padding-right:3px;
-                                 &.hatted { padding-right:3px; }
-                               }
+          &.hatted { padding-right:3px; }
+        }
       }//@media (max-width: @xs-max)
     }//.dropdown-ia
 
@@ -684,33 +684,33 @@ body.navia {
     }//@media
   }//.navbar
 
-#nav-abouts {
-  position: static;
-  margin: 0;
-  padding-top: 8px;
-  width: 100%;
-  background-color: #353535;
-  text-align: center;
+  #nav-abouts {
+    position: static;
+    margin: 0;
+    padding-top: 8px;
+    width: 100%;
+    background-color: #353535;
+    text-align: center;
 
-  li {
-    .topinblock;
-    margin: 0 10px;
-    font-size: 12px;
-    height: 20px;
-    color: #999 !important;
-    line-height: 1.0;
-    margin-left: 15px;
-    margin-right: 15px;
-    a {
-      display: block;
+    li {
+      .topinblock;
+      margin: 0 10px;
+      font-size: 12px;
+      height: 20px;
+      color: #999 !important;
       line-height: 1.0;
-      padding-bottom: 3px;
-      color: @grey67 !important;
-      text-decoration: none !important;
-      cursor: pointer;
-      &:hover {
-        color: white !important;
-      }
+      margin-left: 15px;
+      margin-right: 15px;
+      a {
+        display: block;
+        line-height: 1.0;
+        padding-bottom: 3px;
+        color: @grey67 !important;
+        text-decoration: none !important;
+        cursor: pointer;
+        &:hover {
+          color: white !important;
+        }
       span.iconochive-heart {
         color: red;
         font-size: 100%;
@@ -728,7 +728,7 @@ body.navia {
   @media (max-width: @xs-max) {
     display: none !important;
   }
-}//#nav-abouts
+  }//#nav-abouts
 
 
   #nav-tophat {
@@ -824,7 +824,7 @@ body.navia {
     .wayback-main {
       background-color:@manilla;
 
-       //3x 3y blur=0 spread=0
+      //3x 3y blur=0 spread=0
       box-shadow: 3px 3px 0px 0px #C3AD97;
 
       text-align:center;
@@ -1251,9 +1251,9 @@ body.font-size-two-thirds .container-ia     { font-size: 62.5%; }
 /* handy CSS transition class */
 .ease (@property:top, @time:0.5s){
   -webkit-transition: @property @time ease;
-     -moz-transition: @property @time ease;
-       -o-transition: @property @time ease;
-          transition: @property @time ease;
+  -moz-transition: @property @time ease;
+  -o-transition: @property @time ease;
+  transition: @property @time ease;
 }
 /* handy CSS transition class */
 
@@ -1266,15 +1266,15 @@ body.font-size-two-thirds .container-ia     { font-size: 62.5%; }
 .blink {
   text-decoration: blink;
   -webkit-animation-name: blinker;
-          animation-name: blinker;
+  animation-name: blinker;
   -webkit-animation-duration: 1.6s;
-          animation-duration: 1.6s;
+  animation-duration: 1.6s;
   -webkit-animation-iteration-count:infinite;
-          animation-iteration-count:infinite;
+  animation-iteration-count:infinite;
   -webkit-animation-timing-function:ease-in-out;
-          animation-timing-function:ease-in-out;
+  animation-timing-function:ease-in-out;
   -webkit-animation-direction: alternate;
-          animation-direction: alternate;
+  animation-direction: alternate;
 }
 
 
@@ -1427,7 +1427,7 @@ body.ia-module {
   &.ios .rot180,
   &.ios .rot270 {
     -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
+    transform: rotate(0deg);
   }
 
   .relative-row {
@@ -2357,7 +2357,7 @@ body.ia-module {
       &:hover .mt-icon {
         .colorMT;
       }
-      .stat, > a, .tile-img, .item-parent, .num-items {
+      .stat, > a, .tile-img, .item-parent, .num-items, .item-crawl,  {
         display:none;
       }
     }//.item-ia
@@ -3287,9 +3287,10 @@ body.ia-module {
     width:@TILE_WIDTH;
 
 
-    .item-parent {
+    .item-parent, .item-crawl {
       @parent-img-wd: 45px;
       @parent-img-wd-border: 2px;
+      @crawl-img-wd: 22px;
 
       .ease(margin-top,0.3s);
       position:absolute;
@@ -3299,21 +3300,36 @@ body.ia-module {
       margin-left:-10px;
       text-align:left;
 
-      .item-parent-img {
+      .item-parent-img, .item-crawl-img {
         .ease(opacity,0.3s);
         .opac0;
         .roundboxer(round(@parent-img-wd / 2 - 1));
         box-shadow: 0 0 10px @base-border-color;
         background-color:white;
         border:@parent-img-wd-border solid #ddd;
-        width:@parent-img-wd;
-        height:@parent-img-wd;
         overflow:hidden;
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center center;
       }//.item-parent-img
-
+      .item-parent-img {
+        width:@parent-img-wd;
+        height:@parent-img-wd;
+      }
+      .item-parent-img img {
+        width: @parent-img-wd - 5;
+        height: @parent-img-wd - 5;
+        margin-top: 1px;
+        margin-bottom: 1px;
+      }
+      .item-crawl-img {
+        position: absolute;
+        right: -(@TILE_WIDTH+10);
+        bottom: -(round(@crawl-img-wd /2));
+        width:@crawl-img-wd;
+        height:@crawl-img-wd;
+        .opac100;
+      }
       .item-parent-ttl {
         .ease(opacity,0.4s);
         .opac0;
@@ -4092,7 +4108,7 @@ body.navia {
     // Set explicit heights as a fallback for non-flexbox-supporting browsers.
     // Using `not` so IE11 (✔︎ flexbox, ✘ @supports) can ignore it.
     @supports not (display: flex) {
-      @reader-height: 85%;
+    @reader-height: 85%;
 
       .bookreader-playlist-container {
         max-height: 100% - @reader-height;
@@ -4479,10 +4495,10 @@ table.cat {
 
   /* default colors if wait_admin not an int further below */
   th               { background-color:wheat;
-                     border-bottom:1px solid black;
-                     border-left:1px solid black;
-                     border-right:1px solid black;
-                   }
+    border-bottom:1px solid black;
+    border-left:1px solid black;
+    border-right:1px solid black;
+  }
 
   tr:hover         { border-color:black; }
 
@@ -4576,7 +4592,7 @@ table.catJ {
   }//td
 
   table.args {
-   tbody tr {
+    tbody tr {
       border-bottom:1px solid #eee;
       td {
         vertical-align:top;
@@ -4741,7 +4757,7 @@ body.catalog {
       @media (min-width:1501px)                        { .mycols(25%, 75%); }
       @media (min-width:@sm-min) and (max-width:1500px){ .mycols(); }
       @media (max-width:@xs-max)                       { .mycols(50%, 50%, 14px, 60px);
-                                                          tr > :nth-child(2) { padding-left:0; border-left:0; a { display: none; }}}
+        tr > :nth-child(2) { padding-left:0; border-left:0; a { display: none; }}}
       tr > :nth-child(8), tr > :nth-child(9){ display:none; }
     }
     &.cols8 {
@@ -5104,7 +5120,7 @@ body.embedded {
       text-align:left;
       width:65%; /*starting width; adjust with JS*/
       overflow-x:hidden !important;
-    /*  word-wrap: break-word !important;*/  /* this wraps long urls in IE */
+      /*  word-wrap: break-word !important;*/  /* this wraps long urls in IE */
     }
     .tm {
       .topinblock;
@@ -5130,8 +5146,8 @@ body.embedded {
     font-weight:400;
     cursor:pointer;
     span.ttl { padding:0 5px 0 8px;
-               word-wrap: break-word;
-             }
+      word-wrap: break-word;
+    }
     span.tm  { font-weight:200; }
 
     &.playing {
@@ -5579,7 +5595,7 @@ body.navia .navbar #nav-search .search-options__advanced-search-link {
 }
 
 p.transaction-id {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 // when the page we're on has a wysiwyg editor that is maximized (so that it occupies the full viewport)
