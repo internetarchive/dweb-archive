@@ -58,7 +58,7 @@ These queries will gradually be migrated to decentralized services where possibl
 * Metadata for each item,
     * Retrievable by  https://www-dweb-metadata.dev.archive.org/metadata/xxx to rebuild
     * consists of above with additional fields added by gateway for item: magnetlink
-    * And for each file: contenthash (sha1 as multihash), magnetlink:
+    * OBSOLETE: And for each file: contenthash (sha1 as multihash)
 * Metadata for each file.
     * e.g. https://www-dweb-metadata.dev.archive.org/metadata/metadata/commute/commute.avi
     * This is the same as the File component of above, except that when the metadata is requested by a user,

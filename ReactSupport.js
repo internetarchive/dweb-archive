@@ -38,7 +38,7 @@ This file contains a lot of processing of names, here is a summary, taking note 
   p_resolveUrls - asynchronous used by _imgUrlOrStream & p_loadStream
     [url*]  -> [ p_resolveUrls(url)*]
     ArchiveMember -> AM.urls() -> GATEWAY/services/img/IDENTIFIER
-    ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/download/IDENTIFIER/FILENAME ] (possible extra roundtrip if not populated
+    ArchiveFile -> (magnet, ipfs, GATEWAY/download/IDENTIFIER/FILENAME ] (possible extra roundtrip if not populated
     //AAA             -> https://AAA
     [.]/AAA       (warning if not /search* /services* /detail*)
                   MIRR-> MIRROR/AAA
@@ -114,7 +114,7 @@ function p_resolveUrls(url, cb) { //TODO check callers can now use cb
       // ArchiveMember -> AM.urls() -> GATEWAY/services/img/IDENTIFIER
       url.urls(cb);   // This will be fast - just services, wont try and ask gateway for metadata and IPFS ima
     } else if (url instanceof ArchiveFile) {
-      // ArchiveFile -> (magnet, ipfs, contenthash, GATEWAY/download/IDENTIFIER/FILENAME ]
+      // ArchiveFile -> (magnet, ipfs, GATEWAY/download/IDENTIFIER/FILENAME ]
       url.urls(cb);                           // This could be slow, may have to get the gateway to cache the file in IPFS
     } else {
       cb(null, resolveUrls(url));        // Synchronous code will work
@@ -393,8 +393,7 @@ async function p_loadStream(el, urls, { name=undefined, preferredTransports=[]} 
           _p_loadStreamRenderMedia(el, streamUrls, {name, preferredTransports}, cb);
         } else {
           // Next choice is to pass a HTTP url direct to <VIDEO> as it knows how to stream it.
-          // TODO clean this nasty kludge up,
-          // Find a HTTP transport if connected, then ask it for the URL (as will probably be contenthash) note it leaves non contenthash urls untouched
+          // Find a HTTP transport if connected, then ask it for the URL
           const httpurl = routed(urlsabs, {wantOneHttp: true});
           if (httpurl) {
             el.src = httpurl;
