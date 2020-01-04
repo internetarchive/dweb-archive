@@ -262,7 +262,7 @@ function transportStatusAndProps(cb) {
         // Pass on status of Mirror talking to gateway instead of ours.
         cb2(null, httpStatus.info)
       } else { // Connected to mirror, want upstream
-        const infoUrl = DwebArchive.mirror + "/info"; //TODO-DM242 where is /info in future
+        const infoUrl = DwebArchive.mirror + "/info";
         DwebTransports.httptools.p_GET(infoUrl, {}, cb2);
       } // Note an error in contacting Mirror will skip to end and not update
     }], (err, info) => {

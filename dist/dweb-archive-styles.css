@@ -165,48 +165,6 @@ body.navia .navbar #nav-dweb a img {
     font-weight: bolder;
 }
 
-
-/*
-Which language we want is specified by adding language class to body
-
-For each language define four items
-Turn it off when in a group that includes it
-Then turn it on if body tag specifies it - note this is less specific than the above
-Specify a default language - turn that off if we have the desired language
-Now turn it on if we dont have the desired language - note this is less specific than the above
-*/
-/* NOT USED WITH CURRENT VERSION OF Languages.jsx
-body.fr .fr :lang(fr) {  display: inherit}
-.fr :lang(fr) { display: none}
-body.fr .fr :lang(en) { display: none }
-body.fr :lang(en) {  display: inherit}
-
-body.de .de :lang(de) {  display: inherit}
-.de :lang(de) { display: none}
-body.de .de :lang(en) { display: none }
-body.de :lang(en) {  display: inherit}
-
-body.es .es :lang(es) {  display: inherit}
-.es :lang(es) { display: none}
-body.es .es :lang(en) { display: none }
-body.es :lang(en) {  display: inherit}
-
-body.pt .pt :lang(pt) {  display: inherit}
-.pt :lang(pt) { display: none}
-body.pt .pt :lang(en) { display: none }
-body.pt :lang(en) {  display: inherit}
-
-body.mr .mr :lang(mr), body.mr :lang(en) {  display: inherit}
-.mr :lang(mr), body.mr .mr :lang(en) { display: none}
-
-body.my .my :lang(my), body.my :lang(en) {  display: inherit}
-.my :lang(my), body.my .my :lang(en) { display: none}
-
-body.en .en :lang(en) {  display: inherit}
-.en :lang(en) {   display: inherit}
-*/
-
-
 radio-player-controller {
     --trackColor: black;
     --timeColumnWidth: 5rem;

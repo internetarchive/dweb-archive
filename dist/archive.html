@@ -80,7 +80,7 @@
           DwebArchive.mirror = mirror || null; // So DwebArchive can check it locally (null check turns "" into null)
           return {
             statuselement: document.getElementById("dweb-status"),
-            http: {urlbase: (mirror && !(mirror === null)) ? mirror : "https://dweb.archive.org"}, //TODO-DM242 how is this used
+            http: {urlbase: (mirror && !(mirror === null)) ? mirror : "https://dweb.archive.org"}, //TODO-DM242 to tell DTS where to check for /info
             transports,
             defaulttransports: (mirror && !(mirror === null)) ? ["HTTP"] : ["HTTP", "WEBTORRENT", "IPFS", "GUN"],
             paused: searchparams.getAll("paused"),
