@@ -189,7 +189,7 @@ class AudioTheatre extends React.Component {
                 <AudioDweb id="streamContainer" controls
                            source={this.props.playlist[this.state.trackPlaying-1].sources[0].urls}/>
               </div>
-              <div id="webtorrentStats" style={{color: "white", textAlign: "center"}}/>
+              <WebTorrentStats style={{color: 'white', textAlign: 'center'}} />
               <div id="jw6__list" className="jwlistV2"
                    style={{width: "100%", margin: "auto", maxHeight: "240px", overflowX: "hidden", overflowY: "auto"}}>
                 <div className="row" id="tracklist">
@@ -316,7 +316,7 @@ class ImageTheatre extends React.Component {
               </section>
             </div>
             {/* Script tags moved into the JS*/}
-            <div id="webtorrentStats" style={{color: "white", textAlign: "center"}}/>
+            <WebTorrentStats style={{color: 'white', textAlign: 'center'}} />
       </TheatreIAWrap>
     );
   }
