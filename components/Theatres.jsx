@@ -244,7 +244,7 @@ class VideoTheatre extends React.Component {
             {/* This videothumbnailurl is http since if getting decentralized there is little value compared to loading video itself */}
             <VideoDweb id="streamContainer" source={this.props.source} poster={this.props.poster} controls/>
           </div>
-          <WebTorrentStats style={{color: "white", textAlign: "center"}} torrentfile={window.WEBTORRENT_FILE} torrent={window.WEBTORRENT_TORRENT}/>
+          <WebTorrentStats style={{color: 'white', textAlign: 'center'}} />
     </TheatreIAWrap>
   ); }
 }
@@ -346,6 +346,6 @@ class MessageTheatre extends React.Component {
   ); }
 }
 
-export { BookReaderTheatre, CarouselTheatre, MessageTheatre, AudioTheatre, ImageTheatre, VideoTheatre }
+export { BookReaderTheatre, CarouselTheatre, MessageTheatre, AudioTheatre, ImageTheatre, VideoTheatre };
 
 // Code Review by Mitra 2019-11-29 excluding HTML and move to IAUX
