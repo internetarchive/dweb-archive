@@ -785,10 +785,10 @@
   dependencies:
     jquery "^3.4.1"
 
-"@internetarchive/dweb-archivecontroller@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@internetarchive/dweb-archivecontroller/-/dweb-archivecontroller-0.2.0.tgz#f7877f82b2e94b8b5cb0ac9acf3279bbd58dad8f"
-  integrity sha512-+793ubZoRovO0ibrqdU9de9ubvz6RKdqfRYTMqn5FZdsEBUEdNAyN+60vLfxTX90RjNtL55EkymOXJu2bLV2QA==
+"@internetarchive/dweb-archivecontroller@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@internetarchive/dweb-archivecontroller/-/dweb-archivecontroller-0.2.5.tgz#aa72ff828c2fe88fdee4e6f860bc07c9107e3aaa"
+  integrity sha512-tiRaGV5Rv2tPm0iGlerW7W17ic9DgJdOuSahskeG3wARYRvYhMdKR0dRkv7gDUYJhMKZ/g0f2EQCLGgbc8d3AQ==
   dependencies:
     "@babel/core" "^7.2.2"
     "@stratumn/canonicaljson" "^1.0.2"
@@ -800,10 +800,10 @@
     prettier-bytes "^1.0.4"
     simple-sha1 "^3.0.1"
 
-"@internetarchive/dweb-transports@^0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@internetarchive/dweb-transports/-/dweb-transports-0.2.13.tgz#56e164ac63fb1f2d43b1746c997f89cb0cb72b2d"
-  integrity sha512-SJm/wm+tfsZ95gIrsSlSaO7x7lQxfvPywbGw6+Tm9edjCVqVfaBUz5L/gMIAAQ78LTtlryxNqOEjmeYe3Fz9Rw==
+"@internetarchive/dweb-transports@^0.2.14":
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/@internetarchive/dweb-transports/-/dweb-transports-0.2.14.tgz#ff13a9296a3b22ed2a2413bf3196337e676a04ba"
+  integrity sha512-WwXP1rcBwJPN8AXeJvd0XTUphnrOP0XW2zF8Fbx2scRmmVjFCS0ioTqVfQtJg6KeMhdM6wOBN/tcS8dndSt+DA==
   dependencies:
     "@stratumn/canonicaljson" "^1.0.3"
     async "^2.6.3"

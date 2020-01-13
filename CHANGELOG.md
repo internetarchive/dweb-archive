@@ -1,5 +1,8 @@
 ## Release notes
 
+* v0.2.14: 
+  * Obsolete contenthashes
+  * Webtorrent statistics
 * v0.2.13: Bug in dweb-archivecontroller.routing webpacked
 * v0.2.12:
   * Add missing bookreader/static files
