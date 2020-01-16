@@ -74,7 +74,7 @@
           // Allows abbreviation like mirror=localhost:4244, also allows mirror to specify https://xyz.org
           let mirror = searchparams.get("mirror");
           if (mirror && !(mirror === null) && !mirror.startsWith('http')) {
-            mirror = "http://" + mirror;
+            mirror = location.protocol + '//' + mirror;
           }
           const transports = searchparams.getAll("transport");
           DwebArchive.mirror = mirror || null; // So DwebArchive can check it locally (null check turns "" into null)

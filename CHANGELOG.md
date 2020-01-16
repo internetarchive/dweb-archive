@@ -1,5 +1,7 @@
 ## Release notes
 
+* v0.2.15:
+  * /info can be https
 * v0.2.14: 
   * Obsolete contenthashes
   * Webtorrent statistics
