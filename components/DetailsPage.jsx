@@ -1,5 +1,5 @@
 import React from 'react';
-import {specialidentifiers, ObjectMap, routed, ArchiveMember } from "@internetarchive/dweb-archivecontroller";
+import {specialidentifiers, ObjectMap, routed, ArchiveMember, ObjectDeeperAssign } from "@internetarchive/dweb-archivecontroller";
 import {AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageTheatre, VideoTheatre} from "./Theatres";
 import {AnchorDownload, NavWrap, DetailsAbout, DownloadDirectoryDiv, I18nSpan, I18nStr} from '@internetarchive/ia-components/dweb-index';
 import RelatedItemsWrapper from './RelatedItemsWrapper';
@@ -203,6 +203,40 @@ class DetailsWork extends React.Component {
       this.expand();
     }
   }
+
+  palmLeafWikiPageLink(externalIdentifier) {
+    // Combine multiple configs into last place defined
+    let pageLinkPrefix = ObjectDeeperAssign(
+      !DwebArchive.mirror
+        ? undefined
+        // Note a config without a top-level "apps" is going to be an error, missing apps.palmleaf is not.
+        : DwebTransports.statuses()
+          .find(s => s.name === 'HTTP')
+          .info.config
+          .map(s => s.apps.palmleaf)
+    ).pagelink;
+    if (pageLinkPrefix && DwebArchive.mirror) {
+      const mirrorHost = DwebArchive.mirror.split('://')[1].split(':')[0];
+      pageLinkPrefix = pageLinkPrefix.replace('MIRRORHOST', mirrorHost);
+    }
+    return pageLinkPrefix
+      ? externalIdentifier.replace(/http[s]?:\/\/palmleaf.org\/wiki/, pageLinkPrefix)
+      : externalIdentifier;
+  }
+
+  /**
+   * Return array of obj suitable for DetailsActionButtons
+   */
+  externallinks() {
+    return (!this.props.item.metadata['external-identifier']
+    ? undefined
+    : ( this.props.item.metadata['external-identifier']
+      .map(ei => ei.includes('//palmleaf.org')
+        ? { href: this.palmLeafWikiPageLink(ei), title: "Open in Palmleaf Wiki", src: "/images/palm-leaf-wiki-logo.png" }
+        : undefined))
+      .filter(f => !!f));
+  }
+
   render() {
     const semiTitle = I18nStr(DwebArchive.mirror ? "Offline Internet Archive" : "Decentralized Internet Archive");
     document.title = `${this.props.identifier} : ${semiTitle}`;
@@ -240,6 +274,7 @@ class DetailsWork extends React.Component {
                                      collection_titles={this.state.collection_titles}
                                      reviews={this.props.reviews}
                                      description={this.props.description}
+                                     externallinks={this.externallinks()}
                                      disconnected={this.props.statuses.disconnected} /> }
              </>
         }
