@@ -50,5 +50,7 @@
 /includes/build/npm/bootstrap/fonts/glyphicons-halflings-regular.woff
 /includes/build/npm/bootstrap/fonts/glyphicons-halflings-regular.ttf
 /includes/build/npm/bootstrap/fonts/glyphicons-halflings-regular.svg
+/includes/jquery-ui/images/ui-bg_glass_75_e6e6e6_1x400.png
+/includes/jquery-ui/images/ui-bg_highlight-soft_75_cccccc_1x100.png
 /jw/8/jwplayer.core.controls.html5.js
 /upload/images/tree/loading.gif
