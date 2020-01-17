@@ -30,5 +30,5 @@
   "scripts": {
     "server": "http-server"
   },
-  "version": "0.2.15"
+  "version": "0.2.16"
 }

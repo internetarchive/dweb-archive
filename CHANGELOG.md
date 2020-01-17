@@ -1,5 +1,8 @@
 ## Release notes
 
+* v0.2.16:
+  * Enable button if external-identifier points at palmleaforg
+  * Missing new files in bookreader UI
 * v0.2.15:
   * /info can be https
 * v0.2.14: 
