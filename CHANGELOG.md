@@ -1,6 +1,6 @@
 ## Release notes
 
-* v0.2.17 up dependencies (for webpack fix)
+* v0.2.18 up dependencies (for webpack fix)
 * v0.2.16:
   * Enable button if external-identifier points at palmleaforg
   * Missing new files in bookreader UI
