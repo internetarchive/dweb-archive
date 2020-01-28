@@ -1,6 +1,6 @@
 import React from 'react';
 import { specialidentifiers, ObjectMap, routed, ArchiveMember, ObjectDeeperAssign } from '@internetarchive/dweb-archivecontroller';
-import { AnchorDownload, NavWrap, DetailsAbout, DownloadDirectoryDiv, I18nSpan, I18nStr } from '@internetarchive/ia-components/dweb-index';
+import { AnchorDownload, NavWrap, DetailsAbout, DownloadDirectoryDiv, I18nSpan, I18nStr } from '../ia-components/dweb-index';
 import { AudioTheatre, BookReaderTheatre, CarouselTheatre, ImageTheatre, MessageTheatre, VideoTheatre } from './Theatres';
 import RelatedItemsWrapper from './RelatedItemsWrapper';
 import RadioPlayerControllerReact from './RadioPlayerController';

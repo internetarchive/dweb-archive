@@ -1,5 +1,5 @@
 import React from 'react';
-import {IAReactComponent, I18nSpan } from "@internetarchive/ia-components/dweb-index.js";
+import {IAReactComponent, I18nSpan } from "../../ia-components/dweb-index.js";
 
 class CommonWelcomeComponent extends IAReactComponent {
   /**

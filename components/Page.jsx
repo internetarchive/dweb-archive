@@ -2,7 +2,7 @@ import React from "react";
 import { ComboSearchWrap } from "./SearchPage";
 import { DetailsWork, DetailsMessage } from "./DetailsPage";
 import { SaveModal } from "./SaveModal";
-import { I18nStr } from '@internetarchive/ia-components/dweb-index';
+import { I18nStr } from '../ia-components/dweb-index';
 import { transportNowAndWhenChanges, transportListenerClear, preprocessDescription } from "../ReactSupport";
 
 const mediatype2Schema = {

@@ -5,7 +5,7 @@ import prettierBytes from 'prettier-bytes';
 
 import waterfall from 'async/waterfall';
 import {CommonWelcomeComponent} from "./CommonComponent";
-import {IAReactComponent, NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig} from '@internetarchive/ia-components/dweb-index';
+import {IAReactComponent, NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig} from '../../ia-components/dweb-index';
 
 //TODO - alternative to using Unicode codes for flags directly
 // import ReactFlagsSelect from 'react-flags-select';

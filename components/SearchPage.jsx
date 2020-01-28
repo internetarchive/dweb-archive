@@ -1,6 +1,5 @@
 import React from 'react';
-import { AnchorModalGo, AnchorDetails, ImageDweb, Tabby } from '@internetarchive/ia-components/dweb-index.js';
-import { NavWrap, ScrollableTileGrid, SearchSwitcher, I18nSpan, I18n, I18nStr, I18nIcon} from '@internetarchive/ia-components/dweb-index';
+import { AnchorModalGo, AnchorDetails, ImageDweb, Tabby, NavWrap, ScrollableTileGrid, SearchSwitcher, I18nSpan, I18n, I18nStr, I18nIcon} from '../ia-components/dweb-index';
 import { preprocessDescription } from "../ReactSupport";
 import { CherModal } from "./CherModal";
 import { LocalItem } from "./mirror/LocalComponent";

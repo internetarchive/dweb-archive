@@ -1,14 +1,13 @@
 /* global DwebTransports */
 import React from 'react';
-import {IAReactComponent } from "@internetarchive/ia-components/dweb-index.js";
 const debug = require('debug')('dweb-archive:LocalComponent');
 import waterfall from 'async/waterfall';
 
-import {TileGrid} from "@internetarchive/ia-components/dweb-index.js";
+import {TileGrid} from "../../ia-components/dweb-index.js";
 import { ObjectDeeperAssign }  from '@internetarchive/dweb-archivecontroller';
 import { ArchiveMember } from "@internetarchive/dweb-archivecontroller";
 import {CommonWelcomeComponent} from "./CommonComponent";
-import {NavWrap, I18nStr, I18nSpan } from '@internetarchive/ia-components/dweb-index';
+import {IAReactComponent, NavWrap, I18nStr, I18nSpan } from '../../ia-components/dweb-index';
 
 const _levels = ["tile", "metadata", "details", "all"]; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-components/.../ConfigCrawl.js
 //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller

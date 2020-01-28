@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import React from "react";
 // Other IA repositories
 import { homeQuery, ObjectFilter, specialidentifiers } from "@internetarchive/dweb-archivecontroller";
-import {I18nSpan, currentISO, getLanguage} from '@internetarchive/ia-components/dweb-index';
+import {I18nSpan, currentISO, getLanguage} from './ia-components/dweb-index';
 // This repository
 import ArchiveBase from './ArchiveBase';
 import {Page} from "./components/Page";

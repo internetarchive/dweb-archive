@@ -1,7 +1,6 @@
 import React from 'react';
-import {IAReactComponent, ImageDweb, Tabby, NavWrap} from "@internetarchive/ia-components/dweb-index.js";
 import {SearchRowColumnsItems} from "./components/SearchPage";
-import {I18nSpan, I18nIcon} from '@internetarchive/ia-components/dweb-index';
+import {IAReactComponent, ImageDweb, Tabby, NavWrap, I18nSpan, I18nIcon} from './ia-components/dweb-index';
 
 class AccountTabbyPosts extends IAReactComponent {
     /**
@@ -99,7 +98,7 @@ class AccountWelcome extends IAReactComponent {
      * - see similar style/HTML in CommonWelcome CollectionBanner and AccountBanner
      */
     render() {
-        
+
         let identifier = this.props.item.itemid;
         let title = this.props.item.metadata.title; // Example from @tracey_pooh
         let imagesrc = this.props.item.thumbnailFile() || "/images/notfound.png" ;  // TODO-ACCOUNT Tracey is adding a service to get a better image (larger scale
@@ -142,7 +141,7 @@ class AccountWelcome extends IAReactComponent {
             {/*--/.welcome--*/}</div>
         );
     }
-    
+
 }
 
 class AccountUploads extends IAReactComponent {

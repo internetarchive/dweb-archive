@@ -4,7 +4,7 @@
 import React from 'react';
 import prettierBytes from 'prettier-bytes';
 import { ObjectFilter } from '@internetarchive/dweb-archivecontroller';
-import { I18nSpan } from '@internetarchive/ia-components/dweb-index';
+import { I18nSpan } from '../ia-components/dweb-index';
 import throttle from 'throttleit';
 import { config } from '../Util';
 import { p_loadStream } from '../ReactSupport';
