@@ -17,7 +17,7 @@
     "@futurepress/epubjs-reader": "git+https://github.com/futurepress/epubjs-reader.git",
     "@internetarchive/bookreader": "git+https://github.com/internetarchive/bookreader.git",
     "@internetarchive/dweb-archivecontroller": "^0.2.6",
-    "@internetarchive/dweb-transports": "^0.2.15",
+    "@internetarchive/dweb-transports": "^0.2.17",
     "@internetarchive/ia-components": "0.0.0-alpha.1",
     "@internetarchive/ia-design-system": "^0.3.1-alpha.21",
     "@internetarchive/radio-player": "0.0.1-alpha.448+bab6552",
