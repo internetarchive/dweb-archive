@@ -47,6 +47,19 @@ function getLanguage(lang, cb) {
 }
 
 /**
+ *
+ * @param iso if defined will set global.language to this value
+ * @returns {*} new state of global.language
+ */
+function currentISO(iso=undefined) {
+  // Note where we store this might change, so use this if want to set or get the code
+  if (iso) {
+    global.language = iso;
+  }
+  return global.language;
+}
+
+/**
  * Set to a supported language, displaying messages on UI and fetching file if needed
  * @param lang
  */
@@ -83,13 +96,7 @@ function setLanguage(lang) {
       setTimeout(() => DwebArchive.page.setState({item: olditem, message: undefined}),1000);
     });
 }
-function currentISO(iso=undefined) {
-  // Note where we store this might change, so use this if want to set or get the code
-  if (iso) {
-    global.language = iso;
-  }
-  return global.language;
-}
+
 function I18n(messageEnglish) {
   let l = currentISO();
   let s = languages[currentISO()][messageEnglish];

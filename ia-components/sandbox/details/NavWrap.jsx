@@ -308,35 +308,37 @@ class DwebNavButtons extends React.Component {
               data-placement="bottom"
               en="Save this item"
             ><I18nSpan en="Save" />
-            </AnchorModalGo></li>
+            </AnchorModalGo>
+          </li>
         }
-        <li className="local"><span className="iconochive-folder"/>
-          <AnchorDetails identifier="local"><I18nSpan en="Local" /></AnchorDetails></li>
+        <li className="local"><span className="iconochive-folder" />
+          <AnchorDetails identifier="local"><I18nSpan en="Local" /></AnchorDetails>
+        </li>
       </ul>
     );
   }
 }
 
-  /**
-   * <DwebNavDIV
-   *    item= {             // ArchiveItem
-   *      itemid: identifier,
-   *      query:  string or object,
-   *      sort:   string,
-   *      downloaded: { ... }, passed to CrawlConfig
-   *      crawl: object (optional) passed as props to CrawlConfig (strings in English)
-   *      canSave: bool   true if can save
-   *    }
-   *   transportStatuses=[{name: STRING, status: INT} Status of connected transports
-   *   transportsClickable = BOOL
-   *   mirror2gateway=BOOL  True if connected to a mirror that can see its upstream gateway
-   *   disconnected=BOOL    True if disconnected from upstream (so disable UI dependent on upstream)
-   * />
-   * Renders: A navigation row with the DwebStatusDIV (transport status buttons), CrawlConfig and DwebNavButtons
-   * OnClick: See those subcomponents
-   *
-   *    Note the props could be passed as fields, but but whole component is null unless on dweb.
-   */
+/**
+ * <DwebNavDIV
+ *    item= {             // ArchiveItem
+ *      itemid: identifier,
+ *      query:  string or object,
+ *      sort:   string,
+ *      downloaded: { ... }, passed to CrawlConfig
+ *      crawl: object (optional) passed as props to CrawlConfig (strings in English)
+ *      canSave: bool   true if can save
+ *    }
+ *   transportStatuses=[{name: STRING, status: INT} Status of connected transports
+ *   transportsClickable = BOOL
+ *   mirror2gateway=BOOL  True if connected to a mirror that can see its upstream gateway
+ *   disconnected=BOOL    True if disconnected from upstream (so disable UI dependent on upstream)
+ * />
+ * Renders: A navigation row with the DwebStatusDIV (transport status buttons), CrawlConfig and DwebNavButtons
+ * OnClick: See those subcomponents
+ *
+ *    Note the props could be passed as fields, but but whole component is null unless on dweb.
+ */
 class DwebNavDIV extends React.Component {
   render() {
     // Alternative to complex nav-dweb code
@@ -350,11 +352,13 @@ class DwebNavDIV extends React.Component {
             {!DwebArchive.mirror ? null :
               <>
                 <div id="dweb-mirrorconfig"><CrawlConfig {...crawl} /></div>
-                <div id="dweb-mirrorreload"><DwebNavButtons identifier={this.props.item.itemid}
-                                                            query={this.props.item.query}
-                                                            sort={this.props.item.sort}
-                                                            mirror2gateway={this.props.mirror2gateway}
-                                                            canSave={this.props.canSave} /></div>
+                <div id="dweb-mirrorreload"><DwebNavButtons
+                  identifier={this.props.item.itemid}
+                  query={this.props.item.query}
+                  sort={this.props.item.sort}
+                  mirror2gateway={this.props.mirror2gateway}
+                  canSave={this.props.canSave} />
+                </div>
               </>
             }
           {/* --<a href="https://docs.google.com/forms/d/e/1FAIpQLSe7pXiSLrmeLoKvlDi2wODcL3ro7D6LegPksb86jr5bCJa7Ig/viewform" target="_blank"><img src="./images/feedback.svg" /></a>--*/}
@@ -470,11 +474,12 @@ class NavWrap extends React.Component {
               <NavUploadLI disconnected={this.props.disconnected} />
             </ul>
             <NavAboutsUL disconnected={this.props.disconnected} />
-            <DwebNavDIV item={this.props.item}
-                        transportStatuses={this.props.transportStatuses}
-                        mirror2gateway={this.props.mirror2gateway}
-                        canSave={this.props.canSave}
-                        transportsClickable={this.props.transportsClickable}
+            <DwebNavDIV
+              item={this.props.item}
+              transportStatuses={this.props.transportStatuses}
+              mirror2gateway={this.props.mirror2gateway}
+              canSave={this.props.canSave}
+              transportsClickable={this.props.transportsClickable}
             />
           </div>
         </div>
