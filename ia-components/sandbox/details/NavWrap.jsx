@@ -7,7 +7,8 @@ import AnchorDetails from '../AnchorDetails';
 import { AnchorSearch } from './AnchorSearch';
 import CrawlConfig from './CrawlConfig';
 import { AnchorModalGo } from './ModalGo';
-import { I18nSpan, I18nStr, I18nIcon, currentISO, languageConfig } from '../languages/Languages';
+import { I18nSpan, I18nStr, I18nIcon, currentISO, languageConfig, setLanguage } from '../languages/Languages';
+import LanguageSelect from '@internetarchive/ia-components/sandbox/language-select/language-select';
 
 const debug = require('debug')('dweb-archive:NavWrap');
 
@@ -292,7 +293,8 @@ class DwebNavButtons extends React.Component {
         }
         <li className="settings">
           <span className="iconochive-gear" />
-          <AnchorDetails identifier="settings"><I18nSpan en="Settings" />&nbsp;&nbsp;{languageConfig[currentISO()].flag}</AnchorDetails>
+          {/* was inside AnchorDetails &nbsp;&nbsp; languageConfig[currentISO()].flag */}
+          <AnchorDetails identifier="settings"><I18nSpan en="Settings" /></AnchorDetails>
         </li>
         { !this.props.canSave ? null :
           <li className="save"><span className="iconochive-download" />
@@ -436,6 +438,24 @@ class DwebStatusDIV extends React.Component {
   }
 }
 
+/**
+ * Renders a language select drop down
+ */
+class NavLanguage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onSelect.bind(this);
+  }
+
+  onSelect(languageISO) {
+    debug('Selected language %o', languageISO);
+    setLanguage(languageISO);
+  }
+
+  render() {
+    return <LanguageSelect languages={languageConfig} selectedLanguage={currentISO()} onSelect={this.onSelect} />
+  }
+}
 /*
  * <NavWrap
  *   item = ArchiveItem  passed to DwebNavDIV (optional if not on Dweb), should have ".crawl" = {}
@@ -470,6 +490,7 @@ class NavWrap extends React.Component {
                 <NavMediatypeLI mediatype={mediatype} key={mediatype} />
               ))}
               <NavBrandLI />
+              <NavLanguage />
               <NavSearchLI disconnected={this.props.disconnected} />
               <NavUploadLI disconnected={this.props.disconnected} />
             </ul>
