@@ -233,6 +233,7 @@ class DetailsWork extends React.Component {
 
   /**
    * Return array of obj suitable for DetailsActionButtons
+   * See palmleaf specific code in DA/DetailsPage.externallinks & DM/configDefaults.yaml
    */
   externallinks() {
     return (!this.props.item.metadata['external-identifier']

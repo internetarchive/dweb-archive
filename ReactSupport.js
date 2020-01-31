@@ -83,9 +83,6 @@ function resolveUrls(url, options={}) {
   } else if (url.startsWith("//")) {
     return "https:"+url;    // Ick - a reference to href="//foo.bar" rather than href="https://foo.bar"
   } else if (url.startsWith("/")) {
-    if (!(url.startsWith("/search.php") || url.startsWith("/services") || url.startsWith("/details"))) {
-      console.warn("Probably not a good idea to use root-relative URL", url); //could genericise to use options.rel instead of config but might not catch cases e.g. of /images
-    }
     // Carefull DwebArchive.mirror could be null so don't test against typeof === undefined
     return [relativeurl((DwebArchive.mirror || 'https://archive.org')+"/", url)].filter(u => !!u);  // e.g. /foo => [https://bar.com/foo]
   } else if (url.startsWith("./")) {
