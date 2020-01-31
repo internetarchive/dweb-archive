@@ -6,7 +6,7 @@ import { LocalItem } from "./mirror/LocalComponent";
 import { SettingsItem } from "./mirror/SettingsComponent";
 import { AccountWrap } from "../Account.jsx";
 import { HomeBanner } from "./Home.jsx";
-const debug = require('debug')('SearchPage');
+const debug = require('debug')('dweb-archive:SearchPage');
 
 
 /**

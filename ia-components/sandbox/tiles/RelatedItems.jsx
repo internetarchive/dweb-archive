@@ -3,7 +3,7 @@ import IAReactComponent from '../IAReactComponent';
 import TileComponent from './TileComponent';
 import {I18nStr, I18nSpan} from '../languages/Languages';
 
-//Unused: const debug = require('debug')('ia-components:RelatedItems');
+//Unused: const debug = require('debug')('dweb-archive:RelatedItems');
 
 /**
  *

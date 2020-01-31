@@ -23,7 +23,7 @@ import { I18nSpan } from '../languages/Languages';
  *    default     Boolean - if present then tab is selected at initial render
  */
 
-const debug = require('debug')('ia-components:Tabby');
+const debug = require('debug')('dweb-archive:Tabby');
 
 export default class Tabby extends React.Component {
   constructor(props) {

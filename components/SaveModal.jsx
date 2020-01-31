@@ -1,7 +1,7 @@
 /* global DwebTransports */
 import React from 'react';
 import {I18nSpan, I18nStr, I18nIcon} from '../ia-components/dweb-index';
-const debug = require('debug')('SaveModal');
+const debug = require('debug')('dweb-archive:SaveModal');
 
 /**
  * <SaveDirectory

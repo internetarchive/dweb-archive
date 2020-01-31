@@ -9,7 +9,7 @@ import CrawlConfig from './CrawlConfig';
 import { AnchorModalGo } from './ModalGo';
 import { I18nSpan, I18nStr, I18nIcon, currentISO, languageConfig } from '../languages/Languages';
 
-const debug = require('debug')('NavWrap');
+const debug = require('debug')('dweb-archive:NavWrap');
 
 /**
  * Components used to draw the top part of the navigation on a details or search page.

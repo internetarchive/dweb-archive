@@ -1,4 +1,4 @@
-const debug = require('debug')("BookReaderDwebWrapper");
+const debug = require('debug')("dweb-archive:BookReaderDwebWrapper");
 import React from "react";
 import { BookReaderJSIAWrapper, BookReaderWrapper, I18nSpan } from '../ia-components/dweb-index';
 import { RawBookReaderResponse, routed } from '@internetarchive/dweb-archivecontroller';

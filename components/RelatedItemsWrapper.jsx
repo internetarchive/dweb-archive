@@ -1,6 +1,6 @@
 import React from 'react';
 import {RelatedItems} from '../ia-components/dweb-index.js';
-const debug = require('debug')('RelatedItemsWrapper');
+const debug = require('debug')('dweb-archive:RelatedItemsWrapper');
 
 //Note this component is a bridge from ArchiveBase.js to a IAUX React Component (that wants not to be dependent on archivecontroller,
 
