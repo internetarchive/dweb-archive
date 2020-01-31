@@ -291,6 +291,7 @@ class DwebNavButtons extends React.Component {
               }
             </li>
         }
+        <NavLanguage />
         <li className="settings">
           <span className="iconochive-gear" />
           {/* was inside AnchorDetails &nbsp;&nbsp; languageConfig[currentISO()].flag */}
@@ -453,7 +454,10 @@ class NavLanguage extends React.Component {
   }
 
   render() {
-    return <LanguageSelect languages={languageConfig} selectedLanguage={currentISO()} onSelect={this.onSelect} />
+    return (
+      <li>
+        <LanguageSelect languages={languageConfig} selectedLanguage={currentISO()} onSelect={this.onSelect} />
+      </li>);
   }
 }
 /*
@@ -490,7 +494,6 @@ class NavWrap extends React.Component {
                 <NavMediatypeLI mediatype={mediatype} key={mediatype} />
               ))}
               <NavBrandLI />
-              <NavLanguage />
               <NavSearchLI disconnected={this.props.disconnected} />
               <NavUploadLI disconnected={this.props.disconnected} />
             </ul>
