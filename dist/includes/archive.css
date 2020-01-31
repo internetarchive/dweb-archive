@@ -9543,6 +9543,70 @@ body.navia .container-ia.nopad.whole-earth-web-archive-widget .frame {
 .z-above-top-nav {
   z-index: 1001 !important;
 }
+.language_select {
+  position: relative;
+  font: normal 12px Helvetica Neue, Helvetica, Arial, sans-serif;
+  color: #848484;
+}
+.language_select a {
+  text-decoration: none;
+  color: #848484;
+  cursor: pointer;
+}
+.language_select > a {
+  display: inline-block;
+  padding: 3px 10px;
+  border: 1px solid #848484;
+  border-radius: 2px;
+  background: #222222;
+}
+.language_select > a:hover {
+  color: #ffffff;
+}
+.language_select ul {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 1;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  transform: translateX(-50%);
+  border: 1px solid #333333;
+  border-radius: 2px;
+  background: #222222;
+}
+.language_select ul.visible {
+  display: block;
+}
+.language_select ul.notvisible {
+  display: none !important;
+}
+.language_select li {
+  display: block;
+  position: relative;
+}
+.language_select li.selected:before {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #34a077;
+  content: '\2713';
+}
+.language_select li a {
+  display: block;
+  padding: 2px 25px;
+}
+.language_select li a:hover {
+  color: #222222;
+  background: #ffffff;
+}
+.language_select .flag {
+  font-size: 16px;
+  vertical-align: middle;
+}
 /**
  * Page encouraging donors to donate via cryptocurrencies
  *
@@ -11793,7 +11857,7 @@ body.donateThankYou .donor-form #comment-error {
     display: inline;
   }
 }
-@media (min-width: 768px) and (max-width: 992px) {
+@media (min-width: 768px) and (max-width: 1200px) {
   .audio-with-youtube-spotify .channel-controls .channel-label {
     display: none;
   }
@@ -11808,12 +11872,12 @@ body.donateThankYou .donor-form #comment-error {
     width: 100%;
   }
 }
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
   .audio-with-youtube-spotify .playlist-section .flexbox-pagination {
     flex-wrap: nowrap;
   }
 }
-@media (min-width: 993px) {
+@media (min-width: 1201px) {
   .audio-with-youtube-spotify {
     grid-template-areas: "md md md md hd hd hd hd hd hd hd hd" "md md md md hd hd hd hd hd hd hd hd" "md md md md hd hd hd hd hd hd hd hd";
   }
