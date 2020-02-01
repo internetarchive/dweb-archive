@@ -126,7 +126,10 @@
 <script>
   $(function(){ $('.navbar [data-toggle="tooltip"]').tooltip({}); });
   DwebTransports.p_connect(transportsOptions)
-    .then(unusedRes => Nav.metaFactory(opts));
+    .then(unusedRes =>
+      Nav.metaFactory(opts))
+    .catch(err =>
+        console.log("ERROR in archive.html call to p_connect failed to even run "));
 </script>
 
 </body>
