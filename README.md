@@ -13,7 +13,11 @@ to support the decentralized web.
 * to avoid single points of failure where possible
 
 ## Installation
-THESE INSTRUCTIONS PROBABLY WONT WORK - MORE RECENT ARE IN THE dweb-mirror repo
+
+Please see the installation instructions in the 
+[dweb-mirror repo](https://github.com/internetarchive/dweb-mirror)
+They are much more recent than the ones below. 
+
 ### All cases
 ```
 git clone https://git@github.com/internetarchive/dweb-archive.git
@@ -51,42 +55,45 @@ Note that the only reason to do this would be to work on the code,
 Do the "All Case install above"
 
 Build (webpack) the bundles and copy needed files to dist/
-`npm run build`
+`webpack --mode development`
 
 ## See related:
 
 * [Archive.org](https://dweb.archive.org) bootstrap into the Archive's page
-* [Examples](https://dweb.me/examples) examples
 
 ### Repos:
 * *dweb-transports:* Common API to underlying transports (http, webtorrent, ipfs, yjs)
-* *dweb-objects:* Object model for Dweb inc Lists, Authentication, Key/Value and example html for these
-* *dweb-serviceworker:* Run Transports in ServiceWorker (experimental)
 * *dweb-archive:* Decentralized Archive webpage and bootstrapping
 * *dweb-transport:* Original Repo, still has some half-complete projects
 * *dweb-archivecontroller:* Object model for archive, includes routing table
 
 ## Directory structure here
-* dist - where files needed by dweb-transport are located
-* fonts, images, includes/* include files that are located so that existing Archive HTML and JS can find them where expected
-* images - holds images used by dweb html files
-* originals - saved copies of some example Archive pages and metadata to allow comparisom with HTML generated
+##### Directories
+* components - React components used by the UI (see also ia-components)
+* dist - all that is needed to run the UI - this is also in its own npm package.
+* docs - should be some documentation, but its a bit out of date
+* ia-components - More React components, these are dual purpose, they don't depend on Dweb
+* images - extra images used (there are also ones in dist/images copied from archive.org)
+* includes - files copied over from internet archive, where we build the CSS and JS 
+* node_modules - installed from the dependencies in package.json by `yarn install`
+* util - just has throttler.js and to be honest I can't remember why its off on its own
+* web_modules - compiled by pix for web components (radio-player is the only one, but that has dependencies)
+##### Files
 * archive.html - main file for displaying archive (detail or search) pages
 * archive.js - top level for creating archive-bundle.js
-* dweb-archive-styles.css - CSS styles for dweb, note that it uses standard archive styles for most
+* dweb-archive-styles.css - CSS styles for dweb, note that it uses standard archive styles in includes/archive.css for most
 * LICENSE - standard GNU Affero licence
 * webpack.config.js - defines bundling, and in particular which files are needed for the distribution
+* ... some more TODO documentation
 
 ## Class hierarchy 
 * ArchiveFile - represents a single file
 * ArchiveItem - represents data structures for an item (a directory of files)
     * ArchiveBase - Subclass ArchiveItem to add functionality specific to this UI
 * ArchiveMember - represents a listing for an item (e.g. in a search)
-* IAReactComponent - Extends ReactComponent to have common functionality across components
+* React.Component - Standard React class used for building components
   * Lots of stand-alone components
   * AVDWeb - Adds functionality common to adding content to media tags
     * AudioDweb, VideoDweb 
+  * IAReactComponent - Extends ReactComponent to have common functionality across components - being obsoleted
 * Nav - common class for navigation structures (mostly at the top of the page) also maps item types to classes
-
-## See also
-See [Dweb document index](https://github.com/internetarchive/dweb-transports/blob/master/DOCUMENTINDEX.md) for a list of the repos that make up the Internet Archive's Dweb project, and an index of other documents. 
