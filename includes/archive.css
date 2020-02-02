@@ -9598,7 +9598,7 @@ body.navia .container-ia.nopad.whole-earth-web-archive-widget .frame {
 .language_select li a {
   display: block !important;
   padding: 2px 25px !important;
-  whitespace: nowrap;
+  white-space: nowrap;
 }
 .language_select li a:hover {
   color: #222222;

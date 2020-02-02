@@ -1,5 +1,6 @@
 ## Release notes
 
+* v0.2.22: Pickup white-space fix to language dropdown
 * v0.2.21: Encapsulate fix to language dropdown and IPFS HTTP API bitrot
 * v0.2.20: Language selection moved to its own dropdown
 * v0.2.19: moved all components from iaux/ia-components back to here
