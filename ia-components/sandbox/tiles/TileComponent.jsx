@@ -1,5 +1,5 @@
 /* Reasoning behind eslint disables that impact this and similar files
-  react/prop-type: Haven't implemented prop-types on this code at all yet,
+  react/prop-types: Haven't implemented prop-types on this code at all yet,
   prefer-destructuring & react/destructuring-assignment: its an absurd requirement that leads to crappy code
   no-nested-ternary: ternarys are used where it makes for the clearest code
   prefer-template: concatenating strings is more efficient, and makes for more readable code.
@@ -160,104 +160,127 @@ export default class TileComponent extends React.Component {
 
   render() {
     // Until DM issue#211 have to fake disconnected for item="local" as dont have downloaded
-    return ((this.props.disconnected && !(this.state.downloaded && this.state.downloaded.details)) ? null :
-      <div className={this.state.classes.join(' ')} data-id={this.state.identifier}
-        data-mediatype={this.state.mediatype} key={this.state.identifier}>
-        {/* -- Add in experimental crawl notification for dweb-mirror, if member.crawl=undefined then ignored --*/}
-        {(!(this.state.crawl.level || (this.state.downloaded && this.state.downloaded.details))) ? null // Only show this bug if crawling
-          : (
-            <div className="item-crawl">
-              <div className="item-crawl-img">
-                {this.state.crawl.level === 'details'
-                  ? <img
-                    src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20"><circle cx="10" cy="10" r="9" fill="green" /></svg>'
-                    alt={`crawl ${this.state.crawl.level}`} />
-                  : this.state.crawl.level === 'all'
-                    ? <img
-                      src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20"><circle cx="10" cy="10" r="9" fill="blue" /></svg>'
-                      alt={`crawl ${this.state.crawl.level}`} />
-                    : (this.state.downloaded && this.state.downloaded.details)
-                      ? <img
-                        src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20"><circle cx="10" cy="10" r="9" fill="white" /></svg>'
-                        alt={`crawl ${this.state.crawl.level}`} />
-                      : null
+    return ((this.props.disconnected && !(this.state.downloaded && this.state.downloaded.details)) ? null
+      : (
+        <div
+          className={this.state.classes.join(' ')}
+          data-id={this.state.identifier}
+          data-mediatype={this.state.mediatype}
+          key={this.state.identifier}
+        >
+          {/* -- Add in experimental crawl notification for dweb-mirror, if member.crawl=undefined then ignored --*/}
+          {(!(this.state.crawl.level || (this.state.downloaded && this.state.downloaded.details))) ? null // Only show this bug if crawling
+            : (
+              <div className="item-crawl">
+                <div className="item-crawl-img">
+                  {this.state.crawl.level === 'details'
+                    ? (
+                      <img
+                src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20"><circle cx="10" cy="10" r="9" fill="green" /></svg>'
+                alt={`crawl ${this.state.crawl.level}`}
+              />
+                    )
+                    : this.state.crawl.level === 'all'
+                      ? (
+                        <img
+                  src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20"><circle cx="10" cy="10" r="9" fill="blue" /></svg>'
+                  alt={`crawl ${this.state.crawl.level}`}
+                />
+                      )
+                      : (this.state.downloaded && this.state.downloaded.details)
+                        ? (
+                          <img
+                    src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20"><circle cx="10" cy="10" r="9" fill="white" /></svg>'
+                    alt={`crawl ${this.state.crawl.level}`}
+                  />
+                        )
+                        : null
                 }
-              </div>
-            </div>
-          )
-        }
-        {(this.state.collection0) // Believe, but not certain, that there is always going to be a collection0
-          ? (
-            <AnchorDetails className="stealth" tabIndex="-1" identifier={this.state.collection0}>
-              <div className="item-parent">
-                {/* archive.org uses a background image on the div but that makes it hard to intercept */}
-                <div className="item-parent-img">
-                  <ImageDweb className="item-parent-img" src={this.state.parentimageurl} alt={this.state.collection0}
-                    imgname="__ia_thumb.jpg" />
                 </div>
-                <div className="item-parent-ttl">{this.state.collection0title}</div>
-              </div>
-              {/* .item-parent */}
-            </AnchorDetails>
-          )
-          : undefined}
-        <div className="hidden-tiles views C C1">
-          <nobr className="hidden-xs">{numberFormat(this.state.downloads)}</nobr>
-          <nobr className="hidden-sm hidden-md hidden-lg">{numberFormat(this.state.downloads)}</nobr>
-        </div>
-
-
-        <div className="C234">
-          <div className="item-ttl C C2">
-            {this.state.identifier
-              ? <AnchorDetails identifier={this.state.identifier} title={this.state.title}>
-                <div className="tile-img">
-                  <ImageDweb
-                    className="item-img"
-                    style={{ height: '124px' }}
-                    src={this.state.imageurl}
-                    alt={this.state.identifier}
-                    imgname="__ia_thumb.jpg"
-                  />
-                </div>
-                <div className="ttl">
-                  {this.state.title}
-                </div>
-              </AnchorDetails>
-              : <AnchorSearch query={this.state.query} title={this.state.title}>
-                <div className="tile-img">
-                  <ImageDweb
-                    className="item-img"
-                    style={{ height: '124px' }}
-                    src={this.state.imageurl}
-                    alt={this.state.query}
-                    imgname="search-saved.png"
-                  />
-                </div>
-                <div className="ttl">
-                  {this.state.title}
-                </div>
-              </AnchorSearch>
-            }
-          </div>
-
-          <div className="hidden-tiles pubdate C C3">
-            <nobr className="hidden-xs">{this.state.date}</nobr>
-            <nobr className="hidden-sm hidden-md hidden-lg">{this.state.date}</nobr>
-          </div>
-
-          {this.state.by && this.state.by.length
-            ? (
-              <div className="by C C4">
-                <span className="hidden-lists">by </span>
-                <span className="byv" title={this.state.byTitle}>{this.state.byTitle}</span>
               </div>
             )
+        }
+          {(this.state.collection0) // Believe, but not certain, that there is always going to be a collection0
+            ? (
+              <AnchorDetails className="stealth" tabIndex="-1" identifier={this.state.collection0}>
+                <div className="item-parent">
+                  {/* archive.org uses a background image on the div but that makes it hard to intercept */}
+                  <div className="item-parent-img">
+                    <ImageDweb
+                      className="item-parent-img"
+                      src={this.state.parentimageurl}
+                      alt={this.state.collection0}
+                      imgname="__ia_thumb.jpg"
+                    />
+                  </div>
+                  <div className="item-parent-ttl">{this.state.collection0title}</div>
+                </div>
+                {/* .item-parent */}
+              </AnchorDetails>
+            )
             : undefined}
+          <div className="hidden-tiles views C C1">
+            <nobr className="hidden-xs">{numberFormat(this.state.downloads)}</nobr>
+            <nobr className="hidden-sm hidden-md hidden-lg">{numberFormat(this.state.downloads)}</nobr>
+          </div>
+
+
+          <div className="C234">
+            <div className="item-ttl C C2">
+              {this.state.identifier
+                ? (
+                  <AnchorDetails identifier={this.state.identifier} title={this.state.title}>
+                    <div className="tile-img">
+                      <ImageDweb
+                className="item-img"
+                style={{ height: '124px' }}
+                src={this.state.imageurl}
+                alt={this.state.identifier}
+                imgname="__ia_thumb.jpg"
+              />
+                    </div>
+                    <div className="ttl">
+                      {this.state.title}
+                    </div>
+                  </AnchorDetails>
+                )
+                : (
+                  <AnchorSearch query={this.state.query} title={this.state.title}>
+                    <div className="tile-img">
+                      <ImageDweb
+                className="item-img"
+                style={{ height: '124px' }}
+                src={this.state.imageurl}
+                alt={this.state.query}
+                imgname="search-saved.png"
+              />
+                    </div>
+                    <div className="ttl">
+                      {this.state.title}
+                    </div>
+                  </AnchorSearch>
+                )
+            }
+            </div>
+
+            <div className="hidden-tiles pubdate C C3">
+              <nobr className="hidden-xs">{this.state.date}</nobr>
+              <nobr className="hidden-sm hidden-md hidden-lg">{this.state.date}</nobr>
+            </div>
+
+            {this.state.by && this.state.by.length
+              ? (
+                <div className="by C C4">
+                  <span className="hidden-lists">by </span>
+                  <span className="byv" title={this.state.byTitle}>{this.state.byTitle}</span>
+                </div>
+              )
+              : undefined}
+          </div>
+          {/* .C234 */}
+          {this.state.isCollection ? this.renderDivCollectionStats() : this.renderDivStatbar()}
         </div>
-        {/* .C234 */}
-        {this.state.isCollection ? this.renderDivCollectionStats() : this.renderDivStatbar()}
-      </div>
+      )
     );
   }
 }
