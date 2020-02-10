@@ -11,6 +11,7 @@
 */
 import React from 'react';
 import AnchorDetails from '../AnchorDetails';
+import { AnchorSearch } from '../details/AnchorSearch';
 import { ImageDweb } from '../details/Image';
 import { I18nSpan, I18nIcon } from '../languages/Languages';
 
@@ -42,6 +43,7 @@ function numberFormat(nnStr) { // this is just addCommas now
 /**
  * <TileComponent
  *    identifier: IDENTIFIER
+ *    query: Query string if its a search
  *    member: ARCHIVEMEMBER
  *    parentidentifier: IDENTIFIER
  * />
@@ -54,8 +56,9 @@ export default class TileComponent extends React.Component {
     const identifier = props.identifier || props.member.identifier;
     try {
       const member = this.props.member;
-      const item = this.props.item;
+      const item = this.props.item; // Less common and probably not used at all
       const query = props.query || (item && item.query) || (member && member.query);
+      // TODO may want to handle Sort, from LocalComponent through here and down to AnchorSearch
       const isCollection = (member.mediatype === 'collection');
       const collection0 = member.collection0() || (item && item.metadata && item.metadata.collection && item.metadata.collection[0]);
       const by = member.creator || member.creatorSorter || (item && item.metadata.creator); // Should be array
@@ -78,12 +81,13 @@ export default class TileComponent extends React.Component {
         collectionSize,
         date,
         imageurl,
+        query,
         mediatype: member.mediatype,
         collection0title: member.collection0title || (item && item.collection_titles[collection0]), // TODO-IAUX collection_titles is dweb only, unsure how server side IAUX gets it
         classes,
         byTitle: Array.isArray(by) ? by.join(',') : by,
         downloads: member.downloads, // Often undefined
-        title: member.title || (item && item.metadata.title),
+        title: member.title || (item && item.metadata.title) || member.query,
         iconnameClass: this.iconnameClass(member.mediatype),
         numReviews: member.num_reviews || (item && item.reviews && item.reviews.length) || 0,
         crawl: member.crawl || {},
@@ -205,20 +209,36 @@ export default class TileComponent extends React.Component {
 
         <div className="C234">
           <div className="item-ttl C C2">
-            <AnchorDetails identifier={this.state.identifier} title={this.state.title}>
-              <div className="tile-img">
-                <ImageDweb
-                  className="item-img"
-                  style={{ height: '124px' }}
-                  src={this.state.imageurl}
-                  alt={this.state.identifier}
-                  imgname="__ia_thumb.jpg"
-                />
-              </div>
-              <div className="ttl">
-                {this.state.title}
-              </div>
-            </AnchorDetails>
+            {this.state.identifier
+              ? <AnchorDetails identifier={this.state.identifier} title={this.state.title}>
+                <div className="tile-img">
+                  <ImageDweb
+                    className="item-img"
+                    style={{ height: '124px' }}
+                    src={this.state.imageurl}
+                    alt={this.state.identifier}
+                    imgname="__ia_thumb.jpg"
+                  />
+                </div>
+                <div className="ttl">
+                  {this.state.title}
+                </div>
+              </AnchorDetails>
+              : <AnchorSearch query={this.state.query} title={this.state.title}>
+                <div className="tile-img">
+                  <ImageDweb
+                    className="item-img"
+                    style={{ height: '124px' }}
+                    src={this.state.imageurl}
+                    alt={this.state.query}
+                    imgname="search-saved.png"
+                  />
+                </div>
+                <div className="ttl">
+                  {this.state.title}
+                </div>
+              </AnchorSearch>
+            }
           </div>
 
           <div className="hidden-tiles pubdate C C3">

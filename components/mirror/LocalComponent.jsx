@@ -19,6 +19,8 @@ function canonicalizeTasks(tasks) {
   return [].concat(...tasks.map(task =>
     Array.isArray(task.identifier)
       ? task.identifier.map(identifier => Object.assign({}, task, {identifier}))
+      : Array.isArray(task.query)
+      ? task.query.map(query => ({...task, query}))
       : task ));
 }
 

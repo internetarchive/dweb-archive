@@ -138,16 +138,16 @@ export default class Nav {
       if (!identifier || (identifier === "home")) {
         item = new ArchiveBase({itemid: "home", query: homeQuery, sort: '-downloads'});
         await item.fetch_metadata({noCache})
-        await item.fetch_query({noCache})
+        await item.fetch_query({ noCache })
         renderPage({item});
-      } else if (["local","settings"].includes(identifier)) { //SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
+      } else if (['local',"settings"].includes(identifier)) { // SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
         item = new ArchiveBase({itemid: identifier, metaapi: {metadata: specialidentifiers[identifier]}})
         renderPage({item});
       } else {
         item = new ArchiveBase({itemid: identifier, page, download, noCache});
         await item.fetch_metadata({noCache}); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
         if (!item.metadata) {
-          item.message = <><I18nSpan en="item"/> {identifier}<I18nSpan en="cannot be found or does not have metadata"/></>;
+          item.message = <><I18nSpan en="item" /> {identifier}<I18nSpan en="cannot be found or does not have metadata" /></>;
         }
         if (!item.message && item.metadata && !['texts', 'image', 'audio', 'etree', 'movies', 'collection', 'account'].includes(item.metadata.mediatype)) {
           item.message = <I18nSpan en='Unsupported mediatype'>: {item.metadata.mediatype}</I18nSpan>
@@ -159,7 +159,7 @@ export default class Nav {
         return item;
       }
     } catch (err) {
-      debug("ERROR: Nav.factory detected error %o", err);
+      debug('ERROR: Nav.factory detected error %o', err);
       renderPage({item, message:err.message}); // Item may or may not be set TODO-I18n future could handle error messages here or where generated
     }
   }
