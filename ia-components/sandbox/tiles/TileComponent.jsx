@@ -176,23 +176,23 @@ export default class TileComponent extends React.Component {
                   {this.state.crawl.level === 'details'
                     ? (
                       <img
-                src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20"><circle cx="10" cy="10" r="9" fill="green" /></svg>'
-                alt={`crawl ${this.state.crawl.level}`}
-              />
+                        src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20"><circle cx="10" cy="10" r="9" fill="green" /></svg>'
+                        alt={`crawl ${this.state.crawl.level}`}
+                      />
                     )
                     : this.state.crawl.level === 'all'
                       ? (
                         <img
-                  src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20"><circle cx="10" cy="10" r="9" fill="blue" /></svg>'
-                  alt={`crawl ${this.state.crawl.level}`}
-                />
+                          src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20"><circle cx="10" cy="10" r="9" fill="blue" /></svg>'
+                          alt={`crawl ${this.state.crawl.level}`}
+                        />
                       )
                       : (this.state.downloaded && this.state.downloaded.details)
                         ? (
                           <img
-                    src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20"><circle cx="10" cy="10" r="9" fill="white" /></svg>'
-                    alt={`crawl ${this.state.crawl.level}`}
-                  />
+                            src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20"><circle cx="10" cy="10" r="9" fill="white" /></svg>'
+                            alt={`crawl ${this.state.crawl.level}`}
+                          />
                         )
                         : null
                 }
@@ -232,12 +232,12 @@ export default class TileComponent extends React.Component {
                   <AnchorDetails identifier={this.state.identifier} title={this.state.title}>
                     <div className="tile-img">
                       <ImageDweb
-                className="item-img"
-                style={{ height: '124px' }}
-                src={this.state.imageurl}
-                alt={this.state.identifier}
-                imgname="__ia_thumb.jpg"
-              />
+                        className="item-img"
+                        style={{ height: '124px' }}
+                        src={this.state.imageurl}
+                        alt={this.state.identifier}
+                        imgname="__ia_thumb.jpg"
+                      />
                     </div>
                     <div className="ttl">
                       {this.state.title}
@@ -248,12 +248,12 @@ export default class TileComponent extends React.Component {
                   <AnchorSearch query={this.state.query} title={this.state.title}>
                     <div className="tile-img">
                       <ImageDweb
-                className="item-img"
-                style={{ height: '124px' }}
-                src={this.state.imageurl}
-                alt={this.state.query}
-                imgname="search-saved.png"
-              />
+                        className="item-img"
+                        style={{ height: '124px' }}
+                        src={this.state.imageurl}
+                        alt={this.state.query}
+                        imgname="search-saved.png"
+                      />
                     </div>
                     <div className="ttl">
                       {this.state.title}

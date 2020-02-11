@@ -1,10 +1,10 @@
-/* global DwebTransports */
+/* global DwebTransports, DwebArchive */
 import React from 'react';
 import waterfall from 'async/waterfall';
 
 import { ObjectDeeperAssign, ArchiveMember } from '@internetarchive/dweb-archivecontroller';
 
-import { TileGrid, IAReactComponent, NavWrap, I18nStr, I18nSpan } from '../../ia-components/dweb-index.js';
+import { TileGrid, IAReactComponent, NavWrap, I18nStr, I18nSpan } from '../../ia-components/dweb-index';
 import { CommonWelcomeComponent } from './CommonComponent';
 
 
@@ -32,10 +32,6 @@ class LocalGridRowComponent extends IAReactComponent {
    *
    * Renders a grid of members that are in the crawl
    */
-
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     // Build a grid of tiles like in Collection/Search but doesnt have the "More" scrolling feature
@@ -92,12 +88,12 @@ class LocalItem extends IAReactComponent {
           const item = this.props.item;
           item.membersFav = tasks.map(task => memberDict[task.identifier] || new ArchiveMember({ identifier: task.identifier, query: task.query, crawl: task }, { unexpanded: true }));
 
-          if ((typeof item.downloaded !== 'object') && (item.downloaded !== null)) item.downloaded = {};
+          if ((typeof item.downloaded !== 'object') || (item.downloaded === null)) item.downloaded = {};
           // See ALMOST-IDENTICAL-CODE-SUMMARIZEFILES
           const filesDownloaded = item.files.filter(af => af.downloaded);
-          item.downloaded.files_all_size = item.files.reduce((sum, af) => sum + (parseInt(af.metadata.size) || 0), 0);
+          item.downloaded.files_all_size = item.files.reduce((sum, af) => sum + (parseInt(af.metadata.size, 10) || 0), 0);
           item.downloaded.files_all_count = item.files.length;
-          item.downloaded.files_size = filesDownloaded.reduce((sum, af) => sum + (parseInt(af.metadata.size) || 0), 0);
+          item.downloaded.files_size = filesDownloaded.reduce((sum, af) => sum + (parseInt(af.metadata.size, 10) || 0), 0);
           item.downloaded.files_count = filesDownloaded.length;
           item.downloaded.files_details = true; // By definition !
           // See ALMOST-IDENTICAL-CODE-MEMBERSUMMARY
