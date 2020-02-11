@@ -9,3 +9,5 @@ dist/dweb-objects-bundle.js
 yarn-error.log
 .idea
 web_modules
+dist/node_modules
+yarn.lock
