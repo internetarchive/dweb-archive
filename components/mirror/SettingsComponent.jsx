@@ -5,7 +5,7 @@ import prettierBytes from 'prettier-bytes';
 
 import waterfall from 'async/waterfall';
 import {CommonWelcomeComponent} from "./CommonComponent";
-import {IAReactComponent, NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig} from '../../ia-components/dweb-index';
+import { NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig } from '../../ia-components/dweb-index';
 
 //TODO - alternative to using Unicode codes for flags directly
 // import ReactFlagsSelect from 'react-flags-select';
@@ -36,7 +36,7 @@ function safePrettyInt(n) {
     return "?";
   }
 }
-class SettingsCrawlLI extends IAReactComponent {
+class SettingsCrawlLI extends React.Component {
   /**
    * Renders information about one crawl
    *
@@ -48,7 +48,8 @@ class SettingsCrawlLI extends IAReactComponent {
 
   constructor(props) {
     super(props);
-    this.setState({crawl: this.props.crawl});
+    // Sets initial state, this can be overridden by bttons
+    this.state = { crawl: this.props.crawl };
     this.restart = this.restart.bind(this);
     this.pause = this.pause.bind(this);
     this.resume = this.resume.bind(this);
@@ -128,7 +129,7 @@ class SettingsCrawlLI extends IAReactComponent {
 
 }
 //util_apply(f, cb) => return function(err, interim) { let donecb=false; if (err) { cb(err); } else { try { var res = f(interim); donecb=true; cb(null, interim) } catch(err) { cb(err) }}}
-class SettingsCrawlsComponent extends IAReactComponent {
+class SettingsCrawlsComponent extends React.Component {
   /**
    * Render information about all crawls
    *
@@ -139,7 +140,8 @@ class SettingsCrawlsComponent extends IAReactComponent {
 
   constructor(props) {
     super(props);
-    this.state.crawls = this.props.crawls; // Maybe undefined
+    // Initial state, will currently only be overwritten if refresh
+    this.state = { crawls: this.props.crawls }; // Maybe undefined
     // Called by React when the Loading... div is displayed
     if (!this.state.crawls) {
       const urlCrawls = [DwebArchive.mirror, "admin/crawl/status"].join('/');
@@ -148,7 +150,7 @@ class SettingsCrawlsComponent extends IAReactComponent {
           // There may be more here , if not then simplify waterfall
         ],(err, crawls) => { // [ArchiveMember*] includes specials like local &/or home
           if (err) {
-            debug("ERROR: loadcallable failed %O", err);
+            debug("ERROR: failed to get crawl status %O", err);
           } else {
             this.setState({crawls});
           }
@@ -178,7 +180,7 @@ class SettingsCrawlsComponent extends IAReactComponent {
   }
 }
 
-class SettingsInfo extends IAReactComponent {
+class SettingsInfo extends React.Component {
   /**
    * Fetch and render information about the connection to the mirror
    *
@@ -190,18 +192,23 @@ class SettingsInfo extends IAReactComponent {
 
   constructor(props) {
     super(props);
+    this.state = {};
+  }
+
+  setInfo() {
     const urlInfo = [DwebArchive.mirror, "info"].join('/');
-    waterfall([
-        cb => DwebTransports.httptools.p_GET(urlInfo, {}, cb),
-        // There may be more here , if not then simplify waterfall
-      ],(err, info) => { // [ArchiveMember*] includes specials like local &/or home
-        if (err) {
-          debug("ERROR: fetch of info failed %O", err);
-        } else {
-          this.setState({info});
-        }
+    // [ArchiveMember*] includes specials like local &/or home
+    DwebTransports.httptools.p_GET(urlInfo, {}, (err, info) => {
+      if (err) {
+        debug("ERROR: fetch of info failed %O", err);
+      } else {
+        this.setState({ info });
       }
-      );
+    });
+  }
+
+  componentDidMount() {
+    this.setInfo();
   }
 
   render() {
@@ -223,8 +230,7 @@ class SettingsInfo extends IAReactComponent {
   }
 }
 
-class SettingsLanguages extends IAReactComponent {
-  //TODO-MULTILINGUAL - replace strings by flags
+class SettingsLanguages extends React.Component {
 
   render() {
     return (
@@ -253,12 +259,12 @@ class SettingsLanguages extends IAReactComponent {
     )
   }
 }
-class SettingsItem extends IAReactComponent {
+class SettingsItem extends React.Component {
   /**
    * A page for displaying settings
    *
    * <SettingsItem
-   *  item=ARCHIVEITEM  The Settinsg item,
+   *  item=ARCHIVEITEM  The Settings item,
    *  transportStatuses=[{name: STRING, status: INT} Status of connected transports
    *  mirror2gateway=BOOL  True if connected to a mirror that can see its upstream gateway
    *  disconnected=BOOL    True if disconnected from upstream (so disable UI dependent on upstream)
@@ -268,9 +274,6 @@ class SettingsItem extends IAReactComponent {
    * Behavior:
    *   on render: displays information about settings, has effect in SettingsInfo of fetching that information
    */
-  constructor(props) {
-    super(props); // item
-  }
 
   render() {
     return (
@@ -304,4 +307,4 @@ class SettingsItem extends IAReactComponent {
   }
 }
 export {SettingsCrawlsComponent, SettingsItem};
-// File regular review 2019-sept-12
+// File regular review 2020-feb-17
