@@ -1,4 +1,5 @@
-/* global DwebTransports */
+/* global DwebTransports, DwebArchive */
+/* eslint-disable react/jsx-one-expression-per-line, no-nested-ternary */
 import React from 'react';
 import prettierBytes from 'prettier-bytes';
 
@@ -7,10 +8,6 @@ import { CommonWelcomeComponent } from './CommonComponent';
 import { NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig } from '../../ia-components/dweb-index';
 
 const debug = require('debug')('dweb-archive:SettingsComponent');
-
-// TODO - alternative to using Unicode codes for flags directly
-// import ReactFlagsSelect from 'react-flags-select';
-// import 'react-flags-select/css/react-flags-select.css';
 
 // SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 
@@ -30,8 +27,7 @@ Crawl is: {
 function safePrettyInt(n) {
   try {
     const x = parseInt(n, 10);
-    const y = prettierBytes(x);
-    return y;
+    return prettierBytes(x);
   } catch (err) {
     debug('%s is not a integer', n);
     return '?';
@@ -83,12 +79,13 @@ class SettingsCrawlLI extends React.Component {
           : <img className="playbutton" onClick={this.pause} src="/images/baseline-pause-24px.svg" alt="pause" />
         }
         {/* <span className="playbutton" onClick={this.empty}>{'X'}</span> -- Not currently showing X */}
-      <ul> {/*TODO Make collapsable*/}
+        {/* TODO Make next ul collapsable */}
+        <ul>
           <li>
-          <I18nSpan en="Queue">: </I18nSpan>"
-          <I18nSpan en="Waiting">: </I18nSpan><span>{crawl.queue.length}; </span>
-          <I18nSpan en="Running">: </I18nSpan><span>{crawl.queue.running}; </span>
-          <I18nSpan  en="Completed">: </I18nSpan><span>{crawl.queue.completed}; </span>
+            <I18nSpan en="Queue">: </I18nSpan>
+            <I18nSpan en="Waiting">: </I18nSpan><span>{crawl.queue.length}; </span>
+            <I18nSpan en="Running">: </I18nSpan><span>{crawl.queue.running}; </span>
+            <I18nSpan en="Completed">: </I18nSpan><span>{crawl.queue.completed}; </span>
             {/* Expand workersList */}
           </li>
           {(!crawl.queue.workersList.length) ? null
@@ -110,8 +107,7 @@ class SettingsCrawlLI extends React.Component {
                 </ul>
               </li>
             )
-        }
-
+          }
           <li>
             <I18nSpan en="Options">: </I18nSpan>
             {/* TODO-MULTILINGUAL need to think this through probably best in english as relate to file */}
@@ -130,7 +126,6 @@ class SettingsCrawlLI extends React.Component {
               ) : null)
             ) }
           </li>
-
           <li>
             <I18nSpan en="Seed">: </I18nSpan>
             {crawl.initialItemTaskList.map(task => <span key={task.identifier}>{task.identifier + (task.level === 'details' ? '' : (': ' + task.level)) + '; '}</span>)}
@@ -141,19 +136,12 @@ class SettingsCrawlLI extends React.Component {
                 <I18nSpan en="Errors">: </I18nSpan>
                 <ul>
                   {crawl.errors.map(err => (
-                    <li key={err.date}>
-                      {err.date}
-                      {' '}
-                      {err.task.debugname}
-:
-                      {' '}
-                      {err.error.message + '; '}
-                    </li>
+                    <li key={err.date}>{`${err.date} ${err.task.debugname}: ${err.error.message}; `}</li>
                   ))}
                 </ul>
               </li>
             )
-        }
+          }
         </ul>
       </li>
     );
@@ -226,6 +214,10 @@ class SettingsInfo extends React.Component {
     this.state = {};
   }
 
+  componentDidMount() {
+    this.setInfo();
+  }
+
   setInfo() {
     const urlInfo = [DwebArchive.mirror, 'info'].join('/');
     // [ArchiveMember*] includes specials like local &/or home
@@ -236,10 +228,6 @@ class SettingsInfo extends React.Component {
         this.setState({ info });
       }
     });
-  }
-
-  componentDidMount() {
-    this.setInfo();
   }
 
   render() {
@@ -350,4 +338,4 @@ class SettingsItem extends React.Component {
   }
 }
 export { SettingsCrawlsComponent, SettingsItem };
-// File regular review 2020-feb-17
+// File regular review 2020-feb-18

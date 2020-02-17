@@ -32,6 +32,7 @@
         "no-multi-assign": 0,
         "no-nested-ternary": 1,
         "no-param-reassign": 1,
+        "no-plusplus": 0,
         "no-return-assign": 1,
         "no-underscore-dangle": 0,
         "no-unused-vars": 1,
@@ -55,7 +56,7 @@
         "react/jsx-one-expression-per-line": 1,
         "react/jsx-wrap-multilines": 1,
         "react/prop-types": 0,
-        "react/prefer-stateless-function": 1,
+        "react/prefer-stateless-function": 0,
         "semi": 2
     }
 }
