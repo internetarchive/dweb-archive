@@ -13,10 +13,7 @@ class AccountTabbyPosts extends React.Component {
       <div className="container container-ia nopad">
         <div id="tabby-posts" className="tabby-data hidden row">
           <div className="box">
-            <h1>
-Posts by
-              {name}
-            </h1>
+            <h1>Posts by {name}</h1>
             {/* -- NOTE: extra div required by IE bec. table width=100% is set --*/}
             <div>
               <table className="forumTable  table table-striped table-condensed table-hover">
@@ -115,7 +112,6 @@ class AccountWelcome extends IAReactComponent {
                 <ImageDweb id="file-dropper-img" source={imagesrc} style={{ maxWidth: '300px' }} />
               </div>
             </div>
-            {/* --/.col-xs-11--*/}
             <div className="col-xs-1 col-sm-2 col-sm-push-8 welcome-right">
               {/* probably ok as absolute link since requires ID anyway */}
               {/* Removed onclick="return AJS.modal_go(this.props.item,{favorite:1})"  - not compatible with /bookmarks rewrite */}
@@ -135,7 +131,6 @@ class AccountWelcome extends IAReactComponent {
               <h5 className="account-description">{title}</h5>
             </div>
           </div>
-          {/* --/.row--*/}
           <div className="tabbys tabbys-dynamic">
             <Tabby identifier={identifier} id="uploads" text="UPLOADS" default />
             {/* <Tabby identifier={identifier} id="posts" text="POSTS"/> */}
@@ -147,8 +142,6 @@ class AccountWelcome extends IAReactComponent {
             <div className="clearfix" />
           </div>
         </div>
-        {/* --/.container--*/}
-        {/* --/.welcome--*/}
       </div>
     );
   }
