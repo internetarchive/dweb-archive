@@ -1,7 +1,6 @@
 /* global DwebArchive */
 import React from 'react';
 import { stringify } from '@stratumn/canonicaljson';
-import IAReactComponent from '../IAReactComponent';
 import { ObjectFilter, ObjectFromEntries } from '../../util';
 
 const debug = require('debug')('ia-components:AnchorSearch');
