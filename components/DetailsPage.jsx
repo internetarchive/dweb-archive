@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import React from 'react';
 import { specialidentifiers, ObjectMap, routed, ArchiveMember, ObjectDeeperAssign } from '@internetarchive/dweb-archivecontroller';
 import { AnchorDownload, NavWrap, DetailsAbout, DownloadDirectoryDiv, I18nSpan, I18nStr } from '../ia-components/dweb-index';
@@ -54,83 +55,98 @@ class DetailsIAWrap extends React.Component {
               <link itemProp="associatedMedia" href={`https://archive.org/download/${this.props.identifier}/${af.metadata.name}`} key={`${this.props.identifier}/${af.metadata.name}`} />
             ))
         }
-        { !['movies'].includes(this.props.mediatype) ? null :
-          <>
+        { !['movies'].includes(this.props.mediatype) ? null
+          : <>
             <link itemProp="contentUrl" href={routed(`https://archive.org/download/${this.props.identifier}/${this.props.playlist[0].sources[0].name}`,
-              { wantOneHttp: true })} />
+              { wantOneHttp: true })}
+            />
             <meta itemProp="duration" content={`PT0M${parseInt(this.props.playlist[0].duration, 10)}S`} />
           </>
         }
         <h1 className="sr-only">{this.props.title}</h1>
         <h2 className="sr-only">{I18nStr(this.props.mediatype)} {I18nStr('preview')}</h2>
-        { (['texts'].includes(this.props.mediatype) && (this.props.subtype === 'carousel'))
-          ?
-          <CarouselTheatre
-            identifier={this.props.identifier}
-            slides={this.props.item.files4carousel().map(f => ({ filename: f.metadata.name, source: f }))}
-            creator={this.props.creator}
-            mediatype={this.props.mediatype}
-            title={this.props.title}
-            disconnected={this.props.disconnected}
-          />
+        {
+          (['texts'].includes(this.props.mediatype) && (this.props.subtype === 'carousel'))
+          ? <CarouselTheatre
+              identifier={this.props.identifier}
+              slides={this.props.item.files4carousel().map(f => ({ filename: f.metadata.name, source: f }))}
+              creator={this.props.creator}
+              mediatype={this.props.mediatype}
+              title={this.props.title}
+              disconnected={this.props.disconnected}
+            />
           : (['texts'].includes(this.props.mediatype) && (this.props.subtype === 'bookreader'))
-          ? <BookReaderTheatre
-            identifier={this.props.identifier}
-            item={this.props.item}
-            creator={this.props.creator}
-            mediatype={this.props.mediatype}
-            title={this.props.title}
-            page={this.props.page}
-            disconnected={this.props.disconnected}
-          />
+          ? (
+            <BookReaderTheatre
+              identifier={this.props.identifier}
+              item={this.props.item}
+              creator={this.props.creator}
+              mediatype={this.props.mediatype}
+              title={this.props.title}
+              page={this.props.page}
+              disconnected={this.props.disconnected}
+            />
+            )
           : (['image'].includes(this.props.mediatype) && this.props.source)
-          ? <ImageTheatre
-            alt="item image #1"
-            source={this.props.source}
-            caption={this.props.source.metadata.name}
-            identifier={this.props.identifier}
-            mediatype={this.props.mediatype}
-            creator={this.props.creator}
-            title={this.props.title}
-            disconnected={this.props.disconnected} />
+          ? (
+            <ImageTheatre
+              alt="item image #1"
+              source={this.props.source}
+              caption={this.props.source.metadata.name}
+              identifier={this.props.identifier}
+              mediatype={this.props.mediatype}
+              creator={this.props.creator}
+              title={this.props.title}
+              disconnected={this.props.disconnected}
+            />
+            )
           : (['audio'].includes(this.props.mediatype) && (this.props.subtype === 'radio'))
-          ? <RadioPlayerControllerReact
-            itemId={this.props.identifier}
-            item={this.props.item} />
+          ? (
+            <RadioPlayerControllerReact
+              itemId={this.props.identifier}
+              item={this.props.item} />
+            )
           : (['audio'].includes(this.props.mediatype) && (this.props.subtype === 'album'))
           ? // TODO-EMP check playFullIAAudio what calculated on;
-          <AlbumTheatre item={this.props.item} />
+            <AlbumTheatre item={this.props.item} />
           : (['audio', 'etree'].includes(this.props.mediatype))
-          ? <AudioTheatre
-            identifier={this.props.identifier}
-            mediatype={this.props.mediatype} creator={this.props.creator} title={this.props.title}
-            imgsrc={this.props.poster}
-            playlist={this.props.playlist}
-            initialPlay={1}
-          />
+          ? (
+              <AudioTheatre
+                identifier={this.props.identifier}
+                mediatype={this.props.mediatype} creator={this.props.creator} title={this.props.title}
+                imgsrc={this.props.poster}
+                playlist={this.props.playlist}
+                initialPlay={1}
+              />
+            )
           : (['movies'].includes(this.props.mediatype))
-          ? /* The 'poster' is intentionally a direct Http link as its intended only for search engines etc
-              Preference is 2nd thumbnail (first is usually black-screen) in .thumbs/ directory (e.g. for 'commute');
-              if only one (e.g. item 'stairs') use that. */
-          <VideoTheatre
-            identifier={this.props.identifier}
-            mediatype={this.props.mediatype}
-            poster={this.props.poster}
-            title={this.props.title}
-            creator={this.props.creator}
-            source={this.props.playlist[0].sources[0].urls} />
-          : <MessageTheatre title={<I18nSpan en="There Is No Preview Available For This Item" />}>
-              <p>
-                <I18nSpan en="This item does not appear to have any files that can be experienced on Archive.org" />
-                <br />
-                <I18nSpan className="hidden-xs hidden-sm" en="Please download files in this item to interact with them on your computer" />.
-                <br />
-                {/* Should be link to DownloadDirectory */}
-                <AnchorDownload className="show-all" identifier={this.props.identifier}>
-                  <I18nSpan en="Show all files" />
-                </AnchorDownload>
-              </p>
-            </MessageTheatre>
+          ? /*  The 'poster' is intentionally a direct Http link as its intended only for search engines etc
+                Preference is 2nd thumbnail (first is usually black-screen) in .thumbs/ directory (e.g. for 'commute');
+                if only one (e.g. item 'stairs') use that. */
+            (
+              <VideoTheatre
+                identifier={this.props.identifier}
+                mediatype={this.props.mediatype}
+                poster={this.props.poster}
+                title={this.props.title}
+                creator={this.props.creator}
+                source={this.props.playlist[0].sources[0].urls}
+              />
+            )
+          : (
+              <MessageTheatre title={<I18nSpan en="There Is No Preview Available For This Item" />}>
+                <p>
+                  <I18nSpan en="This item does not appear to have any files that can be experienced on Archive.org" />
+                  <br />
+                  <I18nSpan className="hidden-xs hidden-sm" en="Please download files in this item to interact with them on your computer" />.
+                  <br />
+                  {/* Should be link to DownloadDirectory */}
+                  <AnchorDownload className="show-all" identifier={this.props.identifier}>
+                    <I18nSpan en="Show all files" />
+                  </AnchorDownload>
+                </p>
+              </MessageTheatre>
+            )
         }
         <div id="flag-overlay" className="center-area"> </div>
       </div>
@@ -237,12 +253,12 @@ class DetailsWork extends React.Component {
    */
   externallinks() {
     return (!this.props.item.metadata['external-identifier']
-    ? undefined
-    : (this.props.item.metadata['external-identifier']
-      .map(ei => (ei.includes('//palmleaf.org')
-        ? { href: this.palmLeafWikiPageLink(ei), title: 'Open in Palmleaf Wiki', src: '/images/palm-leaf-wiki-logo.png' }
-        : undefined)))
-      .filter(f => !!f));
+      ? undefined
+      : (this.props.item.metadata['external-identifier']
+        .map(ei => (ei.includes('//palmleaf.org')
+          ? { href: this.palmLeafWikiPageLink(ei), title: 'Open in Palmleaf Wiki', src: '/images/palm-leaf-wiki-logo.png' }
+          : undefined)))
+        .filter(f => !!f));
   }
 
   render() {
@@ -256,11 +272,11 @@ class DetailsWork extends React.Component {
         <main id="maincontent">
           <div className="container container-ia" />
           { this.props.download
-            ?
-              <DownloadDirectoryDiv identifier={this.props.identifier}
-                                    disconnected={this.props.statuses.disconnected}
-                                    files={this.props.item.files.map(f => ({ name: f.metadata.name, size: f.sizePretty() }))} />
-            :
+            ?              <DownloadDirectoryDiv identifier={this.props.identifier}
+                disconnected={this.props.statuses.disconnected}
+                files={this.props.item.files.map(f => ({ name: f.metadata.name, size: f.sizePretty() }))}
+              />
+            : (
               <>
                 <DetailsIAWrap
                   identifier={this.props.identifier}
@@ -290,14 +306,14 @@ class DetailsWork extends React.Component {
                    />
                 }
                </>
-          }
-          {(!this.props.identifier) ? null :
-              <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected} /> }
-          {this.props.statuses.disconnected ? null :
-            <div className="terms-of-service">
+            )}
+          {(!this.props.identifier) ? null
+              : <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected} /> }
+          {this.props.statuses.disconnected ? null
+            : <div className="terms-of-service">
               <a className="stealth" href="https://archive.org/about/terms.php">
                 <I18nSpan en="Terms of Service" /> (<I18nSpan en="last updated" /> 12/31/2014)
-              </a>
+</a>
             </div> }
         </main>
         {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?) */}
@@ -325,8 +341,8 @@ class DetailsMessage extends React.Component {
     const identifier = this.props.identifier || (this.props.item && this.props.item.itemid);
     return (
       <>
-        {(!this.props.item) ? null :
-            <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
+        {(!this.props.item) ? null
+            : <NavWrap item={this.props.item} canSave={this.props.canSave} {...this.props.statuses} />
         }
         <main id="maincontent">
           <div className="container container-ia">
@@ -336,8 +352,8 @@ class DetailsMessage extends React.Component {
         { (!identifier
           || (this.props.item && this.props.item.is_dark) // is_dark dont have Related
           || Object.keys(specialidentifiers).includes(identifier) // No related on specialidentifiers
-          ) ? null :
-            <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected} /> }
+        ) ? null
+            : <RelatedItemsWrapper identifier={this.props.identifier} item={this.props.item} noCache={this.props.noCache} disconnected={this.props.statuses.disconnected} /> }
         {/* should have: analytics here (look at end of commute.html) - but not on Directory (and maybe some other types ?collection?) */}
       </>
     );

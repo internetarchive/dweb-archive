@@ -14,8 +14,10 @@
     "rules": {
         "arrow-parens": 0,
         "babel/semi": 2,
+        "camelcase": 1,
         "class-methods-use-this": 1,
         "comma-dangle": 0,
+        "implicit-arrow-linebreak": 1,
         "import/no-extraneous-dependencies": [
             "error", {
                 "devDependencies": ["**/*.test.js", "**/*.stories.js"],
@@ -25,16 +27,16 @@
         ],
         "import/prefer-default-export": 0,
         "indent": 1,
-        "jsx-a11y/label-has-for": 0,
         "jsx-a11y/label-has-associated-control": 2,
+        "jsx-a11y/label-has-for": 0,
         "max-len": 0,
         "no-else-return": 0,
         "no-multi-assign": 0,
-        "no-nested-ternary": 1,
         "no-param-reassign": 1,
         "no-plusplus": 0,
         "no-return-assign": 1,
         "no-underscore-dangle": 0,
+        "no-nested-ternary": 0,
         "no-unused-vars": 1,
         "object-curly-newline": 0,
         "operator-linebreak": 1,
@@ -43,20 +45,22 @@
         "prefer-template": 0,
         "quote-props": 1,
         "react/destructuring-assignment": 0,
-        "react/jsx-first-prop-new-line": 0,
-        "react/jsx-indent": 1,
-        "react/jsx-indent-props": 1,
-        "react/jsx-max-props-per-line": 0,
-        "react/jsx-closing-bracket-location": 1,
+        "react/jsx-closing-bracket-location":  1,
         "react/jsx-filename-extension": [
             1, {
                 "extensions": [".js", ".jsx"]
             }
         ],
+        "react/jsx-first-prop-new-line": 0,
+        "react/jsx-indent": 1,
+        "react/jsx-indent-props": 1,
+        "react/jsx-max-props-per-line": 0,
         "react/jsx-one-expression-per-line": 1,
         "react/jsx-wrap-multilines": 1,
-        "react/prop-types": 0,
+        "react/no-multi-comp": 0,
+        "react/no-unused-state": 1,
         "react/prefer-stateless-function": 0,
+        "react/prop-types": 0,
         "semi": 2
     }
 }

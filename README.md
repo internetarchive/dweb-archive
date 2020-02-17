@@ -48,6 +48,10 @@ To test with limited transports, for example HTTP only, add the transport parame
 
 `open "http://localhost:8080/archive.html?transport=HTTP"`
 
+To test against dweb-mirror you can pass a parameter e.g. 
+
+`open "http://localhost:8080/archive.html?mirror=localhost:4244&transport=HTTP"`
+
 
 ### Node Installation to work on this repo
 Note that the only reason to do this would be to work on the code,

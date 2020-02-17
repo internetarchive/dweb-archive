@@ -30,7 +30,7 @@ function epubReaderUrl(identifier, file) {
 export default class DetailsDownloadOptions extends React.Component {
   downloadableFilesDict() {
     return this.props.files
-      .filter(af => ( !this.props.disconnected || af.downloaded))
+      .filter(af => (!this.props.disconnected || af.downloaded))
       .reduce((res, af) => {
         const format = af.metadata.format;
         if (downloadableFormat(format)) {

@@ -56,6 +56,7 @@ export default class CrawlConfig extends React.Component {
       clickable: !CrawlConfig.unclickable.includes(props.identifier)
     };
   }
+
   render() {
     // TODO-CONFIG make it editable
     // noinspection JSUnresolvedVariable
@@ -66,22 +67,34 @@ export default class CrawlConfig extends React.Component {
     const isDownloaded = this.props.downloaded && this.props.downloaded.details;
     const dl = this.props.downloaded; // Speed up access below
     return (
-      (!this.props.identifier && !this.props.query) ? null :
-        <ul>
-          <li className={className} data-id={this.props.identifier} key={this.props.identifier} onClick={this.state.clickable ? this.onClick : undefined}>
-            <I18nSpan en={this.state.level ? `Crawling ${this.state.level}` : isDownloaded ? 'Downloaded' : 'Not Downloaded'}> </I18nSpan>
-            {!dl ? null
-              : dl.members_all_count
-                ? <span>{`${prettierBytes(dl.members_size || 0)} ${I18nStr("in")} ${dl.members_details_count} ${I18nStr("of")} ${dl.members_all_count} ${I18nStr("items")}`}</span>
-                : dl.pages_size
-                  ? <span>{prettierBytes(dl.files_size + (dl.pages_size || 0))} </span>
-                  : <span>{prettierBytes(dl.files_size) + " / " + prettierBytes(dl.files_all_size)} </span>
+      (!this.props.identifier && !this.props.query) ? null
+        : (
+          <ul>
+            <li className={className} data-id={this.props.identifier} key={this.props.identifier} onClick={this.state.clickable ? this.onClick : undefined}>
+              <I18nSpan en={this.state.level ? `Crawling ${this.state.level}` : isDownloaded ? 'Downloaded' : 'Not Downloaded'}> </I18nSpan>
+              {!dl ? null
+                : dl.members_all_count
+                  ? <span>{`${prettierBytes(dl.members_size || 0)} ${I18nStr('in')} ${dl.members_details_count} ${I18nStr('of')} ${dl.members_all_count} ${I18nStr('items')}`}</span>
+                  : dl.pages_size
+                    ? (
+                      <span>
+                        {prettierBytes(dl.files_size + (dl.pages_size || 0))}
+                        {' '}
+                      </span>
+                    )
+                    : (
+                      <span>
+                        {prettierBytes(dl.files_size) + ' / ' + prettierBytes(dl.files_all_size)}
+                        {' '}
+                      </span>
+                    )
             }
-            { (this.props.search && CrawlConfig._levels.indexOf(this.props.level) >= CrawlConfig._levels.indexOf('details'))
-              ? <span>{`  ${I18nStr("Searching")} ${this.props.search.rows} ${I18nStr("rows at")} ${I18nStr(this.props.search.level)}`}</span>
-              : null }
-          </li>
-        </ul>
+              { (this.props.search && CrawlConfig._levels.indexOf(this.props.level) >= CrawlConfig._levels.indexOf('details'))
+                ? <span>{`  ${I18nStr('Searching')} ${this.props.search.rows} ${I18nStr('rows at')} ${I18nStr(this.props.search.level)}`}</span>
+                : null }
+            </li>
+          </ul>
+        )
     );
   }
 
@@ -90,7 +103,7 @@ export default class CrawlConfig extends React.Component {
     debug('%s: Crawl clicked', this.props.identifier || this.props.query);
 
     if (!this.state.clickable) {
-      debug('Clicking but %s', this.props.identifier ? ("invalid identifier "+this.props.identifier) : "but not an identifier");
+      debug('Clicking but %s', this.props.identifier ? ('invalid identifier ' + this.props.identifier) : 'but not an identifier');
     } else {
       // Do the UI part first, so responsive
       // Bump the level to next one
@@ -105,8 +118,8 @@ export default class CrawlConfig extends React.Component {
       this.setState({ level });
 
       // Tell server the desired new state.
-      let urlSetConfig = [DwebArchive.mirror, 'admin/setconfig', this.props.identifier || "_", level || 'none'].join('/');
-      if (this.props.query) { urlSetConfig += "?q=" + encodeURIComponent(this.props.query); }
+      let urlSetConfig = [DwebArchive.mirror, 'admin/setconfig', this.props.identifier || '_', level || 'none'].join('/');
+      if (this.props.query) { urlSetConfig += '?q=' + encodeURIComponent(this.props.query); }
       DwebTransports.httptools.p_GET(urlSetConfig, {}, (err, unusedInfo) => {
         // Gets back info, but not currently using
         if (err) {

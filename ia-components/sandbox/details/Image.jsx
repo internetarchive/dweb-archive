@@ -1,4 +1,4 @@
-/* global DwebArchive */
+/* global DwebArchive, AJS */
 import React from 'react';
 import { ObjectFilter } from '../../util';
 // const debug = require('debug')('Image Components');
@@ -52,10 +52,10 @@ class ImageDweb extends React.Component {
     const urls = this.props.source || this.props.src; // ArchiveFile or Url or string should be fine
     if (urls) { // Sometimes ImageDweb called with no image, or filled in later.
       // TODO imgname might be obsolete and unused (check dweb-archive and iaux)
-      const name = this.props.imgname || (typeof this.props.source === "string" && this.props.source) || (this.props.source && this.props.source.metadata && this.props.source.metadata.name) || "unknown.png";
+      const name = this.props.imgname || (typeof this.props.source === 'string' && this.props.source) || (this.props.source && this.props.source.metadata && this.props.source.metadata.name) || 'unknown.png';
       DwebArchive.getImageURI(name, urls, (err, url) => {
-        if (!err) this.setState({src: url}); //TODO its possible there is a race if this happens before mounting
-      })
+        if (!err) this.setState({ src: url }); // TODO its possible there is a race if this happens before mounting
+      });
     }
   }
 
@@ -64,13 +64,14 @@ class ImageDweb extends React.Component {
       AJS.tiler();
     }
     // Need to do this here since there is a bug in Firefox causing its test of img.complete to return true prematurely.
-    if (this.state.src && this.props.className && this.props.className.includes("carousel-image")) {
+    if (this.state.src && this.props.className && this.props.className.includes('carousel-image')) {
       AJS.theatresize();
       AJS.carouselsize('#ia-carousel', true);
     }
   }
+
   render() {
-    //const notImgProps = ObjectFilter(this.props, (k, unusedV) => ImageDweb.specificParms.includes(k));
+    // const notImgProps = ObjectFilter(this.props, (k, unusedV) => ImageDweb.specificParms.includes(k));
     const imgProps = ObjectFilter(this.props, (k, unusedV) => (!ImageDweb.specificParms.includes(k) && !['children'].includes(k)));
     // noinspection HtmlRequiredAltAttribute
     return (

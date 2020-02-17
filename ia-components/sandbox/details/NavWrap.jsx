@@ -3,12 +3,12 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* global DwebArchive, DwebTransports, Nav */
 import React from 'react';
+import LanguageSelect from '@internetarchive/ia-components/sandbox/language-select/language-select';
 import AnchorDetails from '../AnchorDetails';
 import { AnchorSearch } from './AnchorSearch';
 import CrawlConfig from './CrawlConfig';
 import { AnchorModalGo } from './ModalGo';
 import { I18nSpan, I18nStr, I18nIcon, currentISO, languageConfig, setLanguage } from '../languages/Languages';
-import LanguageSelect from '@internetarchive/ia-components/sandbox/language-select/language-select';
 
 const debug = require('debug')('dweb-archive:NavWrap');
 
@@ -232,22 +232,26 @@ class NavWebDIV extends React.Component {
               <div className="wayback-txt">
                 <I18nSpan en="Search the history of over 338 billion" />
                 <a style={{ display: 'inline' }}
-                   href="https://blog.archive.org/2016/10/23/defining-web-pages-web-sites-and-web-captures/"><I18nSpan en="web pages" />
+                  href="https://blog.archive.org/2016/10/23/defining-web-pages-web-sites-and-web-captures/"
+                ><I18nSpan en="web pages" />
                 </a> <I18nSpan en="on the Internet." />
               </div>
               <div className="roundbox7 wayback-main">
                 <div className="row">
                   <div className="col-sm-6" style={{ paddingLeft: 0, paddingRight: 0 }}>
                     <a style={{ paddingBottom: 0 }} href="https://archive.org/web/"><img
-                      src="/images/WaybackLogoSmall.png" alt="Wayback Machine" /></a>
+                      src="/images/WaybackLogoSmall.png" alt="Wayback Machine"
+                    />
+                    </a>
                   </div>
                   <div className="col-sm-6" style={{ paddingTop: 13 }}>
                     <form style={{ position: 'relative' }}>
                       <I18nIcon className="iconochive-search" iconref={this.load} en="search" /> <label htmlFor="nav-wb-url" className="sr-only"><I18nSpan en="Search the Wayback Machine" /></label>
                       <input id="nav-wb-url" className="form-control input-sm roundbox20"
-                             type="text"
-                             placeholder={I18nStr('enter URL or keywords')} name="url" autoComplete="off"
-                             onClick={this.onClick} />
+                        type="text"
+                        placeholder={I18nStr('enter URL or keywords')} name="url" autoComplete="off"
+                        onClick={this.onClick}
+                      />
                     </form>
                   </div>
                 </div>
@@ -284,7 +288,7 @@ class DwebNavButtons extends React.Component {
         {!this.props.mirror2gateway
           ? null
           : <li className="reload">
-              <span className="iconochive-Refresh"/>
+              <span className="iconochive-Refresh" />
               {this.props.identifier
                 ? <AnchorDetails identifier={this.props.identifier} reload><I18nSpan en="Reload" /></AnchorDetails>
                 : <AnchorSearch query={this.props.query} sort={this.props.sort} reload><I18nSpan en="Reload" /></AnchorSearch>
@@ -346,7 +350,7 @@ class DwebNavDIV extends React.Component {
   render() {
     // Alternative to complex nav-dweb code
     const crawl = Object.assign({ identifier: this.props.item.itemid, query: this.props.item.query, downloaded: this.props.item.downloaded }, this.props.item.crawl);
-      return ((typeof DwebArchive === 'undefined') ? null :
+    return ((typeof DwebArchive === 'undefined') ? null :
         <div id="nav-dweb">
           { DwebArchive.mirror
             ? <I18nSpan className="dweb-nav-left" en="Offline" />
@@ -360,7 +364,8 @@ class DwebNavDIV extends React.Component {
                   query={this.props.item.query}
                   sort={this.props.item.sort}
                   mirror2gateway={this.props.mirror2gateway}
-                  canSave={this.props.canSave} />
+                  canSave={this.props.canSave}
+                />
                 </div>
               </>
             }
@@ -401,7 +406,7 @@ class DwebStatusLI extends React.Component {
       // TODO display err.message if hover
       this.setState({ error: err, status: err ? TRANSPORT_STATUS_FAILED : s });
     });
-    //Removed as no href on the "li"
+    // Removed as no href on the "li"
     // ev.preventDefault(); // Prevent click propagating (equivalent to "return false" in non-React
   }
 
@@ -429,9 +434,7 @@ class DwebStatusDIV extends React.Component {
           I18nStr('Connecting') + '  '
           :
           <ul>
-            {this.props.statuses.map(s =>
-              <DwebStatusLI {...s} clickable={this.props.clickable} key={s.name} />
-            )}
+            {this.props.statuses.map(s => <DwebStatusLI {...s} clickable={this.props.clickable} key={s.name} />)}
           </ul>
         }
       </div>

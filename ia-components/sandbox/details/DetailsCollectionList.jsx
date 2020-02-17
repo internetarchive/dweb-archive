@@ -1,4 +1,4 @@
-/* global DwebArchiveContoller */
+/* global DwebArchiveController */
 /* eslint-disable prefer-template, max-len, react/prop-types, react/destructuring-assignment */
 import React from 'react';
 import AnchorDetails from '../AnchorDetails';

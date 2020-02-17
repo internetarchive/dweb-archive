@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { AnchorDetails, AnchorSearch, I18nSpan, I18n, I18nStr, I18nIcon } from '../ia-components/dweb-index';
 
 /**
@@ -15,13 +15,15 @@ class HomeWelcomeLinkIcon extends React.Component {
     return (
       <div className="mt-big">
         <div>
-          <I18nIcon className={this.props.iconochive} en={this.props.sronly}/>
+          <I18nIcon className={this.props.iconochive} en={this.props.sronly} />
         </div>
         <div className="micro-label">
-          {this.props.size} <I18nSpan className="sr-only" en="items"/>
+          {this.props.size}
+          {' '}
+          <I18nSpan className="sr-only" en="items" />
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -45,18 +47,27 @@ class HomeWelcomeLink extends React.Component {
   // Props: href, title, sronly, size
 
   render() {
-    const {s, l} = I18n(this.props.title || this.props.identifier);
+    const { s, l } = I18n(this.props.title || this.props.identifier);
     return (
       this.props.identifier
-      ? <AnchorDetails identifier={this.props.identifier} title={s} lang={l}>
-        <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size}/></AnchorDetails>
-      : this.props.query
-      ? <AnchorSearch query={this.props.query} title={s} lang={l}>
-        <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size}/></AnchorSearch>
-      : <a href={this.props.href} title={s} lang={l}>
-        <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size}/></a>
+        ? (
+          <AnchorDetails identifier={this.props.identifier} title={s} lang={l}>
+            <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size} />
+          </AnchorDetails>
+        )
+        : this.props.query
+          ? (
+            <AnchorSearch query={this.props.query} title={s} lang={l}>
+              <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size} />
+            </AnchorSearch>
+          )
+          : (
+            <a href={this.props.href} title={s} lang={l}>
+              <HomeWelcomeLinkIcon iconochive={this.props.iconochive} sronly={this.props.sronly} size={this.props.size} />
+            </a>
+          )
 
-    )
+    );
   }
 }
 
@@ -66,38 +77,48 @@ class HomeWelcomeLink extends React.Component {
  * Display the Home Banner - a row of icons, approx counts and links
  */
 class HomeBanner extends React.Component {
- render() {
-   return (
-     <>
-       { this.props.disconnected ? null :
-         <div id="ToS">
-           <a className="stealth" href="https://archive.org/about/terms.php"><I18nSpan en="Terms of Service"/> (<I18nSpan en="last updated"/>
-             12/31/2014)</a>
-         </div>
+  render() {
+    return (
+      <>
+        { this.props.disconnected ? null
+          : (
+            <div id="ToS">
+              <a className="stealth" href="https://archive.org/about/terms.php">
+                <I18nSpan en="Terms of Service" />
+                {' '}
+(
+                <I18nSpan en="last updated" />
+             12/31/2014)
+              </a>
+            </div>
+          )
        }
-       <div className="row preamble" style={{marginBottom: "60px"}}>
-         <div className="col-sm-3 hero-left">
-          <I18nIcon className="iconochive-logo topinblock" en="logo"/>
-         </div>
-         <div className="col-sm-6 hero-center">
-          <div className="preamble-whoweare">
-            <b><I18nSpan en="Internet Archive"/>&nbsp;</b>
-
-            <I18nSpan en="is a non-profit library of millions of free books, movies, software, music, websites, and more."/>
-            <center className="mt-big" style={{marginTop: "10px"}}>
-              <HomeWelcomeLink href="/web" iconochive="iconochive-web" title="Web" sronly="web" size="373B"/>
-              <HomeWelcomeLink identifier="texts" iconochive="iconochive-texts" title="Texts" sronly="texts" size="21M"/>
-              <HomeWelcomeLink identifier="movies" iconochive="iconochive-movies" title="Video" sronly="movies" size="4.9M"/>
-              <HomeWelcomeLink identifier="audio" iconochive="iconochive-audio" title="Audio" sronly="audio" size="6.7M"/>
-              <HomeWelcomeLink identifier="tv" iconochive="iconochive-tv" title="TV" sronly="tv" size="1.9M"/>
-              <HomeWelcomeLink identifier="software" iconochive="iconochive-software" title="Software" sronly="software" size="437K"/>
-              <HomeWelcomeLink identifier="image" iconochive="iconochive-image" itle="Image" sronly="image" size="3.3M"/>
-              <HomeWelcomeLink identifier="etree" iconochive="iconochive-etree" title="Concerts" sronly="etree" size="206K"/>
-              <HomeWelcomeLink query="mediatype:collection" iconochive="iconochive-collection" title="Collections" sronly="collection" size="522K"/>
-            </center>
+        <div className="row preamble" style={{ marginBottom: '60px' }}>
+          <div className="col-sm-3 hero-left">
+            <I18nIcon className="iconochive-logo topinblock" en="logo" />
           </div>
-           {/* TODO-SEARCH check and fix this searchbar see https://github.com/internetarchive/dweb-archive/issues/161 */}
-           {/*
+          <div className="col-sm-6 hero-center">
+            <div className="preamble-whoweare">
+              <b>
+                <I18nSpan en="Internet Archive" />
+&nbsp;
+              </b>
+
+              <I18nSpan en="is a non-profit library of millions of free books, movies, software, music, websites, and more." />
+              <center className="mt-big" style={{ marginTop: '10px' }}>
+                <HomeWelcomeLink href="/web" iconochive="iconochive-web" title="Web" sronly="web" size="373B" />
+                <HomeWelcomeLink identifier="texts" iconochive="iconochive-texts" title="Texts" sronly="texts" size="21M" />
+                <HomeWelcomeLink identifier="movies" iconochive="iconochive-movies" title="Video" sronly="movies" size="4.9M" />
+                <HomeWelcomeLink identifier="audio" iconochive="iconochive-audio" title="Audio" sronly="audio" size="6.7M" />
+                <HomeWelcomeLink identifier="tv" iconochive="iconochive-tv" title="TV" sronly="tv" size="1.9M" />
+                <HomeWelcomeLink identifier="software" iconochive="iconochive-software" title="Software" sronly="software" size="437K" />
+                <HomeWelcomeLink identifier="image" iconochive="iconochive-image" itle="Image" sronly="image" size="3.3M" />
+                <HomeWelcomeLink identifier="etree" iconochive="iconochive-etree" title="Concerts" sronly="etree" size="206K" />
+                <HomeWelcomeLink query="mediatype:collection" iconochive="iconochive-collection" title="Collections" sronly="collection" size="522K" />
+              </center>
+            </div>
+            {/* TODO-SEARCH check and fix this searchbar see https://github.com/internetarchive/dweb-archive/issues/161 */}
+            {/*
            <div>
              <div className="searchbar searchbar-home">
                <form className="form search-form js-search-form"
@@ -180,9 +201,9 @@ class HomeBanner extends React.Component {
              </div>
            </div>
            */}
-           <br clear="all" className="clearfix"/>
+            <br clear="all" className="clearfix" />
           </div>
-   {/* TODO Add announcements if/when can find an API for them
+          {/* TODO Add announcements if/when can find an API for them
     <div className="col-sm-3 hero-right">
      <div className="hidden-sm hidden-md hidden-lg" style={{height:"50px}}></div>
      <h4 style={{marginTop:"0"}}>Announcements</h4>
@@ -204,14 +225,14 @@ class HomeBanner extends React.Component {
      </div>
    </div>
    */}
- </div>
-   <center id="top-collections" style={{marginBottom:"50px"}}>
-     <h1 style={{fontWeight:100}}><I18nSpan en="Top Collections at the Archive"/></h1>
-   </center>
-  </>
- )
- }
+        </div>
+        <center id="top-collections" style={{ marginBottom: '50px' }}>
+          <h1 style={{ fontWeight: 100 }}><I18nSpan en="Top Collections at the Archive" /></h1>
+        </center>
+      </>
+    );
+  }
 }
 
-export { HomeBanner }
+export { HomeBanner };
 // File regular review 2019-oct-12

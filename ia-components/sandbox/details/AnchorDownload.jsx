@@ -63,7 +63,7 @@ function downloadViaAnchor(el, source, options, cb) {
     // Note cant do these in parallel as it does odd stuff to "el" to work around a browser bug
     eachSeries(source,
       (s, cb1) => { downloadViaAnchor(el, s, options, cb1); },
-      (err) => { if (cb) cb(err) });
+      (err) => { if (cb) cb(err); });
   } else { // TODO could also handle source being a string
     source.blobUrl((err, url) => {
       if (err) {
@@ -81,7 +81,7 @@ function reachable({ disconnected, source, identifier, filename }) {
   // Note that multi element arrays arent reachable if disconnected because they need "compress" which we dont currently support on dweb-mirror
   return (!disconnected
     || (source
-      ? (Array.isArray(source) ? source.every(s => s.downloaded) : source.downloaded )
+      ? (Array.isArray(source) ? source.every(s => s.downloaded) : source.downloaded)
       : (identifier && !filename) // Just an identifier = want directory
     ));
 }
@@ -103,7 +103,7 @@ class AnchorDownload extends React.Component {
           // identifier only, !Dweb or Dweb as Dweb will handle through onClick anyway
           : `https://archive.org/download/${this.props.identifier}`);
     // url is not routed() because only used by non-Dweb, Dweb uses onClick
-    this.state = { url }
+    this.state = { url };
     const usp = new URLSearchParams();
     // Copy any parameters in AnchorDownload.urlparms to usp for inclusion in the href=
     AnchorDownload.urlparms.forEach(k => usp.append(k, this.props[k]));
@@ -119,9 +119,9 @@ class AnchorDownload extends React.Component {
     debug('Clicking on link to download: %s', this.props.identifier);
     // noinspection JSIgnoredPromiseFromCall,JSUnresolvedFunction
     if (this.props.source) {
-      downloadViaAnchor(ev.currentTarget, this.props.source)
+      downloadViaAnchor(ev.currentTarget, this.props.source);
     } else { // No source, must be plain identifier
-      Nav.factory(this.props.identifier, {wanthistory: true, download: 1}); // ignore promise
+      Nav.factory(this.props.identifier, { wanthistory: true, download: 1 }); // ignore promise
     }
     ev.preventDefault(); // Prevent it going to the anchor (equivalent to "return false" in non-React
   }
@@ -133,8 +133,8 @@ class AnchorDownload extends React.Component {
       typeof DwebArchive === 'undefined'
         ? <a href={this.state.url.href} {...this.state.anchorProps} rel="noopener noreferrer" target="_blank">{this.props.children}</a>
         : reachable(this.props) // Its Dweb, but is it reachable (uses props. disconnected, source, identifier, filename)
-        ? <a href={this.state.url.href} onClick={this.onClick} {...this.state.anchorProps}>{this.props.children}</a>
-        : null
+          ? <a href={this.state.url.href} onClick={this.onClick} {...this.state.anchorProps}>{this.props.children}</a>
+          : null
     );
   }
 }
@@ -142,4 +142,4 @@ AnchorDownload.urlparms = []; // Properties that go in the URL to download
 // Other props are passed to anchor,
 // known inuse include: className, source, title, data-toggle data-placement data-container target
 
-export { AnchorDownload, reachable }
+export { AnchorDownload, reachable };

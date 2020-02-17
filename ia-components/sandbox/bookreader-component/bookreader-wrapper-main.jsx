@@ -49,7 +49,7 @@ export default class BookReaderWrapper extends Component {
       searchInsideUrl: '/fulltext/inside.php',
       initialSearchTerm: null,
       imagesBaseURL: '/bookreader/BookReader/images/',
-      //TODO-ISA what is going on here, a comment would be useful ? (same on bookreader-wrapper-main and bookreader-wrapper-jsia)
+      // TODO-ISA what is going on here, a comment would be useful ? (same on bookreader-wrapper-main and bookreader-wrapper-jsia)
       getPageURI: (index, reduce = 1, rotate = 0) => {
         let uri = originalGetPageURI.call(br, index, reduce, rotate);
         uri += (uri.indexOf('?') > -1 ? '&' : '?');
@@ -75,8 +75,8 @@ export default class BookReaderWrapper extends Component {
   render() {
     return (
       <section id="IABookReaderWrapper" {...this.props}>
-        {!this.props.jsia ? null :
-          <div id="IABookReaderMessageWrapper" style={{display: "none"}}></div>
+        {!this.props.jsia ? null
+          : <div id="IABookReaderMessageWrapper" style={{ display: 'none' }} />
         }
         <div id="bookreader" ref={this.BookReaderRef} style={{ height: '100%', width: '100%' }} />
       </section>

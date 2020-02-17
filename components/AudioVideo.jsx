@@ -4,8 +4,8 @@
 import React from 'react';
 import prettierBytes from 'prettier-bytes';
 import { ObjectFilter } from '@internetarchive/dweb-archivecontroller';
-import { I18nSpan } from '../ia-components/dweb-index';
 import throttle from 'throttleit';
+import { I18nSpan } from '../ia-components/dweb-index';
 import { config } from '../Util';
 import { p_loadStream } from '../ReactSupport';
 // const debug = require('debug')('dweb-archive:Video Components');
@@ -147,13 +147,15 @@ class WebTorrentStats extends React.Component {
   }
 
   render() {
-    return typeof window.WEBTORRENT_TORRENT === 'undefined' ? null :
-      <span>
-        <b><I18nSpan en="Peers">:</I18nSpan></b> {this.state.numPeers}{' '}
-        <b><I18nSpan en="Progress">:</I18nSpan></b> {Math.min(100 * this.state.progress || 0, 100).toFixed(1)}%{' '}
-        <b><I18nSpan en="Download speed">:</I18nSpan></b> {prettierBytes(this.state.downloadSpeed || 0)}/s{' '}
-        <b><I18nSpan en="Upload speed">:</I18nSpan></b> {prettierBytes(this.state.uploadSpeed || 0)}/s
-      </span>;
+    return typeof window.WEBTORRENT_TORRENT === 'undefined' ? null
+      : (
+        <span>
+          <b><I18nSpan en="Peers">:</I18nSpan></b> {this.state.numPeers}{' '}
+          <b><I18nSpan en="Progress">:</I18nSpan></b> {Math.min(100 * this.state.progress || 0, 100).toFixed(1)}%{' '}
+          <b><I18nSpan en="Download speed">:</I18nSpan></b> {prettierBytes(this.state.downloadSpeed || 0)}/s{' '}
+          <b><I18nSpan en="Upload speed">:</I18nSpan></b> {prettierBytes(this.state.uploadSpeed || 0)}/s
+        </span>
+      );
   }
 }
 export { AudioDweb, VideoDweb, WebTorrentStats };

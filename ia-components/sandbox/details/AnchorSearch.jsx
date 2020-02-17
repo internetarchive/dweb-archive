@@ -37,11 +37,10 @@ function _onefield(key, value) {
 }
 
 function queryFrom(query) {
-  if (typeof query === "object") {
+  if (typeof query === 'object') {
     return Object.entries(query).map(kv => _onefield(kv[0], kv[1])).join(' AND '); // k1:v1 AND k2:v2
-  } else {
-    return query;
   }
+  return query;
 }
 // End of DUPLICATEDCODE#0003
 
@@ -69,16 +68,18 @@ class AnchorSearch extends React.Component {
   static getDerivedStateFromProps(props, unusedState) {
     return {
       query: props.query || ObjectFromEntries([[props.field, props.value]]),
-      urlProps: ObjectFilter(props, (k, unusedV) => AnchorSearch.urlparms.includes(k)),  //sort, reload, query
+      urlProps: ObjectFilter(props, (k, unusedV) => AnchorSearch.urlparms.includes(k)), // sort, reload, query
       anchorProps: ObjectFilter(props, (k, unusedV) => (!AnchorSearch.urlparms.includes(k) && !['children'].includes(k)))
     };
   }
+
   onClick(ev) {
     // Note this is only called in dweb; !Dweb has a director href
     debug('Clicking on link to search: %s', this.state.query);
     DwebArchive.Nav.navSearch(
       this.state.query,
-      { noCache: this.props.reload, wanthistory: !this.props.reload, sort: this.props.sort });
+      { noCache: this.props.reload, wanthistory: !this.props.reload, sort: this.props.sort }
+    );
     ev.preventDefault(); // Dont propogate event
   }
 
@@ -86,9 +87,10 @@ class AnchorSearch extends React.Component {
     const url = new URL('https://archive.org/search.php');
     const usp = new URLSearchParams();
     Object.entries(this.state.urlProps)
-      .forEach(kv => {
-        if (!["query", "sort"].includes(kv[0]))  // Filter out query and sort handled seperately
-          usp.append(kv[0], kv[1])});
+      .forEach((kv) => {
+        if (!['query', 'sort'].includes(kv[0])) // Filter out query and sort handled seperately
+        { usp.append(kv[0], kv[1]); }
+      });
     if (this.state.query) {
       usp.append('query', queryFrom(this.state.query));
     }
