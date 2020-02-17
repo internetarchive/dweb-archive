@@ -27,7 +27,7 @@ class AccountTabbyPosts extends React.Component {
                   </tr>
                   {/* -- TODO-ACCOUNT this is a loop  need query for forum posts https://github.com/internetarchive/dweb-archive/issues/86--*/}
                   <tr>
-                    <td><Ispan en="Still being implemented" /></td>
+                    <td><I18nSpan en="Still being implemented" /></td>
                   </tr>
                   {/*
                                 <tr valign="top" className="eve forumRow">
@@ -91,7 +91,7 @@ class AccountTabbyPosts extends React.Component {
     );
   }
 }
-class AccountWelcome extends IAReactComponent {
+class AccountWelcome extends React.Component {
   /**
      * <AccountWelcome item=ARCHIVEITEM />
      * TODO pass in detailed props rather than item
@@ -147,7 +147,7 @@ class AccountWelcome extends IAReactComponent {
   }
 }
 
-class AccountUploads extends IAReactComponent {
+class AccountUploads extends React.Component {
   /**
      * <AccountUploads item=ARCHIVEITEM disconnected=BOOL />
      */
@@ -162,7 +162,7 @@ class AccountUploads extends IAReactComponent {
   }
 }
 
-class AccountWrap extends IAReactComponent {
+class AccountWrap extends React.Component {
   /**
      * <AccountWrap item=ARCHIVEITEM/>
      * @returns {*}
@@ -176,7 +176,7 @@ class AccountWrap extends IAReactComponent {
         Built out from a download of Tracey's account page on 10June2018
          */
     // if (typeof AJS != 'undefined') AJS.lists_v_tiles_setup('account');
-    { /* Missing donate-banner and scripts & css before it */ }
+    /* Missing donate-banner and scripts & css before it */
     return (
       <>
         <NavWrap
