@@ -1,3 +1,4 @@
+/* eslint-disable react/prefer-stateless-function, react/prop-types, react/no-array-index-key */
 import React from 'react';
 import AnchorDetails from '../AnchorDetails';
 import { I18nSpan, I18nIcon, I18nStr } from '../languages/Languages';
@@ -22,7 +23,7 @@ import { I18nSpan, I18nIcon, I18nStr } from '../languages/Languages';
  */
 
 
-class DetailsReviews extends ReactComponent {
+class DetailsReviews extends React.Component {
   // Checked against archive.org output 2019-09-04
   render() {
     const reviews = this.props.reviews;
@@ -50,8 +51,8 @@ class DetailsReviews extends ReactComponent {
           }
           Reviews
         </h2>
-        {reviews && reviews.length ? reviews.map((review, i) => (
-          <div key={i} className="aReview" id={`review-${review.review_id}`}>
+        {reviews && reviews.length ? reviews.map(review => (
+          <div key={review.review_id} className="aReview" id={`review-${review.review_id}`}>
             <b>
               <I18nSpan en="Reviewer" />
 :
