@@ -1,5 +1,5 @@
 import React from 'react';
-import {IAReactComponent, I18nSpan, I18nIcon} from '../ia-components/dweb-index';
+import {I18nSpan, I18nIcon} from '../ia-components/dweb-index';
 
 /**
  * Button to enable sharing to one url
@@ -13,7 +13,7 @@ import {IAReactComponent, I18nSpan, I18nIcon} from '../ia-components/dweb-index'
  * Behavior - when clicks access sharing on other service
  */
 
-class CherModalButton extends IAReactComponent {
+class CherModalButton extends React.Component {
 
   //TODO tooltips aren't loading, not sure why there is a tooltip function in archive.html but calling that on this
   //TODO doesnt seem to work. Investigation required and then TODO-I8N
@@ -42,11 +42,7 @@ class CherModalButton extends IAReactComponent {
  *
  * Behavior - when clicks, displays modal interaction for sharing
  */
-class CherModal extends IAReactComponent {
-  constructor(props) {
-    super(props); // identifier, creator, mediatype, title (not translatable)
-  }
-
+class CherModal extends React.Component {
 
   render() {
     //Common text across Image and Text and possibly other subclasses
@@ -129,6 +125,6 @@ class CherModal extends IAReactComponent {
 }
 
 export { CherModal };
-// File regular review 2019-sept-12
+// File regular review 2019-feb-17
 
 
