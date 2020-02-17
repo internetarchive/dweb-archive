@@ -1,7 +1,7 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
-import {IAReactComponent, I18nSpan } from "../../ia-components/dweb-index.js";
 
-class CommonWelcomeComponent extends IAReactComponent {
+class CommonWelcomeComponent extends React.Component {
   /**
    * <CommonWelcomeComponent
    *    title=I8STRING|NODE
@@ -14,21 +14,21 @@ class CommonWelcomeComponent extends IAReactComponent {
    */
 
 
-  render() { return (
-    <div className="welcome container container-ia width-max" style={{'backgroundColor':'white'}}>
-      <div className="container">
-        <div className="row">
-          <div className="col-xs-11 col-sm-10 welcome-left">
-            <h1>{this.props.title}</h1>
-            <h4>{this.props.byline}</h4>
-            <div id="descript" style={{maxHeight:"43px", cursor:'pointer'}} dangerouslySetInnerHTML={{__html: this.props.description}}>
+  render() {
+    return (
+      <div className="welcome container container-ia width-max" style={{ backgroundColor: 'white' }}>
+        <div className="container">
+          <div className="row">
+            <div className="col-xs-11 col-sm-10 welcome-left">
+              <h1>{this.props.title}</h1>
+              <h4>{this.props.byline}</h4>
+              <div id="descript" style={{ maxHeight: '43px', cursor: 'pointer' }} dangerouslySetInnerHTML={{ __html: this.props.description }} />
             </div>
           </div>
         </div>
       </div>
-    </div>
-  )}
+    );
+  }
 }
 
-export {CommonWelcomeComponent};
-
+export { CommonWelcomeComponent };
