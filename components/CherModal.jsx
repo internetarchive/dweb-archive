@@ -21,6 +21,7 @@ class CherModalButton extends React.Component {
       <a
         href={this.props.url}
         target="_blank"
+        rel="noopener noreferrer"
       >
         {/* The className is where the icon comes from */}
         <div className={'sharee ' + this.props.className} data-toggle="tooltip" data-placement="bottom" title="" data-original-title={this.props.title} />
@@ -102,7 +103,7 @@ class CherModal extends React.Component {
                 : (
                   <>
                     <div>
-                      <form className="form" role="form">
+                      <form className="form">
                         <div className="form-group">
                           <label><I18nSpan en="EMBED" /></label>
                           <textarea id="embedcodehere" className="form-control textarea-invert-readonly"
