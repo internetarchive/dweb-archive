@@ -16,7 +16,7 @@
     "@babel/runtime": "^7.4.3",
     "@futurepress/epubjs-reader": "git+https://github.com/futurepress/epubjs-reader.git",
     "@internetarchive/bookreader": "git+https://github.com/internetarchive/bookreader.git",
-    "@internetarchive/dweb-archivecontroller": "^0.2.7",
+    "@internetarchive/dweb-archivecontroller": "^0.2.8",
     "@internetarchive/dweb-transports": "^0.2.19",
     "@internetarchive/ia-components": "0.0.0-alpha.1",
     "@internetarchive/ia-design-system": "^0.3.1-alpha.21",
