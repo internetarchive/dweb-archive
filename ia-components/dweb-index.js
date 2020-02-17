@@ -1,4 +1,3 @@
-export {default as IAReactComponent} from './sandbox/IAReactComponent';
 export { default as AnchorDetails } from './sandbox/AnchorDetails';
 // sandbox bookreader
 export { default as BookReaderWrapper} from './sandbox/bookreader-component/bookreader-wrapper-main';

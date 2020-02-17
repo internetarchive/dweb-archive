@@ -95,5 +95,4 @@ Build (webpack) the bundles and copy needed files to dist/
   * Lots of stand-alone components
   * AVDWeb - Adds functionality common to adding content to media tags
     * AudioDweb, VideoDweb 
-  * IAReactComponent - Extends ReactComponent to have common functionality across components - being obsoleted
 * Nav - common class for navigation structures (mostly at the top of the page) also maps item types to classes
