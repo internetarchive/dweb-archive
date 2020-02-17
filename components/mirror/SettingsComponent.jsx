@@ -1,17 +1,18 @@
 /* global DwebTransports */
 import React from 'react';
-const debug = require('debug')('dweb-archive:SettingsComponent');
 import prettierBytes from 'prettier-bytes';
 
 import waterfall from 'async/waterfall';
-import {CommonWelcomeComponent} from "./CommonComponent";
+import { CommonWelcomeComponent } from './CommonComponent';
 import { NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig } from '../../ia-components/dweb-index';
 
-//TODO - alternative to using Unicode codes for flags directly
+const debug = require('debug')('dweb-archive:SettingsComponent');
+
+// TODO - alternative to using Unicode codes for flags directly
 // import ReactFlagsSelect from 'react-flags-select';
 // import 'react-flags-select/css/react-flags-select.css';
 
-//SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
+// SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 
 /*
 Crawl is: {
@@ -31,9 +32,9 @@ function safePrettyInt(n) {
     const x = parseInt(n, 10);
     const y = prettierBytes(x);
     return y;
-  } catch(err) {
-    debug("%s is not a integer", n)
-    return "?";
+  } catch (err) {
+    debug('%s is not a integer', n);
+    return '?';
   }
 }
 class SettingsCrawlLI extends React.Component {
@@ -55,80 +56,110 @@ class SettingsCrawlLI extends React.Component {
     this.resume = this.resume.bind(this);
     this.empty = this.empty.bind(this);
   }
+
   _crawlbutton(buttonname) {
     DwebTransports.httptools.p_GET(`${DwebArchive.mirror}/admin/crawl/${buttonname}/${this.props.id}`, (err, res) => {
-      this.setState({crawl: res});
+      this.setState({ crawl: res });
     });
-
   }
-  pause() { this._crawlbutton("pause"); }
-  resume() { this._crawlbutton("resume"); }
-  restart() { this._crawlbutton("restart"); }
-  empty() { this._crawlbutton("empty"); }
+
+  pause() { this._crawlbutton('pause'); }
+
+  resume() { this._crawlbutton('resume'); }
+
+  restart() { this._crawlbutton('restart'); }
+
+  empty() { this._crawlbutton('empty'); }
 
   render() {
     const crawl = this.state.crawl;
     return (
-      <li key={crawl.name}><span className="crawlname">{crawl.name}</span>:
-      <img className="playbutton" onClick={this.restart} src="/images/baseline-fast_rewind-24px.svg" alt="restart"/>
+      <li key={crawl.name}>
+        <span className="crawlname">{crawl.name}</span>
+:
+        <img className="playbutton" onClick={this.restart} src="/images/baseline-fast_rewind-24px.svg" alt="restart" />
         {crawl.queue.paused
-          ? <img className="playbutton" onClick={this.resume} src="/images/baseline-play_arrow-24px.svg" alt="rewind"/>
-          : <img className="playbutton" onClick={this.pause} src="/images/baseline-pause-24px.svg" alt="pause"/>
+          ? <img className="playbutton" onClick={this.resume} src="/images/baseline-play_arrow-24px.svg" alt="rewind" />
+          : <img className="playbutton" onClick={this.pause} src="/images/baseline-pause-24px.svg" alt="pause" />
         }
-        {/*<span className="playbutton" onClick={this.empty}>{'X'}</span> -- Not currently showing X*/}
+        {/* <span className="playbutton" onClick={this.empty}>{'X'}</span> -- Not currently showing X */}
       <ul> {/*TODO Make collapsable*/}
-        <li>
+          <li>
           <I18nSpan en="Queue">: </I18nSpan>"
           <I18nSpan en="Waiting">: </I18nSpan><span>{crawl.queue.length}; </span>
           <I18nSpan en="Running">: </I18nSpan><span>{crawl.queue.running}; </span>
           <I18nSpan  en="Completed">: </I18nSpan><span>{crawl.queue.completed}; </span>
-          {/*Expand workersList*/}
-        </li>
-        {(!crawl.queue.workersList.length) ? null :
-          <li><I18nSpan en="Working on"/>
-            <ul>
-              {crawl.queue.workersList.map(worker =>
-                <li key={worker.debugname}>
-                  {worker.parent.join(' > ')} {'>'} {worker.debugname}
-                  { worker.pageParms // Its a page
-                      ? null
-                      : worker.file  // Its a file
-                        ? safePrettyInt(worker.file.metadata.size)
-                        : null  // Its an item
+            {/* Expand workersList */}
+          </li>
+          {(!crawl.queue.workersList.length) ? null
+            : (
+              <li>
+                <I18nSpan en="Working on" />
+                <ul>
+                  {crawl.queue.workersList.map(worker => (
+                    <li key={worker.debugname}>
+                      {worker.parent.join(' > ')}{' > '}{worker.debugname}
+                      { worker.pageParms // Its a page
+                        ? null
+                        : worker.file // Its a file
+                          ? safePrettyInt(worker.file.metadata.size)
+                          : null // Its an item
                       }
-                </li>)}
-            </ul>
-          </li>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            )
         }
 
-    <li><I18nSpan en="Options">: </I18nSpan>
-          {/*TODO-MULTILINGUAL need to think this through probably best in english as relate to file*/}
-          { ["concurrency", "limitTotalTasks"].map( // Integers
-            k => <span key={k}>{`${k}: ${crawl.opts[k]}; `}</span>) }
-          { ["maxFileSize"].map( // Bytes
-            k => <span key={k}>{`${k}: ${safePrettyInt(crawl.opts[k])}; `}</span>) }
-          {["skipFetchFile", "skipCache"].map( //Booleans
-            k => crawl.opts[k] ? <span key={k}>{k} </span> : null ) }
-        </li>
-
-    <li><I18nSpan en="Seed">: </I18nSpan>
-          {crawl.initialItemTaskList.map(task =>
-            <span key={task.identifier}>{task.identifier + (task.level === "details" ? "" : (": "+task.level))+"; "}</span>)}
-        </li>
-        { (!crawl.errors.length) ? null :
-          <li><I18nSpan en="Errors">: </I18nSpan>
-            <ul>
-              {crawl.errors.map(err =>
-                <li key={err.date}>{err.date} {err.task.debugname}: {err.error.message + "; "}</li>)}
-            </ul>
+          <li>
+            <I18nSpan en="Options">: </I18nSpan>
+            {/* TODO-MULTILINGUAL need to think this through probably best in english as relate to file */}
+            { ['concurrency', 'limitTotalTasks'].map( // Integers
+              k => <span key={k}>{`${k}: ${crawl.opts[k]}; `}</span>
+            ) }
+            { ['maxFileSize'].map( // Bytes
+              k => <span key={k}>{`${k}: ${safePrettyInt(crawl.opts[k])}; `}</span>
+            ) }
+            {['skipFetchFile', 'skipCache'].map( // Booleans
+              k => (crawl.opts[k] ? (
+                <span key={k}>
+                  {k}
+                  {' '}
+                </span>
+              ) : null)
+            ) }
           </li>
-        }
-      </ul>
-    </li>
-  ) }
 
+          <li>
+            <I18nSpan en="Seed">: </I18nSpan>
+            {crawl.initialItemTaskList.map(task => <span key={task.identifier}>{task.identifier + (task.level === 'details' ? '' : (': ' + task.level)) + '; '}</span>)}
+          </li>
+          { (!crawl.errors.length) ? null
+            : (
+              <li>
+                <I18nSpan en="Errors">: </I18nSpan>
+                <ul>
+                  {crawl.errors.map(err => (
+                    <li key={err.date}>
+                      {err.date}
+                      {' '}
+                      {err.task.debugname}
+:
+                      {' '}
+                      {err.error.message + '; '}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            )
+        }
+        </ul>
+      </li>
+    );
+  }
 }
-//util_apply(f, cb) => return function(err, interim) { let donecb=false; if (err) { cb(err); } else { try { var res = f(interim); donecb=true; cb(null, interim) } catch(err) { cb(err) }}}
+// util_apply(f, cb) => return function(err, interim) { let donecb=false; if (err) { cb(err); } else { try { var res = f(interim); donecb=true; cb(null, interim) } catch(err) { cb(err) }}}
 class SettingsCrawlsComponent extends React.Component {
   /**
    * Render information about all crawls
@@ -144,18 +175,17 @@ class SettingsCrawlsComponent extends React.Component {
     this.state = { crawls: this.props.crawls }; // Maybe undefined
     // Called by React when the Loading... div is displayed
     if (!this.state.crawls) {
-      const urlCrawls = [DwebArchive.mirror, "admin/crawl/status"].join('/');
+      const urlCrawls = [DwebArchive.mirror, 'admin/crawl/status'].join('/');
       waterfall([
-          cb => DwebTransports.httptools.p_GET(urlCrawls, {}, cb),
-          // There may be more here , if not then simplify waterfall
-        ],(err, crawls) => { // [ArchiveMember*] includes specials like local &/or home
-          if (err) {
-            debug("ERROR: failed to get crawl status %O", err);
-          } else {
-            this.setState({crawls});
-          }
+        cb => DwebTransports.httptools.p_GET(urlCrawls, {}, cb),
+        // There may be more here , if not then simplify waterfall
+      ], (err, crawls) => { // [ArchiveMember*] includes specials like local &/or home
+        if (err) {
+          debug('ERROR: failed to get crawl status %O', err);
+        } else {
+          this.setState({ crawls });
         }
-      );
+      });
     }
   }
 
@@ -164,19 +194,20 @@ class SettingsCrawlsComponent extends React.Component {
     let crawlid = 0;
     return (!this.state.crawls)
       ? <I18nSpan en="Loading"> ...</I18nSpan>
-        :
-          <div className="row">
-            <div className="columns-items" style={{"marginLeft": "0px"}}>
-              <div style={{position: "relative"}}>
-                <div>
-                  <h4><I18nSpan en="Crawls"/></h4>
-                  <ul>
-                    {this.state.crawls.map(crawl => <SettingsCrawlLI key={crawl.name} id={crawlid++} crawl={crawl}/>) }
-                  </ul>
-                </div>
+      : (
+        <div className="row">
+          <div className="columns-items" style={{ marginLeft: '0px' }}>
+            <div style={{ position: 'relative' }}>
+              <div>
+                <h4><I18nSpan en="Crawls" /></h4>
+                <ul>
+                  {this.state.crawls.map(crawl => <SettingsCrawlLI key={crawl.name} id={crawlid++} crawl={crawl} />) }
+                </ul>
               </div>
             </div>
           </div>
+        </div>
+      );
   }
 }
 
@@ -196,11 +227,11 @@ class SettingsInfo extends React.Component {
   }
 
   setInfo() {
-    const urlInfo = [DwebArchive.mirror, "info"].join('/');
+    const urlInfo = [DwebArchive.mirror, 'info'].join('/');
     // [ArchiveMember*] includes specials like local &/or home
     DwebTransports.httptools.p_GET(urlInfo, {}, (err, info) => {
       if (err) {
-        debug("ERROR: fetch of info failed %O", err);
+        debug('ERROR: fetch of info failed %O', err);
       } else {
         this.setState({ info });
       }
@@ -214,49 +245,61 @@ class SettingsInfo extends React.Component {
   render() {
     return (!this.state.info)
       ? <I18nSpan en="Loading">...</I18nSpan>
-      :
-      <div className="row">
-        <div className="columns-items" style={{"marginLeft": "0px"}}>
-          <div style={{position: "relative"}}>
-            <div>
-              <h4><I18nSpan en="Information"/></h4>
-              <ul>
-                <li><I18nSpan en="directories"/>: <span>{this.state.info.directories.join('; ')}</span></li>
-              </ul>
+      : (
+        <div className="row">
+          <div className="columns-items" style={{ marginLeft: '0px' }}>
+            <div style={{ position: 'relative' }}>
+              <div>
+                <h4><I18nSpan en="Information" /></h4>
+                <ul>
+                  <li>
+                    <I18nSpan en="directories" />
+:
+                    {' '}
+                    <span>{this.state.info.directories.join('; ')}</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      );
   }
 }
 
 class SettingsLanguages extends React.Component {
-
   render() {
     return (
       <div className="row">
-        <div className="columns-items" style={{"marginLeft": "0px"}}>
-          <div style={{position: "relative"}}>
+        <div className="columns-items" style={{ marginLeft: '0px' }}>
+          <div style={{ position: 'relative' }}>
             <div>
-              <h4><I18nSpan en="Languages"/></h4>
+              <h4><I18nSpan en="Languages" /></h4>
               <ul style={{
-                listStyle: "none",
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(200px,1fr))"
-              }}>
-                {Object.entries(languageConfig).map(kv =>
-                  <li key={kv[0]} onClick={()=>setLanguage(kv[0])}>
+                listStyle: 'none',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(200px,1fr))'
+              }}
+              >
+                {Object.entries(languageConfig).map(kv => (
+                  <li key={kv[0]} onClick={() => setLanguage(kv[0])}>
                     <span>{ currentISO() === kv[0] ? '\u2713' : '\u2610' }</span>
-                    &nbsp;<span>{kv[1].flag || " "}</span>
-                    &nbsp;<span>{kv[1].inEnglish}&nbsp;{kv[1].inLocal}</span>
+                    &nbsp;
+                    <span>{kv[1].flag || ' '}</span>
+                    &nbsp;
+                    <span>
+                      {kv[1].inEnglish}
+&nbsp;
+                      {kv[1].inLocal}
+                    </span>
                   </li>
-                )}
+                ))}
               </ul>
             </div>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 class SettingsItem extends React.Component {
@@ -279,32 +322,32 @@ class SettingsItem extends React.Component {
     return (
       <div>
         <NavWrap item={this.props.item}
-                 transportStatuses={this.props.transportStatuses}
-                 mirror2gateway={this.props.mirror2gateway}
-                 disconnected={this.props.disconnected}
-                 transportsClickable={this.props.transportsClickable}
-                 canSave={false}
+          transportStatuses={this.props.transportStatuses}
+          mirror2gateway={this.props.mirror2gateway}
+          disconnected={this.props.disconnected}
+          transportsClickable={this.props.transportsClickable}
+          canSave={false}
         />
-        {/*--Begin page content --*/}
+        {/* --Begin page content --*/}
         <div className="container container-ia">
-          <a name="maincontent" id="maincontent"/>
+          <a name="maincontent" id="maincontent" />
         </div>
-        {/*Replaces banner() in Search) */}
+        {/* Replaces banner() in Search) */}
         <CommonWelcomeComponent
-          title={I18nStr("Settings")}
-          byline={I18nStr("on") + " " + DwebArchive.mirror}
+          title={I18nStr('Settings')}
+          byline={I18nStr('on') + ' ' + DwebArchive.mirror}
           description=""
         />
         <div className="container container-ia nopad">
           <div className="in settings-item">
-            <SettingsInfo/>
-            <SettingsCrawlsComponent/>
-            <SettingsLanguages/>
+            <SettingsInfo />
+            <SettingsCrawlsComponent />
+            <SettingsLanguages />
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
-export {SettingsCrawlsComponent, SettingsItem};
+export { SettingsCrawlsComponent, SettingsItem };
 // File regular review 2020-feb-17
