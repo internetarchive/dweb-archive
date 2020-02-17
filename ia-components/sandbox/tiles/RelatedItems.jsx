@@ -1,9 +1,8 @@
 import React from 'react';
-import IAReactComponent from '../IAReactComponent';
 import TileComponent from './TileComponent';
-import {I18nStr, I18nSpan} from '../languages/Languages';
+import { I18nStr, I18nSpan } from '../languages/Languages';
 
-//Unused: const debug = require('debug')('dweb-archive:RelatedItems');
+// Unused: const debug = require('debug')('dweb-archive:RelatedItems');
 
 /**
  *
@@ -27,8 +26,7 @@ import {I18nStr, I18nSpan} from '../languages/Languages';
  */
 
 
-export default class RelatedItems extends IAReactComponent {
-
+export default class RelatedItems extends React.Component {
   render() {
     return ((!this.props.identifier) ? null
       // Static or asynchronously loaded members handled here
@@ -41,28 +39,29 @@ export default class RelatedItems extends IAReactComponent {
           { (!this.props.members && !this.state.loading)
             ? null
             : this.state.loading
-            ? <I18nSpan en="Loading related items">...</I18nSpan>
-            :
-              <div className="row">
-                <div className="col-xs-12 tilebars" style={{ display: 'block' }}>
-                  <h5 className="small-label">
-                    <I18nSpan en="SIMILAR ITEMS (based on metadata)"/>
-                    {/* <span id="playplayset">
+              ? <I18nSpan en="Loading related items">...</I18nSpan>
+              : (
+                <div className="row">
+                  <div className="col-xs-12 tilebars" style={{ display: 'block' }}>
+                    <h5 className="small-label">
+                      <I18nSpan en="SIMILAR ITEMS (based on metadata)" />
+                      {/* <span id="playplayset">
                         *<a data-reactroot="" className="stealth" href="#play-items" data-event-click-tracking="Playset|PlayAllLink">
                         <I18nIcon className="iconochive-play" en="play" xs="Play All"/><br></a></span> */}
-                  </h5>
-                  <div id="also-found-result">
-                    <section data-reactroot="" aria-label={I18nStr("Related Items")}>
-                      { // Note this is odd - results normally encloses all the tasks, but AJS.tiler doesnt seem to work without this
+                    </h5>
+                    <div id="also-found-result">
+                      <section data-reactroot="" aria-label={I18nStr('Related Items')}>
+                        { // Note this is odd - results normally encloses all the tasks, but AJS.tiler doesnt seem to work without this
                     this.props.members.map(member => (
                       <div className="results" key={member.identifier} style={{ visibility: 'visible' }}>
-                        <TileComponent member={member} disconnected={this.props.disconnected}/>
+                        <TileComponent member={member} disconnected={this.props.disconnected} />
                       </div>
                     )) }
-                    </section>
+                      </section>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )
         }
         </div>
       )
