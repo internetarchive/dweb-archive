@@ -26,6 +26,16 @@ Crawl is: {
   }}
 */
 
+function safePrettyInt(n) {
+  try {
+    const x = parseInt(n, 10);
+    const y = prettierBytes(x);
+    return y;
+  } catch(err) {
+    debug("%s is not a integer", n)
+    return "?";
+  }
+}
 class SettingsCrawlLI extends IAReactComponent {
   /**
    * Renders information about one crawl
@@ -82,7 +92,7 @@ class SettingsCrawlLI extends IAReactComponent {
                   { worker.pageParms // Its a page
                       ? null
                       : worker.file  // Its a file
-                        ? prettierBytes(parseInt(worker.file.metadata.size))
+                        ? safePrettyInt(worker.file.metadata.size)
                         : null  // Its an item
                       }
                 </li>)}
@@ -95,7 +105,7 @@ class SettingsCrawlLI extends IAReactComponent {
           { ["concurrency", "limitTotalTasks"].map( // Integers
             k => <span key={k}>{`${k}: ${crawl.opts[k]}; `}</span>) }
           { ["maxFileSize"].map( // Bytes
-            k => <span key={k}>{`${k}: ${prettierBytes(crawl.opts[k])}; `}</span>) }
+            k => <span key={k}>{`${k}: ${safePrettyInt(crawl.opts[k])}; `}</span>) }
           {["skipFetchFile", "skipCache"].map( //Booleans
             k => crawl.opts[k] ? <span key={k}>{k} </span> : null ) }
         </li>
