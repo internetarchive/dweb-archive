@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types, react/no-array-index-key */
 import React from 'react';
 import { AnchorDownload } from './AnchorDownload';
 import { ImageDweb } from './Image';
@@ -83,3 +84,4 @@ class Carousel extends React.Component {
   }
 }
 export { Carousel };
+/* Code review Mitra 2020-feb-17 */
