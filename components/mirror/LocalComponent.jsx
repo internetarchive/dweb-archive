@@ -1,16 +1,16 @@
 /* global DwebTransports, DwebArchive */
+/* eslint-disable no-nested-ternary */
 import React from 'react';
 import waterfall from 'async/waterfall';
 
 import { ObjectDeeperAssign, ArchiveMember } from '@internetarchive/dweb-archivecontroller';
 
-import { TileGrid, IAReactComponent, NavWrap, I18nStr, I18nSpan } from '../../ia-components/dweb-index';
+import { TileGrid, NavWrap, I18nStr, I18nSpan } from '../../ia-components/dweb-index';
 import { CommonWelcomeComponent } from './CommonComponent';
 
 
 const debug = require('debug')('dweb-archive:LocalComponent');
 
-const _levels = ['tile', 'metadata', 'details', 'all']; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-components/.../ConfigCrawl.js
 // SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 
 // SEE-IDENTICAL-CODE-CANONICALIZETASKS in dweb-mirror.mirrorHttp and dweb-archive.LocalComponent
@@ -24,7 +24,7 @@ function canonicalizeTasks(tasks) {
       : task)));
 }
 
-class LocalGridRowComponent extends IAReactComponent {
+class LocalGridRowComponent extends React.Component {
   /**
    * <LocalGridRowComponent
    *   members=[ArchiveMember]  Array of members in the crawl
@@ -53,7 +53,7 @@ class LocalGridRowComponent extends IAReactComponent {
   }
 }
 
-class LocalItem extends IAReactComponent {
+class LocalItem extends React.Component {
   /**
    * Display an item representing local content
    *
@@ -67,7 +67,8 @@ class LocalItem extends IAReactComponent {
    */
   constructor(props) {
     super(props); // item
-    this.state.members = this.props.item.membersFav || []; // Lets assume they are in membersFav not membersSearch
+    // Initial state setting probably ok as will not change while page open except through return from info
+    this.state = { members: this.props.item.membersFav || [] }; // Lets assume they are in membersFav not membersSearch
     // Called by React when the Loading... div is displayed
     if (!this.state.members.length) {
       const urlConfig = [DwebArchive.mirror, 'info'].join('/');
@@ -104,7 +105,8 @@ class LocalItem extends IAReactComponent {
           item.downloaded.details = true;
           this.setState({
             members: this.props.item.membersFav,
-            item: this.props.item });
+            // item: this.props.item // not used?
+          });
         }
       });
       // TODO-UXLOCAL handle default things like configmerged.apps.crawl.opts.defaultDetailsSearch see dweb-mirror issue#140
