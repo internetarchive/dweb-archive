@@ -145,7 +145,8 @@ export default class Nav {
         await item.fetch_query({ noCache });
         renderPage({ item });
       } else if (['local', 'settings'].includes(identifier)) { // SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
-        item = new ArchiveBase({ itemid: identifier, metaapi: { metadata: specialidentifiers[identifier] } });
+        item = new ArchiveBase({ itemid: identifier });
+        await item.fetch_metadata(); // Intentionally not passing noCache
         renderPage({ item });
       } else {
         item = new ArchiveBase({ itemid: identifier, page, download, noCache });

@@ -2,7 +2,6 @@ import React from 'react';
 import { AnchorModalGo, AnchorDetails, ImageDweb, Tabby, NavWrap, ScrollableTileGrid, SearchSwitcher, I18nSpan, I18n, I18nStr, I18nIcon } from '../ia-components/dweb-index';
 import { preprocessDescription } from '../ReactSupport';
 import { CherModal } from './CherModal';
-import { LocalItem } from './mirror/LocalComponent';
 import { SettingsItem } from './mirror/SettingsComponent';
 import { AccountWrap } from '../Account.jsx';
 import { HomeBanner } from './Home.jsx';
@@ -77,30 +76,37 @@ class CollectionBanner extends React.Component {
               <h4>{creator}</h4>
               <div id="descript" style={{ maxHeight: '43px', cursor: 'pointer' }} dangerouslySetInnerHTML={{ __html: this.props.description }} />
             </div>
-            <div className="col-xs-1 col-sm-2 welcome-right">
-              <AnchorModalGo className="stealth" opts={{ ignore_lnk: 1, shown: AJS.embed_codes_adjust }}
-                data-target="#cher-modal"
-              >
-                <I18nIcon className="iconochive-share" en="share" xs="Share" />
-              </AnchorModalGo>
-              <br />
-              <BookmarkButton
-                url={`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=collection&amp;identifier=${this.itemid}&amp;title=${this.props.title}`}
-                disconnected={this.props.disconnected}
-              />
-              {/* TODO-LOGIN /editxml isn't going to wrk - we aren't logged in. and its an absolute URL
+            {['local'].includes(this.props.identifier) ? null :
+              <div className="col-xs-1 col-sm-2 welcome-right">
+                <AnchorModalGo className="stealth" opts={{
+                  ignore_lnk: 1,
+                  shown: AJS.embed_codes_adjust
+                }}
+                               data-target="#cher-modal"
+                >
+                  <I18nIcon className="iconochive-share" en="share" xs="Share"/>
+                </AnchorModalGo>
+                <br/>
+                <BookmarkButton
+                  url={`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=collection&amp;identifier=${this.itemid}&amp;title=${this.props.title}`}
+                  disconnected={this.props.disconnected}
+                />
+                {/* TODO-LOGIN /editxml isn't going to wrk - we aren't logged in. and its an absolute URL
                             <div id="editlink" style={{display:"none"}}>
                               <a id="edlink" className="stealth" href="/editxml/prelinger"><I18nIcon className="iconochive-edit" en="edit" xs="Edit"/></a><br/>
                                         <a className="stealth" href="//catalogd.archive.org/history/prelinger"></span><I18nIcon className="iconochive-time" en="time" xs="History"/></a><br/>
                             </div> */}
+              </div>
+            }
+          </div>
+          {['local'].includes(this.props.identifier) ? null :
+            <div className="tabbys">
+              <Tabby id="about" identifier={this.props.identifier} text="ABOUT" />
+              <Tabby id="collection" identifier={this.props.identifier} text="COLLECTION" default />
+              <Tabby id="forum" identifier={this.props.identifier} text="FORUM" />
+              <div className="clearfix"/>
             </div>
-          </div>
-          <div className="tabbys">
-            <Tabby id="about" identifier={this.props.identifier} text="ABOUT" />
-            <Tabby id="collection" identifier={this.props.identifier} text="COLLECTION" default />
-            <Tabby id="forum" identifier={this.props.identifier} text="FORUM" />
-            <div className="clearfix"> </div>
-          </div>
+          }
           {/* container */}
         </div>
         {/* welcome */}
@@ -546,7 +552,7 @@ class CollectionWrap extends React.Component {
                 />
               )
         }
-            {(['home'].includes(item.itemid) || this.props.disconnected) ? null
+            {(['home', 'local'].includes(item.itemid) || this.props.disconnected) ? null
               : (
                 <CherModal identifier={item.itemid} creator={item.metadata.creator} mediatype={item.metadata.mediatype}
                   title={item.metadata.title}
@@ -560,7 +566,7 @@ class CollectionWrap extends React.Component {
             </div>
             {/* TODO take a closer look at scripts on originals/prelinger lines 7360-7399 */}
             {/* --TODO-ANALYTICS is missing --*/}
-            {['home'].includes(item.itemid) ? null
+            {['home', 'local'].includes(item.itemid) ? null
               : (
                 <CollectionTabby
                   identifier={item.itemid}
@@ -592,15 +598,13 @@ class ComboSearchWrap extends React.Component {
     const mediatype = item.metadata ? item.metadata.mediatype : 'search';
     const identifier = item.itemid;
     return (
-      (identifier === 'local')
-        ? <LocalItem item={item} {...this.props.statuses} />
-        : (identifier === 'settings')
-          ? <SettingsItem item={item} {...this.props.statuses} />
-          : (mediatype === 'collection')
-            ? <CollectionWrap item={item} {...this.props.statuses} />
-            : (mediatype === 'account')
-              ? <AccountWrap item={item} {...this.props.statuses} />
-              : <SearchWrap item={item} {...this.props.statuses} />
+      (identifier === 'settings')
+        ? <SettingsItem item={item} {...this.props.statuses} />
+      : (mediatype === 'collection')
+        ? <CollectionWrap item={item} {...this.props.statuses} />
+        : (mediatype === 'account')
+          ? <AccountWrap item={item} {...this.props.statuses} />
+          : <SearchWrap item={item} {...this.props.statuses} />
     );
   }
 }

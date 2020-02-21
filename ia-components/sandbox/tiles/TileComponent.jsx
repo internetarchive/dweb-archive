@@ -58,7 +58,6 @@ export default class TileComponent extends React.Component {
       const member = this.props.member;
       const item = this.props.item; // Less common and probably not used at all
       const query = props.query || (item && item.query) || (member && member.query);
-      // TODO may want to handle Sort, from LocalComponent through here and down to AnchorSearch
       const isCollection = (member.mediatype === 'collection');
       const collection0 = member.collection0() || (item && item.metadata && item.metadata.collection && item.metadata.collection[0]);
       const by = member.creator || member.creatorSorter || (item && item.metadata.creator); // Should be array

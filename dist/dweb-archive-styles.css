@@ -133,10 +133,6 @@ body.navia .navbar #nav-dweb a img {
     position: relative;
     top: 1px;
 }
-/* For LocalComponent SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
-    Not marking crawl-tile or crawl-metadata as really not significant to user
-*/
-
 .notavailable {
     opacity: 30%
 }
