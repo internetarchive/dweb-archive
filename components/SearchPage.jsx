@@ -1,10 +1,12 @@
+/* eslint-disable react/no-danger */
+/* global AJS */
 import React from 'react';
 import { AnchorModalGo, AnchorDetails, ImageDweb, Tabby, NavWrap, ScrollableTileGrid, SearchSwitcher, I18nSpan, I18n, I18nStr, I18nIcon } from '../ia-components/dweb-index';
 import { preprocessDescription } from '../ReactSupport';
 import { CherModal } from './CherModal';
 import { SettingsItem } from './mirror/SettingsComponent';
-import { AccountWrap } from '../Account.jsx';
-import { HomeBanner } from './Home.jsx';
+import { AccountWrap } from '../Account';
+import { HomeBanner } from './Home';
 
 const debug = require('debug')('dweb-archive:SearchPage');
 

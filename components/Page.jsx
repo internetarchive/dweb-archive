@@ -97,13 +97,13 @@ class Page extends React.Component {
       AJS.date_switcher( // TODO See internetarchive/dweb-archive#176, unclear how/if this works or if so whether to use archive.org or mirror urls
         (mediatype === 'collection')
           ? `&nbsp;<a href="/search.php?query=${query}&amp;sort=-publicdate"><div class="date_switcher in">${I18nStr('Date Archived')}</div></a> <a href="/search.php?query=${query}&amp;sort=-date"><div class="date_switcher">${I18nStr('Date Published')}</div></a> <a href="/search.php?query=${query}&amp;sort=-reviewdate"><div class="date_switcher">${I18nStr('Date Reviewed')}</div></a> `
-          : `&nbsp;<a href="https://dweb.archive.org/search/${encodeURIComponent(query) + '?sort=-publicdate'}" onclick='${Nav.onclick_search({
+          : `&nbsp;<a href="https://dweb.archive.org/search/${encodeURIComponent(query) + '?sort=-publicdate'}" onclick='${Nav.onclickSearch({
             query,
             sort: '-publicdate'
-          })}'><div class="date_switcher in">${I18nStr('Date Archived')}</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(query) + '?sort=-date'}" onclick='${Nav.onclick_search({
+          })}'><div class="date_switcher in">${I18nStr('Date Archived')}</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(query) + '?sort=-date'}" onclick='${Nav.onclickSearch({
             query,
             sort: '-date'
-          })}'><div class="date_switcher">${I18nStr('Date Published')}</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(query) + '?sort=-reviewdate'}" onclick='${Nav.onclick_search({
+          })}'><div class="date_switcher">${I18nStr('Date Published')}</div></a> <a href="https://dweb.archive.org/search/${encodeURIComponent(query) + '?sort=-reviewdate'}" onclick='${Nav.onclickSearch({
             query,
             sort: '-reviewdate'
           })}'><div class="date_switcher">${I18nStr('Date Reviewed')}</div></a> `

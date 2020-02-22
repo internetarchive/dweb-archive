@@ -1,7 +1,8 @@
+/* global DwebArchive */
 import ReactDOM from 'react-dom';
 import React from 'react';
 // Other IA repositories
-import { homeQuery, ObjectFilter, specialidentifiers } from '@internetarchive/dweb-archivecontroller';
+import { homeQuery, ObjectFilter } from '@internetarchive/dweb-archivecontroller';
 import { I18nSpan, currentISO, getLanguage } from './ia-components/dweb-index';
 // This repository
 import ArchiveBase from './ArchiveBase';
@@ -9,7 +10,20 @@ import { Page } from './components/Page';
 
 const canonicaljson = require('@stratumn/canonicaljson');
 const debug = require('debug')('dweb-archive:Nav');
-const each = require('async/each');
+
+function URLSearchParamsEntries(sp) {
+  const res = {};
+  // Handle parameters known to be arrays
+  ['transport', 'paused'].forEach(k => { res[k] = []; });
+  sp.forEach((v, k) => {
+    if (Array.isArray(res[k])) {
+      res[k].push(v);
+    } else {
+      res[k] = v;
+    }
+  });
+  return res;
+}
 
 function pushHistory(...optss) {
   // Note opts should NOT be urlencoded, it can be URLSearchParams in which case handled specially
@@ -51,24 +65,12 @@ function pushHistory(...optss) {
     );
     // noinspection JSValidateTypes
     url.search = usp;
+    /* eslint-disable-next-line no-restricted-globals */
     history.pushState(opts, historyTitle, url.href);
   }
   return opts; // Useful to caller
 }
 
-function URLSearchParamsEntries(sp) {
-  const res = {};
-  // Handle parameters known to be arrays
-  ['transport', 'paused'].forEach(k => res[k] = []);
-  sp.forEach((v, k) => {
-    if (Array.isArray(res[k])) {
-      res[k].push(v);
-    } else {
-      res[k] = v;
-    }
-  });
-  return res;
-}
 
 function renderPage({ item = undefined, message = undefined }) {
   // Shortcut ...
@@ -76,10 +78,6 @@ function renderPage({ item = undefined, message = undefined }) {
   DwebArchive.page.setState({ item, message });
 }
 export default class Nav {
-  constructor() {
-    // super();
-  }
-
   /**
    * Navigate to a search
    *
@@ -95,25 +93,25 @@ export default class Nav {
   static navSearch(q, opts = {}) {
     debug('Navigating to Search for %s', q);
     const { noCache = false } = opts;
-    opts.query = q;
+    const opts1 = { ...opts, query: q };
     renderPage({ message: <I18nSpan en="Loading search" /> });
-    const s = new ArchiveBase(opts); // Wants {query, sort, rows, noCache}
-    s.fetch_query({ noCache }, (err, unusedMembers) => {
+    const s = new ArchiveBase(opts1); // Wants {query, sort, rows, noCache}
+    s.fetch_query({ noCache }, (unusedErr, unusedMembers) => {
       // Ignoring error and rendering anyway, maybe want to display instead, but not sure ?
-      pushHistory(opts); // Note this takes account of wantHistory //TODO-SEARCH test this works see window.onpopstate
+      pushHistory(opts1); // Note this takes account of wantHistory //TODO-SEARCH test this works see window.onpopstate
       renderPage({ item: s });
     }); // Should throw error if fails to fetch //TODO-RELOAD fetch_query ignores noCache currently
   }
 
-  static onclick_search(q) {
+  static onclickSearch(q) {
     // Build the onclick part of a search, q can be a string or an object e.g. {creator: "Foo bar", sort: "-date"}
     // Its passed an object in various places
-    return `Nav.nav_searchOnClick(${canonicaljson.stringify(q)}); return false`;
+    return `Nav.navSearchOnClick(${canonicaljson.stringify(q)}); return false`;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  static nav_searchOnClick(encodedQ) {
-    // Shortcut while onclick_search is passing a string
+  static navSearchOnClick(encodedQ) {
+    // Shortcut while onclickSearch is passing a string
     const { query, sort } = canonicaljson.parse(encodedQ); // Undo encoding { query, sort }
     return this.navSearch(query, { sort, wanthistory: true }); // TODO-SEARCH test on Date switcher bar
   }
@@ -133,9 +131,7 @@ export default class Nav {
   static async factory(identifier, ...optss) {
     const opts = pushHistory(...optss, { identifier });
     const { download = undefined, page = undefined, noCache = undefined } = opts;
-    renderPage({ message: <I18nSpan en="Loading">
-      {identifier}
-                          </I18nSpan> });
+    renderPage({ message: <I18nSpan en="Loading">{' ' + identifier}</I18nSpan> });
     window.loopguard = identifier; // Tested in dweb-transport/httptools, will cancel any old loops - this is a kludge to get around a Chrome bug/feature
     let item; // Set below, but keep it here for error handling
     try {
@@ -173,7 +169,6 @@ export default class Nav {
           await item.fetch_query({ noCache }); // Should throw error if fails to fetch //TODO-RELOAD fetch_query ignores noCache currently
         }
         renderPage({ item, message: item.message });
-        return item;
       }
     } catch (err) {
       debug('ERROR: Nav.factory detected error %o', err);
@@ -229,25 +224,27 @@ export default class Nav {
     const els = <Page message={message} />;
     ReactDOM.render(els, destn);
     // Assumes rendering is sync
+    /* eslint-disable-next-line no-console */
     console.assert(typeof DwebArchive.page !== 'undefined', 'Assuming ReactDOM.render is sync');
-    let { query, item, identifier, download } = opts;
+    const { query, item, download } = opts;
+    let { identifier } = opts;
     identifier = identifier || item;
-    opts = ObjectFilter(opts, (k, unusedV) => !['query', 'item', 'identifier', 'download'].includes(k));
-    opts.wanthistory = true;
+    const opts1 = ObjectFilter(opts, (k, unusedV) => !['query', 'item', 'identifier', 'download'].includes(k));
+    opts1.wanthistory = true;
     if (query) {
       // noinspection JSIgnoredPromiseFromCall
-      this.navSearch(query, opts); // Intentionally passing transport, paused, etc that are used above
+      this.navSearch(query, opts1); // Intentionally passing transport, paused, etc that are used above
     } else if (download) { // Note only works for downloading items, not files - can add later if reqd
       // noinspection JSIgnoredPromiseFromCall
-      this.factory(identifier, opts, { download: 1 });
+      this.factory(identifier, opts1, { download: 1 });
     } else {
       // noinspection JSIgnoredPromiseFromCall
-      this.factory(identifier || 'home', opts);
+      this.factory(identifier || 'home', opts1);
     }
   }
 }
 
-
+/* eslint-disable-next-line func-names */
 window.onpopstate = function (event) {
   debug('Going back to: %s %o', document.location, event.state);
   const identifier = event.state && (event.state.itemid || event.state.item || event.state.identifier); // item in URL, itemid legacy, identifier future
