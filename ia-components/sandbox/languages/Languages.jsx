@@ -4,6 +4,10 @@ import React from 'react';
 
 const debug = require('debug')('dweb-archive:languages');
 
+// utilities - also duplicated in dweb-archivecontroller/Util and ia-components/util
+function ObjectFromEntries(arr) { return arr.reduce((res, kv) => (res[kv[0]] = kv[1], res), {}); } // [[ k0, v0],[k1,v1] => {k0:v0, k1:v1}
+function ObjectFilter(obj, f) { return ObjectFromEntries(Object.entries(obj).filter(kv => f(kv[0], kv[1]))); }
+
 
 /*
   Implements a first cut at internationalization (I18n) with language files in json, built by languagebuild.

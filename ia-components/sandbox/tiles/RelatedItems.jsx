@@ -36,9 +36,9 @@ export default class RelatedItems extends React.Component {
           className="container container-ia width-max"
           data-identifier={this.props.identifier}
         >
-          { (!this.props.members && !this.state.loading)
+          { (!this.props.members && !this.props.loading)
             ? null
-            : this.state.loading
+            : this.props.loading
               ? <I18nSpan en="Loading related items">...</I18nSpan>
               : (
                 <div className="row">
