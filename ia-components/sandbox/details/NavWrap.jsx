@@ -6,7 +6,7 @@ import React from 'react';
 import LanguageSelect from '@internetarchive/ia-components/sandbox/language-select/language-select';
 import AnchorDetails from '../AnchorDetails';
 import { AnchorSearch } from './AnchorSearch';
-import CrawlConfig from './CrawlConfig';
+import { CrawlConfig } from './CrawlConfig';
 import { AnchorModalGo } from './ModalGo';
 import { I18nSpan, I18nStr, I18nIcon, currentISO, languageConfig, setLanguage } from '../languages/Languages';
 
@@ -92,7 +92,7 @@ class NavSearchLI extends React.Component {
   onClick(ev) {
     // this.formElement.submit(); // TODO Doesnt work - not sure why
     this.onSubmit(unusedEvent);
-    ev.preventDefault(); // Dont propogate event
+    ev.preventDefault(); // Dont propagate event
   }
 
   render() {
@@ -270,6 +270,8 @@ class NavWebDIV extends React.Component {
  * query, sort         For current page if its a search
  * mirror2gateway      True if on DwebMirror and can see gateway
  * canSave             True if can save this content
+ * downloaded {..}     Passed to CrawlConfig
+ * crawl               Passed to CrawlConfig
  * />
  *
  * Behavior
@@ -283,6 +285,8 @@ class DwebNavButtons extends React.Component {
     // TODO add date downloaded here - maybe just on hover
     // SEE-OTHER-ADD-SPECIAL-PAGE in dweb-archive dweb-archivecontroller dweb-mirror
     // TODO find suitable Iconochive"s for Settings & Local then replace SVGs used in .css
+    const crawl = Object.assign({ identifier: this.props.identifier, query: this.props.query, downloaded: this.props.downloaded }, this.props.crawl);
+
     return (
       <ul className="dwebnavbuttons">
         {!this.props.mirror2gateway
@@ -295,6 +299,7 @@ class DwebNavButtons extends React.Component {
               }
             </li>
         }
+        <CrawlConfig {...crawl} />
         <NavLanguage />
         <li className="settings">
           <span className="iconochive-gear" />
@@ -348,8 +353,6 @@ class DwebNavButtons extends React.Component {
  */
 class DwebNavDIV extends React.Component {
   render() {
-    // Alternative to complex nav-dweb code
-    const crawl = Object.assign({ identifier: this.props.item.itemid, query: this.props.item.query, downloaded: this.props.item.downloaded }, this.props.item.crawl);
     return ((typeof DwebArchive === 'undefined') ? null :
         <div id="nav-dweb">
           { DwebArchive.mirror
@@ -358,12 +361,13 @@ class DwebNavDIV extends React.Component {
           <DwebStatusDIV statuses={this.props.transportStatuses} clickable={this.props.transportsClickable} />
             {!DwebArchive.mirror ? null :
               <>
-                <div id="dweb-mirrorconfig"><CrawlConfig {...crawl} /></div>
                 <div id="dweb-mirrorreload"><DwebNavButtons
                   identifier={this.props.item.itemid}
                   query={this.props.item.query}
                   sort={this.props.item.sort}
                   mirror2gateway={this.props.mirror2gateway}
+                  downloaded={this.props.item.downloaded}
+                  crawl={this.props.item.crawl}
                   canSave={this.props.canSave}
                 />
                 </div>
@@ -398,7 +402,7 @@ class DwebStatusLI extends React.Component {
     return { status: props.status };
   }
 
-  onClick(ev) {
+  onClick(unusedEv) {
     debug('Toggling transport for %s', this.props.name);
     // noinspection JSUnresolvedFunction
     DwebTransports.togglePaused(this.props.name, (err, s) => {
@@ -451,6 +455,7 @@ class NavLanguage extends React.Component {
     this.onSelect.bind(this);
   }
 
+  // eslint-disable class-methods-use-this
   onSelect(languageISO) {
     debug('Selected language %o', languageISO);
     setLanguage(languageISO);

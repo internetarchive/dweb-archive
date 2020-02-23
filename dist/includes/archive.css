@@ -9608,6 +9608,71 @@ body.navia .container-ia.nopad.whole-earth-web-archive-widget .frame {
   font-size: 16px;
   vertical-align: middle;
 }
+.option_select {
+  position: relative;
+  font: normal 12px Helvetica Neue, Helvetica, Arial, sans-serif;
+  color: #848484;
+}
+.option_select a {
+  text-decoration: none;
+  color: #848484;
+  cursor: pointer;
+}
+.option_select > a {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 2px;
+  background: #222222;
+}
+.option_select > a:hover {
+  color: #ffffff;
+}
+.option_select ul {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 1;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  transform: translateX(-50%);
+  border: 1px solid #333333;
+  border-radius: 2px;
+  background: #222222;
+}
+.option_select ul.visible {
+  display: block;
+}
+.option_select ul.notvisible {
+  display: none !important;
+}
+.option_select li {
+  display: block !important;
+  position: relative;
+  border: none !important;
+}
+.option_select li.selected:before {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #34a077;
+  content: '\2713';
+}
+.option_select li a {
+  display: block !important;
+  padding: 2px 25px !important;
+  white-space: nowrap;
+}
+.option_select li a:hover {
+  color: #222222;
+  background: #ffffff;
+}
+.option_select .flag {
+  font-size: 16px;
+  vertical-align: middle;
+}
 /**
  * Page encouraging donors to donate via cryptocurrencies
  *
@@ -12005,8 +12070,8 @@ body.donateThankYou .donor-form #comment-error {
 .audio-track-list .track .track-title {
   width: 74%;
 }
-.audio-track-list .track .track-title i {
-  font-weight: 100;
+.audio-track-list .track .track-title .track-artist {
+  font-weight: 200;
 }
 .audio-track-list .track .track-length {
   text-align: right;
