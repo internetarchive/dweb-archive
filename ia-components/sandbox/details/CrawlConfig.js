@@ -39,6 +39,9 @@ const debug = require('debug')('dweb-archive:CrawlConfig');
  *   }
  *  />
  *
+ * Updating is worth commenting ....
+ *  the constructor probably wont be called again if the props are changed and passed down from higher levels
+ *  state.level can change due to clicking
  */
 
 
@@ -47,14 +50,20 @@ export default class CrawlConfig extends React.Component {
     super(props); // { identifier, level, search, downloaded, query }
     this.onClick = this.onClick.bind(this);
     CrawlConfig.instance = this; // Allow finding it
-    this.state = {};
+    this.state = { level: props.level, clickable: !CrawlConfig.unclickable.includes(this.props.identifier) };
   }
 
-  static getDerivedStateFromProps(props, unusedState) {
-    return {
-      level: props.level,
-      clickable: !CrawlConfig.unclickable.includes(props.identifier)
-    };
+  componentDidUpdate(prevProps) { // prevState, snapshot also passed
+    if (prevProps.level !== this.props.level) {
+      // Looks like item changed and new props passed down.
+      /* eslint-disable-next-line react/no-did-update-set-state *//* properly checking for it having changed */
+      this.setState({ level: this.props.level });
+    }
+    if (prevProps.identifier !== this.props.identifier) {
+      // Looks like item changed figure out if clickable
+      /* eslint-disable-next-line react/no-did-update-set-state *//* properly checking for it having changed */
+      this.setState({ clickable: !CrawlConfig.unclickable.includes(this.props.identifier) });
+    }
   }
 
   render() {
