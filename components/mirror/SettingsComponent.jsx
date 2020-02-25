@@ -54,11 +54,17 @@ class SettingsCrawlLI extends React.Component {
   }
 
   _crawlbutton(buttonname) {
-    DwebTransports.httptools.p_GET(`${DwebArchive.mirror}/admin/crawl/${buttonname}/${this.props.id}`, (err, res) => {
-      this.setState({ crawl: res });
+    DwebTransports.httptools.p_GET(`${DwebArchive.mirror}/admin/crawl/${buttonname}/${this.props.id}`, (err, crawl) => {
+      this.setState({ crawl });
     });
   }
 
+  componentDidUpdate(prevProps, prevState) { //also unusedSnapshot
+    // Updated because of crawl update from parent (else would be update using setState from button)
+    if (this.props.tick !== prevProps.tick) {
+      this.setState({crawl: this.props.crawl})
+    }
+  }
   pause() { this._crawlbutton('pause'); }
 
   resume() { this._crawlbutton('resume'); }
@@ -75,7 +81,7 @@ class SettingsCrawlLI extends React.Component {
 :
         <img className="playbutton" onClick={this.restart} src="/images/baseline-fast_rewind-24px.svg" alt="restart" />
         {crawl.queue.paused
-          ? <img className="playbutton" onClick={this.resume} src="/images/baseline-play_arrow-24px.svg" alt="rewind" />
+          ? <img className="playbutton" onClick={this.resume} src="/images/baseline-play_arrow-24px.svg" alt="resume" />
           : <img className="playbutton" onClick={this.pause} src="/images/baseline-pause-24px.svg" alt="pause" />
         }
         {/* <span className="playbutton" onClick={this.empty}>{'X'}</span> -- Not currently showing X */}
@@ -94,13 +100,11 @@ class SettingsCrawlLI extends React.Component {
                 <I18nSpan en="Working on" />
                 <ul>
                   {crawl.queue.workersList.map(worker => (
-                    <li key={worker.debugname}>
+                    <li key={worker.parent.join('-') + '-' + worker.debugname}>
                       {worker.parent.join(' > ')}{' > '}{worker.debugname}
-                      { worker.pageParms // Its a page
+                      { (worker.pageParms || !worker.file || !worker.file.metadata.size) // is there a file size
                         ? null
-                        : worker.file // Its a file
-                          ? safePrettyInt(worker.file.metadata.size)
-                          : null // Its an item
+                        : safePrettyInt(worker.file.metadata.size)
                       }
                     </li>
                   ))}
@@ -127,8 +131,12 @@ class SettingsCrawlLI extends React.Component {
             ) }
           </li>
           <li>
-            <I18nSpan en="Seed">: </I18nSpan>
-            {crawl.initialItemTaskList.map(task => <span key={task.identifier}>{task.identifier + (task.level === 'details' ? '' : (': ' + task.level)) + '; '}</span>)}
+            <I18nSpan en="Seeds">: </I18nSpan>
+            { crawl.initialItemTaskList.map(task => (
+              <span key={task.identifier || task.query}>
+                {`${task.identifier || task.query} ${(task.level === 'details' ? '' : (': ' + task.level))}; `}
+              </span>)
+            )}
           </li>
           { (!crawl.errors.length) ? null
             : (
@@ -136,7 +144,7 @@ class SettingsCrawlLI extends React.Component {
                 <I18nSpan en="Errors">: </I18nSpan>
                 <ul>
                   {crawl.errors.map(err => (
-                    <li key={err.date}>{`${err.date} ${err.task.debugname}: ${err.error.message}; `}</li>
+                    <li key={err.date+err.task.debugname}>{`${err.date} ${err.task.debugname}: ${err.error.message}; `}</li>
                   ))}
                 </ul>
               </li>
@@ -150,31 +158,37 @@ class SettingsCrawlLI extends React.Component {
 // util_apply(f, cb) => return function(err, interim) { let donecb=false; if (err) { cb(err); } else { try { var res = f(interim); donecb=true; cb(null, interim) } catch(err) { cb(err) }}}
 class SettingsCrawlsComponent extends React.Component {
   /**
-   * Render information about all crawls
+   * Render information about all crawls, periodically fetching from server
    *
-   * <SettingsCrawlsComponent
-   *    crawls = [ CRAWL ]
-   * />
+   * <SettingsCrawlsComponent />
    */
 
   constructor(props) {
     super(props);
     // Initial state, will currently only be overwritten if refresh
-    this.state = { crawls: this.props.crawls }; // Maybe undefined
+    this.state = { crawls: this.props.crawls, tick: 1 }; // Maybe undefined
     // Called by React when the Loading... div is displayed
-    if (!this.state.crawls) {
-      const urlCrawls = [DwebArchive.mirror, 'admin/crawl/status'].join('/');
-      waterfall([
-        cb => DwebTransports.httptools.p_GET(urlCrawls, {}, cb),
-        // There may be more here , if not then simplify waterfall
-      ], (err, crawls) => { // [ArchiveMember*] includes specials like local &/or home
-        if (err) {
-          debug('ERROR: failed to get crawl status %O', err);
-        } else {
-          this.setState({ crawls });
-        }
-      });
-    }
+    this.updateTimeout=5000; //ms
+    this.updateCrawls = this.updateCrawls.bind(this);
+  }
+
+  updateCrawls() {
+    const urlCrawls = [DwebArchive.mirror, 'admin/crawl/status'].join('/');
+    DwebTransports.httptools.p_GET(urlCrawls, {retries:0, silentFinalError:true }, (err, crawls) => {
+      // [ArchiveMember*] includes specials like local &/or home
+      if (err) {
+        debug('ERROR: failed to get crawl status %O', err);
+      } else {
+        const tick = this.state.tick+1;
+        this.setState({ crawls, tick }); // Increment tick for each update
+      }
+    });
+  }
+  componentDidMount() {
+    this.updaterInterval = setInterval(this.updateCrawls, this.updateTimeout);
+  }
+  componentWillUnmount() {
+    clearInterval(this.updaterInterval);
   }
 
   render() {
@@ -189,7 +203,7 @@ class SettingsCrawlsComponent extends React.Component {
               <div>
                 <h4><I18nSpan en="Crawls" /></h4>
                 <ul>
-                  {this.state.crawls.map(crawl => <SettingsCrawlLI key={crawl.name} id={crawlid++} crawl={crawl} />) }
+                  {this.state.crawls.map(crawl => <SettingsCrawlLI key={crawl.name} id={crawlid++} tick={this.state.tick} crawl={crawl} />) }
                 </ul>
               </div>
             </div>
