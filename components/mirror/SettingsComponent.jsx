@@ -3,7 +3,6 @@
 import React from 'react';
 import prettierBytes from 'prettier-bytes';
 
-import waterfall from 'async/waterfall';
 import { CommonWelcomeComponent } from './CommonComponent';
 import { NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig } from '../../ia-components/dweb-index';
 
@@ -45,12 +44,20 @@ class SettingsCrawlLI extends React.Component {
 
   constructor(props) {
     super(props);
-    // Sets initial state, this can be overridden by bttons
+    // Sets initial state, this can be overridden by buttons
     this.state = { crawl: this.props.crawl };
     this.restart = this.restart.bind(this);
     this.pause = this.pause.bind(this);
     this.resume = this.resume.bind(this);
     this.empty = this.empty.bind(this);
+  }
+
+  componentDidUpdate(prevProps) { // also unused prevState, snapshot
+    // Updated because of crawl update from parent (else would be update using setState from button)
+    if (this.props.tick !== prevProps.tick) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ crawl: this.props.crawl });
+    }
   }
 
   _crawlbutton(buttonname) {
@@ -59,12 +66,6 @@ class SettingsCrawlLI extends React.Component {
     });
   }
 
-  componentDidUpdate(prevProps, prevState) { //also unusedSnapshot
-    // Updated because of crawl update from parent (else would be update using setState from button)
-    if (this.props.tick !== prevProps.tick) {
-      this.setState({crawl: this.props.crawl})
-    }
-  }
   pause() { this._crawlbutton('pause'); }
 
   resume() { this._crawlbutton('resume'); }
@@ -85,7 +86,7 @@ class SettingsCrawlLI extends React.Component {
           : <img className="playbutton" onClick={this.pause} src="/images/baseline-pause-24px.svg" alt="pause" />
         }
         {/* <span className="playbutton" onClick={this.empty}>{'X'}</span> -- Not currently showing X */}
-        {/* TODO Make next ul collapsable */}
+        {/* TODO Make next ul collapsible */}
         <ul>
           <li>
             <I18nSpan en="Queue">: </I18nSpan>
@@ -135,8 +136,8 @@ class SettingsCrawlLI extends React.Component {
             { crawl.initialItemTaskList.map(task => (
               <span key={task.identifier || task.query}>
                 {`${task.identifier || task.query} ${(task.level === 'details' ? '' : (': ' + task.level))}; `}
-              </span>)
-            )}
+              </span>
+            ))}
           </li>
           { (!crawl.errors.length) ? null
             : (
@@ -144,7 +145,7 @@ class SettingsCrawlLI extends React.Component {
                 <I18nSpan en="Errors">: </I18nSpan>
                 <ul>
                   {crawl.errors.map(err => (
-                    <li key={err.date+err.task.debugname}>{`${err.date} ${err.task.debugname}: ${err.error.message}; `}</li>
+                    <li key={err.date + err.task.debugname}>{`${err.date} ${err.task.debugname}: ${err.error.message}; `}</li>
                   ))}
                 </ul>
               </li>
@@ -168,27 +169,29 @@ class SettingsCrawlsComponent extends React.Component {
     // Initial state, will currently only be overwritten if refresh
     this.state = { crawls: this.props.crawls, tick: 1 }; // Maybe undefined
     // Called by React when the Loading... div is displayed
-    this.updateTimeout=5000; //ms
+    this.updateTimeout = 5000; // ms
     this.updateCrawls = this.updateCrawls.bind(this);
+  }
+
+  componentDidMount() {
+    this.updaterInterval = setInterval(this.updateCrawls, this.updateTimeout);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.updaterInterval);
   }
 
   updateCrawls() {
     const urlCrawls = [DwebArchive.mirror, 'admin/crawl/status'].join('/');
-    DwebTransports.httptools.p_GET(urlCrawls, {retries:0, silentFinalError:true }, (err, crawls) => {
+    DwebTransports.httptools.p_GET(urlCrawls, { retries: 0, silentFinalError: true }, (err, crawls) => {
       // [ArchiveMember*] includes specials like local &/or home
       if (err) {
         debug('ERROR: failed to get crawl status %O', err);
       } else {
-        const tick = this.state.tick+1;
-        this.setState({ crawls, tick }); // Increment tick for each update
+        // Increment tick for each update
+        this.setState((state) => ({ tick: state.tick + 1, crawls }));
       }
     });
-  }
-  componentDidMount() {
-    this.updaterInterval = setInterval(this.updateCrawls, this.updateTimeout);
-  }
-  componentWillUnmount() {
-    clearInterval(this.updaterInterval);
   }
 
   render() {
@@ -269,43 +272,37 @@ class SettingsInfo extends React.Component {
   }
 }
 
-class SettingsLanguages extends React.Component {
-  render() {
-    return (
-      <div className="row">
-        <div className="columns-items" style={{ marginLeft: '0px' }}>
-          <div style={{ position: 'relative' }}>
-            <div>
-              <h4><I18nSpan en="Languages" /></h4>
-              <ul style={{
-                listStyle: 'none',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(200px,1fr))'
-              }}
-              >
-                {Object.entries(languageConfig).map(kv => (
-                  <li key={kv[0]} onClick={() => setLanguage(kv[0])}>
-                    <span>{ currentISO() === kv[0] ? '\u2713' : '\u2610' }</span>
-                    &nbsp;
-                    <span>{kv[1].flag || ' '}</span>
-                    &nbsp;
-                    <span>
-                      {kv[1].inEnglish}
-&nbsp;
-                      {kv[1].inLocal}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+const SettingsLanguages = () => (
+  <div className="row">
+    <div className="columns-items" style={{ marginLeft: '0px' }}>
+      <div style={{ position: 'relative' }}>
+        <div>
+          <h4><I18nSpan en="Languages" /></h4>
+          <ul style={{
+            listStyle: 'none',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(200px,1fr))'
+          }}
+          >
+            {Object.entries(languageConfig).map(kv => (
+              <li key={kv[0]} onClick={() => setLanguage(kv[0])}>
+                <span>{ currentISO() === kv[0] ? '\u2713' : '\u2610' }</span>
+                &nbsp;
+                <span>{kv[1].flag || ' '}</span>
+                &nbsp;
+                <span>
+                  {kv[1].inEnglish}&nbsp;{kv[1].inLocal}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
-    );
-  }
-}
-class SettingsItem extends React.Component {
-  /**
+    </div>
+  </div>
+);
+
+/**
    * A page for displaying settings
    *
    * <SettingsItem
@@ -319,37 +316,34 @@ class SettingsItem extends React.Component {
    * Behavior:
    *   on render: displays information about settings, has effect in SettingsInfo of fetching that information
    */
-
-  render() {
-    return (
-      <div>
-        <NavWrap item={this.props.item}
-          transportStatuses={this.props.transportStatuses}
-          mirror2gateway={this.props.mirror2gateway}
-          disconnected={this.props.disconnected}
-          transportsClickable={this.props.transportsClickable}
-          canSave={false}
-        />
-        {/* --Begin page content --*/}
-        <div className="container container-ia">
-          <a name="maincontent" id="maincontent" />
-        </div>
-        {/* Replaces banner() in Search) */}
-        <CommonWelcomeComponent
-          title={I18nStr('Settings')}
-          byline={I18nStr('on') + ' ' + DwebArchive.mirror}
-          description=""
-        />
-        <div className="container container-ia nopad">
-          <div className="in settings-item">
-            <SettingsInfo />
-            <SettingsCrawlsComponent />
-            <SettingsLanguages />
-          </div>
-        </div>
+const SettingsItem = (props) => (
+  <div>
+    <NavWrap item={props.item}
+      transportStatuses={props.transportStatuses}
+      mirror2gateway={props.mirror2gateway}
+      disconnected={props.disconnected}
+      transportsClickable={props.transportsClickable}
+      canSave={false}
+    />
+    {/* --Begin page content --*/}
+    <div className="container container-ia">
+      <a name="maincontent" id="maincontent" />
+    </div>
+    {/* Replaces banner() in Search) */}
+    <CommonWelcomeComponent
+      title={I18nStr('Settings')}
+      byline={I18nStr('on') + ' ' + DwebArchive.mirror}
+      description=""
+    />
+    <div className="container container-ia nopad">
+      <div className="in settings-item">
+        <SettingsInfo />
+        <SettingsCrawlsComponent />
+        <SettingsLanguages />
       </div>
-    );
-  }
-}
+    </div>
+  </div>
+);
+
 export { SettingsCrawlsComponent, SettingsItem };
 // File regular review 2020-feb-18

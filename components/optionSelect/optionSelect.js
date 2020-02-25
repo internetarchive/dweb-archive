@@ -53,9 +53,7 @@ class OptionSelect extends React.Component {
 
   toggleDropdown(e) {
     e.preventDefault();
-    // eslint-disable-next-line react/no-access-state-in-setstate
-    const isOpened = !this.state.dropdownOpen;
-    this.setState({ dropdownOpen: isOpened });
+    this.setState(state => ({ dropdownOpen: !state.dropdownOpen }));
   }
 
   selectOption(e) {
