@@ -264,6 +264,53 @@ class NavWebDIV extends React.Component {
   }
 }
 
+const DwebNavLocalButtonLI = (props) => (
+  <li className="local">
+    <AnchorDetails identifier="local">
+      <span className="iconochive-folder" />
+      <I18nSpan en="Local" />
+    </AnchorDetails>
+  </li>
+);
+const DwebNavSaveButtonLI = (props) => (
+  <li className="save">
+    <AnchorModalGo
+      id="save-button"
+      className="button"
+      opts={{ ignore_lnk: 1 }}
+      type="button"
+      aria-haspopup="true"
+      data-target="#save-modal"
+      data-toggle="tooltip"
+      data-container="body"
+      data-placement="bottom"
+      en="Save this item"
+    >
+      <span className="iconochive-download" />
+      <I18nSpan en="Save" />
+    </AnchorModalGo>
+  </li>
+);
+
+const DwebNavSettingsButtonLI = (props) => (
+  <li className="settings">
+    <AnchorDetails identifier="settings">
+      <span className="iconochive-gear" />
+      <I18nSpan en="Settings" />
+    </AnchorDetails>
+  </li>
+);
+
+const DwebNavReloadButtonLI = (props) => (
+  <li className="reload">
+    <span className="iconochive-Refresh" />
+    {props.identifier
+      ? <AnchorDetails identifier={props.identifier} reload><I18nSpan en="Reload" /></AnchorDetails>
+      : <AnchorSearch query={props.query} sort={props.sort} reload><I18nSpan en="Reload" /></AnchorSearch>
+    }
+  </li>
+);
+
 /**
  * <DwebNavButtons
  * identifier string   For current page
@@ -291,41 +338,13 @@ class DwebNavButtons extends React.Component {
       <ul className="dwebnavbuttons">
         {!this.props.mirror2gateway
           ? null
-          : <li className="reload">
-              <span className="iconochive-Refresh" />
-              {this.props.identifier
-                ? <AnchorDetails identifier={this.props.identifier} reload><I18nSpan en="Reload" /></AnchorDetails>
-                : <AnchorSearch query={this.props.query} sort={this.props.sort} reload><I18nSpan en="Reload" /></AnchorSearch>
-              }
-            </li>
+          : <DwebNavReloadButtonLI identifier={this.props.identifier} query={this.props.query} sort={this.props.sort} />
         }
         <CrawlConfig {...crawl} />
-        <NavLanguage />
-        <li className="settings">
-          <span className="iconochive-gear" />
-          {/* was inside AnchorDetails &nbsp;&nbsp; languageConfig[currentISO()].flag */}
-          <AnchorDetails identifier="settings"><I18nSpan en="Settings" /></AnchorDetails>
-        </li>
-        { !this.props.canSave ? null :
-          <li className="save"><span className="iconochive-download" />
-            <AnchorModalGo
-              id="save-button"
-              className="button"
-              opts={{ ignore_lnk: 1 }}
-              type="button"
-              aria-haspopup="true"
-              data-target="#save-modal"
-              data-toggle="tooltip"
-              data-container="body"
-              data-placement="bottom"
-              en="Save this item"
-            ><I18nSpan en="Save" />
-            </AnchorModalGo>
-          </li>
-        }
-        <li className="local"><span className="iconochive-folder" />
-          <AnchorDetails identifier="local"><I18nSpan en="Local" /></AnchorDetails>
-        </li>
+        <DwebNavLanguageButtonLI />
+        <DwebNavSettingsButtonLI />
+        { !this.props.canSave ? null : <DwebNavSaveButtonLI /> }
+        <DwebNavLocalButtonLI />
       </ul>
     );
   }
@@ -353,28 +372,34 @@ class DwebNavButtons extends React.Component {
  */
 class DwebNavDIV extends React.Component {
   render() {
+    const { mirror2gateway, canSave, transportsClickable, transportStatuses, item } = this.props;
+    const { itemid, query, sort, downloaded, crawl, } = item;
+    const identifier = itemid; // Handle legacy itemid
+    const crawl2 = Object.assign({ identifier, query, downloaded }, crawl );
+    // TODO add date downloaded here - maybe just on hover
+    // SEE-OTHER-ADD-SPECIAL-PAGE in dweb-archive dweb-archivecontroller dweb-mirror
+    // TODO find suitable Iconochive"s for Settings & Local then replace SVGs used in .css
     return ((typeof DwebArchive === 'undefined') ? null :
-        <div id="nav-dweb">
-          { DwebArchive.mirror
-            ? <I18nSpan className="dweb-nav-left" en="Offline" />
-            : <span className="dweb-nav-left">DWeb</span>}:
-          <DwebStatusDIV statuses={this.props.transportStatuses} clickable={this.props.transportsClickable} />
-            {!DwebArchive.mirror ? null :
-              <>
-                <div id="dweb-mirrorreload"><DwebNavButtons
-                  identifier={this.props.item.itemid}
-                  query={this.props.item.query}
-                  sort={this.props.item.sort}
-                  mirror2gateway={this.props.mirror2gateway}
-                  downloaded={this.props.item.downloaded}
-                  crawl={this.props.item.crawl}
-                  canSave={this.props.canSave}
-                />
-                </div>
-              </>
-            }
-          {/* --<a href="https://docs.google.com/forms/d/e/1FAIpQLSe7pXiSLrmeLoKvlDi2wODcL3ro7D6LegPksb86jr5bCJa7Ig/viewform" target="_blank"><img src="./images/feedback.svg" /></a>--*/}
-        </div>
+      <div id="nav-dweb">
+        { DwebArchive.mirror
+          ? <I18nSpan className="dweb-nav-left" en="Offline" />
+          : <span className="dweb-nav-left">DWeb</span>}
+        :
+        <DwebStatusDIV statuses={transportStatuses} clickable={transportsClickable} />
+        {!DwebArchive.mirror ? null :
+          <div id="dweb-mirrorreload">
+            <ul className="dwebnavbuttons">
+              { !mirror2gateway ? null : <DwebNavReloadButtonLI identifier={identifier} query={query} sort={sort} /> }
+              <CrawlConfig item={item} />
+              <DwebNavLanguageButtonLI />
+              <DwebNavSettingsButtonLI />
+              { !canSave ? null : <DwebNavSaveButtonLI /> }
+              <DwebNavLocalButtonLI />
+            </ul>
+          </div>
+        }
+        {/* --<a href="https://docs.google.com/forms/d/e/1FAIpQLSe7pXiSLrmeLoKvlDi2wODcL3ro7D6LegPksb86jr5bCJa7Ig/viewform" target="_blank"><img src="./images/feedback.svg" /></a>--*/}
+      </div>
     );
   }
 }
@@ -449,7 +474,7 @@ class DwebStatusDIV extends React.Component {
 /**
  * Renders a language select drop down
  */
-class NavLanguage extends React.Component {
+class DwebNavLanguageButtonLI extends React.Component {
   constructor(props) {
     super(props);
     this.onSelect.bind(this);

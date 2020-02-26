@@ -3,12 +3,29 @@
 /* This is a group of functions that work on Objects (there are more in dweb-archivecontroller/Util.js) */
 
 /* Construct an object based on an array such as produced by Object.entries i.e. [ [k0,v0]* ] */
+import prettierBytes from 'prettier-bytes';
+
 function ObjectFromEntries(arr) { return arr.reduce((res, kv) => (res[kv[0]] = kv[1], res), {}); } // [[ k0, v0],[k1,v1] => {k0:v0, k1:v1}
 /*
     Like Array.prototype.filter, applies a filter function to key-value pairs
     The test function should take key and value as argument and return boolean if the test passes.
  */
 function ObjectFilter(obj, f) { return ObjectFromEntries(Object.entries(obj).filter(kv => f(kv[0], kv[1]))); }
+
+/**
+ * Like PrettierBytes but converts n to an integer from string (or int), and catches errors if undefined etc (returning "?")
+ * @param n Number of bytes to print,
+ * @returns {string}
+ */
+function safePrettierBytes(n) {
+  try {
+    const x = parseInt(n, 10);
+    return prettierBytes(x);
+  } catch (err) {
+    debug('%s is not a integer', n);
+    return '?';
+  }
+}
 
 /*
 A table, and a function to access it.
@@ -971,4 +988,4 @@ const languageMapping = {
   zxx: 'No linguistic content'
 };
 
-export { languageMapping, ObjectFromEntries, ObjectFilter, formats, downloadableFormat };
+export { safePrettierBytes, languageMapping, ObjectFromEntries, ObjectFilter, formats, downloadableFormat };

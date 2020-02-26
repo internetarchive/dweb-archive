@@ -1,7 +1,7 @@
 /* global DwebTransports, DwebArchive */
 /* eslint-disable react/jsx-one-expression-per-line, no-nested-ternary */
 import React from 'react';
-import prettierBytes from 'prettier-bytes';
+import safePrettierBytes from '../../ia-components/util';
 
 import { CommonWelcomeComponent } from './CommonComponent';
 import { NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig } from '../../ia-components/dweb-index';
@@ -23,15 +23,6 @@ Crawl is: {
   }}
 */
 
-function safePrettyInt(n) {
-  try {
-    const x = parseInt(n, 10);
-    return prettierBytes(x);
-  } catch (err) {
-    debug('%s is not a integer', n);
-    return '?';
-  }
-}
 class SettingsCrawlLI extends React.Component {
   /**
    * Renders information about one crawl
@@ -105,7 +96,7 @@ class SettingsCrawlLI extends React.Component {
                       {worker.parent.join(' > ')}{' > '}{worker.debugname}
                       { (worker.pageParms || !worker.file || !worker.file.metadata.size) // is there a file size
                         ? null
-                        : safePrettyInt(worker.file.metadata.size)
+                        : safePrettierBytes(worker.file.metadata.size)
                       }
                     </li>
                   ))}
@@ -120,7 +111,7 @@ class SettingsCrawlLI extends React.Component {
               k => <span key={k}>{`${k}: ${crawl.opts[k]}; `}</span>
             ) }
             { ['maxFileSize'].map( // Bytes
-              k => <span key={k}>{`${k}: ${safePrettyInt(crawl.opts[k])}; `}</span>
+              k => <span key={k}>{`${k}: ${safePrettierBytes(crawl.opts[k])}; `}</span>
             ) }
             {['skipFetchFile', 'skipCache'].map( // Booleans
               k => (crawl.opts[k] ? (
