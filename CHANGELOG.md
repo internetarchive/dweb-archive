@@ -1,6 +1,6 @@
 ## Release notes
 
-* v0.2.24:
+* v0.2.25:
   * some edge case bugs; 
   * remove IAReactComponent; LocalComponent; 
   * lot of linting

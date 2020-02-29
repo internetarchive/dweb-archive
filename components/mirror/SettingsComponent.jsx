@@ -1,7 +1,7 @@
 /* global DwebTransports, DwebArchive */
 /* eslint-disable react/jsx-one-expression-per-line, no-nested-ternary */
 import React from 'react';
-import safePrettierBytes from '../../ia-components/util';
+import { safePrettierBytes } from '../../ia-components/util';
 
 import { CommonWelcomeComponent } from './CommonComponent';
 import { NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig } from '../../ia-components/dweb-index';
