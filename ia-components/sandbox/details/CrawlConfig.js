@@ -27,8 +27,8 @@ function crawlText({ level, identifier, query, downloaded, search } = {}) {
       : downloaded.pages_size
         ? ` ${safePrettierBytes(downloaded.files_size + downloaded.pages_size)}`
         : ` ${safePrettierBytes(downloaded.files_size)}  / ${safePrettierBytes(downloaded.files_all_size)}`;
-  const p2 = (search && _levels.indexOf(this.props.level) >= _levels.indexOf('details'))
-    ? ` ${I18nStr('Searching')} ${this.props.search.rows} ${I18nStr('rows at')} ${I18nStr(this.props.search.level)}`
+  const p2 = (search && _levels.indexOf(level) >= _levels.indexOf('details'))
+    ? ` ${I18nStr('Searching')} ${search.rows} ${I18nStr('rows at')} ${I18nStr(search.level)}`
     : '';
   return p0 + p1 + p2;
 }
