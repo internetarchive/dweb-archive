@@ -1,5 +1,10 @@
 ## Release notes
 
+* v0.2.24:
+  * some edge case bugs; 
+  * remove IAReactComponent; LocalComponent; 
+  * lot of linting
+  * improve crawl indication and add UI for controlling crawls
 * v0.2.23: 
   * Pickup dweb-transports change to gun;
   * handle saved searches
