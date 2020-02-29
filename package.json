@@ -68,6 +68,7 @@
   "scripts": {
     "build": "webpack --mode production",
     "postinstall": "yarn exec pika-web",
+    "postpublish": "pushd dist; npm publish --access public; popd;",
     "server": "http-server",
     "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist;",
     "getArchiveFiles": "while read line; do echo $line; curl -s -S -o \"dist${line}\" \"https://archive.org${line}\" ; done <archive_files.txt",
