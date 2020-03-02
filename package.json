@@ -16,7 +16,7 @@
     "@babel/runtime": "^7.4.3",
     "@futurepress/epubjs-reader": "git+https://github.com/futurepress/epubjs-reader.git",
     "@internetarchive/bookreader": "git+https://github.com/internetarchive/bookreader.git",
-    "@internetarchive/dweb-archivecontroller": "^0.2.9",
+    "@internetarchive/dweb-archivecontroller": "^0.2.10",
     "@internetarchive/dweb-transports": "^0.2.19",
     "@internetarchive/ia-components": "0.0.0-alpha.1",
     "@internetarchive/ia-design-system": "^0.3.1-alpha.21",
@@ -68,7 +68,7 @@
   "scripts": {
     "build": "webpack --mode production",
     "postinstall": "yarn exec pika-web",
-    "postpublish": "pushd dist; npm publish --access public; popd;",
+    "postpublish": "pushd dist && npm publish --access public && popd;",
     "server": "http-server",
     "setuphttp": "ln -s ../node_modules/@internetarchive/dweb-transports/dist/dweb-transports-bundle.js dist;",
     "getArchiveFiles": "while read line; do echo $line; curl -s -S -o \"dist${line}\" \"https://archive.org${line}\" ; done <archive_files.txt",
@@ -79,5 +79,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.2.25"
+  "version": "0.2.26"
 }
