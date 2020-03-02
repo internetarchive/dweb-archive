@@ -18,12 +18,13 @@ const unclickable = ['local'];
 const _levels = ['tile', 'metadata', 'details', 'all']; //  *** NOTE THIS LINE IS IN dweb-mirror.CrawlManager && dweb-archive/components/CrawlConfig.js
 
 function crawlText({ level, identifier, query, downloaded, search } = {}) {
+  debug("XXX crawlText")
   const isDownloaded = downloaded && downloaded.details;
   const p0 = I18nStr(level ? `Crawling ${level}` : isDownloaded ? 'Downloaded' : 'Not Downloaded');
   const p1 = !downloaded
     ? ''
-    : downloaded.members_all_count
-      ? ` ${safePrettierBytes(downloaded.members_size)} ${I18nStr('in')} ${downloaded.members_details_count} ${I18nStr('of')} ${downloaded.members_all_count} ${I18nStr('items')}`
+    : (downloaded.members_all_count || downloaded.members_size)
+      ? ` ${safePrettierBytes(downloaded.members_size)} ${I18nStr('in')} ${downloaded.members_details_count} ${I18nStr('of')} ${downloaded.members_all_count || '?'} ${I18nStr('items')}`
       : downloaded.pages_size
         ? ` ${safePrettierBytes(downloaded.files_size + downloaded.pages_size)}`
         : ` ${safePrettierBytes(downloaded.files_size)}  / ${safePrettierBytes(downloaded.files_all_size)}`;
@@ -158,7 +159,8 @@ class CrawlConfig extends React.Component {
   }
 
   render() {
-    const { identifier, query, crawl, downloaded } = this.props.item;
+    const { itemid, query, crawl, downloaded } = this.props.item;
+    const identifier = itemid; // legacy itemid
     const { level, search } = crawl;
     const selectedText = crawlText({ level, identifier, query, downloaded, search });
     return ((typeof DwebArchive === 'undefined') || (DwebArchive.mirror === null) || (undisplayable.includes(identifier)))
