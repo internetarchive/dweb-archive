@@ -5,6 +5,8 @@
 /* Construct an object based on an array such as produced by Object.entries i.e. [ [k0,v0]* ] */
 import prettierBytes from 'prettier-bytes';
 
+const debug = require('debug')('dweb-archive:iac-util');
+
 function ObjectFromEntries(arr) { return arr.reduce((res, kv) => (res[kv[0]] = kv[1], res), {}); } // [[ k0, v0],[k1,v1] => {k0:v0, k1:v1}
 /*
     Like Array.prototype.filter, applies a filter function to key-value pairs
