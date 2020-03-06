@@ -41,7 +41,7 @@ TODO-FAKEREACT this is significantly out of date
             * Adds missing metadata fields esp thumbnail links in IPFS
 * render():
     * Uses a nested hierarchy of classes (See class hierarchy in README.md <<TODO move class hierarchy>>) to allow for common code where appropriate.
-    * A typical render call - e.g for `new Video(itemid).render`
+    * A typical render call - e.g for `new Video(identifier).render`
                 * Details.wrap - build the elements
                     * Nav.navwrap - the global navigation elements, menus etc
                     * theatreIaWrap - wrap the main content in controls (e.g. play etc)

@@ -53,7 +53,7 @@ function crawlText({ level, identifier, query, downloaded, search } = {}) {
  *
  * <CrawlConfig
  *  item ArchiveItem {
- *    EITHER itemid of item
+ *    EITHER identifier of item
  *    OR     query  if its a search
  *    crawl: { level }
  *    numFound
@@ -94,8 +94,7 @@ class CrawlConfig extends React.Component {
     admin/crawl/add?identifier=foo,level=bar,rows=n
      */
     const { action, level, rows } = opts; // New values
-    const { itemid, query } = this.props.item;
-    const identifier = itemid;
+    const { identifier, query } = this.props.item;
     let urlSetConfig;
     if (action === 'download') {
       urlSetConfig = [DwebArchive.mirror, '/admin/crawl/add?', parmsFrom({ identifier, query, level, rows })].join('');
@@ -115,8 +114,7 @@ class CrawlConfig extends React.Component {
 
   crawlOptions() {
     const item = this.props.item || {};
-    const {metadata = {}, itemid, downloaded, numFound } = item;
-    const identifier = itemid;
+    const {metadata = {}, identifier, downloaded, numFound } = item;
     const { mediatype } = metadata;
     const isSearch = // See almost DUPLICATEDCODEISSEARCH
       ((item && item.query)
@@ -159,8 +157,7 @@ class CrawlConfig extends React.Component {
   }
 
   render() {
-    const { itemid, query, crawl, downloaded } = this.props.item;
-    const identifier = itemid; // legacy itemid
+    const { identifier, query, crawl, downloaded } = this.props.item;
     const { level, search } = crawl;
     const selectedText = crawlText({ level, identifier, query, downloaded, search });
     return ((typeof DwebArchive === 'undefined') || (DwebArchive.mirror === null) || (undisplayable.includes(identifier)))

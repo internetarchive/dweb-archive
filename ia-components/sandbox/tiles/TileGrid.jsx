@@ -66,7 +66,7 @@ class ScrollableTileGrid extends React.Component {
 
   // Replaces AJS.scrolled which doesnt have a way to send a click to a react object
   handleScroll(ev) {
-    // debug('scrolling caught for %s', this.props.item.itemid);
+    // debug('scrolling caught for %s', this.props.item.identifier);
     // TODO remove dependence below on jquery
     const newtop = $(window).scrollTop();
     const selector = '.more_search:visible';

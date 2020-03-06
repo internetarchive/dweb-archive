@@ -32,9 +32,9 @@ export default class ArchiveBase extends ArchiveItem {
    * Fields:
    *
    */
-  constructor({ and='', download=false, itemid = undefined, message=undefined, metaapi = undefined, noCache=false, page=1,
+  constructor({ and='', download=false, identifier = undefined, message=undefined, metaapi = undefined, noCache=false, page=1,
                 query=undefined, rows=searchConfig.rows, sort=[]}={}) {
-    super({itemid, metaapi, sort});
+    super({identifier, metaapi, sort});
     this.and = and;
     this.download = download; // True if want download directory
     this.noCache= noCache;

@@ -103,7 +103,7 @@ class DetailsIAWrap extends React.Component {
           : (['audio'].includes(this.props.mediatype) && (this.props.subtype === 'radio'))
           ? (
             <RadioPlayerControllerReact
-              itemId={this.props.identifier}
+              identifier={this.props.identifier}
               item={this.props.item} />
             )
           : (['audio'].includes(this.props.mediatype) && (this.props.subtype === 'album'))
@@ -338,7 +338,7 @@ class DetailsMessage extends React.Component {
 
   render() {
     // TODO make the props.item check more granular - move down into NavWrap and display/hide parts of that.
-    const identifier = this.props.identifier || (this.props.item && this.props.item.itemid);
+    const identifier = this.props.identifier || (this.props.item && this.props.item.identifier);
     return (
       <>
         {(!this.props.item) ? null

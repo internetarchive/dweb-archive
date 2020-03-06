@@ -48,7 +48,7 @@ class CollectionBanner extends React.Component {
   /**
    * Typical usage (assuming "this" is an ARCHIVEFILE
    * <CollectionBanner
-   *  identifier=this.itemid
+   *  identifier=this.identifier
    *  imgsrc = this.thumbnailFile() or undefined
    *  title=STRING
    *  description =STRING   Note this should have been preprocessed to concatenate any arrays, sanitize the HTML and replace any relative URI's which wont work.
@@ -90,7 +90,7 @@ class CollectionBanner extends React.Component {
                 </AnchorModalGo>
                 <br/>
                 <BookmarkButton
-                  url={`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=collection&amp;identifier=${this.itemid}&amp;title=${this.props.title}`}
+                  url={`https://archive.org/bookmarks.php?add_bookmark=1&amp;mediatype=collection&amp;identifier=${this.identifier}&amp;title=${this.props.title}`}
                   disconnected={this.props.disconnected}
                 />
                 {/* TODO-LOGIN /editxml isn't going to wrk - we aren't logged in. and its an absolute URL
@@ -447,10 +447,10 @@ class SearchRowColumnsItems extends React.Component {
             style={{ marginLeft: '0px' }}
           >
             {/* --TODO-DETAILS-FACETS delete the margin-left when add the facet column --*/}
-            {['home'].includes(this.props.item.itemid) ? null
+            {['home'].includes(this.props.item.identifier) ? null
               : (
                 <>
-                  <SearchSortBar identifier={this.props.item.itemid} query={this.props.item.query} />
+                  <SearchSortBar identifier={this.props.item.identifier} query={this.props.item.query} />
                   <div className="sortbar-rule" />
                 </>
               )
@@ -473,7 +473,7 @@ class SearchWrap extends React.Component {
    * />
    */
   render() {
-    const identifier = this.props.item.itemid; // May be undefined
+    const identifier = this.props.item.identifier; // May be undefined
     return (
       <>
         <NavWrap item={this.props.item}
@@ -541,11 +541,11 @@ class CollectionWrap extends React.Component {
         />
         <main id="maincontent">
           <div className="container container-ia">
-            {['home'].includes(item.itemid)
+            {['home'].includes(item.identifier)
               ? <HomeBanner disconnected={this.props.disconnected} />
               : (
                 <CollectionBanner
-                  identifier={item.itemid}
+                  identifier={item.identifier}
                   imgsrc={item.thumbnailFile()}
                   description={!item.metadata.description ? undefined : preprocessDescription(item.metadata.description).replace(/(..\/)+..\//g, '../')}
                   creator={item.metadata.creator}
@@ -554,9 +554,9 @@ class CollectionWrap extends React.Component {
                 />
               )
         }
-            {(['home', 'local'].includes(item.itemid) || this.props.disconnected) ? null
+            {(['home', 'local'].includes(item.identifier) || this.props.disconnected) ? null
               : (
-                <CherModal identifier={item.itemid} creator={item.metadata.creator} mediatype={item.metadata.mediatype}
+                <CherModal identifier={item.identifier} creator={item.metadata.creator} mediatype={item.metadata.mediatype}
                   title={item.metadata.title}
                 />
               )
@@ -568,10 +568,10 @@ class CollectionWrap extends React.Component {
             </div>
             {/* TODO take a closer look at scripts on originals/prelinger lines 7360-7399 */}
             {/* --TODO-ANALYTICS is missing --*/}
-            {['home', 'local'].includes(item.itemid) ? null
+            {['home', 'local'].includes(item.identifier) ? null
               : (
                 <CollectionTabby
-                  identifier={item.itemid}
+                  identifier={item.identifier}
                   description={preprocessDescription(item.metadata.description)}
                   rights={preprocessDescription(item.metadata.rights)}
                 />
@@ -598,7 +598,7 @@ class ComboSearchWrap extends React.Component {
     const item = this.props.item;
     document.title = `${item.query} ${item.sort.join(' ')} : ${I18nStr(DwebArchive.mirror ? 'Offline Internet Archive' : 'Decentralized Internet Archive')}`;
     const mediatype = item.metadata ? item.metadata.mediatype : 'search';
-    const identifier = item.itemid;
+    const identifier = item.identifier;
     return (
       (identifier === 'settings')
         ? <SettingsItem item={item} {...this.props.statuses} />

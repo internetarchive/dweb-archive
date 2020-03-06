@@ -136,16 +136,16 @@ export default class Nav {
     let item; // Set below, but keep it here for error handling
     try {
       if (!identifier || (identifier === 'home')) {
-        item = new ArchiveBase({ itemid: 'home', query: homeQuery, sort: '-downloads' });
+        item = new ArchiveBase({ identifier: 'home', query: homeQuery, sort: '-downloads' });
         await item.fetch_metadata({ noCache });
         await item.fetch_query({ noCache });
         renderPage({ item });
       } else if (['local', 'settings'].includes(identifier)) { // SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
-        item = new ArchiveBase({ itemid: identifier });
+        item = new ArchiveBase({ identifier: identifier });
         await item.fetch_metadata(); // Intentionally not passing noCache
         renderPage({ item });
       } else {
-        item = new ArchiveBase({ itemid: identifier, page, download, noCache });
+        item = new ArchiveBase({ identifier: identifier, page, download, noCache });
         await item.fetch_metadata({ noCache }); // Note, dont do fetch_query as will expand to ArchiveMemberSearch which will confuse the export
         if (!item.metadata) {
           item.message = (
@@ -247,7 +247,7 @@ export default class Nav {
 /* eslint-disable-next-line func-names */
 window.onpopstate = function (event) {
   debug('Going back to: %s %o', document.location, event.state);
-  const identifier = event.state && (event.state.itemid || event.state.item || event.state.identifier); // item in URL, itemid legacy, identifier future
+  const identifier = event.state && (event.state.identifier || event.state.item || event.state.identifier); // item in URL, identifier, identifier future
   const stateOpts = Object.assign({}, event.state, { wanthistory: false });
   if (event.state) {
     if (event.state.query) {

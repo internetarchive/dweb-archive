@@ -353,7 +353,7 @@ class DwebNavButtons extends React.Component {
 /**
  * <DwebNavDIV
  *    item= {             // ArchiveItem
- *      itemid: identifier,
+ *      identifier: identifier,
  *      query:  string or object,
  *      sort:   string,
  *      downloaded: { ... }, passed to CrawlConfig
@@ -373,8 +373,7 @@ class DwebNavButtons extends React.Component {
 class DwebNavDIV extends React.Component {
   render() {
     const { mirror2gateway, canSave, transportsClickable, transportStatuses, item } = this.props;
-    const { itemid, query, sort, downloaded, crawl, } = item;
-    const identifier = itemid; // Handle legacy itemid
+    const { identifier, query, sort, downloaded, crawl, } = item;
     const crawl2 = Object.assign({ identifier, query, downloaded }, crawl );
     // TODO add date downloaded here - maybe just on hover
     // SEE-OTHER-ADD-SPECIAL-PAGE in dweb-archive dweb-archivecontroller dweb-mirror

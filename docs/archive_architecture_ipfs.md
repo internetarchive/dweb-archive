@@ -36,7 +36,7 @@ The current setup consists of ...
 
 ## Data architecture.
 
-Clients navigate to resources by three methods (Browse, Search or by external URLS including ItemIDs)
+Clients navigate to resources by three methods (Browse, Search or by external URLS including identifiers)
 
 All queries are JSON based and go via dweb.archive.org, microservices or direct to archive.org
 

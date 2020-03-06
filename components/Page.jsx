@@ -61,7 +61,7 @@ class Page extends React.Component {
   componentDidMountOrUpdate() {
     // TODO merge much of this into specific components at deeper level.
     const item = this.state.item;
-    const identifier = item && item.itemid;
+    const identifier = item && item.identifier;
     const metadata = item && item.metadata;
     const query = item && item.query;
     let mediatype = metadata && metadata.mediatype;
@@ -159,7 +159,7 @@ class Page extends React.Component {
 
   render() {
     const item = this.state.item;
-    const identifier = item && item.itemid;
+    const identifier = item && item.identifier;
     const metadata = item && item.metadata;
     let mediatype = metadata && metadata.mediatype;
     const query = item && item.query;

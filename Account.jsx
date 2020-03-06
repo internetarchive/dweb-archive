@@ -8,7 +8,7 @@ class AccountTabbyPosts extends React.Component {
      * TODO pass in detailed props rather than item
      */
   render() {
-    const name = this.props.item.itemid.replace(/_/g, ' ').replace('@', ''); // Canonical name from id, may have better ways to get this - see @tracey_pooh for case needing this one.
+    const name = this.props.item.identifier.replace(/_/g, ' ').replace('@', ''); // Canonical name from id, may have better ways to get this - see @tracey_pooh for case needing this one.
     return (
       <div className="container container-ia nopad">
         <div id="tabby-posts" className="tabby-data hidden row">
@@ -98,10 +98,10 @@ class AccountWelcome extends React.Component {
      * - see similar style/HTML in CommonWelcome CollectionBanner and AccountBanner
      */
   render() {
-    const identifier = this.props.item.itemid;
+    const identifier = this.props.item.identifier;
     const title = this.props.item.metadata.title; // Example from @tracey_pooh
     const imagesrc = this.props.item.thumbnailFile() || '/images/notfound.png'; // TODO-ACCOUNT Tracey is adding a service to get a better image (larger scale
-    const name = this.props.item.itemid.replace(/_/g, ' ').replace('@', ''); // Canonical name from id, may have better ways to get this - see @tracey_pooh for case needing this one.
+    const name = this.props.item.identifier.replace(/_/g, ' ').replace('@', ''); // Canonical name from id, may have better ways to get this - see @tracey_pooh for case needing this one.
     return (
       <div className="welcome container container-ia width-max account-uniform">
         <div className="container">

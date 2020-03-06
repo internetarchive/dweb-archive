@@ -63,8 +63,8 @@ class BookReaderDwebWrapper extends React.Component {
       imagesBaseURL: routed('https://archive.org/bookreader/BookReader/images/',
         { wantOneHttp: true }),
       // Options not in BookReaderJSIAWrapper
-      urlHistoryBasePath: `\/details\/${this.props.item.itemid}\/`, // This is use when URL is rewritten to include page
-      resumeCookiePath: `\/details\/${this.props.item.itemid}`,
+      urlHistoryBasePath: `\/details\/${this.props.item.identifier}\/`, // This is use when URL is rewritten to include page
+      resumeCookiePath: `\/details\/${this.props.item.identifier}`,
       // lookign at IDENTIFIER/page/xxx -> history; IDENTIFIER#page -> !history otherwise ???
       // urlMode: window.location.pathname.length > urlHistoryBasePath.length ? 'history' : 'hash',
       urlMode: window.location.hash.length > 1 ? undefined : 'history',
@@ -74,7 +74,7 @@ class BookReaderDwebWrapper extends React.Component {
       bookUrlText: null,
       initialSearchTerm: null,
       // getPageURI: {}, //TODO-BOOKREADER make this use dweb to fetch see getImageURI, problem is that render has to by sync, and getImageURI has to be async
-      thumbnail: routed(`https://archive.org/download/${this.props.item.itemid}/page/cover_t.jpg`, { wantOneHttp: true }),
+      thumbnail: routed(`https://archive.org/download/${this.props.item.identifier}/page/cover_t.jpg`, { wantOneHttp: true }),
       // Unfortunately bookread.js appends protocol so we cant control it here
       // Note archive.org/download/xx/page/cover_t.jpg redirects to e.g.  https://ia601600.us.archive.org/BookReader/BookReaderPreview.php?id=xx&itemPath=%2F27%2Fitems%2Fxx&server=ia601600.us.archive.org&page=cover_t.jpg
     };
@@ -82,7 +82,7 @@ class BookReaderDwebWrapper extends React.Component {
       ? (
         <I18nSpan en="Loading Book metadata for">
           {' '}
-          {this.props.item.itemid}
+          {this.props.item.identifier}
         </I18nSpan>
       )
       : <BookReaderWrapper jsia={this.state.jsia} options={options} />;

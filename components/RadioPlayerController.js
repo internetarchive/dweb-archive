@@ -19,7 +19,7 @@ import {
 
 export default class RadioPlayerControllerReact extends React.Component {
   render() {
-    return <radio-player-controller itemId={this.props.itemId}/>
+    return <radio-player-controller itemId={this.props.identifier}/>
   }
   componentDidMount() {
     const rpc = document.querySelector('radio-player-controller');

@@ -31,10 +31,10 @@ export default class RelatedItemsWrapper extends React.Component {
       item.relatedItems({ wantStream: false, wantMembers: true, noCache: this.props.noCache }, (err, members) => {
         if (err) {
           // If there is an error then relatedItems() will have reported it, and can just ignore it here and not display
-          // debug("retrieval failed for %s: %s", item.itemid,err.message);
+          // debug("retrieval failed for %s: %s", item.identifier,err.message);
         } else if (item !== this.props.item) {
           // Dont update if item has changed while relatedItems running
-          debug('retrieval rejected because item changed from %s to %s', item.itemid, this.props.item.itemid);
+          debug('retrieval rejected because item changed from %s to %s', item.identifier, this.props.item.identifier);
         } else {
           this.setState({ members, loading: false });
         }
