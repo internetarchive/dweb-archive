@@ -1,5 +1,6 @@
 ## Release notes
 
+* v0.2.27: itemid=>identifier; move SettingsComponent; 
 * v0.2.26: Bug in search crawl text
 * v0.2.25:
   * some edge case bugs; 
