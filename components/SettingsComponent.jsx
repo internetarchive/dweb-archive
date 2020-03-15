@@ -1,12 +1,35 @@
 /* global DwebTransports, DwebArchive */
 /* eslint-disable react/jsx-one-expression-per-line, no-nested-ternary */
 import React from 'react';
-import { safePrettierBytes } from '../../ia-components/util';
-
-import { CommonWelcomeComponent } from './CommonComponent';
-import { NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig } from '../../ia-components/dweb-index';
+import { safePrettierBytes } from '../ia-components/util';
+import { NavWrap, I18nSpan, I18nStr, setLanguage, currentISO, languageConfig } from '../ia-components/dweb-index';
 
 const debug = require('debug')('dweb-archive:SettingsComponent');
+
+
+/**
+ * <CommonWelcomeComponent
+ *    title=I8STRING|NODE
+ *    byline=I8STRING|NODE
+ *    descriptions=SANITIZEDHTML   Description which may contain HTML but should have been preprocessed to remove bad HTML
+ * />
+ *
+ * Renders a banner at top of a special item (like settings) that is logically similar to that at top of a Details page
+ * - see similar style/HTML in CommonWelcome CollectionBanner and AccountBanner
+ */
+const CommonWelcomeComponent = (props) => (
+  <div className="welcome container container-ia width-max" style={{ backgroundColor: 'white' }}>
+    <div className="container">
+      <div className="row">
+        <div className="col-xs-11 col-sm-10 welcome-left">
+          <h1>{props.title}</h1>
+          <h4>{props.byline}</h4>
+          <div id="descript" style={{ maxHeight: '43px', cursor: 'pointer' }} dangerouslySetInnerHTML={{ __html: props.description }} />
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 // SEE-OTHER-ADD-SPECIAL-PAGE in dweb-mirror dweb-archive dweb-archivecontroller
 
@@ -69,8 +92,7 @@ class SettingsCrawlLI extends React.Component {
     const crawl = this.state.crawl;
     return (
       <li key={crawl.name}>
-        <span className="crawlname">{crawl.name}</span>
-:
+        <span className="crawlname">{crawl.name}</span>:
         <img className="playbutton" onClick={this.restart} src="/images/baseline-fast_rewind-24px.svg" alt="restart" />
         {crawl.queue.paused
           ? <img className="playbutton" onClick={this.resume} src="/images/baseline-play_arrow-24px.svg" alt="resume" />
@@ -249,10 +271,7 @@ class SettingsInfo extends React.Component {
                 <h4><I18nSpan en="Information" /></h4>
                 <ul>
                   <li>
-                    <I18nSpan en="directories" />
-:
-                    {' '}
-                    <span>{this.state.info.directories.join('; ')}</span>
+                    <I18nSpan en="directories" />: <span>{this.state.info.directories.join('; ')}</span>
                   </li>
                 </ul>
               </div>
@@ -337,4 +356,4 @@ const SettingsItem = (props) => (
 );
 
 export { SettingsCrawlsComponent, SettingsItem };
-// File regular review 2020-feb-18
+// File regular review 2020-mar-07
