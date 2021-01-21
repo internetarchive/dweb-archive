@@ -24,7 +24,7 @@
     "@stratumn/canonicaljson": "^1.0.2",
     "async": "^3.2.0",
     "debug": "^4.1.1",
-    "epubjs": "^0.3.88",
+    "epubjs": "0.3.85",
     "es2015": "^0.0.0",
     "from2": "^2.3.0",
     "jquery": "^3.3.1",
